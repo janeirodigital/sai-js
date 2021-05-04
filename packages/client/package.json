@@ -1,0 +1,30 @@
+{
+  "name": "interop-client",
+  "version": "0.1.0",
+  "description": "> TODO: description",
+  "author": "Ángel Araya <angel.araya@janeirodigital.com>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "src/client.js",
+  "directories": {
+    "lib": "src",
+    "test": "__tests__",
+    "docs": "docs"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "tsc": "tsc",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/n3": "^1.4.4",
+    "@types/rdf-js": "^4.0.1",
+    "@types/uuid": "^8.3.0"
+  },
+  "dependencies": {
+    "n3": "^1.8.1",
+    "uuid": "^8.3.2"
+  }
+}

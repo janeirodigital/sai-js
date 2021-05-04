@@ -1,0 +1,20 @@
+{
+  "name": "interop-server",
+  "version": "0.1.0",
+  "description": "> TODO: description",
+  "author": "Ángel Araya <angel.araya@janeirodigital.com>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "dist/interop-sever.js",
+  "directories": {
+    "lib": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "tsc": "tsc",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  }
+}
