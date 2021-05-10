@@ -1,7 +1,8 @@
 node_modules/
+packages/**/dist
 lerna-debug.log
 npm-debug.log
 packages/*/lib
-.idea
-.vscode
-.swp
+*.idea
+*.vscode
+*.swp
