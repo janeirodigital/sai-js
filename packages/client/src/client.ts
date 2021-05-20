@@ -9,23 +9,10 @@ import { parseRegistrySets, sha256 } from './interop-functions';
 export interface InteropOptions {
   /** Whether to automatically register the application if not registered already */
   register: boolean;
-  profile: ApplicationProfile,
+  applicationWebId: string;
   /** Where to start looking for the registries */
   webId: string;
   fetch: Fetch;
-}
-
-/**
- * Defined the application data needed to participate in an interoperable ecosystem.
- */
-export interface ApplicationProfile {
-  applicationWebId: string;
-  applicationName: string;
-  applicationDescription: string;
-  applicationThumbnail: string;
-
-  authorName: string;
-  authorWebId: string;
 }
 
 export class InteropClient {
@@ -52,7 +39,7 @@ export class InteropClient {
     const registryUrls = getAllMatchingQuads(registrySet as unknown as RDFJS.Dataset, null, INTEROP('hasRegistry')).map(q => q.object.value);
 
     for (const registry of registryUrls) {
-      const response = await this.fetch(path.join(registry, await sha256(this.options.profile.applicationWebId)))
+      const response = await this.fetch(path.join(registry, await sha256(this.options.applicationWebId)))
       if (response.ok) {
         // TODO(angel) should fail only on explicit 404/401
         // TODO(angel) how to handle codes 5xx
@@ -87,5 +74,3 @@ export class InteropClient {
     throw new Error('Not yet implemented');
   }
 }
-
-

@@ -1,5 +1,3 @@
-import { ApplicationProfile } from './client';
-
 
 // TODO should this include inbox, accessInbox, receivesAccessReceipt
 export type RegistrySet = {
@@ -14,7 +12,6 @@ export class Storage {
     private static instance: Storage;
 
 
-    private applicationProfile: ApplicationProfile;
     private registrySets: RegistrySet;
 
 
@@ -25,10 +22,6 @@ export class Storage {
             Storage.instance = new Storage();
         }
         return Storage.instance;
-    }
-
-    public setApplicationProfile(profile: ApplicationProfile): void {
-        this.applicationProfile = profile;
     }
 
     public setRegistrySets(sets: RegistrySet): void {
