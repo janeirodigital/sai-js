@@ -41,6 +41,7 @@ const parse = async (text: string): Promise<RDFJS.Store> => {
                 reject(error);
             }
             if (quad) {
+                //@ts-ignore FIXME
                 store.add(quad);
             } else {
                 resolve(store);
