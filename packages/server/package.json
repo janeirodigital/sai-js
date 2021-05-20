@@ -8,14 +8,27 @@
   "main": "dist/index.js",
   "directories": {
     "lib": "src",
-    "test": "__tests__"
+    "test": "test"
   },
   "files": [
     "src"
   ],
   "scripts": {
     "build": "tsc -b .",
-    "test": "echo \"Error: run tests from root\" && exit 1",
+    "test": "jest",
     "clean": "rimraf dist tsconfig.tsbuildinfo"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "../../tsconfig.json"
+      }
+    },
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "testRegex": "/test/.*-test.ts$",
+    "moduleFileExtensions": [ "js", "ts" ],
+    "collectCoverage": false
   }
 }
