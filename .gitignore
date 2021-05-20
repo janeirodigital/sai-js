@@ -2,6 +2,8 @@ node_modules/
 packages/**/dist
 lerna-debug.log
 npm-debug.log
+package-lock.json
+yarn.lock
 packages/*/lib
 *.idea
 *.vscode
