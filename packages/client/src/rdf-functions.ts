@@ -47,13 +47,3 @@ export const getOneMatchingQuad = (dataset: RDFJS.Dataset, subject?: RDFJS.Term,
 export const getAllMatchingQuads = (dataset: RDFJS.Dataset, subject?: RDFJS.Term, predicate?: RDFJS.Term, object?: RDFJS.Term): Array<RDFJS.Quad> => {
     return [...dataset.match(subject, predicate, object)];
 }
-
-export const INTEROP = (prop: string): RDFJS.NamedNode => {
-    const base = 'http://www.w3.org/ns/solid/interop#';
-    return new N3.NamedNode(base + prop);
-}
-
-export const RDF = (prop: string): RDFJS.NamedNode => {
-    const base = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
-    return new N3.NamedNode(base + prop);
-}
