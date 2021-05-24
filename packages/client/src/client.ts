@@ -3,7 +3,8 @@ import * as path from 'path';
 import { INTEROP } from 'interop-namespaces'
 
 import { Fetch } from './fetch';
-import { getAllMatchingQuads, getOneMatchingQuad, getRdfResource } from './rdf-functions';
+import { getAllMatchingQuads, getOneMatchingQuad } from 'interop-utils';
+import { getRdfResource } from './rdf-functions';
 import { parseRegistrySets, sha256 } from './interop-functions';
 
 

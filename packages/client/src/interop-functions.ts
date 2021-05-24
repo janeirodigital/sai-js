@@ -1,9 +1,9 @@
 import * as RDFJS from 'rdf-js';
 import * as N3 from 'n3';
 import * as uuid from 'uuid';
+import { getOneMatchingQuad } from 'interop-utils';
 import { INTEROP } from 'interop-namespaces'
 import { RegistrySet } from './storage';
-import { getOneMatchingQuad } from './rdf-functions';
 import { DataFactory } from 'n3';
 
 const { quad, namedNode, literal } = DataFactory;
