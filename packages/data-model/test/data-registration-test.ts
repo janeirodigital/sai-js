@@ -1,4 +1,4 @@
-import { parse } from 'interop-client'
+import { parseTurtle } from 'interop-utils'
 import { DataRegistration } from '../src/data-registration'
 
 
@@ -17,7 +17,7 @@ const snippet = `
 `
 
 test('DataRegistration has registeredShapeTree', async () => {
-  const dataset = await parse(snippet)
+  const dataset = await parseTurtle(snippet)
   const registration = new DataRegistration(dataset)
   expect(registration.registeredShapeTree).toEqual('https://solidshapes.example/trees/Project')
 })
