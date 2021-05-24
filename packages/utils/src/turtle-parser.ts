@@ -1,5 +1,5 @@
 import { Quad, DatasetCore } from 'rdf-js'
-import { Store, Parser, Prefixes} from 'n3'
+import { Store, Parser, Prefixes, DataFactory } from 'n3'
 
 /**
  * Wrapper around N3.Parser.parse to convert from callback style to Promise.
@@ -7,7 +7,7 @@ import { Store, Parser, Prefixes} from 'n3'
  */
 
 
-export const parseTurtle = async (text: string): Promise<DatasetCore> => {
+export const parseTurtle = async (text: string, source?: string): Promise<DatasetCore> => {
     // TODO(angel) investigate what is the difference between Store and Dataset
     const store = new Store();
     return new Promise((resolve, reject) => {
@@ -18,6 +18,9 @@ export const parseTurtle = async (text: string): Promise<DatasetCore> => {
                 reject(error);
             }
             if (quad) {
+                if (source) {
+                    quad = DataFactory.quad(quad.subject, quad.predicate, quad.object, DataFactory.namedNode(source))
+                }
                 //@ts-ignore FIXME
                 store.add(quad);
             } else {
