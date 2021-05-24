@@ -1,4 +1,4 @@
-import * as RDFJS from 'rdf-js';
+import { DatasetCore } from 'rdf-js';
 import { Fetch } from './fetch';
 import { parseTurtle } from 'interop-utils';
 
@@ -7,7 +7,7 @@ import { parseTurtle } from 'interop-utils';
  * @param url Location of the RDF document
  * @param fetch Fetch function to use
  */
-export const getRdfResource = async (url: string, fetch: Fetch): Promise<RDFJS.Store> => {
+export const getRdfResource = async (url: string, fetch: Fetch): Promise<DatasetCore> => {
     const options = {
         method: 'get',
         headers: new Headers({
