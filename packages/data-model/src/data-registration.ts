@@ -1,4 +1,5 @@
-import { Store, DataFactory } from 'n3'
+import { Store } from 'n3'
+import { INTEROP } from 'interop-namespaces'
 
 export class DataRegistration {
   dataset: Store //FIXME DatasetCore n3 needs to update their types
@@ -8,7 +9,7 @@ export class DataRegistration {
     this.dataset = dataset
     const matches =  this.dataset.match(
       null,
-      DataFactory.namedNode('http://www.w3.org/ns/solid/interop#registeredShapeTree'),
+      INTEROP.registeredShapeTree,
       null,
       null
       )

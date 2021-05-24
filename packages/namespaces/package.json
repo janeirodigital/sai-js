@@ -1,5 +1,5 @@
 {
-  "name": "interop-data-model",
+  "name": "interop-namespaces",
   "version": "0.1.0",
   "description": "> TODO: description",
   "author": "Ángel Araya <angel.araya@janeirodigital.com>",
@@ -16,9 +16,20 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "interop-utils": "^0.1.0",
-    "interop-namespaces": "^0.1.0",
     "n3": "^1.10.0"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "../../tsconfig.json"
+      }
+    },
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "testRegex": "/test/.*-test.ts$",
+    "moduleFileExtensions": [ "js", "ts" ],
+    "collectCoverage": false
   },
   "devDependencies": {
     "@types/n3": "^1.8.0"
