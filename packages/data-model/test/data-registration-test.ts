@@ -16,7 +16,7 @@ const snippet = `
     interop:registeredShapeTree solidtrees:Project .
 `
 
-test('the data is peanut butter', async () => {
+test('DataRegistration has registeredShapeTree', async () => {
   const dataset = await parse(snippet)
   const registration = new DataRegistration(dataset)
   expect(registration.registeredShapeTree).toEqual('https://solidshapes.example/trees/Project')

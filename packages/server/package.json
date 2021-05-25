@@ -17,18 +17,5 @@
     "build": "tsc -b .",
     "test": "jest",
     "clean": "rimraf dist tsconfig.tsbuildinfo"
-  },
-  "jest": {
-    "globals": {
-      "ts-jest": {
-        "tsconfig": "../../tsconfig.json"
-      }
-    },
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    },
-    "testRegex": "/test/.*-test.ts$",
-    "moduleFileExtensions": [ "js", "ts" ],
-    "collectCoverage": false
   }
 }

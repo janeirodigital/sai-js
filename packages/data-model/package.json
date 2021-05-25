@@ -19,19 +19,6 @@
     "interop-client": "^0.1.0",
     "n3": "^1.10.0"
   },
-  "jest": {
-    "globals": {
-      "ts-jest": {
-        "tsconfig": "../../tsconfig.json"
-      }
-    },
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    },
-    "testRegex": "/test/.*-test.ts$",
-    "moduleFileExtensions": [ "js", "ts" ],
-    "collectCoverage": false
-  },
   "devDependencies": {
     "@types/n3": "^1.8.0"
   }
