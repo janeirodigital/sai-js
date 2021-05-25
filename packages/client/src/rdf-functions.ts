@@ -30,7 +30,7 @@ export const getRdfResource = async (url: string, fetch: Fetch): Promise<RDFJS.S
  */
 
 
-const parse = async (text: string): Promise<RDFJS.Store> => {
+export const parse = async (text: string): Promise<N3.Store> => { //FIXME DatasetCore n3 needs to update its types
     // TODO(angel) investigate what is the difference between Store and Dataset
     const store = new N3.Store();
     return new Promise((resolve, reject) => {
@@ -41,6 +41,7 @@ const parse = async (text: string): Promise<RDFJS.Store> => {
                 reject(error);
             }
             if (quad) {
+                //@ts-ignore FIXME
                 store.add(quad);
             } else {
                 resolve(store);

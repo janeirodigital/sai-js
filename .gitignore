@@ -1,8 +1,12 @@
 node_modules/
-packages/**/dist
 lerna-debug.log
 npm-debug.log
-packages/*/lib
+package-lock.json
+yarn.lock
+
+packages/*/dist
+tsconfig.tsbuildinfo
+
 *.idea
 *.vscode
 *.swp

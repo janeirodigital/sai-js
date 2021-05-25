@@ -1,5 +1,5 @@
 {
-  "name": "interop-server",
+  "name": "interop-data-model",
   "version": "0.1.0",
   "description": "> TODO: description",
   "author": "Ángel Araya <angel.araya@janeirodigital.com>",
@@ -10,12 +10,16 @@
     "lib": "src",
     "test": "test"
   },
-  "files": [
-    "src"
-  ],
   "scripts": {
     "build": "tsc -b .",
     "test": "jest",
     "clean": "rimraf dist tsconfig.tsbuildinfo"
+  },
+  "dependencies": {
+    "interop-client": "^0.1.0",
+    "n3": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/n3": "^1.8.0"
   }
 }

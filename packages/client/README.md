@@ -24,16 +24,7 @@ NOTE: After login note
 import { Client } from '@solid-interop/client'
 import { fetch } from '@inrupt/solid-client-authn-browser'
 
-const applicationProfile = {
-  applicationWebId: 'https://provider.url/app#id',
-  applicationName: 'Interoperable Application',
-  applicationDescription: 'Application description',
-  // ... Other properties skipped for brevity 
-  authorName: 'Interop Author',
-  authorWebId: 'https://company.url/author#id',
-};
-
-const client = new Client(applicationProfile, fetch);
+const client = new Client(fetch);
 if (!await client.checkRegistration()) {
     // The user will be redirected to their authorization agent of preference to
     // register this application
@@ -71,7 +62,7 @@ to a single instance of a shapetree
 
 TODO: It might be more useful take something from rxjs and get a signal for each correctly created
 shapetree. That way if a multi-shapetree request is not met half way then we can try to backtack the
-changes or at least know which was the last succesful resource being created. 
+changes or at least know which was the last succesful resource being created.
 ```typescript
 client.create(shapetree | registration, dataset | dataset[])
     .then(() => console.log('data saved'))
@@ -93,4 +84,3 @@ client.unregister()
     .then(() => {/* log out of application?*/})
     .catch(() => {/* handle error */});
 ```
-

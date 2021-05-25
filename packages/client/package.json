@@ -5,26 +5,27 @@
   "author": "Ángel Araya <angel.araya@janeirodigital.com>",
   "homepage": "",
   "license": "MIT",
-  "main": "src/client.js",
+  "main": "dist/index.js",
   "directories": {
     "lib": "src",
-    "test": "__tests__",
+    "test": "test",
     "docs": "docs"
   },
   "files": [
     "src"
   ],
   "scripts": {
-    "tsc": "tsc",
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "build": "tsc -b .",
+    "test": "jest",
+    "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "devDependencies": {
-    "@types/n3": "^1.4.4",
+    "@types/n3": "^1.8.0",
     "@types/rdf-js": "^4.0.1",
     "@types/uuid": "^8.3.0"
   },
   "dependencies": {
-    "n3": "^1.8.1",
+    "n3": "^1.10.0",
     "uuid": "^8.3.2"
   }
 }
