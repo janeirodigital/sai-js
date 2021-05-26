@@ -1,10 +1,7 @@
 import { DataFactory } from 'n3'
 
 const handler = {
-  //@ts-ignore FIXME
-  apply: (target, thisArg, args) => target(args[0]),
-  //@ts-ignore FIXME
-  get: (target: object, property) => target(property)
+  get: (target: Function, property: string) => target(property)
 }
 
 export function buildNamespace (baseIRI: string) {
