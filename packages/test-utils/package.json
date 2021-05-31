@@ -1,0 +1,26 @@
+{
+  "name": "interop-test-utils",
+  "version": "0.1.0",
+  "description": "> TODO: description",
+  "author": "Ángel Araya <angel.araya@janeirodigital.com>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "directories": {
+    "lib": "src",
+    "test": "test"
+  },
+  "scripts": {
+    "build": "tsc -b .",
+    "test": "jest",
+    "clean": "rimraf dist tsconfig.tsbuildinfo"
+  },
+  "dependencies": {
+    "interop-utils": "^0.1.0",
+    "data-interoperability-panel": "*"
+  },
+  "devDependencies": {
+    "@types/n3": "^1.8.0",
+    "@types/rdf-js": "^4.0.1"
+  }
+}
