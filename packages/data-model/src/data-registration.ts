@@ -1,18 +1,16 @@
-import { Store, DataFactory } from 'n3'
+import { DatasetCore } from 'rdf-js'
+import { getOneMatchingQuad } from 'interop-utils'
+import { INTEROP } from 'interop-namespaces'
 
 export class DataRegistration {
-  dataset: Store //FIXME DatasetCore n3 needs to update their types
+  dataset: DatasetCore
   registeredShapeTree: string
 
-  constructor(dataset: Store) { //FIXME DatasetCore n3 needs to update their types
+  constructor(dataset: DatasetCore) {
     this.dataset = dataset
-    const matches =  this.dataset.match(
-      null,
-      DataFactory.namedNode('http://www.w3.org/ns/solid/interop#registeredShapeTree'),
-      null,
-      null
-      )
-    //@ts-ignore FIXME n3 needs to update their types
-    this.registeredShapeTree = [...matches][0].object.value
+
+    const quadPattern = [ null, INTEROP.registeredShapeTree, null, null ]
+    this.registeredShapeTree = getOneMatchingQuad(this.dataset, ...quadPattern).object.value
+
   }
 }

@@ -1,8 +1,10 @@
 import * as RDFJS from 'rdf-js';
 import * as path from 'path';
+import { INTEROP } from 'interop-namespaces'
 
 import { Fetch } from './fetch';
-import { getAllMatchingQuads, getOneMatchingQuad, getRdfResource, INTEROP } from './rdf-functions';
+import { getAllMatchingQuads, getOneMatchingQuad } from 'interop-utils';
+import { getRdfResource } from './rdf-functions';
 import { parseRegistrySets, sha256 } from './interop-functions';
 
 
@@ -34,9 +36,9 @@ export class InteropClient {
   public async checkRegistration(): Promise<boolean> {
     // TODO(angel) don't re-fetch the profile document if it's already in-memory/cached somewhere
     const profileDocument = await getRdfResource(this.options.webId, this.fetch);
-    const registrySetUrl = getOneMatchingQuad(profileDocument as unknown as RDFJS.Dataset, null, INTEROP('hasApplicationRegistrySet')).object.value;
+    const registrySetUrl = getOneMatchingQuad(profileDocument as unknown as RDFJS.Dataset, null, INTEROP.hasApplicationRegistrySet).object.value;
     const registrySet = await getRdfResource(registrySetUrl, this.fetch);
-    const registryUrls = getAllMatchingQuads(registrySet as unknown as RDFJS.Dataset, null, INTEROP('hasRegistry')).map(q => q.object.value);
+    const registryUrls = getAllMatchingQuads(registrySet as unknown as RDFJS.Dataset, null, INTEROP.hasRegistry).map(q => q.object.value);
 
     for (const registry of registryUrls) {
       const response = await this.fetch(path.join(registry, await sha256(this.options.applicationWebId)))

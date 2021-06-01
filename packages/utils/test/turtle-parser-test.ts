@@ -1,12 +1,9 @@
-import { parseTurtle } from 'interop-utils'
-import { DataRegistration } from '../src/data-registration'
-
+import { parseTurtle } from '../src/turtle-parser'
 
 const snippet = `
   @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
   @prefix interop: <http://www.w3.org/ns/solid/interop#> .
   @prefix solidtrees: <https://solidshapes.example/trees/> .
-  @prefix solidshapes: <https://solidshapes.example/shapes/> .
   @prefix acme: <https://acme.example/> .
   acme:4d594c61-7cff-484a-a1d2-1f353ee4e1e7
     a interop:DataRegistration ;
@@ -16,8 +13,18 @@ const snippet = `
     interop:registeredShapeTree solidtrees:Project .
 `
 
-test('DataRegistration has registeredShapeTree', async () => {
+
+test('uses DefaultGraph by default', async () => {
   const dataset = await parseTurtle(snippet)
-  const registration = new DataRegistration(dataset)
-  expect(registration.registeredShapeTree).toEqual('https://solidshapes.example/trees/Project')
+  for (const quad of dataset) {
+    expect(quad.graph.termType).toEqual('DefaultGraph')
+  }
+})
+
+test('uses source as graph name if given', async () => {
+  const source = 'https://acme.example/4d594c61-7cff-484a-a1d2-1f353ee4e1e7'
+  const dataset = await parseTurtle(snippet, source)
+  for (const quad of dataset) {
+    expect(quad.graph.value).toEqual(source)
+  }
 })

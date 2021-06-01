@@ -1,8 +1,9 @@
 import * as RDFJS from 'rdf-js';
 import * as N3 from 'n3';
 import * as uuid from 'uuid';
+import { getOneMatchingQuad } from 'interop-utils';
+import { INTEROP } from 'interop-namespaces'
 import { RegistrySet } from './storage';
-import { getOneMatchingQuad, INTEROP, RDF } from './rdf-functions';
 import { DataFactory } from 'n3';
 
 const { quad, namedNode, literal } = DataFactory;
@@ -12,11 +13,11 @@ const { quad, namedNode, literal } = DataFactory;
  * @param document RDF Graph of the document where the user webId is located
  */
 export const parseRegistrySets = (document: RDFJS.Dataset): RegistrySet => {
-    const application = getOneMatchingQuad(document, null, INTEROP('hasApplicationRegistrySet')).object.value;
-    const data = getOneMatchingQuad(document, null, INTEROP('hasDataRegistrySet')).object.value;
-    const accessGrant = getOneMatchingQuad(document, null, INTEROP('hasAccessGrantRegistrySet')).object.value;
-    const accessReceipt = getOneMatchingQuad(document, null, INTEROP('hasAccessReceiptRegistrySet')).object.value;
-    const remoteData = getOneMatchingQuad(document, null, INTEROP('hasRemoteDataRegistrySet')).object.value;
+    const application = getOneMatchingQuad(document, null, INTEROP.hasApplicationRegistrySet).object.value;
+    const data = getOneMatchingQuad(document, null, INTEROP.hasDataRegistrySet).object.value;
+    const accessGrant = getOneMatchingQuad(document, null, INTEROP.hasAccessGrantRegistrySet).object.value;
+    const accessReceipt = getOneMatchingQuad(document, null, INTEROP.hasAccessReceiptRegistrySet).object.value;
+    const remoteData = getOneMatchingQuad(document, null, INTEROP.hasRemoteDataRegistrySet).object.value;
 
     return { application, data, accessGrant, accessReceipt, remoteData };
 }
