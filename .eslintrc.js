@@ -20,6 +20,14 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'max-len': ['error', { code: 120 }],
   },
+  overrides: [
+    {
+      files: ['*-test.ts'],
+      rules: {
+        'import/first': 'off',
+      },
+    },
+  ],
   env: {
     browser: true,
   },
