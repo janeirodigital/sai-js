@@ -9,6 +9,7 @@ module.exports = {
     'airbnb-base',
     'plugin:monorepo/recommended',
     'plugin:@typescript-eslint/recommended',
+    'prettier',
   ],
   ignorePatterns: [
     '*.d.ts',
@@ -18,7 +19,6 @@ module.exports = {
     'import/no-unresolved': 'off',
     'import/prefer-default-export': 'off',
     'no-restricted-syntax': 'off',
-    'max-len': ['error', { code: 120 }],
   },
   overrides: [
     {
