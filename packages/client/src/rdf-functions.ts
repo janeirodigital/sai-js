@@ -1,4 +1,4 @@
-import { DatasetCore } from 'rdf-js';
+import { DatasetCore } from '@rdfjs/types';
 import { parseTurtle } from 'interop-utils';
 import { Fetch } from './fetch';
 

@@ -1,6 +1,6 @@
 /* eslint-disable */
 // TODO (angel) re-enable eslint once this file is in a more stable place
-import * as RDFJS from 'rdf-js';
+import * as RDFJS from '@rdfjs/types';
 import * as path from 'path';
 import { INTEROP } from 'interop-namespaces';
 import { getAllMatchingQuads, getOneMatchingQuad } from 'interop-utils';
