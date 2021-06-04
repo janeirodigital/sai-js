@@ -1,4 +1,4 @@
-import { Quad, DatasetCore } from 'rdf-js';
+import { Quad, DatasetCore } from '@rdfjs/types';
 import {
   Store, Parser, DataFactory,
 } from 'n3';
@@ -10,8 +10,7 @@ import {
  */
 
 export const parseTurtle = async (text: string, source = ''): Promise<DatasetCore> => {
-  // TODO (angel) remove the forced type coercion once @types/n3@1.10 is released
-  const store = new Store() as unknown as DatasetCore;
+  const store = new Store();
   return new Promise((resolve, reject) => {
     const parser = new Parser();
     parser.parse(text, (error: Error, quad: Quad) => {

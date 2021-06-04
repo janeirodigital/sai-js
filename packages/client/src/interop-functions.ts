@@ -1,4 +1,4 @@
-import * as RDFJS from 'rdf-js';
+import * as RDFJS from '@rdfjs/types';
 import { getOneMatchingQuad } from 'interop-utils';
 import { INTEROP } from 'interop-namespaces';
 import { RegistrySet } from './storage';

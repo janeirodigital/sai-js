@@ -1,4 +1,4 @@
-import { DatasetCore } from 'rdf-js';
+import { DatasetCore } from '@rdfjs/types';
 import { getOneMatchingQuad } from 'interop-utils';
 import { INTEROP } from 'interop-namespaces';
 

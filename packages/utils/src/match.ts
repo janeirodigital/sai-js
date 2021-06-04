@@ -1,4 +1,4 @@
-import { Term, Quad, DatasetCore } from 'rdf-js';
+import { Term, Quad, DatasetCore } from '@rdfjs/types';
 
 /**
  *

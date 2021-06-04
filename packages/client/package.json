@@ -20,8 +20,8 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "devDependencies": {
-    "@types/n3": "^1.8.0",
-    "@types/rdf-js": "^4.0.1",
+    "@rdfjs/types": "^1.0.1",
+    "@types/n3": "^1.10.0",
     "@types/uuid": "^8.3.0"
   },
   "dependencies": {
