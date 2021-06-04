@@ -1,11 +1,10 @@
-import { DataFactory } from 'n3'
+import { DataFactory } from 'n3';
+import { NamedNode } from 'rdf-js';
 
-const handler = {
-  get: (target: Function, property: string) => target(property)
-}
-
-export function buildNamespace (baseIRI: string) {
-  const builder = (term = '') => DataFactory.namedNode(`${baseIRI}${term}`)
-
-  return typeof Proxy === 'undefined' ? builder : new Proxy(builder, handler)
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export function buildNamespace(base: string): any {
+  const handler = {
+    get: (target: { base: string }, property: string): NamedNode => DataFactory.namedNode(target.base + property),
+  };
+  return new Proxy({ base }, handler);
 }

@@ -1,1 +1,1 @@
-export * from './rdf-functions'
+export * from './rdf-functions';

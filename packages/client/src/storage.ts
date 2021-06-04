@@ -1,4 +1,3 @@
-
 // TODO should this include inbox, accessInbox, receivesAccessReceipt
 export type RegistrySet = {
     application: string,
@@ -11,20 +10,16 @@ export type RegistrySet = {
 export class Storage {
     private static instance: Storage;
 
-
     private registrySets: RegistrySet;
 
-
-    private constructor() {}
-
     public static getInstance(): Storage {
-        if (!Storage.instance) {
-            Storage.instance = new Storage();
-        }
-        return Storage.instance;
+      if (!Storage.instance) {
+        Storage.instance = new Storage();
+      }
+      return Storage.instance;
     }
 
     public setRegistrySets(sets: RegistrySet): void {
-        this.registrySets = sets;
+      this.registrySets = sets;
     }
 }

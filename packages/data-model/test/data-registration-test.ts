@@ -1,6 +1,5 @@
-import { parseTurtle } from 'interop-utils'
-import { DataRegistration } from '../src/data-registration'
-
+import { parseTurtle } from 'interop-utils';
+import { DataRegistration } from '../src/data-registration';
 
 const snippet = `
   @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -14,10 +13,10 @@ const snippet = `
     interop:registeredWith <https://solidmin.example/#app> ;
     interop:registeredAt "2020-08-23T21:12:27.000Z"^^xsd:dateTime ;
     interop:registeredShapeTree solidtrees:Project .
-`
+`;
 
 test('DataRegistration has registeredShapeTree', async () => {
-  const dataset = await parseTurtle(snippet)
-  const registration = new DataRegistration(dataset)
-  expect(registration.registeredShapeTree).toEqual('https://solidshapes.example/trees/Project')
-})
+  const dataset = await parseTurtle(snippet);
+  const registration = new DataRegistration(dataset);
+  expect(registration.registeredShapeTree).toEqual('https://solidshapes.example/trees/Project');
+});

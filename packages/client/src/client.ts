@@ -1,12 +1,12 @@
+/* eslint-disable */
+// TODO (angel) re-enable eslint once this file is in a more stable place
 import * as RDFJS from 'rdf-js';
 import * as path from 'path';
-import { INTEROP } from 'interop-namespaces'
-
-import { Fetch } from './fetch';
+import { INTEROP } from 'interop-namespaces';
 import { getAllMatchingQuads, getOneMatchingQuad } from 'interop-utils';
+import { Fetch } from './fetch';
 import { getRdfResource } from './rdf-functions';
-import { parseRegistrySets, sha256 } from './interop-functions';
-
+import { sha256 } from './interop-functions';
 
 export interface InteropOptions {
   /** Whether to automatically register the application if not registered already */
@@ -26,7 +26,6 @@ export class InteropClient {
     this.fetch = options.fetch || window.fetch;
   }
 
-
   /**
    *
    * To check for the registration we need to have the URL for the
@@ -36,12 +35,12 @@ export class InteropClient {
   public async checkRegistration(): Promise<boolean> {
     // TODO(angel) don't re-fetch the profile document if it's already in-memory/cached somewhere
     const profileDocument = await getRdfResource(this.options.webId, this.fetch);
-    const registrySetUrl = getOneMatchingQuad(profileDocument as unknown as RDFJS.Dataset, null, INTEROP.hasApplicationRegistrySet).object.value;
+    const registrySetUrl = getOneMatchingQuad(profileDocument, null, INTEROP.hasApplicationRegistrySet).object.value;
     const registrySet = await getRdfResource(registrySetUrl, this.fetch);
-    const registryUrls = getAllMatchingQuads(registrySet as unknown as RDFJS.Dataset, null, INTEROP.hasRegistry).map(q => q.object.value);
+    const registryUrls = getAllMatchingQuads(registrySet, null, INTEROP.hasRegistry).map((q) => q.object.value);
 
     for (const registry of registryUrls) {
-      const response = await this.fetch(path.join(registry, await sha256(this.options.applicationWebId)))
+      const response = await this.fetch(path.join(registry, await sha256(this.options.applicationWebId)));
       if (response.ok) {
         // TODO(angel) should fail only on explicit 404/401
         // TODO(angel) how to handle codes 5xx
@@ -56,7 +55,6 @@ export class InteropClient {
    */
   public requestRegistration(): void {
     // TODO(angel) defined properties needed for the redirect into authz server
-    //             e
     throw new Error('Not yet implemented');
   }
 

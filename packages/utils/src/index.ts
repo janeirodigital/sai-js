@@ -1,2 +1,2 @@
-export * from './turtle-parser'
-export * from './match'
+export * from './turtle-parser';
+export * from './match';
