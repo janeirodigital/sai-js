@@ -16,11 +16,11 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "interop-utils": "^0.1.0",
-    "data-interoperability-panel": "*"
+    "data-interoperability-panel": "elf-pavlik/data-interoperability-panel#77d00db",
+    "interop-utils": "^0.1.0"
   },
   "devDependencies": {
     "@types/n3": "^1.8.0",
-    "@types/rdf-js": "^4.0.1"
+    "@rdfjs/types": "^1.0.1"
   }
 }
