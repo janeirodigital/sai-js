@@ -1,13 +1,11 @@
-import { DatasetCore } from '@rdfjs/types'
-import { parseTurtle } from 'interop-utils'
+import { DatasetCore } from '@rdfjs/types';
+import { parseTurtle } from 'interop-utils';
 //@ts-ignore
-import * as data from 'data-interoperability-panel'
+import * as data from 'data-interoperability-panel';
 
-
-export async function fetch (url: string): Promise<DatasetCore> {
-
+export async function fetch(url: string): Promise<DatasetCore> {
   // strip fragment
-  const strippedUrl = url.replace(/#.*$/, '')
+  const strippedUrl = url.replace(/#.*$/, '');
 
-  return parseTurtle(data[strippedUrl], strippedUrl)
+  return parseTurtle(data[strippedUrl], strippedUrl);
 }
