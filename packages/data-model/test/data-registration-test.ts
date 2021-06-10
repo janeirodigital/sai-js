@@ -1,22 +1,24 @@
-import { parseTurtle } from 'interop-utils';
-import { DataRegistration } from '../src/data-registration';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { fetch } from 'interop-test-utils';
+import { DataRegistration, InteropFactory } from '../src';
 
-const snippet = `
-  @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-  @prefix interop: <http://www.w3.org/ns/solid/interop#> .
-  @prefix solidtrees: <https://solidshapes.example/trees/> .
-  @prefix solidshapes: <https://solidshapes.example/shapes/> .
-  @prefix acme: <https://acme.example/> .
-  acme:4d594c61-7cff-484a-a1d2-1f353ee4e1e7
-    a interop:DataRegistration ;
-    interop:registeredBy <https://garry.example/#id> ;
-    interop:registeredWith <https://solidmin.example/#app> ;
-    interop:registeredAt "2020-08-23T21:12:27.000Z"^^xsd:dateTime ;
-    interop:registeredShapeTree solidtrees:Project .
-`;
+const factory = new InteropFactory(fetch);
+const snippetIri = 'https://pro.alice.example/773605f0-b5bf-4d46-878d-5c167eac8b5d';
 
-test('DataRegistration has registeredShapeTree', async () => {
-  const dataset = await parseTurtle(snippet);
-  const registration = new DataRegistration(dataset);
-  expect(registration.registeredShapeTree).toEqual('https://solidshapes.example/trees/Project');
+describe('build', () => {
+  test('should return instance of DataRegistration', async () => {
+    const applicationRegistration = await DataRegistration.build(snippetIri, factory);
+    expect(applicationRegistration).toBeInstanceOf(DataRegistration);
+  });
+
+  test('should fetch its data', async () => {
+    const applicationRegistration = await DataRegistration.build(snippetIri, factory);
+    expect(applicationRegistration.dataset.size).toBeGreaterThan(0);
+  });
+
+  test('should set registeredShapeTree', async () => {
+    const shapeTreeIri = 'https://solidshapes.example/trees/Project';
+    const dataRegistration = await DataRegistration.build(snippetIri, factory);
+    expect(dataRegistration.registeredShapeTree).toEqual(shapeTreeIri);
+  });
 });

@@ -1,5 +1,5 @@
 {
-  "name": "interop-data-model",
+  "name": "interop-application",
   "version": "0.1.0",
   "description": "> TODO: description",
   "author": "Ángel Araya <angel.araya@janeirodigital.com>",
@@ -16,13 +16,13 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
+    "interop-data-model": "^0.1.0",
     "interop-namespaces": "^0.1.0",
     "interop-utils": "^0.1.0",
     "n3": "^1.10.0"
   },
   "devDependencies": {
-    "@rdfjs/types": "^1.0.1",
-    "@types/n3": "^1.10.0",
-    "interop-test-utils": "^0.1.0"
+    "interop-test-utils": "^0.1.0",
+    "@rdfjs/types": "^1.0.1"
   }
 }
