@@ -4,6 +4,9 @@ test('should strip fragment', async () => {
   const url = 'https://alice.example/#id';
   const dataset = await fetch(url);
   expect(dataset.size).toBeGreaterThan(0);
+  for (const quad of dataset) {
+    expect(quad.graph.value).toEqual('https://alice.example/');
+  }
 });
 
 test('should get parsed data', async () => {
