@@ -6,5 +6,8 @@ module.exports = {
   collectCoverage: false,
   transform: {
     '^.+\\.ts$': 'ts-jest'
-  }
+  },
+  setupFilesAfterEnv: [
+    '../../setup-jest.js'
+  ]
 };
