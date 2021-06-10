@@ -5,5 +5,9 @@ import * as data from 'data-interoperability-panel'
 
 
 export async function fetch (url: string): Promise<DatasetCore> {
-  return parseTurtle(data[url], url)
+
+  // strip fragment
+  const strippedUrl = url.replace(/#.*$/, '')
+
+  return parseTurtle(data[strippedUrl], strippedUrl)
 }
