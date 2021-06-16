@@ -22,7 +22,13 @@ export class Application {
     this.applicationRegistrationUrl = dependencies.applicationRegistrationUrl;
   }
 
-  async init(): Promise<void> {
+  private async bootstrap(): Promise<void> {
     this.hasApplicationRegistration = await this.factory.applicationRegistration(this.applicationRegistrationUrl);
+  }
+
+  static async build(dependencies: ApplicationDependencies): Promise<Application> {
+    const application = new Application(dependencies);
+    await application.bootstrap();
+    return application;
   }
 }
