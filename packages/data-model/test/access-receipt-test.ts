@@ -18,15 +18,19 @@ describe('build', () => {
 
   test('should build data grants', async () => {
     const applicationRegistration = await AccessReceipt.build(snippetIri, factory);
-    expect(applicationRegistration.hasDataGrant.length).toBe(2);
-    expect(applicationRegistration.hasDataGrant[0]).toBeInstanceOf(DataGrant);
+    expect(applicationRegistration.hasDataGrant.length).toBe(4);
+    for (const grant of applicationRegistration.hasDataGrant) {
+      expect(grant).toBeInstanceOf(DataGrant);
+    }
   });
 
-  test('should set combined data grants', async () => {
+  test('should link inheriting grants', async () => {
     const applicationRegistration = await AccessReceipt.build(snippetIri, factory);
-    expect(applicationRegistration.combinedDataGrant.length).toBe(4);
-    for (const dataGrant of applicationRegistration.combinedDataGrant) {
-      expect(dataGrant).toBeInstanceOf(DataGrant);
+    for (const grant of applicationRegistration.hasDataGrant) {
+      if (grant.inheritsFromGrantIri) {
+        expect(grant.inheritsFromGrant).toBeInstanceOf(DataGrant);
+        expect(grant.inheritsFromGrant.iri).toBe(grant.inheritsFromGrantIri);
+      }
     }
   });
 });
