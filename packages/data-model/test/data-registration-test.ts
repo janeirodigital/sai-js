@@ -21,4 +21,12 @@ describe('build', () => {
     const dataRegistration = await DataRegistration.build(snippetIri, factory);
     expect(dataRegistration.registeredShapeTree).toEqual(shapeTreeIri);
   });
+
+  test('should set contains', async () => {
+    const dataRegistration = await DataRegistration.build(snippetIri, factory);
+    expect(dataRegistration.contains.length).toBe(2);
+    for (const contained of dataRegistration.contains) {
+      expect(typeof contained).toBe('string');
+    }
+  });
 });
