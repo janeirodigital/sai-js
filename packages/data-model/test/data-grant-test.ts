@@ -33,9 +33,14 @@ describe('constructor', () => {
     expect(dataGrant.dataset.size).toBeLessThan(accessReceipt.dataset.size);
   });
 
-  test('should build referenced data grants', () => {
+  test('should set inheritsFromGrantIri', () => {
+    const inheritingGrantIri = 'https://auth.alice.example/3fcef0f6-5807-4f1b-b77a-63d64df25a69#data-grant-task-pro';
+    const dataGrant = new DataGrant(inheritingGrantIri, accessReceipt, factory);
+    expect(dataGrant.inheritsFromGrantIri).toBe(dataGrantIri);
+  });
+
+  test('should set inheritsFromGrantIri undefined if not inheriting', () => {
     const dataGrant = new DataGrant(dataGrantIri, accessReceipt, factory);
-    expect(dataGrant.hasReferencedDataGrant.length).toBe(1);
-    expect(dataGrant.hasReferencedDataGrant[0]).toBeInstanceOf(DataGrant);
+    expect(dataGrant.inheritsFromGrantIri).toBeUndefined();
   });
 });

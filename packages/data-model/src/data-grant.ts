@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
 import { DatasetCore } from '@rdfjs/types';
-import { getAllMatchingQuads } from 'interop-utils';
+import { getOneMatchingQuad } from 'interop-utils';
 import { INTEROP } from 'interop-namespaces';
 import { AccessReceipt, InteropFactory } from '.';
 
@@ -13,23 +13,23 @@ export class DataGrant {
 
   accessReceipt: AccessReceipt;
 
-  hasReferencedDataGrant: DataGrant[];
+  inheritsFromGrantIri?: string;
+
+  inheritsFromGrant?: DataGrant;
 
   private extractDataSubset(): void {
     const quadPattern = [DataFactory.namedNode(this.iri), null, null, DataFactory.namedNode(this.accessReceipt.iri)];
     this.dataset = this.accessReceipt.dataset.match(...quadPattern);
   }
 
-  private buildReferencedDataGrants(): void {
+  private setInheritsFromGrantIri(): void {
     const quadPattern = [
       DataFactory.namedNode(this.iri),
-      INTEROP.hasReferencedDataGrant,
+      INTEROP.inheritsFromGrant,
       null,
       DataFactory.namedNode(this.accessReceipt.iri)
     ];
-    this.hasReferencedDataGrant = getAllMatchingQuads(this.dataset, ...quadPattern)
-      .map((quad) => quad.object.value)
-      .map((referencedIri) => this.factory.dataGrant(referencedIri, this.accessReceipt));
+    this.inheritsFromGrantIri = getOneMatchingQuad(this.dataset, ...quadPattern)?.object.value;
   }
 
   constructor(iri: string, accessReceipt: AccessReceipt, factory: InteropFactory) {
@@ -37,6 +37,6 @@ export class DataGrant {
     this.factory = factory;
     this.accessReceipt = accessReceipt;
     this.extractDataSubset();
-    this.buildReferencedDataGrants();
+    this.setInheritsFromGrantIri();
   }
 }
