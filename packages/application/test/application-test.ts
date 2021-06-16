@@ -7,7 +7,6 @@ import { Application } from '../src';
 const applicationRegistrationUrl = 'https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659';
 
 test('should build application registration', async () => {
-  const app = new Application({ applicationRegistrationUrl, fetch });
-  await app.init();
+  const app = await Application.build({ applicationRegistrationUrl, fetch });
   expect(app.hasApplicationRegistration).toBeInstanceOf(ApplicationRegistration);
 });
