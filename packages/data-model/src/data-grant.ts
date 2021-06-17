@@ -1,8 +1,9 @@
 import { DataFactory } from 'n3';
 import { DatasetCore, NamedNode } from '@rdfjs/types';
+import { Memoize } from 'typescript-memoize';
 import { getOneMatchingQuad } from 'interop-utils';
 import { INTEROP } from 'interop-namespaces';
-import { AccessReceipt, DataInstance, DataRegistration, InteropFactory } from '.';
+import { AccessReceipt, DataInstance, InteropFactory } from '.';
 
 export class DataGrant {
   iri: string;
@@ -37,13 +38,13 @@ export class DataGrant {
     return iterator;
   }
 
-  // TODO cache and remove getter
+  @Memoize()
   get dataset(): DatasetCore {
     const quadPattern = [DataFactory.namedNode(this.iri), null, null, DataFactory.namedNode(this.accessReceipt.iri)];
     return this.accessReceipt.dataset.match(...quadPattern);
   }
 
-  // TODO cache and remove getter
+  @Memoize()
   get hasDataRegistrationIri(): string {
     const quadPattern = [
       DataFactory.namedNode(this.iri),
@@ -54,7 +55,7 @@ export class DataGrant {
     return getOneMatchingQuad(this.dataset, ...quadPattern).object.value;
   }
 
-  // TODO cache and remove getter
+  @Memoize()
   get scopeOfGrant(): NamedNode {
     const quadPattern = [
       DataFactory.namedNode(this.iri),
@@ -65,7 +66,7 @@ export class DataGrant {
     return getOneMatchingQuad(this.dataset, ...quadPattern).object as NamedNode;
   }
 
-  // TODO cache and remove getter
+  @Memoize()
   get inheritsFromGrantIri(): string | undefined {
     const quadPattern = [
       DataFactory.namedNode(this.iri),

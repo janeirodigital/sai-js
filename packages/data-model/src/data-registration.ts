@@ -1,4 +1,5 @@
 import { DataFactory } from 'n3';
+import { Memoize } from 'typescript-memoize';
 import { getOneMatchingQuad, getAllMatchingQuads } from 'interop-utils';
 import { INTEROP, LDP } from 'interop-namespaces';
 import { Model, InteropFactory } from '.';
@@ -14,7 +15,7 @@ export class DataRegistration extends Model {
     return instance;
   }
 
-  // TODO cache and remove getter
+  @Memoize()
   get registeredShapeTree(): string {
     const quadPattern = [null, INTEROP.registeredShapeTree, null, null];
     return getOneMatchingQuad(this.dataset, ...quadPattern).object.value;
