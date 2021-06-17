@@ -18,7 +18,8 @@
   "dependencies": {
     "interop-namespaces": "^0.1.0",
     "interop-utils": "^0.1.0",
-    "n3": "^1.10.0"
+    "n3": "^1.10.0",
+    "typescript-memoize": "^1.0.1"
   },
   "devDependencies": {
     "@rdfjs/types": "^1.0.1",
