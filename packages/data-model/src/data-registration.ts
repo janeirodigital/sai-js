@@ -1,7 +1,5 @@
-import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
-import { getOneMatchingQuad, getAllMatchingQuads } from 'interop-utils';
-import { INTEROP, LDP } from 'interop-namespaces';
+import { LDP } from 'interop-namespaces';
 import { Model, InteropFactory } from '.';
 
 export class DataRegistration extends Model {
@@ -17,12 +15,11 @@ export class DataRegistration extends Model {
 
   @Memoize()
   get registeredShapeTree(): string {
-    const quadPattern = [null, INTEROP.registeredShapeTree, null, null];
-    return getOneMatchingQuad(this.dataset, ...quadPattern).object.value;
+    return this.getObject('registeredShapeTree').value;
   }
 
+  @Memoize()
   get contains(): string[] {
-    const quadPattern = [DataFactory.namedNode(this.iri), LDP.contains, null, DataFactory.namedNode(this.iri)];
-    return getAllMatchingQuads(this.dataset, ...quadPattern).map((q) => q.object.value);
+    return this.getObjectsArray('contains', LDP).map((object) => object.value);
   }
 }

@@ -16,50 +16,50 @@ beforeAll(async () => {
 
 describe('constructor', () => {
   test('should set the iri', () => {
-    const dataGrant = new DataGrant(dataGrantIri, accessReceipt, factory);
+    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
     expect(dataGrant.iri).toBe(dataGrantIri);
   });
 
   test('should set the factory', () => {
-    const dataGrant = new DataGrant(dataGrantIri, accessReceipt, factory);
+    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
     expect(dataGrant.factory).toBe(factory);
   });
 
   test('should set the accessReceipt', () => {
-    const dataGrant = new DataGrant(dataGrantIri, accessReceipt, factory);
+    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
     expect(dataGrant.accessReceipt).toBe(accessReceipt);
   });
 
   test('should set hasDataRegistrationIri', () => {
-    const dataGrant = new DataGrant(dataGrantIri, accessReceipt, factory);
+    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
     const dataRegistrationIri = 'https://pro.alice.example/773605f0-b5bf-4d46-878d-5c167eac8b5d';
     expect(dataGrant.hasDataRegistrationIri).toBe(dataRegistrationIri);
   });
 
   test('should extract subset of dataset', () => {
-    const dataGrant = new DataGrant(dataGrantIri, accessReceipt, factory);
+    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
     expect(dataGrant.dataset.size).toBeGreaterThan(0);
     expect(dataGrant.dataset.size).toBeLessThan(accessReceipt.dataset.size);
   });
 
   test('should set scopeOfGrant', () => {
-    const dataGrant = new DataGrant(dataGrantIri, accessReceipt, factory);
+    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
     expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.AllInstances);
   });
 
   test('should set inheritsFromGrantIri', () => {
     const inheritingGrantIri = 'https://auth.alice.example/3fcef0f6-5807-4f1b-b77a-63d64df25a69#data-grant-task-pro';
-    const dataGrant = new DataGrant(inheritingGrantIri, accessReceipt, factory);
+    const dataGrant = new DataGrant(inheritingGrantIri, factory, accessReceipt);
     expect(dataGrant.inheritsFromGrantIri).toBe(dataGrantIri);
   });
 
   test('should set inheritsFromGrantIri undefined if not inheriting', () => {
-    const dataGrant = new DataGrant(dataGrantIri, accessReceipt, factory);
+    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
     expect(dataGrant.inheritsFromGrantIri).toBeUndefined();
   });
 
   test('should provide data instance iterator', async () => {
-    const dataGrant = new DataGrant(dataGrantIri, accessReceipt, factory);
+    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
     for await (const instance of dataGrant.getDataInstanceIterator()) {
       expect(instance).toBeInstanceOf(DataInstance);
     }

@@ -25,6 +25,6 @@ export class InteropFactory {
   }
 
   dataGrant(iri: string, accessReceipt: AccessReceipt): DataGrant {
-    return new DataGrant(iri, accessReceipt, this);
+    return new DataGrant(iri, this, accessReceipt);
   }
 }
