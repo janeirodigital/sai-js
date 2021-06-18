@@ -1,5 +1,7 @@
-import { DatasetCore } from '@rdfjs/types';
-import { RdfFetch } from 'interop-utils';
+import { DatasetCore, NamedNode } from '@rdfjs/types';
+import { DataFactory } from 'n3';
+import { RdfFetch, getOneMatchingQuad, getAllMatchingQuads } from 'interop-utils';
+import { INTEROP } from 'interop-namespaces';
 import { InteropFactory } from '.';
 
 export class Model {
@@ -19,5 +21,15 @@ export class Model {
 
   protected async fetchData(): Promise<void> {
     this.dataset = await this.fetch(this.iri);
+  }
+
+  protected getObject(property: string, namespace = INTEROP): NamedNode | undefined {
+    const quadPattern = [DataFactory.namedNode(this.iri), namespace[property], null, null];
+    return getOneMatchingQuad(this.dataset, ...quadPattern)?.object as NamedNode | undefined;
+  }
+
+  protected getObjectsArray(property: string, namespace = INTEROP): NamedNode[] {
+    const quadPattern = [DataFactory.namedNode(this.iri), namespace[property], null, null];
+    return getAllMatchingQuads(this.dataset, ...quadPattern).map((quad) => quad.object) as NamedNode[];
   }
 }

@@ -3,21 +3,17 @@ import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
 import { getOneMatchingQuad } from 'interop-utils';
 import { INTEROP } from 'interop-namespaces';
-import { AccessReceipt, DataInstance, InteropFactory } from '.';
+import { Model, AccessReceipt, DataInstance, InteropFactory } from '.';
 
-export class DataGrant {
-  iri: string;
-
-  factory: InteropFactory;
-
+export class DataGrant extends Model {
   accessReceipt: AccessReceipt;
 
   inheritsFromGrant?: DataGrant;
 
-  constructor(iri: string, accessReceipt: AccessReceipt, factory: InteropFactory) {
-    this.iri = iri;
-    this.factory = factory;
+  constructor(iri: string, factory: InteropFactory, accessReceipt: AccessReceipt) {
+    super(iri, factory);
     this.accessReceipt = accessReceipt;
+    this.dataset = this.extractSubset();
   }
 
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
@@ -38,42 +34,23 @@ export class DataGrant {
     return iterator;
   }
 
-  @Memoize()
-  get dataset(): DatasetCore {
+  private extractSubset(): DatasetCore {
     const quadPattern = [DataFactory.namedNode(this.iri), null, null, DataFactory.namedNode(this.accessReceipt.iri)];
     return this.accessReceipt.dataset.match(...quadPattern);
   }
 
   @Memoize()
   get hasDataRegistrationIri(): string {
-    const quadPattern = [
-      DataFactory.namedNode(this.iri),
-      INTEROP.hasDataRegistration,
-      null,
-      DataFactory.namedNode(this.accessReceipt.iri)
-    ];
-    return getOneMatchingQuad(this.dataset, ...quadPattern).object.value;
+    return this.getObject('hasDataRegistration').value;
   }
 
   @Memoize()
   get scopeOfGrant(): NamedNode {
-    const quadPattern = [
-      DataFactory.namedNode(this.iri),
-      INTEROP.scopeOfGrant,
-      null,
-      DataFactory.namedNode(this.accessReceipt.iri)
-    ];
-    return getOneMatchingQuad(this.dataset, ...quadPattern).object as NamedNode;
+    return this.getObject('scopeOfGrant');
   }
 
   @Memoize()
   get inheritsFromGrantIri(): string | undefined {
-    const quadPattern = [
-      DataFactory.namedNode(this.iri),
-      INTEROP.inheritsFromGrant,
-      null,
-      DataFactory.namedNode(this.accessReceipt.iri)
-    ];
-    return getOneMatchingQuad(this.dataset, ...quadPattern)?.object.value;
+    return this.getObject('inheritsFromGrant')?.value;
   }
 }
