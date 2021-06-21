@@ -1,5 +1,5 @@
 import { RdfFetch } from 'interop-utils';
-import { AccessReceipt, ApplicationRegistration, DataRegistration, DataInstance, DataGrant } from '.';
+import { AccessReceipt, ApplicationRegistration, DataRegistration, DataInstance, DataGrant, ReferencesList } from '.';
 
 export class InteropFactory {
   fetch: RdfFetch;
@@ -22,6 +22,10 @@ export class InteropFactory {
 
   async dataInstance(iri: string): Promise<DataInstance> {
     return DataInstance.build(iri, this);
+  }
+
+  async referencesList(iri: string): Promise<ReferencesList> {
+    return ReferencesList.build(iri, this);
   }
 
   dataGrant(iri: string, accessReceipt: AccessReceipt): DataGrant {
