@@ -7,6 +7,7 @@ import { AccessReceipt, DataGrant, DataInstance, InteropFactory } from '../src';
 
 const factory = new InteropFactory(fetch);
 const dataGrantIri = 'https://auth.alice.example/3fcef0f6-5807-4f1b-b77a-63d64df25a69#data-grant-project-pro';
+const inheritingGrantIri = 'https://auth.alice.example/3fcef0f6-5807-4f1b-b77a-63d64df25a69#data-grant-task-pro';
 const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
 let accessReceipt: AccessReceipt;
 
@@ -47,8 +48,13 @@ describe('constructor', () => {
     expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.AllInstances);
   });
 
+  test('should set registeredShapeTree', () => {
+    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
+    const projectShapeTree = 'https://solidshapes.example/trees/Project';
+    expect(dataGrant.registeredShapeTree).toBe(projectShapeTree);
+  });
+
   test('should set inheritsFromGrantIri', () => {
-    const inheritingGrantIri = 'https://auth.alice.example/3fcef0f6-5807-4f1b-b77a-63d64df25a69#data-grant-task-pro';
     const dataGrant = new DataGrant(inheritingGrantIri, factory, accessReceipt);
     expect(dataGrant.inheritsFromGrantIri).toBe(dataGrantIri);
   });
@@ -58,10 +64,20 @@ describe('constructor', () => {
     expect(dataGrant.inheritsFromGrantIri).toBeUndefined();
   });
 
-  test('should provide data instance iterator', async () => {
+  test('should provide data instance iterator for AllInstances', async () => {
     const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
     for await (const instance of dataGrant.getDataInstanceIterator()) {
       expect(instance).toBeInstanceOf(DataInstance);
     }
+  });
+
+  test('should provide data instance iterator for InheritInstances', async () => {
+    const inheritingGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === inheritingGrantIri);
+    let count = 0;
+    for await (const instance of inheritingGrant.getDataInstanceIterator()) {
+      expect(instance).toBeInstanceOf(DataInstance);
+      count += 1;
+    }
+    expect(count).toBe(3);
   });
 });
