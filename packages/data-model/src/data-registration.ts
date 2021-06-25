@@ -19,6 +19,12 @@ export class DataRegistration extends Model {
   }
 
   @Memoize()
+  get satisfiesDataGrant(): string[] | undefined {
+    const result = this.getObjectsArray('satisfiesDataGrant').map((object) => object.value);
+    return result.length ? result : undefined;
+  }
+
+  @Memoize()
   get contains(): string[] {
     return this.getObjectsArray('contains', LDP).map((object) => object.value);
   }

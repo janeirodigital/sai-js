@@ -6,11 +6,13 @@ import { Model, InteropFactory, DataGrant } from '.';
 export class AccessReceipt extends Model {
   hasDataGrant: DataGrant[];
 
-  private buildDataGrants(): void {
+  private async buildDataGrants(): Promise<void> {
     const quadPattern = [DataFactory.namedNode(this.iri), INTEROP.hasDataGrant, null, null];
-    this.hasDataGrant = getAllMatchingQuads(this.dataset, ...quadPattern)
-      .map((quad) => quad.object.value)
-      .map((dataGrantIri) => this.factory.dataGrant(dataGrantIri, this));
+    this.hasDataGrant = await Promise.all(
+      getAllMatchingQuads(this.dataset, ...quadPattern)
+        .map((quad) => quad.object.value)
+        .map((dataGrantIri) => this.factory.dataGrant(dataGrantIri, this))
+    );
   }
 
   private linkInheritingGrants(): void {
@@ -24,7 +26,7 @@ export class AccessReceipt extends Model {
 
   async bootstrap(): Promise<void> {
     await this.fetchData();
-    this.buildDataGrants();
+    await this.buildDataGrants();
     this.linkInheritingGrants();
   }
 

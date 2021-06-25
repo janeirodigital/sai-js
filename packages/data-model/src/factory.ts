@@ -28,7 +28,7 @@ export class InteropFactory {
     return ReferencesList.build(iri, this);
   }
 
-  dataGrant(iri: string, accessReceipt: AccessReceipt): DataGrant {
-    return new DataGrant(iri, this, accessReceipt);
+  async dataGrant(iri: string, accessReceipt?: AccessReceipt): Promise<DataGrant> {
+    return DataGrant.build(iri, this, accessReceipt);
   }
 }
