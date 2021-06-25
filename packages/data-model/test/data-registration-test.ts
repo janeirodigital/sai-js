@@ -22,6 +22,13 @@ describe('build', () => {
     expect(dataRegistration.registeredShapeTree).toEqual(shapeTreeIri);
   });
 
+  test('should set satisfiesDataGrant', async () => {
+    const remoteAgentDataRegistrationIri = 'https://auth.alice.example/3a019d90-c7fb-4e65-865d-4254ef064667';
+    const dataRegistration = await DataRegistration.build(remoteAgentDataRegistrationIri, factory);
+    const satisfiesDataGrantIri = 'https://auth.alice.example/e62a2329-d545-48bd-8d01-98b42213ad1e#grant-copy';
+    expect(dataRegistration.satisfiesDataGrant).toContain(satisfiesDataGrantIri);
+  });
+
   test('should set contains', async () => {
     const dataRegistration = await DataRegistration.build(snippetIri, factory);
     expect(dataRegistration.contains.length).toBe(2);

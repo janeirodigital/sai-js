@@ -5,14 +5,25 @@ import { INTEROP } from 'interop-namespaces';
 import { Model, AccessReceipt, DataInstance, InteropFactory } from '.';
 
 export class DataGrant extends Model {
-  accessReceipt: AccessReceipt;
-
   inheritsFromGrant?: DataGrant;
 
   constructor(iri: string, factory: InteropFactory, accessReceipt: AccessReceipt) {
     super(iri, factory);
-    this.accessReceipt = accessReceipt;
-    this.dataset = this.extractSubset();
+    if (accessReceipt) {
+      this.dataset = this.extractSubset(accessReceipt);
+    }
+  }
+
+  private async bootstrap(): Promise<void> {
+    if (!this.dataset) {
+      await this.fetchData();
+    }
+  }
+
+  public static async build(iri: string, factory: InteropFactory, accessReceipt?: AccessReceipt): Promise<DataGrant> {
+    const instance = new DataGrant(iri, factory, accessReceipt);
+    await instance.bootstrap();
+    return instance;
   }
 
   private createAllInstancesIterator(): AsyncIterable<DataInstance> {
@@ -42,6 +53,19 @@ export class DataGrant extends Model {
     };
   }
 
+  private createAllRemoteFromAgentIterator(): AsyncIterable<DataInstance> {
+    const { factory, hasRemoteDataFromAgentIri } = this;
+    return {
+      async *[Symbol.asyncIterator]() {
+        const remoteAgentDataRegistration = await factory.dataRegistration(hasRemoteDataFromAgentIri);
+        for (const dataGrantIri of remoteAgentDataRegistration.satisfiesDataGrant) {
+          const dataGrant = await factory.dataGrant(dataGrantIri);
+          yield* dataGrant.getDataInstanceIterator();
+        }
+      }
+    };
+  }
+
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
     let iterator: AsyncIterable<DataInstance>;
     if (this.scopeOfGrant.equals(INTEROP.AllInstances)) {
@@ -50,18 +74,25 @@ export class DataGrant extends Model {
       // we can't access the data registration :(
     } else if (this.scopeOfGrant.equals(INTEROP.InheritInstances)) {
       iterator = this.createInheritInstancesIterator();
+    } else if (this.scopeOfGrant.equals(INTEROP.AllRemoteFromAgent)) {
+      iterator = this.createAllRemoteFromAgentIterator();
     }
     return iterator;
   }
 
-  private extractSubset(): DatasetCore {
-    const quadPattern = [DataFactory.namedNode(this.iri), null, null, DataFactory.namedNode(this.accessReceipt.iri)];
-    return this.accessReceipt.dataset.match(...quadPattern);
+  private extractSubset(accessReceipt: AccessReceipt): DatasetCore {
+    const quadPattern = [DataFactory.namedNode(this.iri), null, null, DataFactory.namedNode(accessReceipt.iri)];
+    return accessReceipt.dataset.match(...quadPattern);
   }
 
   @Memoize()
-  get hasDataRegistrationIri(): string {
-    return this.getObject('hasDataRegistration').value;
+  get hasDataRegistrationIri(): string | undefined {
+    return this.getObject('hasDataRegistration')?.value;
+  }
+
+  @Memoize()
+  get hasRemoteDataFromAgentIri(): string | undefined {
+    return this.getObject('hasRemoteDataFromAgent')?.value;
   }
 
   @Memoize()
