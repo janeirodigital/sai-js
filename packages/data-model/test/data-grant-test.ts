@@ -76,8 +76,6 @@ describe('constructor', () => {
 
   test('should provide data instance iterator for InheritInstances', async () => {
     const inheritingGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === inheritingGrantIri);
-    // console.log(accessReceipt.dataset.size)
-    // console.log(accessReceipt.iri)
     let count = 0;
     for await (const instance of inheritingGrant.getDataInstanceIterator()) {
       expect(instance).toBeInstanceOf(DataInstance);
@@ -95,6 +93,6 @@ describe('constructor', () => {
       expect(instance).toBeInstanceOf(DataInstance);
       count += 1;
     }
-    expect(count).toBe(2);
+    expect(count).toBe(4);
   });
 });
