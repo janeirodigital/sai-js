@@ -39,15 +39,12 @@ export class DataGrant extends Model {
   }
 
   private createInheritInstancesIterator(): AsyncIterable<DataInstance> {
-    const { factory, registeredShapeTree, inheritsFromGrant } = this;
+    const { registeredShapeTree, inheritsFromGrant } = this;
     const parentIterator = inheritsFromGrant.getDataInstanceIterator();
     return {
       async *[Symbol.asyncIterator]() {
         for await (const parentInstance of parentIterator) {
-          const referencesList = await parentInstance.getReferencesListForShapeTree(registeredShapeTree);
-          for (const childInstanceIri of referencesList.references) {
-            yield factory.dataInstance(childInstanceIri);
-          }
+          yield* parentInstance.getChildInstancesIterator(registeredShapeTree);
         }
       }
     };
@@ -71,11 +68,15 @@ export class DataGrant extends Model {
     if (this.scopeOfGrant.equals(INTEROP.AllInstances)) {
       iterator = this.createAllInstancesIterator();
     } else if (this.scopeOfGrant.equals(INTEROP.SelectedInstances)) {
-      // we can't access the data registration :(
+      // TODO
     } else if (this.scopeOfGrant.equals(INTEROP.InheritInstances)) {
       iterator = this.createInheritInstancesIterator();
     } else if (this.scopeOfGrant.equals(INTEROP.AllRemoteFromAgent)) {
       iterator = this.createAllRemoteFromAgentIterator();
+    } else if (this.scopeOfGrant.equals(INTEROP.AllRemote)) {
+      // TODO
+    } else if (this.scopeOfGrant.equals(INTEROP.SelectedRemote)) {
+      // TODO
     }
     return iterator;
   }
@@ -85,11 +86,13 @@ export class DataGrant extends Model {
     return accessReceipt.dataset.match(...quadPattern);
   }
 
+  // scopes: AllInstances, SelectedInstances, InheritInstances
   @Memoize()
   get hasDataRegistrationIri(): string | undefined {
     return this.getObject('hasDataRegistration')?.value;
   }
 
+  // scopes: AllRemoteFromAgent
   @Memoize()
   get hasRemoteDataFromAgentIri(): string | undefined {
     return this.getObject('hasRemoteDataFromAgent')?.value;
@@ -105,6 +108,7 @@ export class DataGrant extends Model {
     return this.getObject('registeredShapeTree').value;
   }
 
+  // scopes: InheritInstances
   @Memoize()
   get inheritsFromGrantIri(): string | undefined {
     return this.getObject('inheritsFromGrant')?.value;

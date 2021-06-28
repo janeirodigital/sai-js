@@ -29,7 +29,19 @@ export class DataInstance extends Model {
     return this.factory.referencesList(referencesListNode.value);
   }
 
-  get referencesListPattern(): (NamedNode | null)[] {
+  getChildInstancesIterator(shapeTree: string): AsyncIterable<DataInstance> {
+    const instance = this;
+    return {
+      async *[Symbol.asyncIterator]() {
+        const referencesList = await instance.getReferencesListForShapeTree(shapeTree);
+        for (const childInstanceIri of referencesList.references) {
+          yield instance.factory.dataInstance(childInstanceIri);
+        }
+      }
+    };
+  }
+
+  private get referencesListPattern(): (NamedNode | null)[] {
     return [DataFactory.namedNode(this.iri), DataFactory.namedNode('https://tbd.example/hasReferenceList'), null, null];
   }
 }
