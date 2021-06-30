@@ -38,6 +38,17 @@ export class DataGrant extends Model {
     };
   }
 
+  private createSelectedInstancesIterator(): AsyncIterable<DataInstance> {
+    const { factory, hasDataInstance } = this;
+    return {
+      async *[Symbol.asyncIterator]() {
+        for (const instanceIri of hasDataInstance) {
+          yield factory.dataInstance(instanceIri);
+        }
+      }
+    };
+  }
+
   private createInheritInstancesIterator(): AsyncIterable<DataInstance> {
     const { registeredShapeTree, inheritsFromGrant } = this;
     const parentIterator = inheritsFromGrant.getDataInstanceIterator();
@@ -63,20 +74,48 @@ export class DataGrant extends Model {
     };
   }
 
+  private createAllRemoteIterator(): AsyncIterable<DataInstance> {
+    const { factory, hasRemoteDataRegistrationIri } = this;
+    return {
+      async *[Symbol.asyncIterator]() {
+        const remoteDataRegistration = await factory.dataRegistration(hasRemoteDataRegistrationIri);
+        for (const remoteDataAgentRegistrationIri of remoteDataRegistration.hasRemoteAgentDataRegistration) {
+          const remoteAgentDataRegistration = await factory.dataRegistration(remoteDataAgentRegistrationIri);
+          for (const dataGrantIri of remoteAgentDataRegistration.satisfiesDataGrant) {
+            const dataGrant = await factory.dataGrant(dataGrantIri);
+            yield* dataGrant.getDataInstanceIterator();
+          }
+        }
+      }
+    };
+  }
+
+  private createSelectedRemoteIterator(): AsyncIterable<DataInstance> {
+    const { factory, hasDataGrant } = this;
+    return {
+      async *[Symbol.asyncIterator]() {
+        for (const dataGrantIri of hasDataGrant) {
+          const dataGrant = await factory.dataGrant(dataGrantIri);
+          yield* dataGrant.getDataInstanceIterator();
+        }
+      }
+    };
+  }
+
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
     let iterator: AsyncIterable<DataInstance>;
     if (this.scopeOfGrant.equals(INTEROP.AllInstances)) {
       iterator = this.createAllInstancesIterator();
     } else if (this.scopeOfGrant.equals(INTEROP.SelectedInstances)) {
-      // TODO
+      iterator = this.createSelectedInstancesIterator();
     } else if (this.scopeOfGrant.equals(INTEROP.InheritInstances)) {
       iterator = this.createInheritInstancesIterator();
     } else if (this.scopeOfGrant.equals(INTEROP.AllRemoteFromAgent)) {
       iterator = this.createAllRemoteFromAgentIterator();
     } else if (this.scopeOfGrant.equals(INTEROP.AllRemote)) {
-      // TODO
+      iterator = this.createAllRemoteIterator();
     } else if (this.scopeOfGrant.equals(INTEROP.SelectedRemote)) {
-      // TODO
+      iterator = this.createSelectedRemoteIterator();
     }
     return iterator;
   }
@@ -98,6 +137,12 @@ export class DataGrant extends Model {
     return this.getObject('hasRemoteDataFromAgent')?.value;
   }
 
+  // scopes: AllRemote
+  @Memoize()
+  get hasRemoteDataRegistrationIri(): string | undefined {
+    return this.getObject('hasRemoteDataRegistration')?.value;
+  }
+
   @Memoize()
   get scopeOfGrant(): NamedNode {
     return this.getObject('scopeOfGrant');
@@ -112,5 +157,17 @@ export class DataGrant extends Model {
   @Memoize()
   get inheritsFromGrantIri(): string | undefined {
     return this.getObject('inheritsFromGrant')?.value;
+  }
+
+  // scopes: SelectedInstances
+  @Memoize()
+  get hasDataInstance(): string[] | undefined {
+    return this.getObjectsArray('hasDataInstance').map((object) => object.value);
+  }
+
+  // scopes: SelectedRemote
+  @Memoize()
+  get hasDataGrant(): string[] | undefined {
+    return this.getObjectsArray('hasDataGrant').map((object) => object.value);
   }
 }

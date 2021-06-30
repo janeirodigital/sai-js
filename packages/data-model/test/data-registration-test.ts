@@ -36,4 +36,13 @@ describe('build', () => {
       expect(typeof contained).toBe('string');
     }
   });
+
+  test('should set hasRemoteAgentDataRegistration', async () => {
+    const remoteDataRegistrationIri = 'https://auth.alice.example/33caf7be-f804-4155-a57a-92216c577bd4';
+    const dataRegistration = await DataRegistration.build(remoteDataRegistrationIri, factory);
+    expect(dataRegistration.hasRemoteAgentDataRegistration.length).toBe(2);
+    for (const contained of dataRegistration.contains) {
+      expect(typeof contained).toBe('string');
+    }
+  });
 });

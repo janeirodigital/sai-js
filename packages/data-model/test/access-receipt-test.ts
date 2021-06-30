@@ -18,7 +18,7 @@ describe('build', () => {
 
   test('should build data grants', async () => {
     const accessReceipt = await AccessReceipt.build(snippetIri, factory);
-    expect(accessReceipt.hasDataGrant.length).toBe(6);
+    expect(accessReceipt.hasDataGrant.length).toBe(8);
     for (const grant of accessReceipt.hasDataGrant) {
       expect(grant).toBeInstanceOf(DataGrant);
     }
