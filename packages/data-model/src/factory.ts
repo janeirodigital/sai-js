@@ -1,5 +1,21 @@
-import { RdfFetch } from 'interop-utils';
-import { AccessReceipt, ApplicationRegistration, DataRegistration, DataInstance, DataGrant, ReferencesList } from '.';
+import { getAllMatchingQuads, getOneMatchingQuad, RdfFetch } from 'interop-utils';
+import {
+  AccessReceipt,
+  ApplicationRegistration,
+  DataRegistration,
+  DataInstance,
+  InheritInstancesDataGrant,
+  AllInstancesDataGrant,
+  SelectedInstancesDataGrant,
+  SelectedRemoteDataGrant,
+  AllRemoteFromAgentDataGrant,
+  AllRemoteDataGrant,
+  DataGrant,
+  ReferencesList
+} from '.';
+import { INTEROP } from 'interop-namespaces';
+import { DatasetCore } from 'rdf-js';
+import { DataFactory, NamedNode } from 'n3';
 
 export class InteropFactory {
   fetch: RdfFetch;
@@ -29,6 +45,42 @@ export class InteropFactory {
   }
 
   async dataGrant(iri: string, accessReceipt?: AccessReceipt): Promise<DataGrant> {
-    return DataGrant.build(iri, this, accessReceipt);
+    let dataset: DatasetCore;
+    if (accessReceipt) {
+      const quadPattern = [DataFactory.namedNode(iri), null, null, DataFactory.namedNode(accessReceipt.iri)];
+      dataset = accessReceipt.dataset.match(...quadPattern);
+    } else {
+      dataset = await this.fetch(iri);
+    }
+
+    const quadPattern = [DataFactory.namedNode(iri), INTEROP.scopeOfGrant, null, null];
+    const scopeOfGrant = getOneMatchingQuad(dataset, ...quadPattern).object as NamedNode;
+    let scopedDataGrant;
+    switch (scopeOfGrant.value) {
+      case INTEROP.AllInstances.value:
+        scopedDataGrant = new AllInstancesDataGrant(iri, this, dataset);
+        break;
+      case INTEROP.SelectedInstances.value:
+        scopedDataGrant = new SelectedInstancesDataGrant(iri, this, dataset);
+        break;
+      case INTEROP.SelectedRemote.value:
+        scopedDataGrant = new SelectedRemoteDataGrant(iri, this, dataset);
+        break;
+      case INTEROP.AllRemoteFromAgent.value:
+        scopedDataGrant = new AllRemoteFromAgentDataGrant(iri, this, dataset);
+        break;
+      case INTEROP.AllRemote.value:
+        scopedDataGrant = new AllRemoteDataGrant(iri, this, dataset);
+        break;
+
+      case INTEROP.InheritInstances.value:
+        scopedDataGrant = new InheritInstancesDataGrant(iri, this, dataset);
+        break;
+
+      default:
+        throw new Error(`Unknown scope: ${scopeOfGrant.value}`);
+    }
+
+    return scopedDataGrant;
   }
 }
