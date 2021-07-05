@@ -16,7 +16,7 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "n3": "^1.10.0"
+    "n3": "^1.11.0"
   },
   "devDependencies": {
     "@rdfjs/types": "^1.0.1",

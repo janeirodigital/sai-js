@@ -27,7 +27,7 @@
   "dependencies": {
     "interop-namespaces": "^0.1.0",
     "interop-utils": "^0.1.0",
-    "n3": "^1.10.0",
+    "n3": "^1.11.0",
     "uuid": "^8.3.2"
   }
 }
