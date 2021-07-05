@@ -28,84 +28,85 @@ beforeAll(async () => {
 });
 
 describe('constructor', () => {
-  test('should set the iri', () => {
-    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
+  test('should set the iri', async () => {
+    const dataGrant = await factory.dataGrant(dataGrantIri, accessReceipt);
+    // const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
     expect(dataGrant.iri).toBe(dataGrantIri);
   });
 
-  test('should set the factory', () => {
-    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
+  test('should set the factory', async () => {
+    const dataGrant = await factory.dataGrant(dataGrantIri, accessReceipt);
     expect(dataGrant.factory).toBe(factory);
   });
 
-  test('should set hasDataRegistrationIri', () => {
-    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
+  test('should set hasDataRegistrationIri', async () => {
+    const dataGrant = await factory.dataGrant(dataGrantIri, accessReceipt);
     const dataRegistrationIri = 'https://pro.alice.example/773605f0-b5bf-4d46-878d-5c167eac8b5d';
     expect(dataGrant.hasDataRegistrationIri).toBe(dataRegistrationIri);
   });
 
   // scope: SelectedInstances
-  test('should set hasDataInstance', () => {
-    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
+  test('should set hasDataInstance', async () => {
+    const dataGrant = await factory.dataGrant(dataGrantIri, accessReceipt);
     expect(dataGrant.hasDataInstance.length).toBe(1);
   });
 
   // scope: SelectedRemote
-  test('should set hasDataGrant', () => {
-    const dataGrant = new DataGrant(selectedRemoteDataGrantIri, factory, accessReceipt);
+  test('should set hasDataGrant', async () => {
+    const dataGrant = await factory.dataGrant(selectedRemoteDataGrantIri, accessReceipt);
     expect(dataGrant.hasDataGrant.length).toBe(1);
   });
 
   // scope: AllRemoteFromAgent
-  test('should set hasRemoteDataFromAgentIri', () => {
-    const dataGrant = new DataGrant(allRemoteFromAgentGrantIri, factory, accessReceipt);
+  test('should set hasRemoteDataFromAgentIri', async () => {
+    const dataGrant = await factory.dataGrant(allRemoteFromAgentGrantIri, accessReceipt);
     const hasRemoteDataFromAgentIri = 'https://auth.alice.example/3a019d90-c7fb-4e65-865d-4254ef064667';
     expect(dataGrant.hasRemoteDataFromAgentIri).toBe(hasRemoteDataFromAgentIri);
   });
 
   // scope: AllRemote
-  test('should set hasRemoteDataRegistrationIri', () => {
-    const dataGrant = new DataGrant(allRemoteDataGrantIri, factory, allRemoteAccessReceipt);
+  test('should set hasRemoteDataRegistrationIri', async () => {
+    const dataGrant = await factory.dataGrant(allRemoteDataGrantIri, allRemoteAccessReceipt);
     const remoteDataRegistrationIri = 'https://auth.alice.example/33caf7be-f804-4155-a57a-92216c577bd4';
     expect(dataGrant.hasRemoteDataRegistrationIri).toBe(remoteDataRegistrationIri);
   });
 
-  test('should extract subset of dataset', () => {
-    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
+  test('should extract subset of dataset', async () => {
+    const dataGrant = await factory.dataGrant(dataGrantIri, accessReceipt);
     expect(dataGrant.dataset.size).toBeGreaterThan(0);
     expect(dataGrant.dataset.size).toBeLessThan(accessReceipt.dataset.size);
   });
 
-  test('should set scopeOfGrant', () => {
-    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
+  test('should set scopeOfGrant', async () => {
+    const dataGrant = await factory.dataGrant(dataGrantIri, accessReceipt);
     expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.SelectedInstances);
   });
 
-  test('should set registeredShapeTree', () => {
-    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
+  test('should set registeredShapeTree', async () => {
+    const dataGrant = await factory.dataGrant(dataGrantIri, accessReceipt);
     const projectShapeTree = 'https://solidshapes.example/trees/Project';
     expect(dataGrant.registeredShapeTree).toBe(projectShapeTree);
   });
 
-  test('should set inheritsFromGrantIri', () => {
-    const dataGrant = new DataGrant(inheritingGrantIri, factory, accessReceipt);
+  test('should set inheritsFromGrantIri', async () => {
+    const dataGrant = await factory.dataGrant(inheritingGrantIri, accessReceipt);
     expect(dataGrant.inheritsFromGrantIri).toBe(dataGrantIri);
   });
 
-  test('should set inheritsFromGrantIri undefined if not inheriting', () => {
-    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
+  test('should set inheritsFromGrantIri undefined if not inheriting', async () => {
+    const dataGrant = await factory.dataGrant(dataGrantIri, accessReceipt);
     expect(dataGrant.inheritsFromGrantIri).toBeUndefined();
   });
 
   test('should provide data instance iterator for AllInstances', async () => {
-    const dataGrant = new DataGrant(allInstancesDataGrantIri, factory, accessReceipt);
+    const dataGrant = await factory.dataGrant(allInstancesDataGrantIri, accessReceipt);
     for await (const instance of dataGrant.getDataInstanceIterator()) {
       expect(instance).toBeInstanceOf(DataInstance);
     }
   });
 
   test('should provide data instance iterator for SelectedInstances', async () => {
-    const dataGrant = new DataGrant(dataGrantIri, factory, accessReceipt);
+    const dataGrant = await factory.dataGrant(dataGrantIri, accessReceipt);
     for await (const instance of dataGrant.getDataInstanceIterator()) {
       expect(instance).toBeInstanceOf(DataInstance);
     }
@@ -132,7 +133,7 @@ describe('constructor', () => {
   });
 
   test('should provide data instance iterator for AllRemoteFromAgent', async () => {
-    const dataGrant = new DataGrant(allRemoteFromAgentGrantIri, factory, accessReceipt);
+    const dataGrant = await factory.dataGrant(allRemoteFromAgentGrantIri, accessReceipt);
     let count = 0;
     for await (const instance of dataGrant.getDataInstanceIterator()) {
       expect(instance).toBeInstanceOf(DataInstance);
@@ -142,7 +143,7 @@ describe('constructor', () => {
   });
 
   test('should provide data instance iterator for SelectedRemote', async () => {
-    const dataGrant = new DataGrant(selectedRemoteDataGrantIri, factory, accessReceipt);
+    const dataGrant = await factory.dataGrant(selectedRemoteDataGrantIri, accessReceipt);
     let count = 0;
     for await (const instance of dataGrant.getDataInstanceIterator()) {
       expect(instance).toBeInstanceOf(DataInstance);
@@ -152,7 +153,7 @@ describe('constructor', () => {
   });
 
   test('should provide data instance iterator for AllRemote', async () => {
-    const dataGrant = new DataGrant(allRemoteDataGrantIri, factory, allRemoteAccessReceipt);
+    const dataGrant = await factory.dataGrant(allRemoteDataGrantIri, allRemoteAccessReceipt);
     let count = 0;
     for await (const instance of dataGrant.getDataInstanceIterator()) {
       expect(instance).toBeInstanceOf(DataInstance);

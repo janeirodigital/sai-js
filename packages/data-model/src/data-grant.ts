@@ -7,7 +7,7 @@ import { Model, AccessReceipt, DataInstance, InteropFactory } from '.';
 export class DataGrant extends Model {
   inheritsFromGrant?: DataGrant;
 
-  constructor(iri: string, factory: InteropFactory, accessReceipt: AccessReceipt) {
+  private constructor(iri: string, factory: InteropFactory, accessReceipt: AccessReceipt) {
     super(iri, factory);
     if (accessReceipt) {
       this.dataset = this.extractSubset(accessReceipt);
