@@ -2,8 +2,8 @@
 import 'jest-rdf';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
-import { AccessReceipt, AllInstancesDataGrant, DataInstance, InteropFactory } from '../src';
 import { INTEROP } from 'interop-namespaces';
+import { AccessReceipt, AllInstancesDataGrant, DataInstance, InteropFactory } from '../src';
 
 const factory = new InteropFactory(fetch);
 const snippetIri = 'https://auth.alice.example/3fcef0f6-5807-4f1b-b77a-63d64df25a69#data-grant-project-home';
@@ -27,7 +27,7 @@ test('should set correct scopeOfGrant', async () => {
 });
 
 test('should set hasDataRegistrationIri', async () => {
-  const dataGrant = await factory.dataGrant(snippetIri, accessReceipt);
+  const dataGrant = (await factory.dataGrant(snippetIri, accessReceipt)) as AllInstancesDataGrant;
   const dataRegistrationIri = 'https://home.alice.example/f6ccd3a4-45ea-4f98-8a36-98eac92a6720';
   expect(dataGrant.hasDataRegistrationIri).toBe(dataRegistrationIri);
 });
