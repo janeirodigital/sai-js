@@ -3,8 +3,6 @@ import { Memoize } from 'typescript-memoize';
 import { Model, DataInstance, InteropFactory } from '.';
 
 export abstract class DataGrant extends Model {
-  inheritsFromGrant?: DataGrant;
-
   dataset: DatasetCore;
 
   public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore) {
@@ -13,11 +11,6 @@ export abstract class DataGrant extends Model {
   }
 
   abstract getDataInstanceIterator(): AsyncIterable<DataInstance>;
-
-  // TODO (elf-pavlik) rethink Access Receipt tests and possibly remove
-  get inheritsFromGrantIri(): string | undefined {
-    return this.getObject('inheritsFromGrant')?.value;
-  }
 
   @Memoize()
   get scopeOfGrant(): NamedNode {
