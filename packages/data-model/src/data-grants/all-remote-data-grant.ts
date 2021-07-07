@@ -1,9 +1,9 @@
 import { Memoize } from 'typescript-memoize';
-import { DataGrant, DataInstance } from '..';
+import { DataGrant, DataInstance, DataInstanceIteratorOptions } from '..';
 
 export class AllRemoteDataGrant extends DataGrant {
-  getDataInstanceIterator(): AsyncIterable<DataInstance> {
-    const { factory, hasRemoteDataRegistrationIri } = this;
+  getDataInstanceIterator(options?: DataInstanceIteratorOptions): AsyncIterable<DataInstance> {
+    const { factory, hasRemoteDataRegistrationIri, accessMode } = this;
     return {
       async *[Symbol.asyncIterator]() {
         const remoteDataRegistration = await factory.dataRegistration(hasRemoteDataRegistrationIri);
@@ -11,7 +11,10 @@ export class AllRemoteDataGrant extends DataGrant {
           const remoteAgentDataRegistration = await factory.dataRegistration(remoteDataAgentRegistrationIri);
           for (const dataGrantIri of remoteAgentDataRegistration.satisfiesDataGrant) {
             const dataGrant = await factory.dataGrant(dataGrantIri);
-            yield* dataGrant.getDataInstanceIterator();
+            yield* dataGrant.getDataInstanceIterator({
+              accessMode: DataGrant.getLowestCommonAccessMode(accessMode, dataGrant.accessMode),
+              childAccessMode: options?.childAccessMode
+            });
           }
         }
       }

@@ -5,8 +5,12 @@ export class InheritInstancesDataGrant extends DataGrant {
   inheritsFromGrant: DataGrant;
 
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
-    const { registeredShapeTree, inheritsFromGrant } = this;
-    const parentIterator = inheritsFromGrant.getDataInstanceIterator();
+    const { registeredShapeTree, inheritsFromGrant, accessMode } = this;
+    const parentIterator = inheritsFromGrant.getDataInstanceIterator({
+      childAccessMode: {
+        [this.registeredShapeTree]: accessMode
+      }
+    });
     return {
       async *[Symbol.asyncIterator]() {
         for await (const parentInstance of parentIterator) {

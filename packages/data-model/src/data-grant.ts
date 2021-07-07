@@ -1,6 +1,12 @@
 import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
-import { Model, DataInstance, InteropFactory } from '.';
+import { INTEROP } from 'interop-namespaces';
+import { Model, DataInstance, ChildAccessMode, InteropFactory } from '.';
+
+export interface DataInstanceIteratorOptions {
+  accessMode?: NamedNode[];
+  childAccessMode?: ChildAccessMode;
+}
 
 export abstract class DataGrant extends Model {
   dataset: DatasetCore;
@@ -10,7 +16,7 @@ export abstract class DataGrant extends Model {
     this.dataset = dataset;
   }
 
-  abstract getDataInstanceIterator(): AsyncIterable<DataInstance>;
+  abstract getDataInstanceIterator(options?: DataInstanceIteratorOptions): AsyncIterable<DataInstance>;
 
   @Memoize()
   get scopeOfGrant(): NamedNode {
@@ -18,7 +24,21 @@ export abstract class DataGrant extends Model {
   }
 
   @Memoize()
+  get accessMode(): NamedNode[] {
+    return this.getObjectsArray('accessMode');
+  }
+
+  @Memoize()
   get registeredShapeTree(): string {
     return this.getObject('registeredShapeTree').value;
+  }
+
+  static getLowestCommonAccessMode(remoteMode: NamedNode[], localMode: NamedNode[]): NamedNode[] {
+    // TODO (elf-pavlik) generalize
+    const mode = [INTEROP.Read];
+    if (remoteMode.includes(INTEROP.Write) && localMode.includes(INTEROP.Write)) {
+      mode.push(INTEROP.Write);
+    }
+    return mode;
   }
 }

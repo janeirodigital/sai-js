@@ -1,14 +1,15 @@
 import { Memoize } from 'typescript-memoize';
-import { DataGrant, DataInstance } from '..';
+import { DataGrant, DataInstance, DataInstanceIteratorOptions } from '..';
 
 export class AllInstancesDataGrant extends DataGrant {
-  getDataInstanceIterator(): AsyncIterable<DataInstance> {
-    const { factory, hasDataRegistrationIri } = this;
+  getDataInstanceIterator(options?: DataInstanceIteratorOptions): AsyncIterable<DataInstance> {
+    const { factory, hasDataRegistrationIri, accessMode } = this;
+    const accessOptions = options ? Object.assign(options, { accessMode }) : { accessMode };
     return {
       async *[Symbol.asyncIterator]() {
         const dataRegistration = await factory.dataRegistration(hasDataRegistrationIri);
         for (const instanceIri of dataRegistration.contains) {
-          yield factory.dataInstance(instanceIri);
+          yield factory.dataInstance(instanceIri, accessOptions);
         }
       }
     };

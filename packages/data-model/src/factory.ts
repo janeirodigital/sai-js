@@ -14,7 +14,8 @@ import {
   AllRemoteFromAgentDataGrant,
   AllRemoteDataGrant,
   DataGrant,
-  ReferencesList
+  ReferencesList,
+  DataInstanceIteratorOptions
 } from '.';
 
 // TODO (elf-pavlik) cache existing instances and return cached if exists
@@ -38,8 +39,8 @@ export class InteropFactory {
     return DataRegistration.build(iri, this);
   }
 
-  async dataInstance(iri: string): Promise<DataInstance> {
-    return DataInstance.build(iri, this);
+  async dataInstance(iri: string, accessOptions: DataInstanceIteratorOptions): Promise<DataInstance> {
+    return DataInstance.build(iri, accessOptions, this);
   }
 
   async referencesList(iri: string): Promise<ReferencesList> {
