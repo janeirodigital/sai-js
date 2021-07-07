@@ -2,7 +2,7 @@
 import 'jest-rdf';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
-import { AccessReceipt, DataInstance, InteropFactory, InheritInstancesDataGrant } from '../src';
+import { AccessReceipt, DataInstance, InteropFactory, InheritInstancesDataGrant, DataGrant } from '../src';
 import { INTEROP } from 'interop-namespaces';
 
 const factory = new InteropFactory(fetch);
@@ -53,6 +53,14 @@ test('should set inheritsFromGrantIri', async () => {
     accessReceipt
   )) as InheritInstancesDataGrant;
   expect(dataGrant.inheritsFromGrantIri).toBe(selectedInstancesDataGrantIri);
+});
+
+test('should set inheritsFromGrant', async () => {
+  const dataGrant = (await factory.dataGrant(
+    inheritsFromSelectedInstancesIri,
+    accessReceipt
+  )) as InheritInstancesDataGrant;
+  expect(dataGrant.inheritsFromGrant).toBeInstanceOf(DataGrant);
 });
 
 test('should provide data instance iterator for InheritInstances of AllInstances', async () => {

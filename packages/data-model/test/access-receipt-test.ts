@@ -23,14 +23,4 @@ describe('build', () => {
       expect(grant).toBeInstanceOf(DataGrant);
     }
   });
-
-  test('should link inheriting grants', async () => {
-    const accessReceipt = await AccessReceipt.build(snippetIri, factory);
-    for (const grant of accessReceipt.hasDataGrant) {
-      if (grant instanceof InheritInstancesDataGrant) {
-        expect(grant.inheritsFromGrant).toBeInstanceOf(DataGrant);
-        expect(grant.inheritsFromGrant.iri).toBe(grant.inheritsFromGrantIri);
-      }
-    }
-  });
 });

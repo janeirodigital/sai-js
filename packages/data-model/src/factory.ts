@@ -17,6 +17,8 @@ import {
   ReferencesList
 } from '.';
 
+// TODO (elf-pavlik) cache existing instances and return cached if exists
+
 export class InteropFactory {
   fetch: RdfFetch;
 
@@ -75,6 +77,7 @@ export class InteropFactory {
 
       case INTEROP.InheritInstances.value:
         scopedDataGrant = new InheritInstancesDataGrant(iri, this, dataset);
+        scopedDataGrant.inheritsFromGrant = await this.dataGrant(scopedDataGrant.inheritsFromGrantIri, accessReceipt);
         break;
 
       default:
