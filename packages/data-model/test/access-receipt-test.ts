@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
-import { AccessReceipt, DataGrant, InteropFactory } from '../src';
+import { AccessReceipt, DataGrant, InheritInstancesDataGrant, InteropFactory } from '../src';
 
 const factory = new InteropFactory(fetch);
 const snippetIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
@@ -27,7 +27,7 @@ describe('build', () => {
   test('should link inheriting grants', async () => {
     const accessReceipt = await AccessReceipt.build(snippetIri, factory);
     for (const grant of accessReceipt.hasDataGrant) {
-      if (grant.inheritsFromGrantIri) {
+      if (grant instanceof InheritInstancesDataGrant) {
         expect(grant.inheritsFromGrant).toBeInstanceOf(DataGrant);
         expect(grant.inheritsFromGrant.iri).toBe(grant.inheritsFromGrantIri);
       }

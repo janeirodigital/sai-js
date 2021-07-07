@@ -2,6 +2,8 @@ import { Memoize } from 'typescript-memoize';
 import { DataGrant, DataInstance } from '..';
 
 export class InheritInstancesDataGrant extends DataGrant {
+  inheritsFromGrant: DataGrant;
+
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
     const { registeredShapeTree, inheritsFromGrant } = this;
     const parentIterator = inheritsFromGrant.getDataInstanceIterator();

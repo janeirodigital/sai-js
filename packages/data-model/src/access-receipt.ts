@@ -1,7 +1,7 @@
 import { DataFactory } from 'n3';
 import { getAllMatchingQuads } from 'interop-utils';
 import { INTEROP } from 'interop-namespaces';
-import { Model, InteropFactory, DataGrant } from '.';
+import { Model, InteropFactory, DataGrant, InheritInstancesDataGrant } from '.';
 
 export class AccessReceipt extends Model {
   hasDataGrant: DataGrant[];
@@ -17,7 +17,7 @@ export class AccessReceipt extends Model {
 
   private linkInheritingGrants(): void {
     for (const grant of this.hasDataGrant) {
-      if (grant.inheritsFromGrantIri) {
+      if (grant instanceof InheritInstancesDataGrant) {
         const parent = this.hasDataGrant.find((g) => g.iri === grant.inheritsFromGrantIri);
         grant.inheritsFromGrant = parent;
       }
