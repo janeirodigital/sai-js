@@ -15,19 +15,9 @@ export class AccessReceipt extends Model {
     );
   }
 
-  private linkInheritingGrants(): void {
-    for (const grant of this.hasDataGrant) {
-      if (grant instanceof InheritInstancesDataGrant) {
-        const parent = this.hasDataGrant.find((g) => g.iri === grant.inheritsFromGrantIri);
-        grant.inheritsFromGrant = parent;
-      }
-    }
-  }
-
   async bootstrap(): Promise<void> {
     await this.fetchData();
     await this.buildDataGrants();
-    this.linkInheritingGrants();
   }
 
   public static async build(iri: string, factory: InteropFactory): Promise<AccessReceipt> {
