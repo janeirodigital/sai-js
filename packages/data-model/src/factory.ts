@@ -1,4 +1,7 @@
-import { getAllMatchingQuads, getOneMatchingQuad, RdfFetch } from 'interop-utils';
+import { DatasetCore } from '@rdfjs/types';
+import { DataFactory, NamedNode } from 'n3';
+import { INTEROP } from 'interop-namespaces';
+import { getOneMatchingQuad, RdfFetch } from 'interop-utils';
 import {
   AccessReceipt,
   ApplicationRegistration,
@@ -13,9 +16,6 @@ import {
   DataGrant,
   ReferencesList
 } from '.';
-import { INTEROP } from 'interop-namespaces';
-import { DatasetCore } from 'rdf-js';
-import { DataFactory, NamedNode } from 'n3';
 
 export class InteropFactory {
   fetch: RdfFetch;

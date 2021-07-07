@@ -1,6 +1,5 @@
-import { DatasetCore } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
-import { DataGrant, DataInstance, InteropFactory } from '..';
+import { DataGrant, DataInstance } from '..';
 
 export class AllRemoteFromAgentDataGrant extends DataGrant {
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
