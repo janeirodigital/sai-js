@@ -1,18 +1,20 @@
 import { Memoize } from 'typescript-memoize';
-import { DataGrant, DataInstance, DataInstanceIteratorOptions } from '..';
+import { AbstractDataGrant, DataInstance } from '..';
 
-export class AllRemoteFromAgentDataGrant extends DataGrant {
-  getDataInstanceIterator(options?: DataInstanceIteratorOptions): AsyncIterable<DataInstance> {
-    const { factory, hasRemoteDataFromAgentIri, accessMode } = this;
+export class AllRemoteFromAgentDataGrant extends AbstractDataGrant {
+  getDataInstanceIterator(): AsyncIterable<DataInstance> {
+    const { factory } = this;
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const remoteDataGrant = this;
     return {
       async *[Symbol.asyncIterator]() {
-        const remoteAgentDataRegistration = await factory.dataRegistration(hasRemoteDataFromAgentIri);
+        const remoteAgentDataRegistration = await remoteDataGrant.factory.dataRegistration(
+          remoteDataGrant.hasRemoteDataFromAgentIri
+        );
         for (const dataGrantIri of remoteAgentDataRegistration.satisfiesDataGrant) {
-          const dataGrant = await factory.dataGrant(dataGrantIri);
-          yield* dataGrant.getDataInstanceIterator({
-            accessMode: DataGrant.getLowestCommonAccessMode(accessMode, dataGrant.accessMode),
-            childAccessMode: options?.childAccessMode
-          });
+          // eslint-disable-next-line no-await-in-loop
+          const dataGrant = await factory.dataGrant(dataGrantIri, remoteDataGrant);
+          yield* dataGrant.getDataInstanceIterator();
         }
       }
     };

@@ -17,23 +17,23 @@ beforeAll(async () => {
 });
 
 test('should use correct subclass', async () => {
-  const dataGrant = await factory.dataGrant(snippetIri, accessReceipt);
+  const dataGrant = await factory.dataGrant(snippetIri, null, accessReceipt);
   expect(dataGrant).toBeInstanceOf(AllInstancesDataGrant);
 });
 
 test('should set correct scopeOfGrant', async () => {
-  const dataGrant = await factory.dataGrant(snippetIri, accessReceipt);
+  const dataGrant = await factory.dataGrant(snippetIri, null, accessReceipt);
   expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.AllInstances);
 });
 
 test('should set hasDataRegistrationIri', async () => {
-  const dataGrant = (await factory.dataGrant(snippetIri, accessReceipt)) as AllInstancesDataGrant;
+  const dataGrant = (await factory.dataGrant(snippetIri, null, accessReceipt)) as AllInstancesDataGrant;
   const dataRegistrationIri = 'https://home.alice.example/f6ccd3a4-45ea-4f98-8a36-98eac92a6720';
   expect(dataGrant.hasDataRegistrationIri).toBe(dataRegistrationIri);
 });
 
 test('should provide data instance iterator', async () => {
-  const dataGrant = await factory.dataGrant(snippetIri, accessReceipt);
+  const dataGrant = await factory.dataGrant(snippetIri, null, accessReceipt);
   let count = 0;
   for await (const instance of dataGrant.getDataInstanceIterator()) {
     expect(instance).toBeInstanceOf(DataInstance);

@@ -1,17 +1,17 @@
 import { DataFactory } from 'n3';
 import { getAllMatchingQuads } from 'interop-utils';
 import { INTEROP } from 'interop-namespaces';
-import { Model, InteropFactory, DataGrant, InheritInstancesDataGrant } from '.';
+import { Model, InteropFactory, AnyDataGrant } from '.';
 
 export class AccessReceipt extends Model {
-  hasDataGrant: DataGrant[];
+  hasDataGrant: AnyDataGrant[];
 
   private async buildDataGrants(): Promise<void> {
     const quadPattern = [DataFactory.namedNode(this.iri), INTEROP.hasDataGrant, null, null];
     this.hasDataGrant = await Promise.all(
       getAllMatchingQuads(this.dataset, ...quadPattern)
         .map((quad) => quad.object.value)
-        .map((dataGrantIri) => this.factory.dataGrant(dataGrantIri, this))
+        .map((dataGrantIri) => this.factory.dataGrant(dataGrantIri, null, this))
     );
   }
 

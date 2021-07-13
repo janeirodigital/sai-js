@@ -1,15 +1,24 @@
+import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
-import { DataGrant, DataInstance, DataInstanceIteratorOptions } from '..';
+import { AbstractDataGrant, RemoteDataGrant, DataInstance, InteropFactory } from '..';
 
-export class AllInstancesDataGrant extends DataGrant {
-  getDataInstanceIterator(options?: DataInstanceIteratorOptions): AsyncIterable<DataInstance> {
-    const { factory, hasDataRegistrationIri, accessMode } = this;
-    const accessOptions = options ? Object.assign(options, { accessMode }) : { accessMode };
+export class AllInstancesDataGrant extends AbstractDataGrant {
+  viaRemoteDataGrant?: RemoteDataGrant;
+
+  public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore, viaRemoteDataGrant: RemoteDataGrant) {
+    super(iri, factory, dataset);
+    this.viaRemoteDataGrant = viaRemoteDataGrant;
+  }
+
+  getDataInstanceIterator(): AsyncIterable<DataInstance> {
+    const { factory } = this;
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const dataGrant = this;
     return {
       async *[Symbol.asyncIterator]() {
-        const dataRegistration = await factory.dataRegistration(hasDataRegistrationIri);
+        const dataRegistration = await factory.dataRegistration(dataGrant.hasDataRegistrationIri);
         for (const instanceIri of dataRegistration.contains) {
-          yield factory.dataInstance(instanceIri, accessOptions);
+          yield factory.dataInstance(instanceIri, dataGrant);
         }
       }
     };
@@ -18,5 +27,10 @@ export class AllInstancesDataGrant extends DataGrant {
   @Memoize()
   get hasDataRegistrationIri(): string {
     return this.getObject('hasDataRegistration').value;
+  }
+
+  @Memoize()
+  get effectiveAccessMode(): string[] {
+    return AbstractDataGrant.calculateEffectiveAccessMode(this);
   }
 }

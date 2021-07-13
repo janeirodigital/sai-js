@@ -1,17 +1,13 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
-import { INTEROP } from 'interop-namespaces';
-import { DataInstance, InteropFactory, ReferencesList } from '../src';
+import { DataGrant, DataInstance, InteropFactory, ReferencesList } from '../src';
 
 const factory = new InteropFactory(fetch);
-const snippetIri = 'https://home.alice.example/0fd3daa3-dd6b-4484-826b-9ebaef099241#project';
-const childAccessMode = {
-  'https://solidshapes.example/trees/Task': [INTEROP.Read]
-};
+const snippetIri = 'https://pro.alice.example/7a130c38-668a-4775-821a-08b38f2306fb#project';
 
 describe('build', () => {
   test('should fetch its data', async () => {
-    const dataInstance = await DataInstance.build(snippetIri, { childAccessMode }, factory);
+    const dataInstance = await DataInstance.build(snippetIri, null, factory);
     expect(dataInstance.dataset.size).toBeGreaterThan(0);
   });
 });
@@ -19,7 +15,7 @@ describe('build', () => {
 describe('getReferencesListForShapeTree', () => {
   test('should return a ReferencesList', async () => {
     const shapeTree = 'https://solidshapes.example/trees/Task';
-    const dataInstance = await DataInstance.build(snippetIri, { childAccessMode }, factory);
+    const dataInstance = await DataInstance.build(snippetIri, null, factory);
     const result = await dataInstance.getReferencesListForShapeTree(shapeTree);
     expect(result).toBeInstanceOf(ReferencesList);
   });
@@ -27,13 +23,17 @@ describe('getReferencesListForShapeTree', () => {
 
 describe('getChildInstancesIterator', () => {
   test('should iterate over children data instances', async () => {
-    const shapeTree = 'https://solidshapes.example/trees/Task';
-    const dataInstance = await DataInstance.build(snippetIri, { childAccessMode }, factory);
+    const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
+    const dataGrantIri = 'https://auth.alice.example/3fcef0f6-5807-4f1b-b77a-63d64df25a69#data-grant-task-pro';
+    const accessReceipt = await factory.accessReceipt(accessReceiptIri);
+    const dataGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === dataGrantIri) as DataGrant;
+    const taskShapeTree = 'https://solidshapes.example/trees/Task';
+    const dataInstance = await DataInstance.build(snippetIri, dataGrant, factory);
     let count = 0;
-    for await (const child of dataInstance.getChildInstancesIterator(shapeTree)) {
+    for await (const child of dataInstance.getChildInstancesIterator(taskShapeTree)) {
       expect(child).toBeInstanceOf(DataInstance);
       count += 1;
     }
-    expect(count).toBe(2);
+    expect(count).toBe(1);
   });
 });
