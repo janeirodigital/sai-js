@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
-import { AccessReceipt, DataGrant, InheritInstancesDataGrant, InteropFactory } from '../src';
+import { AccessReceipt, AbstractDataGrant, InteropFactory } from '../src';
 
 const factory = new InteropFactory(fetch);
 const snippetIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
@@ -20,7 +20,7 @@ describe('build', () => {
     const accessReceipt = await AccessReceipt.build(snippetIri, factory);
     expect(accessReceipt.hasDataGrant.length).toBe(8);
     for (const grant of accessReceipt.hasDataGrant) {
-      expect(grant).toBeInstanceOf(DataGrant);
+      expect(grant).toBeInstanceOf(AbstractDataGrant);
     }
   });
 });

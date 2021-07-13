@@ -1,14 +1,23 @@
+import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
-import { DataGrant, DataInstance, DataInstanceIteratorOptions } from '..';
+import { AbstractDataGrant, RemoteDataGrant, DataInstance, InteropFactory } from '..';
 
-export class SelectedInstancesDataGrant extends DataGrant {
-  getDataInstanceIterator(options?: DataInstanceIteratorOptions): AsyncIterable<DataInstance> {
-    const { factory, hasDataInstance, accessMode } = this;
-    const accessOptions = options ? Object.assign(options, { accessMode }) : { accessMode };
+export class SelectedInstancesDataGrant extends AbstractDataGrant {
+  viaRemoteDataGrant?: RemoteDataGrant;
+
+  public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore, viaRemoteDataGrant: RemoteDataGrant) {
+    super(iri, factory, dataset);
+    this.viaRemoteDataGrant = viaRemoteDataGrant;
+  }
+
+  getDataInstanceIterator(): AsyncIterable<DataInstance> {
+    const { factory } = this;
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const dataGrant = this;
     return {
       async *[Symbol.asyncIterator]() {
-        for (const instanceIri of hasDataInstance) {
-          yield factory.dataInstance(instanceIri, accessOptions);
+        for (const instanceIri of dataGrant.hasDataInstance) {
+          yield factory.dataInstance(instanceIri, dataGrant);
         }
       }
     };
@@ -22,5 +31,10 @@ export class SelectedInstancesDataGrant extends DataGrant {
   @Memoize()
   get hasDataInstance(): string[] {
     return this.getObjectsArray('hasDataInstance').map((object) => object.value);
+  }
+
+  @Memoize()
+  get effectiveAccessMode(): string[] {
+    return AbstractDataGrant.calculateEffectiveAccessMode(this);
   }
 }

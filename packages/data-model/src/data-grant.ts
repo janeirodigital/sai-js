@@ -1,22 +1,22 @@
 import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
-import { INTEROP } from 'interop-namespaces';
-import { Model, DataInstance, ChildAccessMode, InteropFactory } from '.';
+import { ACL } from 'interop-namespaces';
+import { Model, DataInstance, InteropFactory, InheritInstancesDataGrant, DataGrant } from '.';
 
-export interface DataInstanceIteratorOptions {
-  accessMode?: NamedNode[];
-  childAccessMode?: ChildAccessMode;
-}
-
-export abstract class DataGrant extends Model {
+export abstract class AbstractDataGrant extends Model {
   dataset: DatasetCore;
+
+  // TODO (elf-pavlik): InheritInstancesDataGrant shouldn't have this one
+  hasInheritingGrant: Set<InheritInstancesDataGrant>;
 
   public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore) {
     super(iri, factory);
     this.dataset = dataset;
+    // TODO (elf-pavlik): InheritInstancesDataGrant shouldn't have this one
+    this.hasInheritingGrant = new Set();
   }
 
-  abstract getDataInstanceIterator(options?: DataInstanceIteratorOptions): AsyncIterable<DataInstance>;
+  abstract getDataInstanceIterator(): AsyncIterable<DataInstance>;
 
   @Memoize()
   get scopeOfGrant(): NamedNode {
@@ -24,8 +24,8 @@ export abstract class DataGrant extends Model {
   }
 
   @Memoize()
-  get accessMode(): NamedNode[] {
-    return this.getObjectsArray('accessMode');
+  get accessMode(): string[] {
+    return this.getObjectsArray('accessMode').map((object) => object.value);
   }
 
   @Memoize()
@@ -33,11 +33,20 @@ export abstract class DataGrant extends Model {
     return this.getObject('registeredShapeTree').value;
   }
 
-  static getLowestCommonAccessMode(remoteMode: NamedNode[], localMode: NamedNode[]): NamedNode[] {
-    // TODO (elf-pavlik) generalize
-    const mode = [INTEROP.Read];
-    if (remoteMode.includes(INTEROP.Write) && localMode.includes(INTEROP.Write)) {
-      mode.push(INTEROP.Write);
+  // TODO (elf-pavlik) generalize
+  public static calculateEffectiveAccessMode(dataGrant: DataGrant): string[] {
+    const mode = [ACL.Read.value];
+
+    // defaults to the data grant itself
+    let canWrite = dataGrant.accessMode.includes(ACL.Write.value);
+
+    // if viaRemoteDataGrant exists take it into account
+    if (dataGrant.viaRemoteDataGrant) {
+      canWrite = canWrite && dataGrant.viaRemoteDataGrant.accessMode.includes(ACL.Write.value);
+    }
+
+    if (canWrite) {
+      mode.push(ACL.Write.value);
     }
     return mode;
   }

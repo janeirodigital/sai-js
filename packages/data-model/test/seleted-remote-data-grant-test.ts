@@ -17,22 +17,22 @@ beforeAll(async () => {
 });
 
 test('should use correct subclass', async () => {
-  const dataGrant = await factory.dataGrant(snippetIri, accessReceipt);
+  const dataGrant = await factory.dataGrant(snippetIri, null, accessReceipt);
   expect(dataGrant).toBeInstanceOf(SelectedRemoteDataGrant);
 });
 
 test('should set correct scopeOfGrant', async () => {
-  const dataGrant = await factory.dataGrant(snippetIri, accessReceipt);
+  const dataGrant = await factory.dataGrant(snippetIri, null, accessReceipt);
   expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.SelectedRemote);
 });
 
 test('should set hasDataGrant', async () => {
-  const dataGrant = (await factory.dataGrant(snippetIri, accessReceipt)) as SelectedRemoteDataGrant;
+  const dataGrant = (await factory.dataGrant(snippetIri, null, accessReceipt)) as SelectedRemoteDataGrant;
   expect(dataGrant.hasDataGrant.length).toBe(1);
 });
 
 test('should provide data instance iterator', async () => {
-  const dataGrant = await factory.dataGrant(snippetIri, accessReceipt);
+  const dataGrant = await factory.dataGrant(snippetIri, null, accessReceipt);
   let count = 0;
   for await (const instance of dataGrant.getDataInstanceIterator()) {
     expect(instance).toBeInstanceOf(DataInstance);
