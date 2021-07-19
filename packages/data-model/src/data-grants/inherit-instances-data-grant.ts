@@ -1,11 +1,8 @@
 import { Memoize } from 'typescript-memoize';
-import { AbstractDataGrant, RemoteDataGrant, InheritableDataGrant, DataInstance } from '..';
+import { AbstractDataGrant, InheritableDataGrant, InheritRemoteInstancesDataGrant, DataInstance } from '..';
 
 export class InheritInstancesDataGrant extends AbstractDataGrant {
   inheritsFromGrant: InheritableDataGrant;
-
-  // TODO (elf-pavlik) reconsider how it is supposed to work with this scope
-  viaRemoteDataGrant?: RemoteDataGrant;
 
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -18,6 +15,14 @@ export class InheritInstancesDataGrant extends AbstractDataGrant {
         }
       }
     };
+  }
+
+  @Memoize()
+  get viaRemoteDataGrant(): InheritRemoteInstancesDataGrant {
+    // TODO (elf-pavlik) extract as getter
+    return [...this.inheritsFromGrant.viaRemoteDataGrant.hasInheritingGrant].find(
+      (grant) => grant.registeredShapeTree === this.registeredShapeTree
+    );
   }
 
   @Memoize()

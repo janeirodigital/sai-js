@@ -24,7 +24,7 @@ describe('getReferencesListForShapeTree', () => {
 describe('getChildInstancesIterator', () => {
   test('should iterate over children data instances', async () => {
     const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
-    const dataGrantIri = 'https://auth.alice.example/9827ae00-2778-4655-9f22-08bb9daaee26';
+    const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
     const accessReceipt = await factory.accessReceipt(accessReceiptIri);
     const dataGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === dataGrantIri) as DataGrant;
     const taskShapeTree = 'https://solidshapes.example/trees/Task';
