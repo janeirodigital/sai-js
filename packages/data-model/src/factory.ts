@@ -60,22 +60,12 @@ export class InteropFactory {
     return ReferencesList.build(iri, this);
   }
 
-  async dataGrant(
-    iri: string,
-    viaRemoteDataGrant?: RemoteDataGrant,
-    accessReceipt?: AccessReceipt
-  ): Promise<AnyDataGrant> {
+  async dataGrant(iri: string, viaRemoteDataGrant?: RemoteDataGrant): Promise<AnyDataGrant> {
     // return cached if exists
     const cached = this.cache.dataGrant[iri];
     if (cached) return cached;
 
-    let dataset: DatasetCore;
-    if (accessReceipt) {
-      const quadPattern = [DataFactory.namedNode(iri), null, null, DataFactory.namedNode(accessReceipt.iri)];
-      dataset = accessReceipt.dataset.match(...quadPattern);
-    } else {
-      dataset = await this.fetch(iri);
-    }
+    const dataset = await this.fetch(iri);
 
     const quadPattern = [DataFactory.namedNode(iri), INTEROP.scopeOfGrant, null, null];
     const scopeOfGrant = getOneMatchingQuad(dataset, ...quadPattern).object as NamedNode;
@@ -98,12 +88,11 @@ export class InteropFactory {
         break;
 
       case INTEROP.InheritInstances.value:
+      case INTEROP.InheritRemoteInstances.value: // TODO (elf-pavlik) create dedicated remote grant subclass
         scopedDataGrant = new InheritInstancesDataGrant(iri, this, dataset);
         // set parent grant
         scopedDataGrant.inheritsFromGrant = (await this.dataGrant(
-          scopedDataGrant.inheritsFromGrantIri,
-          null,
-          accessReceipt
+          scopedDataGrant.inheritsFromGrantIri
         )) as InheritableDataGrant;
         // register as child in parent grant
         scopedDataGrant.inheritsFromGrant.hasInheritingGrant.add(scopedDataGrant);

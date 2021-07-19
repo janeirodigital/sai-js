@@ -1,4 +1,3 @@
-import { NamedNode } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
 import { AbstractDataGrant, RemoteDataGrant, InheritableDataGrant, DataInstance } from '..';
 

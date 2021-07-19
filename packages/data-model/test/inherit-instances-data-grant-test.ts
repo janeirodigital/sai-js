@@ -6,21 +6,16 @@ import { INTEROP } from 'interop-namespaces';
 import { AccessReceipt, DataInstance, InteropFactory, InheritInstancesDataGrant, AbstractDataGrant } from '../src';
 
 const factory = new InteropFactory(fetch);
-const selectedInstancesDataGrantIri =
-  'https://auth.alice.example/3fcef0f6-5807-4f1b-b77a-63d64df25a69#data-grant-project-pro';
+const selectedInstancesDataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
 const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
 
 const allRemoteAccessReceiptIri = 'https://auth.alice.example/7b513402-d2a2-455f-a6d1-4a54ef90cb78';
 
-const inheritsFromSelectedInstancesIri =
-  'https://auth.alice.example/3fcef0f6-5807-4f1b-b77a-63d64df25a69#data-grant-task-pro';
-const inheritsFromAllInstancesIri =
-  'https://auth.alice.example/3fcef0f6-5807-4f1b-b77a-63d64df25a69#data-grant-task-home';
-const inheritsFromSelectedRemoteIri =
-  'https://auth.alice.example/3fcef0f6-5807-4f1b-b77a-63d64df25a69#data-grant-omni-tasks';
-const inheritsFromAllRemoteFromAgentIri =
-  'https://auth.alice.example/3fcef0f6-5807-4f1b-b77a-63d64df25a69#data-grant-acme-projects';
-const inheritsFromAllRemoteIri = 'https://auth.alice.example/6b1b6e39-75e4-44f8-84f3-104b1a8210ad#data-grant-tasks';
+const inheritsFromSelectedInstancesIri = 'https://auth.alice.example/9827ae00-2778-4655-9f22-08bb9daaee26';
+const inheritsFromAllInstancesIri = 'https://auth.alice.example/54b1a123-23ca-4733-9371-700b52b9c567';
+const inheritsFromSelectedRemoteIri = 'https://auth.alice.example/fe442ef3-5200-4b06-b4bc-fc0b495603a9';
+const inheritsFromAllRemoteFromAgentIri = 'https://auth.alice.example/e2765d6c-848a-4fc0-9092-556903730263';
+const inheritsFromAllRemoteIri = 'https://auth.alice.example/ecdf7b5e-5123-4a93-87bc-86ef6de389ff';
 
 let accessReceipt: AccessReceipt;
 let allRemoteAccessReceipt: AccessReceipt;
@@ -31,30 +26,22 @@ beforeAll(async () => {
 });
 
 test('should use correct subclass', async () => {
-  const dataGrant = await factory.dataGrant(inheritsFromSelectedInstancesIri, null, accessReceipt);
+  const dataGrant = await factory.dataGrant(inheritsFromSelectedInstancesIri);
   expect(dataGrant).toBeInstanceOf(InheritInstancesDataGrant);
 });
 
 test('should set correct scopeOfGrant', async () => {
-  const dataGrant = await factory.dataGrant(inheritsFromSelectedInstancesIri, null, accessReceipt);
+  const dataGrant = await factory.dataGrant(inheritsFromSelectedInstancesIri);
   expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.InheritInstances);
 });
 
 test('should set inheritsFromGrantIri', async () => {
-  const dataGrant = (await factory.dataGrant(
-    inheritsFromSelectedInstancesIri,
-    null,
-    accessReceipt
-  )) as unknown as InheritInstancesDataGrant;
+  const dataGrant = (await factory.dataGrant(inheritsFromSelectedInstancesIri)) as unknown as InheritInstancesDataGrant;
   expect(dataGrant.inheritsFromGrantIri).toBe(selectedInstancesDataGrantIri);
 });
 
 test('should set inheritsFromGrant', async () => {
-  const dataGrant = (await factory.dataGrant(
-    inheritsFromSelectedInstancesIri,
-    null,
-    accessReceipt
-  )) as unknown as InheritInstancesDataGrant;
+  const dataGrant = (await factory.dataGrant(inheritsFromSelectedInstancesIri)) as unknown as InheritInstancesDataGrant;
   expect(dataGrant.inheritsFromGrant).toBeInstanceOf(AbstractDataGrant);
 });
 

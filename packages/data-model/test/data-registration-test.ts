@@ -25,7 +25,7 @@ describe('build', () => {
   test('should set satisfiesDataGrant', async () => {
     const remoteAgentDataRegistrationIri = 'https://auth.alice.example/3a019d90-c7fb-4e65-865d-4254ef064667';
     const dataRegistration = await DataRegistration.build(remoteAgentDataRegistrationIri, factory);
-    const satisfiesDataGrantIri = 'https://auth.alice.example/e62a2329-d545-48bd-8d01-98b42213ad1e#grant-copy';
+    const satisfiesDataGrantIri = 'https://auth.acme.example/f8064946-cb67-469a-8b28-652fd17090f6';
     expect(dataRegistration.satisfiesDataGrant).toContain(satisfiesDataGrantIri);
   });
 

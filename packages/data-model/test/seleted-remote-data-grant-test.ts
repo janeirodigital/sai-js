@@ -2,37 +2,29 @@
 import 'jest-rdf';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
-import { AccessReceipt, DataInstance, InteropFactory, SelectedRemoteDataGrant } from '../src';
 import { INTEROP } from 'interop-namespaces';
+import { DataInstance, InteropFactory, SelectedRemoteDataGrant } from '../src';
 
 const factory = new InteropFactory(fetch);
-const snippetIri = 'https://auth.alice.example/3fcef0f6-5807-4f1b-b77a-63d64df25a69#data-grant-omni-projects';
-
-const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
-
-let accessReceipt: AccessReceipt;
-
-beforeAll(async () => {
-  accessReceipt = await factory.accessReceipt(accessReceiptIri);
-});
+const snippetIri = 'https://auth.alice.example/329eb90a-feb9-4c95-a427-2ef23989abe9';
 
 test('should use correct subclass', async () => {
-  const dataGrant = await factory.dataGrant(snippetIri, null, accessReceipt);
+  const dataGrant = await factory.dataGrant(snippetIri);
   expect(dataGrant).toBeInstanceOf(SelectedRemoteDataGrant);
 });
 
 test('should set correct scopeOfGrant', async () => {
-  const dataGrant = await factory.dataGrant(snippetIri, null, accessReceipt);
+  const dataGrant = await factory.dataGrant(snippetIri);
   expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.SelectedRemote);
 });
 
 test('should set hasDataGrant', async () => {
-  const dataGrant = (await factory.dataGrant(snippetIri, null, accessReceipt)) as SelectedRemoteDataGrant;
+  const dataGrant = (await factory.dataGrant(snippetIri)) as SelectedRemoteDataGrant;
   expect(dataGrant.hasDataGrant.length).toBe(1);
 });
 
 test('should provide data instance iterator', async () => {
-  const dataGrant = await factory.dataGrant(snippetIri, null, accessReceipt);
+  const dataGrant = await factory.dataGrant(snippetIri);
   let count = 0;
   for await (const instance of dataGrant.getDataInstanceIterator()) {
     expect(instance).toBeInstanceOf(DataInstance);

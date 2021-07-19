@@ -33,6 +33,7 @@ export class DataInstance extends Model {
   }
 
   getChildInstancesIterator(shapeTree: string): AsyncIterable<DataInstance> {
+    // TODO (elf-pavlik) extract as getter
     const childGrant = [...this.dataGrant.hasInheritingGrant].find((grant) => grant.registeredShapeTree === shapeTree);
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const instance = this;
