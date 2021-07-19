@@ -11,7 +11,7 @@ export class AccessReceipt extends Model {
     this.hasDataGrant = await Promise.all(
       getAllMatchingQuads(this.dataset, ...quadPattern)
         .map((quad) => quad.object.value)
-        .map((dataGrantIri) => this.factory.dataGrant(dataGrantIri, null, this))
+        .map((dataGrantIri) => this.factory.dataGrant(dataGrantIri))
     );
   }
 
