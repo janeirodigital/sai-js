@@ -1,4 +1,3 @@
-import { DatasetCore } from '@rdfjs/types';
 import { DataFactory, NamedNode } from 'n3';
 import { INTEROP } from 'interop-namespaces';
 import { getOneMatchingQuad, RdfFetch } from 'interop-utils';
@@ -13,12 +12,13 @@ import {
   SelectedRemoteDataGrant,
   AllRemoteFromAgentDataGrant,
   AllRemoteDataGrant,
+  InheritRemoteInstancesDataGrant,
   AnyDataGrant,
   DataGrant,
   ReferencesList,
-  RemoteDataGrant
+  InheritableDataGrant,
+  InheritableRemoteDataGrant
 } from '.';
-import { InheritableDataGrant } from './data-grants';
 
 interface CachedDataGrants {
   [key: string]: AnyDataGrant;
@@ -60,7 +60,7 @@ export class InteropFactory {
     return ReferencesList.build(iri, this);
   }
 
-  async dataGrant(iri: string, viaRemoteDataGrant?: RemoteDataGrant): Promise<AnyDataGrant> {
+  async dataGrant(iri: string, viaRemoteDataGrant?: InheritableRemoteDataGrant): Promise<AnyDataGrant> {
     // return cached if exists
     const cached = this.cache.dataGrant[iri];
     if (cached) return cached;
@@ -86,9 +86,7 @@ export class InteropFactory {
       case INTEROP.AllRemote.value:
         scopedDataGrant = new AllRemoteDataGrant(iri, this, dataset);
         break;
-
       case INTEROP.InheritInstances.value:
-      case INTEROP.InheritRemoteInstances.value: // TODO (elf-pavlik) create dedicated remote grant subclass
         scopedDataGrant = new InheritInstancesDataGrant(iri, this, dataset);
         // set parent grant
         scopedDataGrant.inheritsFromGrant = (await this.dataGrant(
@@ -97,7 +95,15 @@ export class InteropFactory {
         // register as child in parent grant
         scopedDataGrant.inheritsFromGrant.hasInheritingGrant.add(scopedDataGrant);
         break;
-
+      case INTEROP.InheritRemoteInstances.value:
+        scopedDataGrant = new InheritRemoteInstancesDataGrant(iri, this, dataset);
+        // set parent grant
+        scopedDataGrant.inheritsFromGrant = (await this.dataGrant(
+          scopedDataGrant.inheritsFromGrantIri
+        )) as InheritableRemoteDataGrant;
+        // register as child in parent grant
+        scopedDataGrant.inheritsFromGrant.hasInheritingGrant.add(scopedDataGrant);
+        break;
       default:
         throw new Error(`Unknown scope: ${scopeOfGrant.value}`);
     }

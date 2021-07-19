@@ -1,7 +1,7 @@
 import { NamedNode } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { getOneMatchingQuad, getAllMatchingQuads } from 'interop-utils';
-import { Model, ReferencesList, InteropFactory, DataGrant } from '.';
+import { Model, ReferencesList, InteropFactory, DataGrant, InheritInstancesDataGrant } from '.';
 
 export class DataInstance extends Model {
   dataGrant: DataGrant;
@@ -33,8 +33,13 @@ export class DataInstance extends Model {
   }
 
   getChildInstancesIterator(shapeTree: string): AsyncIterable<DataInstance> {
-    // TODO (elf-pavlik) extract as getter
-    const childGrant = [...this.dataGrant.hasInheritingGrant].find((grant) => grant.registeredShapeTree === shapeTree);
+    let childGrant = null as null | InheritInstancesDataGrant;
+    if (!(this.dataGrant instanceof InheritInstancesDataGrant)) {
+      // TODO (elf-pavlik) extract as getter
+      childGrant = [...this.dataGrant.hasInheritingGrant].find(
+        (grant) => grant.registeredShapeTree === shapeTree
+      ) as InheritInstancesDataGrant;
+    }
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const instance = this;
     return {

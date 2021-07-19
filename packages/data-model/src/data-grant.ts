@@ -1,19 +1,14 @@
 import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
 import { ACL } from 'interop-namespaces';
-import { Model, DataInstance, InteropFactory, InheritInstancesDataGrant, DataGrant } from '.';
+import { Model, DataInstance, InteropFactory, DataGrant } from '.';
 
 export abstract class AbstractDataGrant extends Model {
   dataset: DatasetCore;
 
-  // TODO (elf-pavlik): InheritInstancesDataGrant shouldn't have this one
-  hasInheritingGrant: Set<InheritInstancesDataGrant>;
-
   public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore) {
     super(iri, factory);
     this.dataset = dataset;
-    // TODO (elf-pavlik): InheritInstancesDataGrant shouldn't have this one
-    this.hasInheritingGrant = new Set();
   }
 
   abstract getDataInstanceIterator(): AsyncIterable<DataInstance>;

@@ -1,7 +1,15 @@
+import { DatasetCore } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
-import { AbstractDataGrant, DataInstance } from '..';
+import { AbstractDataGrant, InheritRemoteInstancesDataGrant, DataInstance, InteropFactory } from '..';
 
 export class AllRemoteFromAgentDataGrant extends AbstractDataGrant {
+  hasInheritingGrant: Set<InheritRemoteInstancesDataGrant>;
+
+  public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore) {
+    super(iri, factory, dataset);
+    this.hasInheritingGrant = new Set();
+  }
+
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
     const { factory } = this;
     // eslint-disable-next-line @typescript-eslint/no-this-alias

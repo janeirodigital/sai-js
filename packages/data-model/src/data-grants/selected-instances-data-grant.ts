@@ -1,13 +1,27 @@
-import { DatasetCore, NamedNode } from '@rdfjs/types';
+import { DatasetCore } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
-import { AbstractDataGrant, RemoteDataGrant, DataInstance, InteropFactory } from '..';
+import {
+  AbstractDataGrant,
+  InheritableRemoteDataGrant,
+  InheritInstancesDataGrant,
+  DataInstance,
+  InteropFactory
+} from '..';
 
 export class SelectedInstancesDataGrant extends AbstractDataGrant {
-  viaRemoteDataGrant?: RemoteDataGrant;
+  viaRemoteDataGrant?: InheritableRemoteDataGrant;
 
-  public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore, viaRemoteDataGrant: RemoteDataGrant) {
+  hasInheritingGrant: Set<InheritInstancesDataGrant>;
+
+  public constructor(
+    iri: string,
+    factory: InteropFactory,
+    dataset: DatasetCore,
+    viaRemoteDataGrant: InheritableRemoteDataGrant
+  ) {
     super(iri, factory, dataset);
     this.viaRemoteDataGrant = viaRemoteDataGrant;
+    this.hasInheritingGrant = new Set();
   }
 
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
