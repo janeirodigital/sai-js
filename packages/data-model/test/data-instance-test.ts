@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
-import { RdfFetch } from 'interop-utils';
+import { DatasetCore } from '@rdfjs/types';
 import { DataGrant, DataInstance, InteropFactory, ReferencesList } from '../src';
 
 const factory = new InteropFactory(fetch);
@@ -45,5 +45,27 @@ describe('delete', () => {
     const dataInstance = await localFactory.dataInstance(snippetIri, null);
     await dataInstance.delete();
     expect(localFactory.fetch).toHaveBeenCalledWith(snippetIri, { method: 'DELETE' });
+  });
+});
+
+describe('update', () => {
+  let otherProjectIri: string;
+  let differentDataset: DatasetCore;
+  beforeAll(async () => {
+    otherProjectIri = 'https://pro.alice.example/ccbd77ae-f769-4e07-b41f-5136501e13e7#project';
+    differentDataset = (await factory.dataInstance(otherProjectIri, null)).dataset;
+  });
+  test('should properly use fetch', async () => {
+    const localFactory = new InteropFactory(jest.fn(fetch));
+    const dataInstance = await localFactory.dataInstance(snippetIri, null);
+    await dataInstance.update(differentDataset);
+    expect(localFactory.fetch).toHaveBeenCalledWith(snippetIri, { method: 'PUT', dataset: differentDataset });
+  });
+
+  test('should set updated dataset on the data instance', async () => {
+    const localFactory = new InteropFactory(jest.fn(fetch));
+    const dataInstance = await localFactory.dataInstance(snippetIri, null);
+    await dataInstance.update(differentDataset);
+    expect(dataInstance.dataset).toBe(differentDataset);
   });
 });

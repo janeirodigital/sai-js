@@ -1,4 +1,4 @@
-import { NamedNode } from '@rdfjs/types';
+import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { getOneMatchingQuad, getAllMatchingQuads } from 'interop-utils';
 import { Model, ReferencesList, InteropFactory, DataGrant, InheritInstancesDataGrant } from '.';
@@ -25,6 +25,18 @@ export class DataInstance extends Model {
     if (!ok) {
       throw new Error('failed to delete');
     }
+  }
+
+  /*
+   * @param dataset - dataset to replace current one with
+   * @throws Error if fails
+   */
+  public async update(dataset: DatasetCore): Promise<void> {
+    const { ok } = await this.fetch(this.iri, { method: 'PUT', dataset });
+    if (!ok) {
+      throw new Error('failed to update');
+    }
+    this.dataset = dataset;
   }
 
   async getReferencesListForShapeTree(shapeTree: string): Promise<ReferencesList> {
