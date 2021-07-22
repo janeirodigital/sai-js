@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
+import { RdfFetch } from 'interop-utils';
 import { DataGrant, DataInstance, InteropFactory, ReferencesList } from '../src';
 
 const factory = new InteropFactory(fetch);
@@ -35,5 +36,14 @@ describe('getChildInstancesIterator', () => {
       count += 1;
     }
     expect(count).toBe(1);
+  });
+});
+
+describe('delete', () => {
+  test('should properly use fetch', async () => {
+    const localFactory = new InteropFactory(jest.fn(fetch));
+    const dataInstance = await localFactory.dataInstance(snippetIri, null);
+    await dataInstance.delete();
+    expect(localFactory.fetch).toHaveBeenCalledWith(snippetIri, { method: 'DELETE' });
   });
 });

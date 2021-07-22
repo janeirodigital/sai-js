@@ -17,6 +17,16 @@ export class DataInstance extends Model {
     return instance;
   }
 
+  /*
+   * @throws Error if fails
+   */
+  public async delete(): Promise<void> {
+    const { ok } = await this.fetch(this.iri, { method: 'DELETE' });
+    if (!ok) {
+      throw new Error('failed to delete');
+    }
+  }
+
   async getReferencesListForShapeTree(shapeTree: string): Promise<ReferencesList> {
     const referencesListNode = getAllMatchingQuads(this.dataset, ...this.referencesListPattern)
       .map((quad) => quad.object)
