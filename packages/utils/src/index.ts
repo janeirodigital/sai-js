@@ -4,7 +4,8 @@ export * from './turtle-parser';
 export * from './match';
 
 export interface FetchOptions {
-  [key: string]: string;
+  method: string;
+  dataset?: DatasetCore;
 }
 
 export interface FetchResponse {
