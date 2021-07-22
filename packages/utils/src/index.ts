@@ -1,8 +1,17 @@
-import { DatasetCore } from '@rdfjs/types'
+import { DatasetCore } from '@rdfjs/types';
 
 export * from './turtle-parser';
 export * from './match';
 
-declare function rdfFetch (iri:string): Promise<DatasetCore>
+export interface FetchOptions {
+  [key: string]: string;
+}
 
-export type RdfFetch = typeof rdfFetch
+export interface FetchResponse {
+  dataset?: DatasetCore;
+  ok: Boolean;
+}
+
+declare function rdfFetch(iri: string, options?: FetchOptions): Promise<FetchResponse>;
+
+export type RdfFetch = typeof rdfFetch;

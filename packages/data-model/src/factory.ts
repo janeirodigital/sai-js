@@ -65,7 +65,10 @@ export class InteropFactory {
     const cached = this.cache.dataGrant[iri];
     if (cached) return cached;
 
-    const dataset = await this.fetch(iri);
+    const { dataset } = await this.fetch(iri);
+    if (!dataset) {
+      throw new Error('missing dataset');
+    }
 
     const quadPattern = [DataFactory.namedNode(iri), INTEROP.scopeOfGrant, null, null];
     const scopeOfGrant = getOneMatchingQuad(dataset, ...quadPattern).object as NamedNode;

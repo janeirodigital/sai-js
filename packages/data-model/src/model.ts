@@ -20,7 +20,11 @@ export class Model {
   }
 
   protected async fetchData(): Promise<void> {
-    this.dataset = await this.fetch(this.iri);
+    const { dataset } = await this.fetch(this.iri);
+    if (!dataset) {
+      throw new Error('missing dataset');
+    }
+    this.dataset = dataset;
   }
 
   protected getObject(property: string, namespace = INTEROP): NamedNode | undefined {
