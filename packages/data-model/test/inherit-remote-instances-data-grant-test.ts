@@ -2,6 +2,7 @@
 import 'jest-rdf';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
+import { randomUUID } from 'crypto';
 import { INTEROP } from 'interop-namespaces';
 import {
   AccessReceipt,
@@ -11,7 +12,7 @@ import {
   AbstractDataGrant
 } from '../src';
 
-const factory = new InteropFactory(fetch);
+const factory = new InteropFactory({ fetch, randomUUID });
 const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
 const allRemoteAccessReceiptIri = 'https://auth.alice.example/7b513402-d2a2-455f-a6d1-4a54ef90cb78';
 

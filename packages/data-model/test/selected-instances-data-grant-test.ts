@@ -2,10 +2,11 @@
 import 'jest-rdf';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
+import { randomUUID } from 'crypto';
 import { INTEROP } from 'interop-namespaces';
 import { DataInstance, InteropFactory, SelectedInstancesDataGrant } from '../src';
 
-const factory = new InteropFactory(fetch);
+const factory = new InteropFactory({ fetch, randomUUID });
 const snippetIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
 
 test('should use correct subclass', async () => {

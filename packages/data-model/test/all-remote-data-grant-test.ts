@@ -2,10 +2,11 @@
 import 'jest-rdf';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
+import { randomUUID } from 'crypto';
 import { INTEROP } from 'interop-namespaces';
 import { AllRemoteDataGrant, DataInstance, InteropFactory } from '../src';
 
-const factory = new InteropFactory(fetch);
+const factory = new InteropFactory({ fetch, randomUUID });
 
 const snippetIri = 'https://auth.alice.example/a691ee69-97d8-45c0-bb03-8e887b2db806';
 

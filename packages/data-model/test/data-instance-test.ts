@@ -1,9 +1,10 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
+import { randomUUID } from 'crypto';
 import { DatasetCore } from '@rdfjs/types';
 import { DataGrant, DataInstance, InteropFactory, ReferencesList } from '../src';
 
-const factory = new InteropFactory(fetch);
+const factory = new InteropFactory({ fetch, randomUUID });
 const snippetIri = 'https://pro.alice.example/7a130c38-668a-4775-821a-08b38f2306fb#project';
 
 describe('build', () => {
@@ -41,7 +42,7 @@ describe('getChildInstancesIterator', () => {
 
 describe('delete', () => {
   test('should properly use fetch', async () => {
-    const localFactory = new InteropFactory(jest.fn(fetch));
+    const localFactory = new InteropFactory({ fetch: jest.fn(fetch), randomUUID });
     const dataInstance = await localFactory.dataInstance(snippetIri, null);
     await dataInstance.delete();
     expect(localFactory.fetch).toHaveBeenCalledWith(snippetIri, { method: 'DELETE' });
@@ -56,14 +57,14 @@ describe('update', () => {
     differentDataset = (await factory.dataInstance(otherProjectIri, null)).dataset;
   });
   test('should properly use fetch', async () => {
-    const localFactory = new InteropFactory(jest.fn(fetch));
+    const localFactory = new InteropFactory({ fetch: jest.fn(fetch), randomUUID });
     const dataInstance = await localFactory.dataInstance(snippetIri, null);
     await dataInstance.update(differentDataset);
     expect(localFactory.fetch).toHaveBeenCalledWith(snippetIri, { method: 'PUT', dataset: differentDataset });
   });
 
   test('should set updated dataset on the data instance', async () => {
-    const localFactory = new InteropFactory(jest.fn(fetch));
+    const localFactory = new InteropFactory({ fetch: jest.fn(fetch), randomUUID });
     const dataInstance = await localFactory.dataInstance(snippetIri, null);
     await dataInstance.update(differentDataset);
     expect(dataInstance.dataset).toBe(differentDataset);
