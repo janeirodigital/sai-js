@@ -27,6 +27,7 @@ export class DataInstance extends Model {
     }
   }
 
+  // TODO (elf-pavlik) set HTTP Link header pointing to Data Registration when used to create
   /*
    * @param dataset - dataset to replace current one with
    * @throws Error if fails

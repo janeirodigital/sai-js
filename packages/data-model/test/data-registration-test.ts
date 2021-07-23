@@ -8,13 +8,19 @@ const snippetIri = 'https://pro.alice.example/773605f0-b5bf-4d46-878d-5c167eac8b
 
 describe('build', () => {
   test('should return instance of DataRegistration', async () => {
-    const applicationRegistration = await DataRegistration.build(snippetIri, factory);
-    expect(applicationRegistration).toBeInstanceOf(DataRegistration);
+    const dataRegistration = await DataRegistration.build(snippetIri, factory);
+    expect(dataRegistration).toBeInstanceOf(DataRegistration);
   });
 
   test('should fetch its data', async () => {
-    const applicationRegistration = await DataRegistration.build(snippetIri, factory);
-    expect(applicationRegistration.dataset.size).toBeGreaterThan(0);
+    const dataRegistration = await DataRegistration.build(snippetIri, factory);
+    expect(dataRegistration.dataset.size).toBeGreaterThan(0);
+  });
+
+  test('should set iriPrefix', async () => {
+    const dataRegistration = await DataRegistration.build(snippetIri, factory);
+    const iriPrefix = 'https://pro.alice.example/';
+    expect(dataRegistration.iriPrefix).toEqual(iriPrefix);
   });
 
   test('should set registeredShapeTree', async () => {
@@ -45,5 +51,13 @@ describe('build', () => {
     for (const contained of dataRegistration.contains) {
       expect(typeof contained).toBe('string');
     }
+  });
+});
+
+describe('newDataInstance', () => {
+  test('should create data instance', async () => {
+    const dataRegistration = await DataRegistration.build(snippetIri, factory);
+    const newDataInstance = dataRegistration.newDataInstance();
+    expect(newDataInstance.iri).toMatch(dataRegistration.iriPrefix);
   });
 });
