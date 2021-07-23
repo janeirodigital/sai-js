@@ -1,8 +1,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
+import { randomUUID } from 'crypto';
 import { Model, InteropFactory } from '../src';
 
-const factory = new InteropFactory(fetch);
+const factory = new InteropFactory({ fetch, randomUUID });
 const snippetIri = 'https://alice.example/';
 
 describe('constructor', () => {

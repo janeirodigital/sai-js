@@ -4,7 +4,7 @@ Modules implementing [Solid Application Interoperability Specification](https://
 
 ## Development
 
-Requires node.js 14LTS or higher. ([Volta](https://volta.sh/) may help with managing node versions)
+Requires node.js 15.6.0 or higher. ([Volta](https://volta.sh/) may help with managing node versions)
 
 ```bash
 yarn install

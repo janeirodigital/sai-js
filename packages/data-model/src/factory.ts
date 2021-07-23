@@ -1,6 +1,6 @@
 import { DataFactory, NamedNode } from 'n3';
 import { INTEROP } from 'interop-namespaces';
-import { getOneMatchingQuad, RdfFetch } from 'interop-utils';
+import { getOneMatchingQuad, RandomUUID, RdfFetch } from 'interop-utils';
 import {
   AccessReceipt,
   ApplicationRegistration,
@@ -28,13 +28,21 @@ interface Cache {
   dataGrant: CachedDataGrants;
 }
 
+interface FactoryDependencies {
+  fetch: RdfFetch;
+  randomUUID: RandomUUID;
+}
+
 export class InteropFactory {
   fetch: RdfFetch;
 
+  randomUUID: RandomUUID;
+
   cache: Cache;
 
-  constructor(fetch: RdfFetch) {
-    this.fetch = fetch;
+  constructor(dependencies: FactoryDependencies) {
+    this.fetch = dependencies.fetch;
+    this.randomUUID = dependencies.randomUUID;
     this.cache = {
       dataGrant: {}
     };

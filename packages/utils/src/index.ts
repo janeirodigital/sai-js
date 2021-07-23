@@ -14,5 +14,7 @@ export interface FetchResponse {
 }
 
 declare function rdfFetch(iri: string, options?: FetchOptions): Promise<FetchResponse>;
-
 export type RdfFetch = typeof rdfFetch;
+
+declare function randomUUID(): string;
+export type RandomUUID = typeof randomUUID;

@@ -1,15 +1,14 @@
 import { InteropFactory, ApplicationRegistration } from 'interop-data-model';
-import { RdfFetch } from 'interop-utils';
+import { RdfFetch, RandomUUID } from 'interop-utils';
 
 interface ApplicationDependencies {
   fetch: RdfFetch;
+  randomUUID: RandomUUID;
   // TODO(elf-pavlik) replace by implementing discovery
   applicationRegistrationUrl: string;
 }
 
 export class Application {
-  fetch: RdfFetch;
-
   factory: InteropFactory;
 
   applicationRegistrationUrl: string;
@@ -17,8 +16,7 @@ export class Application {
   hasApplicationRegistration: ApplicationRegistration;
 
   constructor(dependencies: ApplicationDependencies) {
-    this.fetch = dependencies.fetch;
-    this.factory = new InteropFactory(this.fetch);
+    this.factory = new InteropFactory({ fetch: dependencies.fetch, randomUUID: dependencies.randomUUID });
     this.applicationRegistrationUrl = dependencies.applicationRegistrationUrl;
   }
 

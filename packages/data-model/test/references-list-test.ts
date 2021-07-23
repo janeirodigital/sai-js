@@ -3,9 +3,10 @@ import 'jest-rdf';
 import { DataFactory } from 'n3';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
+import { randomUUID } from 'crypto';
 import { ReferencesList, InteropFactory } from '../src';
 
-const factory = new InteropFactory(fetch);
+const factory = new InteropFactory({ fetch, randomUUID });
 const snippetIri = 'https://pro.alice.example/5db9103b-392c-41a4-b823-100c213e24ff';
 
 describe('build', () => {
