@@ -2,6 +2,7 @@ import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
 import { ACL } from 'interop-namespaces';
 import { Model, DataInstance, InteropFactory, DataGrant } from '.';
+import { RemoteDataGrant } from './data-grants';
 
 export abstract class AbstractDataGrant extends Model {
   dataset: DatasetCore;
@@ -26,6 +27,16 @@ export abstract class AbstractDataGrant extends Model {
   @Memoize()
   get registeredShapeTree(): string {
     return this.getObject('registeredShapeTree').value;
+  }
+
+  public static createDataInstanceIterotorInRemote(remoteDataGrant: RemoteDataGrant): AsyncIterable<DataInstance> {
+    return {
+      async *[Symbol.asyncIterator]() {
+        for (const sourceDataGrant of remoteDataGrant.hasSourceGrant) {
+          yield* sourceDataGrant.getDataInstanceIterator();
+        }
+      }
+    };
   }
 
   // TODO (elf-pavlik) generalize

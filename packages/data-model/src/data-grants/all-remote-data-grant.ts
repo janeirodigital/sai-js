@@ -1,33 +1,38 @@
 import { DatasetCore } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
-import { AbstractDataGrant, InheritRemoteInstancesDataGrant, DataInstance, InteropFactory } from '..';
+import { AbstractDataGrant, InheritRemoteInstancesDataGrant, DataInstance, InteropFactory, DataGrant } from '..';
 
 export class AllRemoteDataGrant extends AbstractDataGrant {
   hasInheritingGrant: Set<InheritRemoteInstancesDataGrant>;
+
+  hasSourceGrant: Set<DataGrant>;
 
   public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore) {
     super(iri, factory, dataset);
     this.hasInheritingGrant = new Set();
   }
 
+  public static async build(iri: string, factory: InteropFactory, dataset: DatasetCore): Promise<AllRemoteDataGrant> {
+    const instance = new AllRemoteDataGrant(iri, factory, dataset);
+    const remoteDataRegistration = await factory.dataRegistration(instance.hasRemoteDataRegistrationIri);
+    const remoteAgentDataRegistrations = await Promise.all(
+      remoteDataRegistration.hasRemoteAgentDataRegistration.map((remoteDataAgentRegistrationIri) =>
+        factory.dataRegistration(remoteDataAgentRegistrationIri)
+      )
+    );
+    const sourceDataGrantIris = remoteAgentDataRegistrations.flatMap(
+      (remoteAgentDataRegistration) => remoteAgentDataRegistration.satisfiesDataGrant
+    );
+    instance.hasSourceGrant = new Set(
+      await Promise.all(
+        sourceDataGrantIris.map((sourceGrantIri) => factory.dataGrant(sourceGrantIri, instance) as Promise<DataGrant>)
+      )
+    );
+    return instance;
+  }
+
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
-    const { factory } = this;
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const remoteDataGrant = this;
-    return {
-      async *[Symbol.asyncIterator]() {
-        const remoteDataRegistration = await factory.dataRegistration(remoteDataGrant.hasRemoteDataRegistrationIri);
-        for (const remoteDataAgentRegistrationIri of remoteDataRegistration.hasRemoteAgentDataRegistration) {
-          // eslint-disable-next-line no-await-in-loop
-          const remoteAgentDataRegistration = await factory.dataRegistration(remoteDataAgentRegistrationIri);
-          for (const dataGrantIri of remoteAgentDataRegistration.satisfiesDataGrant) {
-            // eslint-disable-next-line no-await-in-loop
-            const dataGrant = await factory.dataGrant(dataGrantIri, remoteDataGrant);
-            yield* dataGrant.getDataInstanceIterator();
-          }
-        }
-      }
-    };
+    return AbstractDataGrant.createDataInstanceIterotorInRemote(this);
   }
 
   @Memoize()

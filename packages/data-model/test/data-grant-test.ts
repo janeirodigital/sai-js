@@ -4,7 +4,14 @@ import 'jest-rdf';
 import { fetch } from 'interop-test-utils';
 import { randomUUID } from 'crypto';
 import { ACL } from 'interop-namespaces';
-import { AccessReceipt, InteropFactory, AbstractDataGrant, DataGrant, InheritableRemoteDataGrant } from '../src';
+import {
+  AccessReceipt,
+  InteropFactory,
+  AbstractDataGrant,
+  DataGrant,
+  InheritableRemoteDataGrant,
+  AllRemoteFromAgentDataGrant
+} from '../src';
 
 const factory = new InteropFactory({ fetch, randomUUID });
 const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
@@ -39,19 +46,17 @@ describe('calculateEffectiveAccessMode', () => {
   });
 
   test('should calculate proper mode with remote data grant', async () => {
-    const performchartAccessReceiptIri = 'https://auth.alice.example/7b513402-d2a2-455f-a6d1-4a54ef90cb78';
-    const performchartAccessReceipt = await factory.accessReceipt(performchartAccessReceiptIri);
+    const freshFactory = new InteropFactory({ fetch, randomUUID });
     const remoteDataGrantIri = 'https://auth.alice.example/a691ee69-97d8-45c0-bb03-8e887b2db806';
-    const remoteDataGrant = performchartAccessReceipt.hasDataGrant.find(
-      (grant) => grant.iri === remoteDataGrantIri
-    ) as InheritableRemoteDataGrant;
+    const remoteDataGrant = (await freshFactory.dataGrant(remoteDataGrantIri)) as InheritableRemoteDataGrant;
     const localDataGrantIri = 'https://auth.acme.example/f8064946-cb67-469a-8b28-652fd17090f6';
-    const localDataGrant = (await factory.dataGrant(localDataGrantIri, remoteDataGrant)) as DataGrant;
+    const localDataGrant = (await freshFactory.dataGrant(localDataGrantIri, remoteDataGrant)) as DataGrant;
     const accessMode = AbstractDataGrant.calculateEffectiveAccessMode(localDataGrant);
     expect(accessMode.includes(ACL.Write.value)).toBeFalsy();
   });
 
   test.skip('should calculate proper mode with remote access mode broader than local', async () => {
+    const freshFactory = new InteropFactory({ fetch, randomUUID });
     const accessMode = [] as any[];
     expect(accessMode.includes(ACL.Write.value)).toBeFalsy();
   });
