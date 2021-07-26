@@ -1,31 +1,36 @@
 import { DatasetCore } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
-import { AbstractDataGrant, InheritRemoteInstancesDataGrant, DataInstance, InteropFactory } from '..';
+import { AbstractDataGrant, InheritRemoteInstancesDataGrant, DataInstance, InteropFactory, DataGrant } from '..';
 
 export class AllRemoteFromAgentDataGrant extends AbstractDataGrant {
   hasInheritingGrant: Set<InheritRemoteInstancesDataGrant>;
+
+  hasSourceGrant: Set<DataGrant>;
 
   public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore) {
     super(iri, factory, dataset);
     this.hasInheritingGrant = new Set();
   }
 
+  public static async build(
+    iri: string,
+    factory: InteropFactory,
+    dataset: DatasetCore
+  ): Promise<AllRemoteFromAgentDataGrant> {
+    const instance = new AllRemoteFromAgentDataGrant(iri, factory, dataset);
+    const remoteAgentDataRegistration = await factory.dataRegistration(instance.hasRemoteDataFromAgentIri);
+    instance.hasSourceGrant = new Set(
+      await Promise.all(
+        remoteAgentDataRegistration.satisfiesDataGrant.map(
+          (sourceGrantIri) => factory.dataGrant(sourceGrantIri, instance) as Promise<DataGrant>
+        )
+      )
+    );
+    return instance;
+  }
+
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
-    const { factory } = this;
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const remoteDataGrant = this;
-    return {
-      async *[Symbol.asyncIterator]() {
-        const remoteAgentDataRegistration = await remoteDataGrant.factory.dataRegistration(
-          remoteDataGrant.hasRemoteDataFromAgentIri
-        );
-        for (const dataGrantIri of remoteAgentDataRegistration.satisfiesDataGrant) {
-          // eslint-disable-next-line no-await-in-loop
-          const dataGrant = await factory.dataGrant(dataGrantIri, remoteDataGrant);
-          yield* dataGrant.getDataInstanceIterator();
-        }
-      }
-    };
+    return AbstractDataGrant.createDataInstanceIterotorInRemote(this);
   }
 
   @Memoize()

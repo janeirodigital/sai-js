@@ -89,13 +89,13 @@ export class InteropFactory {
         scopedDataGrant = new SelectedInstancesDataGrant(iri, this, dataset, viaRemoteDataGrant);
         break;
       case INTEROP.SelectedRemote.value:
-        scopedDataGrant = new SelectedRemoteDataGrant(iri, this, dataset);
+        scopedDataGrant = await SelectedRemoteDataGrant.build(iri, this, dataset);
         break;
       case INTEROP.AllRemoteFromAgent.value:
-        scopedDataGrant = new AllRemoteFromAgentDataGrant(iri, this, dataset);
+        scopedDataGrant = await AllRemoteFromAgentDataGrant.build(iri, this, dataset);
         break;
       case INTEROP.AllRemote.value:
-        scopedDataGrant = new AllRemoteDataGrant(iri, this, dataset);
+        scopedDataGrant = await AllRemoteDataGrant.build(iri, this, dataset);
         break;
       case INTEROP.InheritInstances.value:
         scopedDataGrant = new InheritInstancesDataGrant(iri, this, dataset);
@@ -107,11 +107,7 @@ export class InteropFactory {
         scopedDataGrant.inheritsFromGrant.hasInheritingGrant.add(scopedDataGrant);
         break;
       case INTEROP.InheritRemoteInstances.value:
-        scopedDataGrant = new InheritRemoteInstancesDataGrant(iri, this, dataset);
-        // set parent grant
-        scopedDataGrant.inheritsFromGrant = (await this.dataGrant(
-          scopedDataGrant.inheritsFromGrantIri
-        )) as InheritableRemoteDataGrant;
+        scopedDataGrant = await InheritRemoteInstancesDataGrant.build(iri, this, dataset);
         // register as child in parent grant
         scopedDataGrant.inheritsFromGrant.hasInheritingGrant.add(scopedDataGrant);
         break;
