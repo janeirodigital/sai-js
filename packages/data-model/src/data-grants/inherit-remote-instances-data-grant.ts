@@ -2,7 +2,6 @@ import { DatasetCore } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
 import { InheritableDataGrant } from '.';
 import { AbstractDataGrant, InheritableRemoteDataGrant, DataInstance, DataGrant, InteropFactory } from '..';
-import { InheritInstancesDataGrant } from './inherit-instances-data-grant';
 
 export class InheritRemoteInstancesDataGrant extends AbstractDataGrant {
   inheritsFromGrant: InheritableRemoteDataGrant;
@@ -16,9 +15,6 @@ export class InheritRemoteInstancesDataGrant extends AbstractDataGrant {
   ): Promise<InheritRemoteInstancesDataGrant> {
     const instance = new InheritRemoteInstancesDataGrant(iri, factory, dataset);
     instance.inheritsFromGrant = (await factory.dataGrant(instance.inheritsFromGrantIri)) as InheritableRemoteDataGrant;
-    [...instance.inheritsFromGrant.hasSourceGrant].find(
-      (inheritingGrant) => inheritingGrant.registeredShapeTree === instance.registeredShapeTree
-    ) as InheritInstancesDataGrant;
     instance.hasSourceGrant = new Set(
       [...instance.inheritsFromGrant.hasSourceGrant].map((sourceGrant) =>
         [...(sourceGrant as InheritableDataGrant).hasInheritingGrant].find(

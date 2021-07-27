@@ -47,10 +47,14 @@ test('should set inheritsFromGrantIri', async () => {
 });
 
 test('should set inheritsFromGrant', async () => {
-  const dataGrant = (await factory.dataGrant(
-    inheritsFromSelectedRemoteIri
-  )) as unknown as InheritRemoteInstancesDataGrant;
+  const dataGrant = (await factory.dataGrant(inheritsFromSelectedRemoteIri)) as InheritRemoteInstancesDataGrant;
   expect(dataGrant.inheritsFromGrant).toBeInstanceOf(AbstractDataGrant);
+});
+
+test('should build hasSourceGrant', async () => {
+  const dataGrant = (await factory.dataGrant(inheritsFromSelectedRemoteIri)) as InheritRemoteInstancesDataGrant;
+  const sourceGrantIris = [...dataGrant.hasSourceGrant].map((sourceGrant) => sourceGrant.iri);
+  expect(sourceGrantIris).toContain('https://auth.omni.example/73c5f23c-099e-452e-ab29-cbfc8c8a19f8');
 });
 
 test('should provide data instance iterator for InheritInstances of SelectedRemote', async () => {

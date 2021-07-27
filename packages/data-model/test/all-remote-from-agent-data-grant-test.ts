@@ -25,6 +25,13 @@ test('should set hasRemoteDataFromAgentIri', async () => {
   expect(dataGrant.hasRemoteDataFromAgentIri).toBe(hasRemoteDataFromAgentIri);
 });
 
+test('should build hasSourceGrant', async () => {
+  const dataGrant = (await factory.dataGrant(snippetIri)) as AllRemoteFromAgentDataGrant;
+  const sourceGrantIris = [...dataGrant.hasSourceGrant].map((sourceGrant) => sourceGrant.iri);
+  expect(sourceGrantIris).toContain('https://auth.acme.example/f8064946-cb67-469a-8b28-652fd17090f6');
+  expect(sourceGrantIris).toContain('https://auth.acme.example/80ef3361-730b-4f7c-93ba-4a4415de7264');
+});
+
 test('should provide data instance iterator', async () => {
   const dataGrant = await factory.dataGrant(snippetIri);
   let count = 0;
