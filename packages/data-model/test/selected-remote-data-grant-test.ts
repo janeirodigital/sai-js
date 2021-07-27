@@ -24,6 +24,12 @@ test('should set hasDataGrant', async () => {
   expect(dataGrant.hasDataGrant.length).toBe(1);
 });
 
+test('should build hasSourceGrant', async () => {
+  const dataGrant = (await factory.dataGrant(snippetIri)) as SelectedRemoteDataGrant;
+  const sourceGrantIris = [...dataGrant.hasSourceGrant].map((sourceGrant) => sourceGrant.iri);
+  expect(sourceGrantIris).toContain('https://auth.omni.example/a7f7d66d-13ba-4ba6-8908-3ea9c2703fce');
+});
+
 test('should provide data instance iterator', async () => {
   const dataGrant = await factory.dataGrant(snippetIri);
   let count = 0;

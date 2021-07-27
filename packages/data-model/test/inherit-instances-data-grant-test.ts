@@ -30,16 +30,16 @@ test('should set correct scopeOfGrant', async () => {
 });
 
 test('should set inheritsFromGrantIri', async () => {
-  const dataGrant = (await factory.dataGrant(inheritsFromSelectedInstancesIri)) as unknown as InheritInstancesDataGrant;
+  const dataGrant = (await factory.dataGrant(inheritsFromSelectedInstancesIri)) as InheritInstancesDataGrant;
   expect(dataGrant.inheritsFromGrantIri).toBe(selectedInstancesDataGrantIri);
 });
 
 test('should set inheritsFromGrant', async () => {
-  const dataGrant = (await factory.dataGrant(inheritsFromSelectedInstancesIri)) as unknown as InheritInstancesDataGrant;
+  const dataGrant = (await factory.dataGrant(inheritsFromSelectedInstancesIri)) as InheritInstancesDataGrant;
   expect(dataGrant.inheritsFromGrant).toBeInstanceOf(AbstractDataGrant);
 });
 
-test('should provide data instance iterator for InheritInstances of AllInstances', async () => {
+test.skip('should provide data instance iterator for InheritInstances of AllInstances', async () => {
   const inheritingGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === inheritsFromAllInstancesIri);
   let count = 0;
   for await (const instance of inheritingGrant.getDataInstanceIterator()) {
@@ -49,7 +49,7 @@ test('should provide data instance iterator for InheritInstances of AllInstances
   expect(count).toBe(2);
 });
 
-test('should provide data instance iterator for InheritInstances of SelectedInstances', async () => {
+test.skip('should provide data instance iterator for InheritInstances of SelectedInstances', async () => {
   const inheritingGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === inheritsFromSelectedInstancesIri);
   let count = 0;
   for await (const instance of inheritingGrant.getDataInstanceIterator()) {

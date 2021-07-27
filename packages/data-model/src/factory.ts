@@ -16,7 +16,6 @@ import {
   AnyDataGrant,
   DataGrant,
   ReferencesList,
-  InheritableDataGrant,
   InheritableRemoteDataGrant
 } from '.';
 
@@ -83,10 +82,10 @@ export class InteropFactory {
     let scopedDataGrant;
     switch (scopeOfGrant.value) {
       case INTEROP.AllInstances.value:
-        scopedDataGrant = new AllInstancesDataGrant(iri, this, dataset, viaRemoteDataGrant);
+        scopedDataGrant = await AllInstancesDataGrant.build(iri, this, dataset, viaRemoteDataGrant);
         break;
       case INTEROP.SelectedInstances.value:
-        scopedDataGrant = new SelectedInstancesDataGrant(iri, this, dataset, viaRemoteDataGrant);
+        scopedDataGrant = await SelectedInstancesDataGrant.build(iri, this, dataset, viaRemoteDataGrant);
         break;
       case INTEROP.SelectedRemote.value:
         scopedDataGrant = await SelectedRemoteDataGrant.build(iri, this, dataset);
@@ -99,17 +98,9 @@ export class InteropFactory {
         break;
       case INTEROP.InheritInstances.value:
         scopedDataGrant = new InheritInstancesDataGrant(iri, this, dataset);
-        // set parent grant
-        scopedDataGrant.inheritsFromGrant = (await this.dataGrant(
-          scopedDataGrant.inheritsFromGrantIri
-        )) as InheritableDataGrant;
-        // register as child in parent grant
-        scopedDataGrant.inheritsFromGrant.hasInheritingGrant.add(scopedDataGrant);
         break;
       case INTEROP.InheritRemoteInstances.value:
         scopedDataGrant = await InheritRemoteInstancesDataGrant.build(iri, this, dataset);
-        // register as child in parent grant
-        scopedDataGrant.inheritsFromGrant.hasInheritingGrant.add(scopedDataGrant);
         break;
       default:
         throw new Error(`Unknown scope: ${scopeOfGrant.value}`);
