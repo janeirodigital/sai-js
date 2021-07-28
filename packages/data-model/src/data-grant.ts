@@ -1,6 +1,8 @@
 import { DatasetCore, NamedNode } from '@rdfjs/types';
+import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
-import { ACL } from 'interop-namespaces';
+import { getOneMatchingQuad } from 'interop-utils';
+import { ACL, INTEROP } from 'interop-namespaces';
 import { Model, DataInstance, InteropFactory, DataGrant } from '.';
 import { RemoteDataGrant } from './data-grants';
 
@@ -27,6 +29,33 @@ export abstract class AbstractDataGrant extends Model {
   @Memoize()
   get registeredShapeTree(): string {
     return this.getObject('registeredShapeTree').value;
+  }
+
+  // TODO (elf-pavlik) see if it will need reference to source data grant
+  /*
+   * @remarks
+   * This method returns Data Instance with no dataset, it should be
+   * used with `DataInstance#update` to add datset and store it on the server
+   *
+   * @returns new DataInstance with IRI based on prefix from DataRegistration
+   */
+  public static newDataInstance(sourceGrant: DataGrant): DataInstance {
+    const iri = `${sourceGrant.iriPrefix}${sourceGrant.factory.randomUUID()}`;
+    return new DataInstance(iri, sourceGrant.factory);
+  }
+
+  // TODO (elf-pavlik) make snippets
+  public static iriPrefix(sourceGrant: DataGrant): string {
+    const dataRegistrationPattern = [
+      DataFactory.namedNode(sourceGrant.iri),
+      DataFactory.namedNode(INTEROP.hasDataRegistration),
+      null,
+      null
+    ];
+    const dataRegistrationNode = getOneMatchingQuad(sourceGrant.dataset, ...dataRegistrationPattern)
+      .object as NamedNode;
+    const iriPrefixPattern = [dataRegistrationNode, DataFactory.namedNode(INTEROP.iriPrefix), null, null];
+    return getOneMatchingQuad(sourceGrant.dataset, ...iriPrefixPattern).object.value;
   }
 
   public static createDataInstanceIterotorInRemote(remoteDataGrant: RemoteDataGrant): AsyncIterable<DataInstance> {

@@ -75,6 +75,17 @@ export class DataInstance extends Model {
     };
   }
 
+  newChildDataInstance(shapeTree: string): DataInstance {
+    let childGrant = null as null | InheritInstancesDataGrant;
+    if (!(this.dataGrant instanceof InheritInstancesDataGrant)) {
+      // TODO (elf-pavlik) extract as getter
+      childGrant = [...this.dataGrant.hasInheritingGrant].find(
+        (grant) => grant.registeredShapeTree === shapeTree
+      ) as InheritInstancesDataGrant;
+    }
+    return childGrant.newDataInstance();
+  }
+
   get accessMode(): string[] {
     return this.dataGrant.effectiveAccessMode;
   }

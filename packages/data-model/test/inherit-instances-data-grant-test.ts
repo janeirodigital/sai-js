@@ -58,3 +58,11 @@ test.skip('should provide data instance iterator for InheritInstances of Selecte
   }
   expect(count).toBe(1);
 });
+
+describe('newDataInstance', () => {
+  test.skip('should create data instance', async () => {
+    const dataGrant = (await factory.dataGrant(inheritsFromSelectedInstancesIri)) as InheritInstancesDataGrant;
+    const newDataInstance = dataGrant.newDataInstance();
+    expect(newDataInstance.iri).toMatch(dataGrant.iriPrefix);
+  });
+});

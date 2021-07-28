@@ -53,11 +53,3 @@ describe('build', () => {
     }
   });
 });
-
-describe('newDataInstance', () => {
-  test('should create data instance', async () => {
-    const dataRegistration = await DataRegistration.build(snippetIri, factory);
-    const newDataInstance = dataRegistration.newDataInstance();
-    expect(newDataInstance.iri).toMatch(dataRegistration.iriPrefix);
-  });
-});

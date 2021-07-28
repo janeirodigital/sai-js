@@ -57,9 +57,23 @@ export class AllInstancesDataGrant extends AbstractDataGrant {
     };
   }
 
+  public newDataInstance(): DataInstance {
+    return AbstractDataGrant.newDataInstance(this);
+  }
+
   @Memoize()
   get hasDataRegistrationIri(): string {
     return this.getObject('hasDataRegistration').value;
+  }
+
+  @Memoize()
+  get dataOwner(): string {
+    return this.getObject('dataOwner').value;
+  }
+
+  @Memoize()
+  get iriPrefix(): string {
+    return AbstractDataGrant.iriPrefix(this);
   }
 
   @Memoize()
@@ -71,5 +85,11 @@ export class AllInstancesDataGrant extends AbstractDataGrant {
   @Memoize()
   get effectiveAccessMode(): string[] {
     return AbstractDataGrant.calculateEffectiveAccessMode(this);
+  }
+
+  // TODO (elf-pavlik) verify expected access mode
+  @Memoize()
+  get canCreate(): boolean {
+    return this.effectiveAccessMode.includes(INTEROP.Write.value);
   }
 }
