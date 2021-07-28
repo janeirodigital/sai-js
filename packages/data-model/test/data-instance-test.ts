@@ -40,6 +40,8 @@ describe('getChildInstancesIterator', () => {
   });
 });
 
+test.skip('should provide newChildDataInstance method');
+
 describe('delete', () => {
   test('should properly use fetch', async () => {
     const localFactory = new InteropFactory({ fetch: jest.fn(fetch), randomUUID });

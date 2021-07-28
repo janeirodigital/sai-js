@@ -16,6 +16,8 @@ export class SelectedInstancesDataGrant extends AbstractDataGrant {
 
   hasInheritingGrant: Set<InheritInstancesDataGrant>;
 
+  canCreate = false;
+
   public constructor(
     iri: string,
     factory: InteropFactory,
@@ -59,6 +61,16 @@ export class SelectedInstancesDataGrant extends AbstractDataGrant {
   @Memoize()
   get hasDataRegistrationIri(): string {
     return this.getObject('hasDataRegistration').value;
+  }
+
+  @Memoize()
+  get dataOwner(): string {
+    return this.getObject('dataOwner').value;
+  }
+
+  @Memoize()
+  get iriPrefix(): string {
+    return AbstractDataGrant.iriPrefix(this);
   }
 
   @Memoize()

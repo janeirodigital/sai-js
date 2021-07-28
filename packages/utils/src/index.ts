@@ -10,11 +10,13 @@ export interface FetchOptions {
 
 export interface FetchResponse {
   dataset?: DatasetCore;
-  ok: Boolean;
+  ok: boolean;
 }
 
-declare function rdfFetch(iri: string, options?: FetchOptions): Promise<FetchResponse>;
-export type RdfFetch = typeof rdfFetch;
+export type RdfFetch = {
+  (iri: string, options?: FetchOptions): Promise<FetchResponse>;
+  user?: string;
+};
 
 declare function randomUUID(): string;
 export type RandomUUID = typeof randomUUID;
