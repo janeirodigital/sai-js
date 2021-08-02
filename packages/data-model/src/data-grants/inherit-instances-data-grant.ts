@@ -1,6 +1,6 @@
 import { Memoize } from 'typescript-memoize';
 import { INTEROP } from 'interop-namespaces';
-import { AbstractDataGrant, InheritableDataGrant, InheritRemoteInstancesDataGrant, DataInstance } from '..';
+import { AbstractDataGrant, InheritableDataGrant, DataInstance } from '..';
 
 export class InheritInstancesDataGrant extends AbstractDataGrant {
   inheritsFromGrant: InheritableDataGrant;
@@ -23,14 +23,6 @@ export class InheritInstancesDataGrant extends AbstractDataGrant {
   }
 
   @Memoize()
-  get viaRemoteDataGrant(): InheritRemoteInstancesDataGrant {
-    // TODO (elf-pavlik) extract as getter
-    return [...this.inheritsFromGrant.viaRemoteDataGrant.hasInheritingGrant].find(
-      (grant) => grant.registeredShapeTree === this.registeredShapeTree
-    );
-  }
-
-  @Memoize()
   get inheritsFromGrantIri(): string {
     return this.getObject('inheritsFromGrant').value;
   }
@@ -45,14 +37,9 @@ export class InheritInstancesDataGrant extends AbstractDataGrant {
     return AbstractDataGrant.iriPrefix(this);
   }
 
-  @Memoize()
-  get effectiveAccessMode(): string[] {
-    return AbstractDataGrant.calculateEffectiveAccessMode(this);
-  }
-
   // TODO (elf-pavlik) verify expected access mode
   @Memoize()
   get canCreate(): boolean {
-    return this.effectiveAccessMode.includes(INTEROP.Write.value);
+    return this.accessMode.includes(INTEROP.Write.value);
   }
 }

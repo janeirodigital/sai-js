@@ -1,18 +1,18 @@
 import { DataFactory } from 'n3';
 import { getAllMatchingQuads } from 'interop-utils';
 import { INTEROP } from 'interop-namespaces';
-import { Model, InteropFactory, AnyDataGrant } from '.';
+import { Model, InteropFactory, DataGrant } from '.';
 
 export class AccessReceipt extends Model {
-  hasDataGrant: AnyDataGrant[];
+  hasDataGrant: DataGrant[] = [];
 
   private async buildDataGrants(): Promise<void> {
     const quadPattern = [DataFactory.namedNode(this.iri), INTEROP.hasDataGrant, null, null];
-    this.hasDataGrant = await Promise.all(
-      getAllMatchingQuads(this.dataset, ...quadPattern)
-        .map((quad) => quad.object.value)
-        .map((dataGrantIri) => this.factory.dataGrant(dataGrantIri))
-    );
+    const grantIriList = getAllMatchingQuads(this.dataset, ...quadPattern).map((quad) => quad.object.value);
+    for (const grantIri of grantIriList) {
+      // eslint-disable-next-line no-await-in-loop
+      this.hasDataGrant.push(await this.factory.dataGrant(grantIri));
+    }
   }
 
   async bootstrap(): Promise<void> {

@@ -36,7 +36,7 @@ test('should provide data instance iterator', async () => {
 });
 
 describe('newDataInstance', () => {
-  test.skip('should create data instance', async () => {
+  test('should create data instance', async () => {
     const dataGrant = (await factory.dataGrant(snippetIri)) as AllInstancesDataGrant;
     const newDataInstance = dataGrant.newDataInstance();
     expect(newDataInstance.iri).toMatch(dataGrant.iriPrefix);
