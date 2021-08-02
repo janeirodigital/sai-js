@@ -1,6 +1,6 @@
 import { DataGrant } from '.';
 
-export class SocialAgent {
+export class DataOwner {
   issuedGrants: DataGrant[] = [];
 
   constructor(public iri: string) {}

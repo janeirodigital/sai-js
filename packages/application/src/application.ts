@@ -1,4 +1,4 @@
-import { InteropFactory, ApplicationRegistration, DataGrant, RemoteDataGrant, SocialAgent } from 'interop-data-model';
+import { InteropFactory, ApplicationRegistration, DataGrant, RemoteDataGrant, DataOwner } from 'interop-data-model';
 import { RdfFetch, RandomUUID } from 'interop-utils';
 import { INTEROP } from 'interop-namespaces';
 
@@ -36,17 +36,17 @@ export class Application {
 
   // TODO (elf-pavlik) verify exact access to user's webid from solid-auth-fetcher
   /**
-   * @returns SocialAgent instance for currently logged in user
+   * @returns DataOwner instance for currently logged in user
    */
-  get loggedInDataOwner(): SocialAgent {
+  get loggedInDataOwner(): DataOwner {
     return this.dataOwners.find((agent) => agent.iri === this.fetch.user);
   }
 
   /**
-   * Array of SocialAgent instances out of all the data application can access.
+   * Array of DataOwner instances out of all the data application can access.
    * @public
    */
-  get dataOwners(): SocialAgent[] {
+  get dataOwners(): DataOwner[] {
     return this.hasApplicationRegistration.hasAccessReceipt.hasDataGrant.reduce((acc, grant) => {
       const sourceGrants: DataGrant[] = [];
       const sourceGrantScopeValues = [
@@ -62,9 +62,9 @@ export class Application {
         }
       }
       for (const sourceGrant of sourceGrants) {
-        let owner: SocialAgent = acc.find((agent) => agent.iri === sourceGrant.dataOwner);
+        let owner: DataOwner = acc.find((agent) => agent.iri === sourceGrant.dataOwner);
         if (!owner) {
-          owner = new SocialAgent(sourceGrant.dataOwner);
+          owner = new DataOwner(sourceGrant.dataOwner);
           acc.push(owner);
         }
         owner.issuedGrants.push(sourceGrant);

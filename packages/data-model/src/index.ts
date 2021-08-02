@@ -7,4 +7,4 @@ export { AbstractDataGrant } from './data-grant';
 export * from './data-grants';
 export { DataInstance } from './data-instance';
 export { ReferencesList } from './references-list';
-export { SocialAgent } from './social-agent';
+export { DataOwner } from './data-owner';
