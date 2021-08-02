@@ -8,3 +8,4 @@ export * from './data-grants';
 export { DataInstance } from './data-instance';
 export { ReferencesList } from './references-list';
 export { DataOwner } from './data-owner';
+export { DataRegistrationProxy } from './data-registration-proxy';

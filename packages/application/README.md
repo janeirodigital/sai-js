@@ -51,11 +51,10 @@ class Project {
   const user = application.loggedInDataOwner;
 
   const projects = [];
-  // agent has issued one or more source grants
-  for (const sourceGrant of user.grantsForShapeTree(Project.shapeTree)) {
-    // each grant maps to one data registration
-    // grant provides async iterator to Data Instances from that data registration
-    for await (const dataInstance of sourceGrant.getDataInstanceIterator()) {
+  // agent has one or more data registrations
+  for (const registration of user.selectRegistrations(Project.shapeTree)) {
+    // registration provides async iterator of Data Instances from that data registration
+    for await (const dataInstance of registration.dataInstances {
       // data instance will provide RDFJS DatasetCore with all the data
       // one can create app specific instances
       projects.push(new Project(dataInstance));
@@ -80,9 +79,9 @@ class Project {
   }
 
   // DataRegistration#newDataInstance
-  const grantForSpecificRegistration = user.grantsForShapeTree(projectShapeTree).find(/* logic */);
-  if (grantForSpecificRegistration.canCreate) {
-    const newProject = grantForSpecificRegistration.newDataInstance();
+  const registration = user.selectRegistrations(projectShapeTree).find(/* logic */);
+  if (registration.canCreate) {
+    const newProject = registration.newDataInstance();
     newProject.name = 'Another thing';
     try {
       await newProject.update();

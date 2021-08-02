@@ -1,4 +1,4 @@
-import { DataGrant } from '.';
+import { DataGrant, DataRegistrationProxy } from '.';
 
 export class DataOwner {
   issuedGrants: DataGrant[] = [];
@@ -8,9 +8,11 @@ export class DataOwner {
   /**
    * @public
    * @param shapeTree URL of shape tree
-   * @returns  Array of grants for that shape tree
+   * @returns  Array of data registration proxies for that shape tree
    */
-  grantsForShapeTree(shapeTree: string): DataGrant[] {
-    return this.issuedGrants.filter((sourceGrant) => sourceGrant.registeredShapeTree === shapeTree);
+  selectRegistrations(shapeTree: string): DataRegistrationProxy[] {
+    return this.issuedGrants
+      .filter((sourceGrant) => sourceGrant.registeredShapeTree === shapeTree)
+      .map((grant) => new DataRegistrationProxy(grant));
   }
 }
