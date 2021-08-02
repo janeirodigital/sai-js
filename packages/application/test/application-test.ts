@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from 'interop-test-utils';
-import { ApplicationRegistration, SocialAgent } from 'interop-data-model';
+import { ApplicationRegistration, DataOwner } from 'interop-data-model';
 
 import { Application } from '../src';
 
@@ -16,7 +16,7 @@ test('should have dataOwners getter', async () => {
   const app = await Application.build({ applicationRegistrationUrl, fetch, randomUUID });
   expect(app.dataOwners).toHaveLength(3);
   for (const owner of app.dataOwners) {
-    expect(owner).toBeInstanceOf(SocialAgent);
+    expect(owner).toBeInstanceOf(DataOwner);
   }
 });
 
