@@ -9,18 +9,12 @@ import {
   InheritInstancesDataGrant,
   AllInstancesDataGrant,
   SelectedInstancesDataGrant,
-  SelectedRemoteDataGrant,
-  AllRemoteFromAgentDataGrant,
-  AllRemoteDataGrant,
-  InheritRemoteInstancesDataGrant,
-  AnyDataGrant,
   DataGrant,
-  ReferencesList,
-  InheritableRemoteDataGrant
+  ReferencesList
 } from '.';
 
 interface CachedDataGrants {
-  [key: string]: AnyDataGrant;
+  [key: string]: DataGrant;
 }
 
 interface Cache {
@@ -67,7 +61,7 @@ export class InteropFactory {
     return ReferencesList.build(iri, this);
   }
 
-  async dataGrant(iri: string, viaRemoteDataGrant?: InheritableRemoteDataGrant): Promise<AnyDataGrant> {
+  async dataGrant(iri: string): Promise<DataGrant> {
     // return cached if exists
     const cached = this.cache.dataGrant[iri];
     if (cached) return cached;
@@ -82,25 +76,13 @@ export class InteropFactory {
     let scopedDataGrant;
     switch (scopeOfGrant.value) {
       case INTEROP.AllInstances.value:
-        scopedDataGrant = await AllInstancesDataGrant.build(iri, this, dataset, viaRemoteDataGrant);
+        scopedDataGrant = await AllInstancesDataGrant.build(iri, this, dataset);
         break;
       case INTEROP.SelectedInstances.value:
-        scopedDataGrant = await SelectedInstancesDataGrant.build(iri, this, dataset, viaRemoteDataGrant);
-        break;
-      case INTEROP.SelectedRemote.value:
-        scopedDataGrant = await SelectedRemoteDataGrant.build(iri, this, dataset);
-        break;
-      case INTEROP.AllRemoteFromAgent.value:
-        scopedDataGrant = await AllRemoteFromAgentDataGrant.build(iri, this, dataset);
-        break;
-      case INTEROP.AllRemote.value:
-        scopedDataGrant = await AllRemoteDataGrant.build(iri, this, dataset);
+        scopedDataGrant = await SelectedInstancesDataGrant.build(iri, this, dataset);
         break;
       case INTEROP.InheritInstances.value:
         scopedDataGrant = new InheritInstancesDataGrant(iri, this, dataset);
-        break;
-      case INTEROP.InheritRemoteInstances.value:
-        scopedDataGrant = await InheritRemoteInstancesDataGrant.build(iri, this, dataset);
         break;
       default:
         throw new Error(`Unknown scope: ${scopeOfGrant.value}`);

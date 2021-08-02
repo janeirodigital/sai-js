@@ -1,4 +1,4 @@
-import { InteropFactory, ApplicationRegistration, DataGrant, RemoteDataGrant, DataOwner } from 'interop-data-model';
+import { InteropFactory, ApplicationRegistration, DataGrant, DataOwner } from 'interop-data-model';
 import { RdfFetch, RandomUUID } from 'interop-utils';
 import { INTEROP } from 'interop-namespaces';
 
@@ -48,27 +48,12 @@ export class Application {
    */
   get dataOwners(): DataOwner[] {
     return this.hasApplicationRegistration.hasAccessReceipt.hasDataGrant.reduce((acc, grant) => {
-      const sourceGrants: DataGrant[] = [];
-      const sourceGrantScopeValues = [
-        INTEROP.AllInstances.value,
-        INTEROP.SelectedInstances.value,
-        INTEROP.InheritInstances.value
-      ];
-      if (sourceGrantScopeValues.includes(grant.scopeOfGrant.value)) {
-        sourceGrants.push(grant as DataGrant);
-      } else {
-        for (const sourceGrant of (grant as RemoteDataGrant).hasSourceGrant) {
-          sourceGrants.push(sourceGrant as DataGrant);
-        }
+      let owner: DataOwner = acc.find((agent) => agent.iri === grant.dataOwner);
+      if (!owner) {
+        owner = new DataOwner(grant.dataOwner);
+        acc.push(owner);
       }
-      for (const sourceGrant of sourceGrants) {
-        let owner: DataOwner = acc.find((agent) => agent.iri === sourceGrant.dataOwner);
-        if (!owner) {
-          owner = new DataOwner(sourceGrant.dataOwner);
-          acc.push(owner);
-        }
-        owner.issuedGrants.push(sourceGrant);
-      }
+      owner.issuedGrants.push(grant);
       return acc;
     }, []);
   }

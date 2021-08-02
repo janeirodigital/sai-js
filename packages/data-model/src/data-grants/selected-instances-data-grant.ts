@@ -3,39 +3,24 @@ import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import { INTEROP } from 'interop-namespaces';
 import { getAllMatchingQuads } from 'interop-utils';
-import {
-  AbstractDataGrant,
-  InheritableRemoteDataGrant,
-  InheritInstancesDataGrant,
-  DataInstance,
-  InteropFactory
-} from '..';
+import { AbstractDataGrant, InheritInstancesDataGrant, DataInstance, InteropFactory } from '..';
 
 export class SelectedInstancesDataGrant extends AbstractDataGrant {
-  viaRemoteDataGrant?: InheritableRemoteDataGrant;
-
   hasInheritingGrant: Set<InheritInstancesDataGrant>;
 
   canCreate = false;
 
-  public constructor(
-    iri: string,
-    factory: InteropFactory,
-    dataset: DatasetCore,
-    viaRemoteDataGrant: InheritableRemoteDataGrant
-  ) {
+  public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore) {
     super(iri, factory, dataset);
-    this.viaRemoteDataGrant = viaRemoteDataGrant;
     this.hasInheritingGrant = new Set();
   }
 
   public static async build(
     iri: string,
     factory: InteropFactory,
-    dataset: DatasetCore,
-    viaRemoteDataGrant: InheritableRemoteDataGrant
+    dataset: DatasetCore
   ): Promise<SelectedInstancesDataGrant> {
-    const instance = new SelectedInstancesDataGrant(iri, factory, dataset, viaRemoteDataGrant);
+    const instance = new SelectedInstancesDataGrant(iri, factory, dataset);
     for (const inheritingGrantIri of instance.hasInheritingGrantIriList) {
       // eslint-disable-next-line no-await-in-loop
       const inheritingGrant = (await factory.dataGrant(inheritingGrantIri)) as InheritInstancesDataGrant;
@@ -82,10 +67,5 @@ export class SelectedInstancesDataGrant extends AbstractDataGrant {
   @Memoize()
   get hasDataInstance(): string[] {
     return this.getObjectsArray('hasDataInstance').map((object) => object.value);
-  }
-
-  @Memoize()
-  get effectiveAccessMode(): string[] {
-    return AbstractDataGrant.calculateEffectiveAccessMode(this);
   }
 }

@@ -4,7 +4,6 @@ import { Memoize } from 'typescript-memoize';
 import { getOneMatchingQuad } from 'interop-utils';
 import { ACL, INTEROP } from 'interop-namespaces';
 import { Model, DataInstance, InteropFactory, DataGrant } from '.';
-import { RemoteDataGrant } from './data-grants';
 
 export abstract class AbstractDataGrant extends Model {
   dataset: DatasetCore;
@@ -44,45 +43,11 @@ export abstract class AbstractDataGrant extends Model {
     return new DataInstance(iri, sourceGrant.factory);
   }
 
-  // TODO (elf-pavlik) make snippets
   public static iriPrefix(sourceGrant: DataGrant): string {
-    const dataRegistrationPattern = [
-      DataFactory.namedNode(sourceGrant.iri),
-      DataFactory.namedNode(INTEROP.hasDataRegistration),
-      null,
-      null
-    ];
+    const dataRegistrationPattern = [DataFactory.namedNode(sourceGrant.iri), INTEROP.hasDataRegistration, null, null];
     const dataRegistrationNode = getOneMatchingQuad(sourceGrant.dataset, ...dataRegistrationPattern)
       .object as NamedNode;
-    const iriPrefixPattern = [dataRegistrationNode, DataFactory.namedNode(INTEROP.iriPrefix), null, null];
+    const iriPrefixPattern = [dataRegistrationNode, INTEROP.iriPrefix, null, null];
     return getOneMatchingQuad(sourceGrant.dataset, ...iriPrefixPattern).object.value;
-  }
-
-  public static createDataInstanceIterotorInRemote(remoteDataGrant: RemoteDataGrant): AsyncIterable<DataInstance> {
-    return {
-      async *[Symbol.asyncIterator]() {
-        for (const sourceDataGrant of remoteDataGrant.hasSourceGrant) {
-          yield* sourceDataGrant.getDataInstanceIterator();
-        }
-      }
-    };
-  }
-
-  // TODO (elf-pavlik) generalize
-  public static calculateEffectiveAccessMode(dataGrant: DataGrant): string[] {
-    const mode = [ACL.Read.value];
-
-    // defaults to the data grant itself
-    let canWrite = dataGrant.accessMode.includes(ACL.Write.value);
-
-    // if viaRemoteDataGrant exists take it into account
-    if (dataGrant.viaRemoteDataGrant) {
-      canWrite = canWrite && dataGrant.viaRemoteDataGrant.accessMode.includes(ACL.Write.value);
-    }
-
-    if (canWrite) {
-      mode.push(ACL.Write.value);
-    }
-    return mode;
   }
 }

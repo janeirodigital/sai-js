@@ -87,7 +87,7 @@ export class DataInstance extends Model {
   }
 
   get accessMode(): string[] {
-    return this.dataGrant.effectiveAccessMode;
+    return this.dataGrant.accessMode;
   }
 
   private get referencesListPattern(): (NamedNode | null)[] {
