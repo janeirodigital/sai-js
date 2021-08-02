@@ -40,7 +40,7 @@ describe('getChildInstancesIterator', () => {
   });
 });
 
-test.skip('should provide newChildDataInstance method');
+test.todo('should provide newChildDataInstance method');
 
 describe('delete', () => {
   test('should properly use fetch', async () => {

@@ -13,7 +13,9 @@ import { N3Store } from 'n3';
 class Project {
   localDataset: DatasetCore;
 
-  constructor(public dataInstance: DataInstance) {}
+  constructor(private dataInstance: DataInstance) {
+    this.localDataset = new N3Store([...dataInstance.dataset]);
+  }
 
   delete(): Promise<void> {
     return this.dataInstance.delete();
@@ -30,6 +32,8 @@ class Project {
   set name(name: string): void {
     // manipulate this.localDataset to change project name
   }
+
+  static shapeTree = 'https://solidshapes.example/trees/Project';
 }
 
 (async function () {
@@ -40,9 +44,6 @@ class Project {
   // fetch will include webid of logged in user
   const application = await Application.build({ fetch, randomUUID });
 
-  // choose specific shapetree e.g. Project
-  const projectShapeTree = 'https://solidshapes.example/trees/Project';
-
   // application provides list of all data owners
   // application.dataOwners
 
@@ -51,7 +52,7 @@ class Project {
 
   const projects = [];
   // agent has issued one or more source grants
-  for (const sourceGrant of user.grantsForShapeTree(projectShapeTree)) {
+  for (const sourceGrant of user.grantsForShapeTree(Project.shapeTree)) {
     // each grant maps to one data registration
     // grant provides async iterator to Data Instances from that data registration
     for await (const dataInstance of sourceGrant.getDataInstanceIterator()) {
@@ -91,9 +92,8 @@ class Project {
   }
 
   // also data instance acting as parent provides convienience method
-  const taskShapeTree = 'https://solidshapes.example/trees/Task';
   const projectToCreateTaskIn = projects.find(/* logic */);
-  const newTask = new Task(projectToCreateTaskIn.newChildInstance(taskShapeTree));
+  const newTask = new Task(projectToCreateTaskIn.newChildInstance(Task.shapeTree));
   task.name = 'some TODO';
   try {
     await newTask.update();
