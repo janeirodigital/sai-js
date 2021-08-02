@@ -1,7 +1,7 @@
-import { FetchOptions, FetchResponse, parseTurtle } from 'interop-utils';
+import { FetchOptions, FetchResponse, parseTurtle, RdfFetch } from 'interop-utils';
 import * as data from 'data-interoperability-panel';
 
-export async function fetch(url: string, options?: FetchOptions): Promise<FetchResponse> {
+export const fetch = async function fetch(url: string, options?: FetchOptions): Promise<FetchResponse> {
   // strip fragment
   const strippedUrl = url.replace(/#.*$/, '');
   if (!options || options.method === 'GET') {
@@ -10,4 +10,4 @@ export async function fetch(url: string, options?: FetchOptions): Promise<FetchR
   }
 
   return { ok: true };
-}
+} as RdfFetch;

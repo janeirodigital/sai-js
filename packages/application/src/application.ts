@@ -1,6 +1,5 @@
-import { InteropFactory, ApplicationRegistration, DataGrant, DataOwner } from 'interop-data-model';
+import { InteropFactory, ApplicationRegistration, DataOwner } from 'interop-data-model';
 import { RdfFetch, RandomUUID } from 'interop-utils';
-import { INTEROP } from 'interop-namespaces';
 
 interface ApplicationDependencies {
   fetch: RdfFetch;
