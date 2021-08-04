@@ -6,6 +6,7 @@ package-lock.json
 yarn.lock
 
 packages/*/dist
+packages/*/coverage
 tsconfig.tsbuildinfo
 
 *.idea

@@ -1,0 +1,32 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package:
+          - application
+          - data-model
+          - namespaces
+          - test-utils
+          - utils
+    steps:
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: yarn install
+      - name: Build packages
+        run: npx lerna run build
+      - name: Run tests
+        working-directory: ./packages/${{ matrix.package }}
+        run: npm test
+      - name: Submit code coverage
+        uses: codecov/codecov-action@v2
+        with:
+          flags: ${{ matrix.package }}
+          directory: ${{ github.workspace }}/packages/${{ matrix.package }}/coverage
