@@ -24,6 +24,7 @@
   "devDependencies": {
     "@rdfjs/types": "^1.0.1",
     "@types/n3": "^1.10.0",
+    "@types/node": "^16.4.12",
     "@janeirodigital/interop-test-utils": "^0.1.0"
   }
 }
