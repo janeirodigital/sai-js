@@ -1,5 +1,5 @@
 {
-  "name": "interop-test-utils",
+  "name": "@janeirodigital/interop-test-utils",
   "version": "0.1.0",
   "description": "> TODO: description",
   "author": "Ángel Araya <angel.araya@janeirodigital.com>",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "data-interoperability-panel": "elf-pavlik/data-interoperability-panel#80af4d",
-    "interop-utils": "^0.1.0"
+    "@janeirodigital/interop-utils": "^0.1.0"
   },
   "devDependencies": {
     "@types/n3": "^1.8.0",

@@ -7,8 +7,8 @@
 
 ```ts
 import { DatasetCore } from '@rdfjs/types';
-import { Application } from 'interop-application';
-import { DataInstance } from 'interop-data-model';
+import { Application } from '@janeirodigital/interop-application';
+import { DataInstance } from '@janeirodigital/interop-data-model';
 import { fetch } from 'solid-auth-fetcher';
 import { randomUUID } from 'crypto';
 import { N3Store } from 'n3';

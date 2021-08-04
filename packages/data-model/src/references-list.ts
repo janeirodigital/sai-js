@@ -1,7 +1,7 @@
 import { NamedNode } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
-import { getOneMatchingQuad, getAllMatchingQuads } from 'interop-utils';
+import { getOneMatchingQuad, getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { Model, InteropFactory } from '.';
 
 export class ReferencesList extends Model {
