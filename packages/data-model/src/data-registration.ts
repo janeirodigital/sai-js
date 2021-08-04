@@ -1,5 +1,5 @@
 import { Memoize } from 'typescript-memoize';
-import { LDP } from 'interop-namespaces';
+import { LDP } from '@janeirodigital/interop-namespaces';
 import { Model, InteropFactory } from '.';
 
 export class DataRegistration extends Model {

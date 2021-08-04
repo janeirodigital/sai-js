@@ -1,6 +1,6 @@
 import { DataFactory, NamedNode } from 'n3';
-import { INTEROP } from 'interop-namespaces';
-import { getOneMatchingQuad, RandomUUID, RdfFetch } from 'interop-utils';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { getOneMatchingQuad, RandomUUID, RdfFetch } from '@janeirodigital/interop-utils';
 import {
   AccessReceipt,
   ApplicationRegistration,

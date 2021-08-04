@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { fetch } from 'interop-test-utils';
-import { ApplicationRegistration, DataOwner } from 'interop-data-model';
+import { fetch } from '@janeirodigital/interop-test-utils';
+import { ApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
 
 import { Application } from '../src';
 

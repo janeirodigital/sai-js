@@ -1,4 +1,4 @@
-import { FetchOptions, FetchResponse, parseTurtle, RdfFetch } from 'interop-utils';
+import { FetchOptions, FetchResponse, parseTurtle, RdfFetch } from '@janeirodigital/interop-utils';
 import * as data from 'data-interoperability-panel';
 
 export const fetch = async function fetch(url: string, options?: FetchOptions): Promise<FetchResponse> {

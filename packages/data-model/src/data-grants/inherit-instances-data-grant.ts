@@ -1,5 +1,5 @@
 import { Memoize } from 'typescript-memoize';
-import { INTEROP } from 'interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { AbstractDataGrant, InheritableDataGrant, DataInstance } from '..';
 
 export class InheritInstancesDataGrant extends AbstractDataGrant {

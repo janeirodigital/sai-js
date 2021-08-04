@@ -1,6 +1,6 @@
 import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { DataFactory } from 'n3';
-import { getOneMatchingQuad, getAllMatchingQuads } from 'interop-utils';
+import { getOneMatchingQuad, getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { Model, ReferencesList, InteropFactory, DataGrant, InheritInstancesDataGrant } from '.';
 
 export class DataInstance extends Model {

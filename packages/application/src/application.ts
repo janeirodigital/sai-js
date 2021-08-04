@@ -1,5 +1,5 @@
-import { InteropFactory, ApplicationRegistration, DataOwner } from 'interop-data-model';
-import { RdfFetch, RandomUUID } from 'interop-utils';
+import { InteropFactory, ApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
+import { RdfFetch, RandomUUID } from '@janeirodigital/interop-utils';
 
 interface ApplicationDependencies {
   fetch: RdfFetch;

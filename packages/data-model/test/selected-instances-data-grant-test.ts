@@ -1,9 +1,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import 'jest-rdf';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { fetch } from 'interop-test-utils';
+import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { INTEROP } from 'interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { DataInstance, InteropFactory, SelectedInstancesDataGrant } from '../src';
 
 const factory = new InteropFactory({ fetch, randomUUID });

@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
-import { getOneMatchingQuad } from 'interop-utils';
-import { INTEROP } from 'interop-namespaces';
+import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { Model, AccessReceipt, InteropFactory } from '.';
 
 export class ApplicationRegistration extends Model {

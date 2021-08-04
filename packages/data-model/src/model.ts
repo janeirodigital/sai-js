@@ -1,7 +1,7 @@
 import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { DataFactory } from 'n3';
-import { RdfFetch, getOneMatchingQuad, getAllMatchingQuads } from 'interop-utils';
-import { INTEROP } from 'interop-namespaces';
+import { RdfFetch, getOneMatchingQuad, getAllMatchingQuads } from '@janeirodigital/interop-utils';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { InteropFactory } from '.';
 
 export class Model {

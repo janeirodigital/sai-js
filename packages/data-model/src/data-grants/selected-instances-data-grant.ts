@@ -1,8 +1,8 @@
 import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
-import { INTEROP } from 'interop-namespaces';
-import { getAllMatchingQuads } from 'interop-utils';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { AbstractDataGrant, InheritInstancesDataGrant, DataInstance, InteropFactory } from '..';
 
 export class SelectedInstancesDataGrant extends AbstractDataGrant {
