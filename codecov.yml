@@ -1,0 +1,36 @@
+coverage:
+  status:
+    projects:
+      default: off
+      application:
+        flags:
+          - application
+      data-model:
+        flags:
+          - data-model
+      namespaces:
+        flags:
+          - namespaces
+      test-utils:
+        flags:
+          - test-utils
+      utils:
+        flags:
+          - utils
+
+flags:
+  application:
+    paths:
+      - packages/application
+  data-model:
+    paths:
+      - packages/data-model
+  namespaces:
+    paths:
+      - packages/namespaces
+  test-utils:
+    paths:
+      - packages/test-utils
+  utils:
+    paths:
+      - packages/utils
