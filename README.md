@@ -1,5 +1,10 @@
 # Solid Application Interoperability (TypeScript)
 
+[![CI](https://github.com/janeirodigital/sai-js/actions/workflows/ci.yml/badge.svg)](https://github.com/janeirodigital/sai-js/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/janeirodigital/sai-js/branch/main/graph/badge.svg)](https://codecov.io/gh/janeirodigital/sai-js/tree/main)
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/solid/data-interoperability-panel)
+[![MIT license](https://img.shields.io/github/license/janeirodigital/sai-js)](https://github.com/janeirodigital/sai-js/blob/main/LICENSE)
+
 Modules implementing [Solid Application Interoperability Specification](https://solid.github.io/data-interoperability-panel/specification/)
 
 ## Development
@@ -20,5 +25,5 @@ npx lerna run test
 
 ## Current dependencies
 
-- N3Store from [N3.js](https://github.com/rdfjs/N3.js)
-- [randomUUID](https://github.com/uuidjs/randomUUID)
+- [N3.js](https://github.com/rdfjs/N3.js)
+- [typescript-memoize](https://github.com/darrylhodgins/typescript-memoize)
