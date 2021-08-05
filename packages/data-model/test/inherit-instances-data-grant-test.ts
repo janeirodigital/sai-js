@@ -29,6 +29,17 @@ test('should set correct scopeOfGrant', async () => {
   expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.InheritInstances);
 });
 
+test('should set iriPrefix', async () => {
+  const dataGrant = await factory.dataGrant(inheritsFromSelectedInstancesIri);
+  const iriPrefix = 'https://pro.alice.example/';
+  expect(dataGrant.iriPrefix).toEqual(iriPrefix);
+});
+
+test('should set correct canCreate', async () => {
+  const dataGrant = await factory.dataGrant(inheritsFromSelectedInstancesIri);
+  expect(dataGrant.canCreate).toBeTruthy();
+});
+
 test('should set inheritsFromGrantIri', async () => {
   const dataGrant = (await factory.dataGrant(inheritsFromSelectedInstancesIri)) as InheritInstancesDataGrant;
   expect(dataGrant.inheritsFromGrantIri).toBe(selectedInstancesDataGrantIri);

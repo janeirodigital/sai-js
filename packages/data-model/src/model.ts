@@ -19,11 +19,9 @@ export class Model {
     this.fetch = factory.fetch;
   }
 
+  // TODO (elf-pavlik) add handing when fetch doesn't return dataset
   protected async fetchData(): Promise<void> {
     const { dataset } = await this.fetch(this.iri);
-    if (!dataset) {
-      throw new Error('missing dataset');
-    }
     this.dataset = dataset;
   }
 

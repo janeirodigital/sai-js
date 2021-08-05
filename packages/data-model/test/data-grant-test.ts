@@ -4,6 +4,7 @@ import 'jest-rdf';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { InteropFactory } from '../src';
+import { ACL } from '@janeirodigital/interop-namespaces';
 
 const factory = new InteropFactory({ fetch, randomUUID });
 const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
@@ -11,6 +12,12 @@ const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63a
 test('should set the iri', async () => {
   const dataGrant = await factory.dataGrant(dataGrantIri);
   expect(dataGrant.iri).toBe(dataGrantIri);
+});
+
+test('should set the accessMode', async () => {
+  const dataGrant = await factory.dataGrant(dataGrantIri);
+  expect(dataGrant.accessMode).toContain(ACL.Read.value);
+  expect(dataGrant.accessMode).toContain(ACL.Write.value);
 });
 
 test('should set the factory', async () => {

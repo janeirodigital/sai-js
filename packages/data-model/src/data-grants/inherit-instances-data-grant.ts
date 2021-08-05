@@ -1,5 +1,5 @@
 import { Memoize } from 'typescript-memoize';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { ACL } from '@janeirodigital/interop-namespaces';
 import { AbstractDataGrant, InheritableDataGrant, DataInstance } from '..';
 
 export class InheritInstancesDataGrant extends AbstractDataGrant {
@@ -40,6 +40,6 @@ export class InheritInstancesDataGrant extends AbstractDataGrant {
   // TODO (elf-pavlik) verify expected access mode
   @Memoize()
   get canCreate(): boolean {
-    return this.accessMode.includes(INTEROP.Write.value);
+    return this.accessMode.includes(ACL.Write.value);
   }
 }

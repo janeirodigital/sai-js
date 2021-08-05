@@ -18,23 +18,10 @@ export class DataRegistration extends Model {
     return this.getObject('registeredShapeTree').value;
   }
 
-  // Remote Agent Data Registration
-  @Memoize()
-  get satisfiesDataGrant(): string[] | undefined {
-    const result = this.getObjectsArray('satisfiesDataGrant').map((object) => object.value);
-    return result.length ? result : undefined;
-  }
-
   // Data Registration
   @Memoize()
   get contains(): string[] | undefined {
     return this.getObjectsArray('contains', LDP).map((object) => object.value);
-  }
-
-  // Remote Data Registration
-  @Memoize()
-  get hasRemoteAgentDataRegistration(): string[] | undefined {
-    return this.getObjectsArray('hasRemoteAgentDataRegistration').map((object) => object.value);
   }
 
   @Memoize()

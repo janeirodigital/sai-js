@@ -1,7 +1,7 @@
 import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
 import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { AbstractDataGrant, InheritInstancesDataGrant, DataInstance, InteropFactory } from '..';
 
@@ -70,6 +70,6 @@ export class AllInstancesDataGrant extends AbstractDataGrant {
   // TODO (elf-pavlik) verify expected access mode
   @Memoize()
   get canCreate(): boolean {
-    return this.accessMode.includes(INTEROP.Write.value);
+    return this.accessMode.includes(ACL.Write.value);
   }
 }

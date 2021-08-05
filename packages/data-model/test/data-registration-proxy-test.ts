@@ -1,7 +1,13 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { DataRegistrationProxy, DataGrant, AllInstancesDataGrant, InteropFactory } from '../src';
+import {
+  DataRegistrationProxy,
+  DataGrant,
+  AllInstancesDataGrant,
+  InteropFactory,
+  SelectedInstancesDataGrant
+} from '../src';
 
 const factory = new InteropFactory({ fetch, randomUUID });
 
@@ -21,4 +27,13 @@ test('should delegate newDataInstance to grant', async () => {
   const spy = jest.spyOn(grant, 'newDataInstance');
   const newInstance = dataRegistrationProxy.newDataInstance();
   expect(spy).toHaveBeenCalledTimes(1);
+});
+
+test('should throw error if SelectedInstances grant', async () => {
+  const selectedInstancesGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
+  const grant = (await factory.dataGrant(selectedInstancesGrantIri)) as SelectedInstancesDataGrant;
+  const dataRegistrationProxy = new DataRegistrationProxy(grant);
+  expect(() => {
+    dataRegistrationProxy.newDataInstance();
+  }).toThrowError();
 });

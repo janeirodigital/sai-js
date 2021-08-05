@@ -40,7 +40,24 @@ describe('getChildInstancesIterator', () => {
   });
 });
 
-test.todo('should provide newChildDataInstance method');
+test('should provide newChildDataInstance method', async () => {
+  const taskShapeTree = 'https://solidshapes.example/trees/Task';
+  const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
+  const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
+  const accessReceipt = await factory.accessReceipt(accessReceiptIri);
+  const dataGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === dataGrantIri) as DataGrant;
+  const dataInstance = await DataInstance.build(snippetIri, dataGrant, factory);
+  expect(dataInstance.newChildDataInstance(taskShapeTree)).toBeInstanceOf(DataInstance);
+});
+
+test('should forward accessMode from the grant', async () => {
+  const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
+  const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
+  const accessReceipt = await factory.accessReceipt(accessReceiptIri);
+  const dataGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === dataGrantIri) as DataGrant;
+  const dataInstance = await DataInstance.build(snippetIri, dataGrant, factory);
+  expect(dataInstance.accessMode).toEqual(dataGrant.accessMode);
+});
 
 describe('delete', () => {
   test('should properly use fetch', async () => {

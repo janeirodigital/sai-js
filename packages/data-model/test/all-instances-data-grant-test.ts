@@ -19,6 +19,17 @@ test('should set correct scopeOfGrant', async () => {
   expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.AllInstances);
 });
 
+test('should set correct canCreate', async () => {
+  const dataGrant = await factory.dataGrant(snippetIri);
+  expect(dataGrant.canCreate).toBeTruthy();
+});
+
+test('should set iriPrefix', async () => {
+  const dataGrant = await factory.dataGrant(snippetIri);
+  const iriPrefix = 'https://home.alice.example/';
+  expect(dataGrant.iriPrefix).toEqual(iriPrefix);
+});
+
 test('should set hasDataRegistrationIri', async () => {
   const dataGrant = (await factory.dataGrant(snippetIri)) as AllInstancesDataGrant;
   const dataRegistrationIri = 'https://home.alice.example/f6ccd3a4-45ea-4f98-8a36-98eac92a6720';
