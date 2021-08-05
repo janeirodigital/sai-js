@@ -25,5 +25,8 @@
   },
   "scripts": {
     "prepare": "husky install"
+  },
+  "volta": {
+    "node": "16.6.1"
   }
 }
