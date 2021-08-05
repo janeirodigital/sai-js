@@ -38,16 +38,35 @@ describe('getChildInstancesIterator', () => {
     }
     expect(count).toBe(1);
   });
+  test('should throw if called on child data instance', async () => {
+    const dataInstanceIri = 'https://home.alice.example/f950bae5-247c-49b2-a537-b12cda8d5758#task';
+    const inheritingDataGrantIri = 'https://auth.alice.example/54b1a123-23ca-4733-9371-700b52b9c567';
+    const inheritingDataGrant = await factory.dataGrant(inheritingDataGrantIri);
+    const dataInstance = await DataInstance.build(dataInstanceIri, inheritingDataGrant, factory);
+    const taskShapeTree = 'https://solidshapes.example/trees/Task';
+    expect(() => dataInstance.getChildInstancesIterator(taskShapeTree)).toThrow('can not have child instance');
+  });
 });
 
-test('should provide newChildDataInstance method', async () => {
-  const taskShapeTree = 'https://solidshapes.example/trees/Task';
-  const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
-  const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
-  const accessReceipt = await factory.accessReceipt(accessReceiptIri);
-  const dataGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === dataGrantIri) as DataGrant;
-  const dataInstance = await DataInstance.build(snippetIri, dataGrant, factory);
-  expect(dataInstance.newChildDataInstance(taskShapeTree)).toBeInstanceOf(DataInstance);
+describe('newChildDataInstance', () => {
+  test('should provide newChildDataInstance method', async () => {
+    const taskShapeTree = 'https://solidshapes.example/trees/Task';
+    const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
+    const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
+    const accessReceipt = await factory.accessReceipt(accessReceiptIri);
+    const dataGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === dataGrantIri) as DataGrant;
+    const dataInstance = await DataInstance.build(snippetIri, dataGrant, factory);
+    expect(dataInstance.newChildDataInstance(taskShapeTree)).toBeInstanceOf(DataInstance);
+  });
+
+  test('should throw if called on child data instance', async () => {
+    const dataInstanceIri = 'https://home.alice.example/f950bae5-247c-49b2-a537-b12cda8d5758#task';
+    const inheritingDataGrantIri = 'https://auth.alice.example/54b1a123-23ca-4733-9371-700b52b9c567';
+    const inheritingDataGrant = await factory.dataGrant(inheritingDataGrantIri);
+    const dataInstance = await DataInstance.build(dataInstanceIri, inheritingDataGrant, factory);
+    const taskShapeTree = 'https://solidshapes.example/trees/Task';
+    expect(() => dataInstance.newChildDataInstance(taskShapeTree)).toThrow('can not have child instance');
+  });
 });
 
 test('should forward accessMode from the grant', async () => {
@@ -65,6 +84,14 @@ describe('delete', () => {
     const dataInstance = await localFactory.dataInstance(snippetIri, null);
     await dataInstance.delete();
     expect(localFactory.fetch).toHaveBeenCalledWith(snippetIri, { method: 'DELETE' });
+  });
+
+  test('should throw if failed', async () => {
+    const fakeFetch = () => Promise.resolve({ ok: false });
+    const localFactory = new InteropFactory({ fetch, randomUUID });
+    const dataInstance = await localFactory.dataInstance(snippetIri, null);
+    dataInstance.fetch = fakeFetch;
+    return expect(dataInstance.delete()).rejects.toThrow('failed');
   });
 });
 
@@ -87,5 +114,13 @@ describe('update', () => {
     const dataInstance = await localFactory.dataInstance(snippetIri, null);
     await dataInstance.update(differentDataset);
     expect(dataInstance.dataset).toBe(differentDataset);
+  });
+
+  test('should throw if failed', async () => {
+    const fakeFetch = () => Promise.resolve({ ok: false });
+    const localFactory = new InteropFactory({ fetch, randomUUID });
+    const dataInstance = await localFactory.dataInstance(snippetIri, null);
+    dataInstance.fetch = fakeFetch;
+    return expect(dataInstance.update(differentDataset)).rejects.toThrow('failed');
   });
 });

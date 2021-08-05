@@ -22,9 +22,9 @@ test('throws for grant with invalid scope', async () => {
   const invalidGrantDataset = await parseTurtle(`
     PREFIX interop: <http://www.w3.org/ns/solid/interop#>
     PREFIX foo: <https://foo.example/>
-    foo:bar interop:scopOfGrant interop:NonExistingScope .
+    foo:bar interop:scopeOfGrant interop:NonExistingScope .
   `);
   const fakeFetch = () => Promise.resolve({ dataset: invalidGrantDataset, ok: true });
   const factory = new InteropFactory({ fetch: fakeFetch, randomUUID });
-  await expect(async () => await factory.dataGrant('http://some.iri')).rejects.toThrowError();
+  expect(factory.dataGrant('https://foo.example/bar')).rejects.toThrow('Unknown scope');
 });

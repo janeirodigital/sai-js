@@ -57,11 +57,11 @@ export class DataInstance extends Model {
 
   getChildInstancesIterator(shapeTree: string): AsyncIterable<DataInstance> {
     let childGrant = null as null | InheritInstancesDataGrant;
-    if (!(this.dataGrant instanceof InheritInstancesDataGrant)) {
+    if (this.dataGrant instanceof InheritInstancesDataGrant) {
+      throw new Error('child instance can not have child instances');
+    } else {
       // TODO (elf-pavlik) extract as getter
-      childGrant = [...this.dataGrant.hasInheritingGrant].find(
-        (grant) => grant.registeredShapeTree === shapeTree
-      ) as InheritInstancesDataGrant;
+      childGrant = [...this.dataGrant.hasInheritingGrant].find((grant) => grant.registeredShapeTree === shapeTree);
     }
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const instance = this;
@@ -76,14 +76,15 @@ export class DataInstance extends Model {
   }
 
   newChildDataInstance(shapeTree: string): DataInstance {
-    let childGrant = null as null | InheritInstancesDataGrant;
-    if (!(this.dataGrant instanceof InheritInstancesDataGrant)) {
+    if (this.dataGrant instanceof InheritInstancesDataGrant) {
+      throw new Error('child instance can not have child instances');
+    } else {
       // TODO (elf-pavlik) extract as getter
-      childGrant = [...this.dataGrant.hasInheritingGrant].find(
+      const childGrant = [...this.dataGrant.hasInheritingGrant].find(
         (grant) => grant.registeredShapeTree === shapeTree
-      ) as InheritInstancesDataGrant;
+      );
+      return childGrant.newDataInstance();
     }
-    return childGrant.newDataInstance();
   }
 
   get accessMode(): string[] {
