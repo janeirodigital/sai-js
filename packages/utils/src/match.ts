@@ -15,7 +15,7 @@ export const getOneMatchingQuad = (
   predicate?: Term,
   object?: Term,
   graph?: Term
-): Quad => {
+): Quad | undefined => {
   const matches = dataset.match(subject, predicate, object, graph);
   return [...matches].shift();
 };

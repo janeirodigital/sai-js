@@ -35,4 +35,9 @@ describe('Turtle parser', () => {
       expect(quad.graph.value).toEqual(source);
     }
   });
+
+  test('should reject for invalid turtle', async () => {
+    const incorrectSnippet = 'This is not valid turtle!';
+    expect(parseTurtle(incorrectSnippet)).rejects.toBeTruthy();
+  });
 });
