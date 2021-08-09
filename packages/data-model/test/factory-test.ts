@@ -24,7 +24,8 @@ test('throws for grant with invalid scope', async () => {
     PREFIX foo: <https://foo.example/>
     foo:bar interop:scopeOfGrant interop:NonExistingScope .
   `);
-  const fakeFetch = () => Promise.resolve({ dataset: invalidGrantDataset, ok: true });
+  const fakeFetch = () => Promise.resolve({ dataset: () => invalidGrantDataset, ok: true });
+  // @ts-ignore
   const factory = new InteropFactory({ fetch: fakeFetch, randomUUID });
-  expect(factory.dataGrant('https://foo.example/bar')).rejects.toThrow('Unknown scope');
+  return expect(factory.dataGrant('https://foo.example/bar')).rejects.toThrow('Unknown scope');
 });

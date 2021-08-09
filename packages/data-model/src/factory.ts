@@ -1,6 +1,6 @@
 import { DataFactory, NamedNode } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { getOneMatchingQuad, RandomUUID, RdfFetch } from '@janeirodigital/interop-utils';
+import { getOneMatchingQuad, RdfFetch } from '@janeirodigital/interop-utils';
 import {
   AccessReceipt,
   ApplicationRegistration,
@@ -23,13 +23,13 @@ interface Cache {
 
 interface FactoryDependencies {
   fetch: RdfFetch;
-  randomUUID: RandomUUID;
+  randomUUID(): string;
 }
 
 export class InteropFactory {
   fetch: RdfFetch;
 
-  randomUUID: RandomUUID;
+  randomUUID: () => string;
 
   cache: Cache;
 
@@ -67,7 +67,8 @@ export class InteropFactory {
     if (cached) return cached;
 
     // TODO (elf-pavlik) handle if fetch doesn't return dataset
-    const { dataset } = await this.fetch(iri);
+    const response = await this.fetch(iri);
+    const dataset = await response.dataset();
 
     const quadPattern = [DataFactory.namedNode(iri), INTEROP.scopeOfGrant, null, null];
     const scopeOfGrant = getOneMatchingQuad(dataset, ...quadPattern).object as NamedNode;

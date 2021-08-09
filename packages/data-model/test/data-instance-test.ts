@@ -90,6 +90,7 @@ describe('delete', () => {
     const fakeFetch = () => Promise.resolve({ ok: false });
     const localFactory = new InteropFactory({ fetch, randomUUID });
     const dataInstance = await localFactory.dataInstance(snippetIri, null);
+    // @ts-ignore
     dataInstance.fetch = fakeFetch;
     return expect(dataInstance.delete()).rejects.toThrow('failed');
   });
@@ -120,6 +121,7 @@ describe('update', () => {
     const fakeFetch = () => Promise.resolve({ ok: false });
     const localFactory = new InteropFactory({ fetch, randomUUID });
     const dataInstance = await localFactory.dataInstance(snippetIri, null);
+    // @ts-ignore
     dataInstance.fetch = fakeFetch;
     return expect(dataInstance.update(differentDataset)).rejects.toThrow('failed');
   });

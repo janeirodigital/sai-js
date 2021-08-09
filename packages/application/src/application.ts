@@ -1,9 +1,9 @@
 import { InteropFactory, ApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
-import { RdfFetch, RandomUUID } from '@janeirodigital/interop-utils';
+import { RdfFetch, fetchWrapper } from '@janeirodigital/interop-utils';
 
 interface ApplicationDependencies {
   fetch: RdfFetch;
-  randomUUID: RandomUUID;
+  randomUUID(): string;
   // TODO(elf-pavlik) replace by implementing discovery
   applicationRegistrationUrl: string;
 }
@@ -18,7 +18,7 @@ export class Application {
   hasApplicationRegistration: ApplicationRegistration;
 
   constructor(dependencies: ApplicationDependencies) {
-    this.fetch = dependencies.fetch;
+    this.fetch = fetchWrapper(dependencies.fetch);
     this.factory = new InteropFactory({ fetch: dependencies.fetch, randomUUID: dependencies.randomUUID });
     this.applicationRegistrationUrl = dependencies.applicationRegistrationUrl;
   }
@@ -31,14 +31,6 @@ export class Application {
     const application = new Application(dependencies);
     await application.bootstrap();
     return application;
-  }
-
-  // TODO (elf-pavlik) verify exact access to user's webid from solid-auth-fetcher
-  /**
-   * @returns DataOwner instance for currently logged in user
-   */
-  get loggedInDataOwner(): DataOwner {
-    return this.dataOwners.find((agent) => agent.iri === this.fetch.user);
   }
 
   /**

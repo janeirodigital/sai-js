@@ -19,12 +19,3 @@ test('should have dataOwners getter', async () => {
     expect(owner).toBeInstanceOf(DataOwner);
   }
 });
-
-test('should have loggedInDataOwner getter', async () => {
-  const webid = 'https://alice.example/#id';
-  fetch.user = webid;
-  const app = await Application.build({ applicationRegistrationUrl, fetch, randomUUID });
-  expect(app.dataOwners).toHaveLength(3);
-  expect(app.loggedInDataOwner).toBeInstanceOf(DataOwner);
-  expect(app.loggedInDataOwner.iri).toBe(webid);
-});
