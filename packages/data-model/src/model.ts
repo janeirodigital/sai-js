@@ -21,8 +21,8 @@ export class Model {
 
   // TODO (elf-pavlik) add handing when fetch doesn't return dataset
   protected async fetchData(): Promise<void> {
-    const { dataset } = await this.fetch(this.iri);
-    this.dataset = dataset;
+    const response = await this.fetch(this.iri);
+    this.dataset = await response.dataset();
   }
 
   protected getObject(property: string, namespace = INTEROP): NamedNode | undefined {
