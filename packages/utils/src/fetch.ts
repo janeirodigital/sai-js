@@ -17,12 +17,15 @@ async function unwrappedRdfFetch(
   iri: string,
   options?: RdfRequestInit
 ): Promise<RdfResponse> {
-  const requestInit = { dataset: undefined, ...options } as RequestInit;
-  if (options.dataset) {
-    requestInit.body = await serializeTurtle(options.dataset);
-    requestInit.headers = { 'Content-Type': 'text/turtle', ...requestInit.headers };
+  let requestInit: RequestInit;
+  if (options?.dataset) {
+    const { dataset, ...request } = options;
+    request.body = await serializeTurtle(options.dataset);
+    request.headers = { 'Content-Type': 'text/turtle', ...request.headers };
+    requestInit = request;
   } else {
     // TODO (elf-pavlik) handle binary files
+    requestInit = { ...options } as RequestInit;
     requestInit.headers = { Accept: 'text/turtle', ...requestInit.headers };
   }
   const response = await whatwgFetch(iri, requestInit);
