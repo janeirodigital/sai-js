@@ -1,7 +1,6 @@
-import { DatasetCore, NamedNode } from '@rdfjs/types';
-import { DataFactory } from 'n3';
-import { getOneMatchingQuad, getAllMatchingQuads } from '@janeirodigital/interop-utils';
-import { Model, ReferencesList, InteropFactory, DataGrant, InheritInstancesDataGrant } from '.';
+import { DatasetCore } from '@rdfjs/types';
+import { findChildReferences } from '@janeirodigital/interop-utils';
+import { Model, InteropFactory, DataGrant, InheritInstancesDataGrant } from '.';
 
 export class DataInstance extends Model {
   dataGrant: DataGrant;
@@ -40,19 +39,13 @@ export class DataInstance extends Model {
     this.dataset = dataset;
   }
 
-  async getReferencesListForShapeTree(shapeTree: string): Promise<ReferencesList> {
-    const referencesListNode = getAllMatchingQuads(this.dataset, ...this.referencesListPattern)
-      .map((quad) => quad.object)
-      .find((object) => {
-        const childTreePattern = [
-          object,
-          DataFactory.namedNode('https://tbd.example/referencedTree'),
-          DataFactory.namedNode(shapeTree),
-          null
-        ];
-        return getOneMatchingQuad(this.dataset, ...childTreePattern);
-      }) as NamedNode;
-    return this.factory.referencesList(referencesListNode.value);
+  async getChildReferencesForShapeTree(shapeTree: string): Promise<string[]> {
+    const instanceShapeTree = await this.factory.shapeTree(this.dataGrant.registeredShapeTree);
+    const shapeText = await (
+      await this.fetch(instanceShapeTree.validatedBy, { headers: { Accept: 'text/shex' } })
+    ).text();
+    const shapePath = instanceShapeTree.getShapePathForReferenced(shapeTree);
+    return findChildReferences(this.iri, this.dataset, instanceShapeTree.validatedBy, shapeText, shapePath);
   }
 
   getChildInstancesIterator(shapeTree: string): AsyncIterable<DataInstance> {
@@ -67,8 +60,8 @@ export class DataInstance extends Model {
     const instance = this;
     return {
       async *[Symbol.asyncIterator]() {
-        const referencesList = await instance.getReferencesListForShapeTree(shapeTree);
-        for (const childInstanceIri of referencesList.references) {
+        const references = await instance.getChildReferencesForShapeTree(shapeTree);
+        for (const childInstanceIri of references) {
           yield instance.factory.dataInstance(childInstanceIri, childGrant);
         }
       }
@@ -89,9 +82,5 @@ export class DataInstance extends Model {
 
   get accessMode(): string[] {
     return this.dataGrant.accessMode;
-  }
-
-  private get referencesListPattern(): (NamedNode | null)[] {
-    return [DataFactory.namedNode(this.iri), DataFactory.namedNode('https://tbd.example/hasReferenceList'), null, null];
   }
 }

@@ -2,7 +2,7 @@
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DatasetCore } from '@rdfjs/types';
-import { DataGrant, DataInstance, InteropFactory, ReferencesList } from '../src';
+import { DataGrant, DataInstance, InteropFactory } from '../src';
 
 const factory = new InteropFactory({ fetch, randomUUID });
 const snippetIri = 'https://pro.alice.example/7a130c38-668a-4775-821a-08b38f2306fb#project';
@@ -11,15 +11,6 @@ describe('build', () => {
   test('should fetch its data', async () => {
     const dataInstance = await DataInstance.build(snippetIri, null, factory);
     expect(dataInstance.dataset.size).toBeGreaterThan(0);
-  });
-});
-
-describe('getReferencesListForShapeTree', () => {
-  test('should return a ReferencesList', async () => {
-    const shapeTree = 'https://solidshapes.example/trees/Task';
-    const dataInstance = await DataInstance.build(snippetIri, null, factory);
-    const result = await dataInstance.getReferencesListForShapeTree(shapeTree);
-    expect(result).toBeInstanceOf(ReferencesList);
   });
 });
 

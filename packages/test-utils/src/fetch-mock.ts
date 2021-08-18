@@ -2,16 +2,23 @@ import { RdfRequestInit, RdfResponse, parseTurtle, RdfFetch } from '@janeirodigi
 import * as data from 'data-interoperability-panel';
 
 export const fetch = async function fetch(url: string, options?: RdfRequestInit): Promise<RdfResponse> {
+  // just ok PUT
+  if (options?.method === 'PUT') {
+    // @ts-ignore
+    return { ok: true };
+  }
   // strip fragment
   const strippedUrl = url.replace(/#.*$/, '');
-  if (!options || options.method === 'GET') {
-    const dataset = async function dataset() {
+  const text = async function text() {
+    return Promise.resolve(data[strippedUrl]);
+  };
+  // @ts-ignore
+  const response: RdfResponse = { ok: true, text };
+  // @ts-ignore
+  if (!options?.headers?.Accept) {
+    response.dataset = async function dataset() {
       return parseTurtle(data[strippedUrl], strippedUrl);
     };
-    // @ts-ignore
-    return { ok: true, dataset };
   }
-
-  // @ts-ignore
-  return { ok: true };
+  return response;
 } as RdfFetch;
