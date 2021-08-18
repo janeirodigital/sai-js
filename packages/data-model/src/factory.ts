@@ -10,15 +10,20 @@ import {
   AllInstancesDataGrant,
   SelectedInstancesDataGrant,
   DataGrant,
-  ReferencesList
+  ShapeTree
 } from '.';
 
 interface CachedDataGrants {
   [key: string]: DataGrant;
 }
 
+interface CachedShapeTrees {
+  [key: string]: ShapeTree;
+}
+
 interface Cache {
   dataGrant: CachedDataGrants;
+  shapeTree: CachedShapeTrees;
 }
 
 interface FactoryDependencies {
@@ -37,7 +42,8 @@ export class InteropFactory {
     this.fetch = dependencies.fetch;
     this.randomUUID = dependencies.randomUUID;
     this.cache = {
-      dataGrant: {}
+      dataGrant: {},
+      shapeTree: {}
     };
   }
 
@@ -57,8 +63,16 @@ export class InteropFactory {
     return DataInstance.build(iri, grant, this);
   }
 
-  async referencesList(iri: string): Promise<ReferencesList> {
-    return ReferencesList.build(iri, this);
+  async shapeTree(iri: string): Promise<ShapeTree> {
+    // return cached if exists
+    const cached = this.cache.shapeTree[iri];
+    if (cached) return cached;
+
+    const shapeTree = await ShapeTree.build(iri, this);
+
+    // store in cache for future access
+    this.cache.shapeTree[iri] = shapeTree;
+    return shapeTree;
   }
 
   async dataGrant(iri: string): Promise<DataGrant> {

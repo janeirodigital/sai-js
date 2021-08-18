@@ -16,7 +16,7 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "data-interoperability-panel": "elf-pavlik/data-interoperability-panel#80af4d",
+    "data-interoperability-panel": "elf-pavlik/data-interoperability-panel#eac1f039",
     "@janeirodigital/interop-utils": "^0.1.0"
   },
   "devDependencies": {

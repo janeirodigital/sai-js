@@ -2,7 +2,7 @@ import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
-import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { Model, DataInstance, InteropFactory, DataGrant } from '.';
 
 export abstract class AbstractDataGrant extends Model {
