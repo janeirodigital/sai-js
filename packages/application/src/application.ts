@@ -1,11 +1,17 @@
+import { DataFactory } from 'n3';
+import { DatasetCore } from '@rdfjs/types';
 import { InteropFactory, ApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
-import { RdfFetch, fetchWrapper } from '@janeirodigital/interop-utils';
+import {
+  RdfFetch,
+  fetchWrapper,
+  getOneMatchingQuad,
+  getApplicationRegistrationIri
+} from '@janeirodigital/interop-utils';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
 
 interface ApplicationDependencies {
   fetch: RdfFetch;
   randomUUID(): string;
-  // TODO(elf-pavlik) replace by implementing discovery
-  applicationRegistrationUrl: string;
 }
 
 export class Application {
@@ -13,22 +19,46 @@ export class Application {
 
   fetch: RdfFetch;
 
-  applicationRegistrationUrl: string;
+  webId: string;
+
+  clientId: string;
+
+  authorizationAgent: string;
 
   hasApplicationRegistration: ApplicationRegistration;
 
-  constructor(dependencies: ApplicationDependencies) {
+  constructor(webId: string, clientId: string, dependencies: ApplicationDependencies) {
+    this.webId = webId;
+    this.clientId = clientId;
     this.fetch = fetchWrapper(dependencies.fetch);
     this.factory = new InteropFactory({ fetch: dependencies.fetch, randomUUID: dependencies.randomUUID });
-    this.applicationRegistrationUrl = dependencies.applicationRegistrationUrl;
   }
 
   private async bootstrap(): Promise<void> {
-    this.hasApplicationRegistration = await this.factory.applicationRegistration(this.applicationRegistrationUrl);
+    this.authorizationAgent = await this.discoverAuthorizationAgent();
+    const applicationRegistrationIri = await this.discoverRegistration();
+    if (applicationRegistrationIri) {
+      this.hasApplicationRegistration = await this.factory.applicationRegistration(applicationRegistrationIri);
+    } else {
+      throw new Error('support planned in the future');
+      // TODO (elf-pavlik) implement flow with Authorization Agent
+      // this.initiateRegistration(this.authorizationAgent, this.clientId)
+    }
   }
 
-  static async build(dependencies: ApplicationDependencies): Promise<Application> {
-    const application = new Application(dependencies);
+  async discoverAuthorizationAgent(): Promise<string> {
+    const userDataset: DatasetCore = await (await this.fetch(this.webId)).dataset();
+    const authorizationAgentPattern = [DataFactory.namedNode(this.webId), INTEROP.authorizationAgent, null];
+    return getOneMatchingQuad(userDataset, ...authorizationAgentPattern).object.value;
+  }
+
+  async discoverRegistration(): Promise<string> {
+    const response = await this.fetch(this.authorizationAgent, { method: 'HEAD' });
+    return getApplicationRegistrationIri(response.headers.get('Link'));
+  }
+
+  static async build(webId: string, clientId: string, dependencies: ApplicationDependencies): Promise<Application> {
+    const application = new Application(webId, clientId, dependencies);
     await application.bootstrap();
     return application;
   }

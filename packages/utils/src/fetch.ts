@@ -12,6 +12,7 @@ export interface RdfResponse extends Response {
 type WhatwgFetch = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
 export type RdfFetch = (iri: string, options?: RdfRequestInit) => Promise<RdfResponse>;
 
+// TODO accept either string | NamedNode
 async function unwrappedRdfFetch(
   whatwgFetch: WhatwgFetch,
   iri: string,

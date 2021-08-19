@@ -43,17 +43,19 @@ class Project {
 }
 
 (async function () {
+
+  const clientId = 'https://thisapp.example/'
   // log in user with solid-auth-fetcher
   // TODO (elf-pavlik) add  log in example
-  // const webid = //TODO
+  // const webId = //TODO
 
   // create new application
   // fetch need to take care of authentication
-  const application = await Application.build({ fetch, randomUUID });
+  const application = await Application.build(webId, clientId, { fetch, randomUUID });
 
   // application provides list of all data owners
   // we can find one matching currently logged in user
-  const user = application.dataOwners.find((agent) => agent.iri === webid);
+  const user = application.dataOwners.find((agent) => agent.iri === webId);
 
   const projects = [];
   // agent has one or more data registrations
