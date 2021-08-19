@@ -33,6 +33,7 @@ async function unwrappedRdfFetch(
   const rdfResponse = { ...response } as RdfResponse;
   // TODO (elf-pavlik) check if Content-Type is text/turtle
   rdfResponse.dataset = async function dataset() {
+    // TODO (elf-pavlik) set graph name
     return parseTurtle(await response.text());
   };
   return rdfResponse;

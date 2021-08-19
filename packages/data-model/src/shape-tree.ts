@@ -5,8 +5,11 @@ import { SHAPETREES } from '@janeirodigital/interop-namespaces';
 import { Model, InteropFactory } from '.';
 
 export class ShapeTree extends Model {
+  shapeText: string;
+
   private async bootstrap(): Promise<void> {
     await this.fetchData();
+    this.shapeText = await (await this.fetch(this.validatedBy, { headers: { Accept: 'text/shex' } })).text();
   }
 
   public static async build(iri: string, factory: InteropFactory): Promise<ShapeTree> {

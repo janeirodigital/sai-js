@@ -5,6 +5,7 @@ module.exports = {
   moduleFileExtensions: ['js', 'ts'],
   collectCoverage: true,
   coverageDirectory: 'coverage',
+  coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
   transform: {
     '^.+\\.ts$': 'ts-jest'
   },

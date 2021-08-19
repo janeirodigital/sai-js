@@ -99,7 +99,7 @@ class Project {
 
   // also data instance acting as parent provides convienience method
   const projectToCreateTaskIn = projects.find(/* logic */);
-  const newTask = new Task(projectToCreateTaskIn.newChildInstance(Task.shapeTree));
+  const newTask = new Task(projectToCreateTaskIn.newChildDataInstance(Task.shapeTree));
   task.name = 'some TODO';
   try {
     await newTask.update();
