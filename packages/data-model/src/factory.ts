@@ -59,8 +59,8 @@ export class InteropFactory {
     return DataRegistration.build(iri, this);
   }
 
-  async dataInstance(iri: string, grant: DataGrant): Promise<DataInstance> {
-    return DataInstance.build(iri, grant, this);
+  async dataInstance(iri: string, grant: DataGrant, parent?: DataInstance): Promise<DataInstance> {
+    return DataInstance.build(iri, grant, this, parent);
   }
 
   async shapeTree(iri: string): Promise<ShapeTree> {

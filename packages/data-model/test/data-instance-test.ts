@@ -6,10 +6,16 @@ import { DataGrant, DataInstance, InteropFactory } from '../src';
 
 const factory = new InteropFactory({ fetch, randomUUID });
 const snippetIri = 'https://pro.alice.example/7a130c38-668a-4775-821a-08b38f2306fb#project';
+const defaultDataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
+let defaultDataGrant: DataGrant;
+
+beforeAll(async () => {
+  defaultDataGrant = await factory.dataGrant(defaultDataGrantIri);
+});
 
 describe('build', () => {
   test('should fetch its data', async () => {
-    const dataInstance = await DataInstance.build(snippetIri, null, factory);
+    const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
     expect(dataInstance.dataset.size).toBeGreaterThan(0);
   });
 });
@@ -72,7 +78,7 @@ test('should forward accessMode from the grant', async () => {
 describe('delete', () => {
   test('should properly use fetch', async () => {
     const localFactory = new InteropFactory({ fetch: jest.fn(fetch), randomUUID });
-    const dataInstance = await localFactory.dataInstance(snippetIri, null);
+    const dataInstance = await localFactory.dataInstance(snippetIri, defaultDataGrant);
     await dataInstance.delete();
     expect(localFactory.fetch).toHaveBeenCalledWith(snippetIri, { method: 'DELETE' });
   });
@@ -80,7 +86,7 @@ describe('delete', () => {
   test('should throw if failed', async () => {
     const fakeFetch = () => Promise.resolve({ ok: false });
     const localFactory = new InteropFactory({ fetch, randomUUID });
-    const dataInstance = await localFactory.dataInstance(snippetIri, null);
+    const dataInstance = await localFactory.dataInstance(snippetIri, defaultDataGrant);
     // @ts-ignore
     dataInstance.fetch = fakeFetch;
     return expect(dataInstance.delete()).rejects.toThrow('failed');
@@ -92,18 +98,18 @@ describe('update', () => {
   let differentDataset: DatasetCore;
   beforeAll(async () => {
     otherProjectIri = 'https://pro.alice.example/ccbd77ae-f769-4e07-b41f-5136501e13e7#project';
-    differentDataset = (await factory.dataInstance(otherProjectIri, null)).dataset;
+    differentDataset = (await factory.dataInstance(otherProjectIri, defaultDataGrant)).dataset;
   });
   test('should properly use fetch', async () => {
     const localFactory = new InteropFactory({ fetch: jest.fn(fetch), randomUUID });
-    const dataInstance = await localFactory.dataInstance(snippetIri, null);
+    const dataInstance = await localFactory.dataInstance(snippetIri, defaultDataGrant);
     await dataInstance.update(differentDataset);
     expect(localFactory.fetch).toHaveBeenCalledWith(snippetIri, { method: 'PUT', dataset: differentDataset });
   });
 
   test('should set updated dataset on the data instance', async () => {
     const localFactory = new InteropFactory({ fetch: jest.fn(fetch), randomUUID });
-    const dataInstance = await localFactory.dataInstance(snippetIri, null);
+    const dataInstance = await localFactory.dataInstance(snippetIri, defaultDataGrant);
     await dataInstance.update(differentDataset);
     expect(dataInstance.dataset).toBe(differentDataset);
   });
@@ -111,7 +117,7 @@ describe('update', () => {
   test('should throw if failed', async () => {
     const fakeFetch = () => Promise.resolve({ ok: false });
     const localFactory = new InteropFactory({ fetch, randomUUID });
-    const dataInstance = await localFactory.dataInstance(snippetIri, null);
+    const dataInstance = await localFactory.dataInstance(snippetIri, defaultDataGrant);
     // @ts-ignore
     dataInstance.fetch = fakeFetch;
     return expect(dataInstance.update(differentDataset)).rejects.toThrow('failed');

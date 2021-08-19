@@ -38,9 +38,14 @@ export abstract class AbstractDataGrant extends Model {
    *
    * @returns new DataInstance with IRI based on prefix from DataRegistration
    */
-  public static newDataInstance(sourceGrant: DataGrant): DataInstance {
+  public static newDataInstance(sourceGrant: DataGrant, parent?: DataInstance): DataInstance {
     const iri = `${sourceGrant.iriPrefix}${sourceGrant.factory.randomUUID()}`;
-    return new DataInstance(iri, sourceGrant.factory);
+    const instance = new DataInstance(iri, sourceGrant.factory);
+    instance.draft = true;
+    if (parent) {
+      instance.parent = parent;
+    }
+    return instance;
   }
 
   public static iriPrefix(sourceGrant: DataGrant): string {

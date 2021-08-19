@@ -18,8 +18,8 @@ export class InheritInstancesDataGrant extends AbstractDataGrant {
     };
   }
 
-  public newDataInstance(): DataInstance {
-    return AbstractDataGrant.newDataInstance(this);
+  public newDataInstance(parent?: DataInstance): DataInstance {
+    return AbstractDataGrant.newDataInstance(this, parent);
   }
 
   @Memoize()
