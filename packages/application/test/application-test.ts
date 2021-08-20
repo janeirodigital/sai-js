@@ -6,10 +6,9 @@ import { RdfResponse } from '@janeirodigital/interop-utils';
 import { Application } from '../src';
 
 const webId = 'https://alice.example/#id';
-const clientId = 'https://projectron.example/#app';
 
 test('should build application registration', async () => {
-  const app = await Application.build(webId, clientId, { fetch, randomUUID });
+  const app = await Application.build(webId, { fetch, randomUUID });
   expect(app.hasApplicationRegistration).toBeInstanceOf(ApplicationRegistration);
 });
 
@@ -18,11 +17,11 @@ test('should throw if no appliction registration', async () => {
   mocked
     .mockResolvedValueOnce(fetch(webId))
     .mockResolvedValueOnce(Promise.resolve({ ok: true, headers: { get: () => '' } } as unknown as RdfResponse));
-  expect(Application.build(webId, clientId, { fetch: mocked, randomUUID })).rejects.toThrow('support planned');
+  expect(Application.build(webId, { fetch: mocked, randomUUID })).rejects.toThrow('support planned');
 });
 
 test('should have dataOwners getter', async () => {
-  const app = await Application.build(webId, clientId, { fetch, randomUUID });
+  const app = await Application.build(webId, { fetch, randomUUID });
   expect(app.dataOwners).toHaveLength(3);
   for (const owner of app.dataOwners) {
     expect(owner).toBeInstanceOf(DataOwner);

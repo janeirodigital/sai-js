@@ -21,15 +21,12 @@ export class Application {
 
   webId: string;
 
-  clientId: string;
-
   authorizationAgent: string;
 
   hasApplicationRegistration: ApplicationRegistration;
 
-  constructor(webId: string, clientId: string, dependencies: ApplicationDependencies) {
+  constructor(webId: string, dependencies: ApplicationDependencies) {
     this.webId = webId;
-    this.clientId = clientId;
     this.fetch = fetchWrapper(dependencies.fetch);
     this.factory = new InteropFactory({ fetch: dependencies.fetch, randomUUID: dependencies.randomUUID });
   }
@@ -42,7 +39,7 @@ export class Application {
     } else {
       throw new Error('support planned in the future');
       // TODO (elf-pavlik) implement flow with Authorization Agent
-      // this.initiateRegistration(this.authorizationAgent, this.clientId)
+      // this.initiateRegistration(this.authorizationAgent)
     }
   }
 
@@ -57,8 +54,8 @@ export class Application {
     return getApplicationRegistrationIri(response.headers.get('Link'));
   }
 
-  static async build(webId: string, clientId: string, dependencies: ApplicationDependencies): Promise<Application> {
-    const application = new Application(webId, clientId, dependencies);
+  static async build(webId: string, dependencies: ApplicationDependencies): Promise<Application> {
+    const application = new Application(webId, dependencies);
     await application.bootstrap();
     return application;
   }
