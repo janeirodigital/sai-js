@@ -29,3 +29,4 @@ npx lerna run test
 
 - [N3.js](https://github.com/rdfjs/N3.js)
 - [typescript-memoize](https://github.com/darrylhodgins/typescript-memoize)
+- [http-link-header](https://github.com/jhermsmeier/node-http-link-header)
