@@ -1,9 +1,18 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { fetch } from '@janeirodigital/interop-test-utils';
-import { findChildReferences, getPredicate } from '../src';
+import { getPredicate } from '../src';
 
-const projectSchemaIri = 'https://solidshapes.example/shapes/Project';
 const shapePath = '@<https://solidshapes.example/shapes/Project>~<https://vocab.example/project-management/hasTask>';
+const shapeText = `
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX solidshapes: <https://solidshapes.example/shapes/>
+  PREFIX pm: <https://vocab.example/project-management/>
+
+  solidshapes:Project {
+    a [ pm:Project ] ;
+    rdfs:label xsd:string ;
+    pm:hasTask IRI *
+  }
+`;
 
 describe('findChildReferences', () => {
   test.todo('should find correct references');
@@ -11,7 +20,6 @@ describe('findChildReferences', () => {
 
 describe('getPredicate', () => {
   test('should get correct predicate', async () => {
-    const shapePathText = await (await fetch(projectSchemaIri)).text();
-    expect(getPredicate(shapePath, shapePathText)).toBe('https://vocab.example/project-management/hasTask');
+    expect(getPredicate(shapePath, shapeText)).toBe('https://vocab.example/project-management/hasTask');
   });
 });
