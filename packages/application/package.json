@@ -5,6 +5,7 @@
   "author": "Ángel Araya <angel.araya@janeirodigital.com>",
   "homepage": "",
   "license": "MIT",
+  "type": "module",
   "main": "dist/index.js",
   "directories": {
     "lib": "src",
@@ -12,7 +13,7 @@
   },
   "scripts": {
     "build": "tsc -b .",
-    "test": "jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {

@@ -1,5 +1,6 @@
-import { parseTurtle, RdfResponse, serializeTurtle } from '../src';
-import { fetchWrapper } from '../src';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { jest } from '@jest/globals';
+import { fetchWrapper, parseTurtle } from '../src';
 
 const snippet = `<https://acme.example/4d594c61-7cff-484a-a1d2-1f353ee4e1e7> a <http://www.w3.org/ns/solid/interop#DataRegistration>;
     <http://www.w3.org/ns/solid/interop#registeredBy> <https://garry.example/#id>;
@@ -15,7 +16,7 @@ describe('fetchWrapper', () => {
   test('should set Accept header on GET', async () => {
     const mock = jest.fn(fetchMock);
     const rdfFetch = fetchWrapper(mock);
-    const response = await rdfFetch('https://some.iri');
+    await rdfFetch('https://some.iri');
 
     expect(mock.mock.calls[0][0]).toBe('https://some.iri');
     const headers = mock.mock.calls[0][1].headers as any;

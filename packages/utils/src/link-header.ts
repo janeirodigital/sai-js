@@ -1,4 +1,4 @@
-import * as LinkHeader from 'http-link-header';
+import LinkHeader from 'http-link-header';
 
 export function getApplicationRegistrationIri(linkHeaderText: string): string {
   const links = LinkHeader.parse(linkHeaderText).refs;

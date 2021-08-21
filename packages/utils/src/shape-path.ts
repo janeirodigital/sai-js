@@ -1,6 +1,6 @@
 import { Parser, Ast } from 'shape-path-core';
-import * as ShexCParser from '@shexjs/parser';
-import * as ShExUtil from '@shexjs/util';
+import ShexCParser from '@shexjs/parser';
+import ShExUtil from '@shexjs/util';
 import { shapePathQuery } from '@shexjs/shape-path-query';
 import { DatasetCore } from '@rdfjs/types';
 

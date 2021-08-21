@@ -1,5 +1,7 @@
 import { randomUUID } from 'crypto';
 // eslint-disable-next-line import/no-extraneous-dependencies
+import { jest } from '@jest/globals';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { ApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
 import { RdfResponse } from '@janeirodigital/interop-utils';
@@ -15,8 +17,8 @@ test('should build application registration', async () => {
 test('should throw if no appliction registration', async () => {
   const mocked = jest.fn(fetch);
   mocked
-    .mockResolvedValueOnce(fetch(webId))
-    .mockResolvedValueOnce(Promise.resolve({ ok: true, headers: { get: () => '' } } as unknown as RdfResponse));
+    .mockResolvedValueOnce(await fetch(webId))
+    .mockResolvedValueOnce({ ok: true, headers: { get: () => '' } } as unknown as RdfResponse);
   expect(Application.build(webId, { fetch: mocked, randomUUID })).rejects.toThrow('support planned');
 });
 
