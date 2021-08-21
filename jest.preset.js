@@ -1,5 +1,5 @@
 module.exports = {
-  preset: 'ts-jest',
+  extensionsToTreatAsEsm: ['.ts'],
   testEnvironment: 'node',
   testRegex: '/test/.*-test.ts$',
   moduleFileExtensions: ['js', 'ts'],

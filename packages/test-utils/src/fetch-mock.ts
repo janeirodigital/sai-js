@@ -1,5 +1,5 @@
 import { RdfRequestInit, RdfResponse, parseTurtle, RdfFetch } from '@janeirodigital/interop-utils';
-import * as data from 'data-interoperability-panel';
+import data from 'data-interoperability-panel';
 
 export const fetch = async function fetch(url: string, options?: RdfRequestInit): Promise<RdfResponse> {
   // just ok PUT
