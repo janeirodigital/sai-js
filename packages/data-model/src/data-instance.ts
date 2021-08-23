@@ -84,7 +84,7 @@ export class DataInstance extends Model {
       async *[Symbol.asyncIterator]() {
         const references = await instance.getChildReferencesForShapeTree(shapeTree);
         for (const childInstanceIri of references) {
-          yield instance.factory.dataInstance(childInstanceIri, childGrant);
+          yield instance.factory.dataInstance(childInstanceIri, childGrant, instance);
         }
       }
     };
@@ -124,11 +124,11 @@ export class DataInstance extends Model {
     const shapePath = this.shapeTree.getShapePathForReferenced(child.dataGrant.registeredShapeTree);
     const predicate = getPredicate(shapePath, this.shapeTree.shapeText);
 
-    // TODO (elf-pavlik) set graph name
     const referenceQuad = DataFactory.quad(
       DataFactory.namedNode(this.iri),
       DataFactory.namedNode(predicate),
-      DataFactory.namedNode(child.iri)
+      DataFactory.namedNode(child.iri),
+      [...this.dataset][0].graph
     );
     this.dataset.delete(referenceQuad);
     await this.update(this.dataset);

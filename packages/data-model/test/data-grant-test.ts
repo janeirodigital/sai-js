@@ -30,3 +30,7 @@ test('should set registeredShapeTree', async () => {
   const projectShapeTree = 'https://solidshapes.example/trees/Project';
   expect(dataGrant.registeredShapeTree).toBe(projectShapeTree);
 });
+
+describe('newDataInstance', () => {
+  test.todo('sets dataGrant on created data instance');
+});
