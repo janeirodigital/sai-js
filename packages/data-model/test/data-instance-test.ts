@@ -4,11 +4,13 @@ import { jest } from '@jest/globals';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DatasetCore } from '@rdfjs/types';
-import { DataGrant, DataInstance, InteropFactory } from '../src';
+import { DataFactory } from 'n3';
+import { DataGrant, DataInstance, InteropFactory, ShapeTree } from '../src';
 
 const factory = new InteropFactory({ fetch, randomUUID });
 const snippetIri = 'https://pro.alice.example/7a130c38-668a-4775-821a-08b38f2306fb#project';
 const defaultDataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
+const taskShapeTree = 'https://solidshapes.example/trees/Task';
 let defaultDataGrant: DataGrant;
 
 beforeAll(async () => {
@@ -28,7 +30,6 @@ describe('getChildInstancesIterator', () => {
     const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
     const accessReceipt = await factory.accessReceipt(accessReceiptIri);
     const dataGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === dataGrantIri) as DataGrant;
-    const taskShapeTree = 'https://solidshapes.example/trees/Task';
     const dataInstance = await DataInstance.build(snippetIri, dataGrant, factory);
     let count = 0;
     for await (const child of dataInstance.getChildInstancesIterator(taskShapeTree)) {
@@ -42,14 +43,12 @@ describe('getChildInstancesIterator', () => {
     const inheritingDataGrantIri = 'https://auth.alice.example/54b1a123-23ca-4733-9371-700b52b9c567';
     const inheritingDataGrant = await factory.dataGrant(inheritingDataGrantIri);
     const dataInstance = await DataInstance.build(dataInstanceIri, inheritingDataGrant, factory);
-    const taskShapeTree = 'https://solidshapes.example/trees/Task';
     expect(() => dataInstance.getChildInstancesIterator(taskShapeTree)).toThrow('can not have child instance');
   });
 });
 
 describe('newChildDataInstance', () => {
   test('should provide newChildDataInstance method', async () => {
-    const taskShapeTree = 'https://solidshapes.example/trees/Task';
     const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
     const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
     const accessReceipt = await factory.accessReceipt(accessReceiptIri);
@@ -63,7 +62,6 @@ describe('newChildDataInstance', () => {
     const inheritingDataGrantIri = 'https://auth.alice.example/54b1a123-23ca-4733-9371-700b52b9c567';
     const inheritingDataGrant = await factory.dataGrant(inheritingDataGrantIri);
     const dataInstance = await DataInstance.build(dataInstanceIri, inheritingDataGrant, factory);
-    const taskShapeTree = 'https://solidshapes.example/trees/Task';
     expect(() => dataInstance.newChildDataInstance(taskShapeTree)).toThrow('can not have child instance');
   });
 });
@@ -92,6 +90,26 @@ describe('delete', () => {
     // @ts-ignore
     dataInstance.fetch = fakeFetch;
     return expect(dataInstance.delete()).rejects.toThrow('failed');
+  });
+
+  test('should remove reference from parent if a child', async () => {
+    const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
+    let taskToDelete;
+    for await (const task of dataInstance.getChildInstancesIterator(taskShapeTree)) {
+      taskToDelete = task;
+      break;
+    }
+    const spy = jest.spyOn(dataInstance, 'updateRemovingChildReference');
+    await taskToDelete.delete();
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  test('should not try to remove reference from parent if child is a draft', async () => {
+    const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
+    const taskToDelete = dataInstance.newChildDataInstance(taskShapeTree);
+    const spy = jest.spyOn(dataInstance, 'updateRemovingChildReference');
+    await taskToDelete.delete();
+    expect(spy).toHaveBeenCalledTimes(0);
   });
 });
 
@@ -124,4 +142,43 @@ describe('update', () => {
     dataInstance.fetch = fakeFetch;
     return expect(dataInstance.update(differentDataset)).rejects.toThrow('failed');
   });
+
+  test('should add reference to parent if a draft child', async () => {
+    const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
+    const taskToCreate = dataInstance.newChildDataInstance(taskShapeTree);
+    const spy = jest.spyOn(dataInstance, 'updateAddingChildReference');
+    await taskToCreate.update(taskToCreate.dataset);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+});
+
+test('updateAddingChildReference', async () => {
+  const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
+  const taskToCreate = dataInstance.newChildDataInstance(taskShapeTree);
+  const quad = DataFactory.quad(
+    DataFactory.namedNode(dataInstance.iri),
+    DataFactory.namedNode('https://vocab.example/project-management/hasTask'),
+    DataFactory.namedNode(taskToCreate.iri)
+  );
+  expect(dataInstance.dataset.has(quad)).toBeFalsy();
+  await dataInstance.updateAddingChildReference(taskToCreate);
+  expect(dataInstance.dataset.has(quad)).toBeTruthy();
+});
+
+test('updateRemovingChildReference', async () => {
+  const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
+  let taskToDelete;
+  for await (const task of dataInstance.getChildInstancesIterator(taskShapeTree)) {
+    taskToDelete = task;
+    break;
+  }
+  const quad = DataFactory.quad(
+    DataFactory.namedNode(dataInstance.iri),
+    DataFactory.namedNode('https://vocab.example/project-management/hasTask'),
+    DataFactory.namedNode(taskToDelete.iri),
+    [...dataInstance.dataset][0].graph
+  );
+  expect(dataInstance.dataset.has(quad)).toBeTruthy();
+  await dataInstance.updateRemovingChildReference(taskToDelete);
+  expect(dataInstance.dataset.has(quad)).toBeFalsy();
 });
