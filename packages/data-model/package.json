@@ -2,7 +2,20 @@
   "name": "@janeirodigital/interop-data-model",
   "version": "0.1.0",
   "description": "> TODO: description",
-  "author": "Ángel Araya <angel.araya@janeirodigital.com>",
+  "contributors": [
+    {
+      "name": "elf Pavlik",
+      "email": "elf-pavlik@hackers4peace.net"
+    },
+    {
+      "name": "Maciej Samoraj",
+      "email": "maciej.samoraj@gmail.com"
+    },
+    {
+      "name": "Ángel Araya",
+      "email": "angel.araya@janeirodigital.com"
+    }
+  ],
   "homepage": "",
   "license": "MIT",
   "type": "module",
