@@ -80,7 +80,6 @@ export class InteropFactory {
     const cached = this.cache.dataGrant[iri];
     if (cached) return cached;
 
-    // TODO (elf-pavlik) handle if fetch doesn't return dataset
     const response = await this.fetch(iri);
     const dataset = await response.dataset();
 

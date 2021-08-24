@@ -45,6 +45,7 @@ class Project {
 (async function () {
 
   // TODO (elf-pavlik) add  log in example
+  // https://github.com/janeirodigital/sai-js/issues/16
   // const webId = //TODO
 
   // create new application

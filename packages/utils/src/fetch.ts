@@ -13,6 +13,7 @@ type WhatwgFetch = (input: RequestInfo, init?: RequestInit) => Promise<Response>
 export type RdfFetch = (iri: string, options?: RdfRequestInit) => Promise<RdfResponse>;
 
 // TODO accept either string | NamedNode
+// https://github.com/janeirodigital/sai-js/issues/17
 async function unwrappedRdfFetch(
   whatwgFetch: WhatwgFetch,
   iri: string,
@@ -25,15 +26,16 @@ async function unwrappedRdfFetch(
     request.headers = { 'Content-Type': 'text/turtle', ...request.headers };
     requestInit = request;
   } else {
-    // TODO (elf-pavlik) handle binary files
     requestInit = { ...options } as RequestInit;
     requestInit.headers = { Accept: 'text/turtle', ...requestInit.headers };
   }
   const response = await whatwgFetch(iri, requestInit);
   const rdfResponse = { ...response } as RdfResponse;
   // TODO (elf-pavlik) check if Content-Type is text/turtle
+  // https://github.com/janeirodigital/sai-js/issues/18
   rdfResponse.dataset = async function dataset() {
     // TODO (elf-pavlik) set graph name
+    // https://github.com/janeirodigital/sai-js/issues/19
     return parseTurtle(await response.text());
   };
   return rdfResponse;

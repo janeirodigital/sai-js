@@ -19,6 +19,8 @@ export class InheritInstancesDataGrant extends AbstractDataGrant {
   }
 
   public newDataInstance(parent?: DataInstance): DataInstance {
+    // TODO (elf-pavlik) ensure parent is present
+    // https://github.com/janeirodigital/sai-js/issues/20
     return AbstractDataGrant.newDataInstance(this, parent);
   }
 
@@ -38,6 +40,7 @@ export class InheritInstancesDataGrant extends AbstractDataGrant {
   }
 
   // TODO (elf-pavlik) verify expected access mode
+  // https://github.com/solid/data-interoperability-panel/issues/159
   @Memoize()
   get canCreate(): boolean {
     return this.accessMode.includes(ACL.Write.value);

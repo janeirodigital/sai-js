@@ -19,7 +19,8 @@ export function findChildReferences(
   return shapePathQuery(schema, schemaNodes, db, [{ node: parentIri, shape: parentShapeIri }]);
 }
 
-// TODO (elf-pavlik) generalize
+// TODO (elf-pavlik) consider st:viaPredicate alternative to st:viaShapePath
+// https://github.com/solid/data-interoperability-panel/issues/131
 export function getPredicate(shapePath: string, shapeText: string): string {
   const shexParser = ShexCParser.construct();
   const pathExpr = new Parser.ShapePathParser().parse(shapePath);

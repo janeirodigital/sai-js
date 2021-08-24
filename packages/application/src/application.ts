@@ -39,6 +39,7 @@ export class Application {
     } else {
       throw new Error('support planned in the future');
       // TODO (elf-pavlik) implement flow with Authorization Agent
+      // https://github.com/janeirodigital/sai-js/issues/15
       // this.initiateRegistration(this.authorizationAgent)
     }
   }

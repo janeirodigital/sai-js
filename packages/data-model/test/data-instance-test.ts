@@ -158,7 +158,8 @@ test('updateAddingChildReference', async () => {
   const quad = DataFactory.quad(
     DataFactory.namedNode(dataInstance.iri),
     DataFactory.namedNode('https://vocab.example/project-management/hasTask'),
-    DataFactory.namedNode(taskToCreate.iri)
+    DataFactory.namedNode(taskToCreate.iri),
+    [...dataInstance.dataset][0].graph
   );
   expect(dataInstance.dataset.has(quad)).toBeFalsy();
   await dataInstance.updateAddingChildReference(taskToCreate);

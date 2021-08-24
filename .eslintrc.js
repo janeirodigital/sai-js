@@ -15,7 +15,8 @@ module.exports = {
     'import/no-unresolved': 'off',
     'import/prefer-default-export': 'off',
     'no-restricted-syntax': 'off',
-    'no-useless-constructor': 'off'
+    'no-useless-constructor': 'off',
+    'dot-notation': 'off'
   },
   overrides: [
     {

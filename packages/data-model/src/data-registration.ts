@@ -18,7 +18,6 @@ export class DataRegistration extends Model {
     return this.getObject('registeredShapeTree').value;
   }
 
-  // Data Registration
   @Memoize()
   get contains(): string[] | undefined {
     return this.getObjectsArray('contains', LDP).map((object) => object.value);

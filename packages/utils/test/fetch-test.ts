@@ -8,6 +8,8 @@ const snippet = `<https://acme.example/4d594c61-7cff-484a-a1d2-1f353ee4e1e7> a <
     <http://www.w3.org/ns/solid/interop#registeredAt> "2020-08-23T21:12:27.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
     <http://www.w3.org/ns/solid/interop#registeredShapeTree> <https://solidshapes.example/trees/Project>.
 `;
+
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 async function fetchMock(input: RequestInfo, init?: RequestInit): Promise<Response> {
   return {} as Response;
 }
@@ -19,6 +21,7 @@ describe('fetchWrapper', () => {
     await rdfFetch('https://some.iri');
 
     expect(mock.mock.calls[0][0]).toBe('https://some.iri');
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const headers = mock.mock.calls[0][1].headers as any;
     expect(headers['Accept']).toEqual('text/turtle');
   });
@@ -38,10 +41,11 @@ describe('fetchWrapper', () => {
     const dataset = await parseTurtle(snippet);
     const mock = jest.fn(fetchMock);
     const rdfFetch = fetchWrapper(mock);
-    const response = await rdfFetch('https://some.iri', { method: 'PUT', dataset, headers: { 'If-Match': '12345' } });
+    await rdfFetch('https://some.iri', { method: 'PUT', dataset, headers: { 'If-Match': '12345' } });
 
     expect(mock.mock.calls[0][0]).toBe('https://some.iri');
     expect(mock.mock.calls[0][1].body).toMatch(snippet);
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const headers = mock.mock.calls[0][1].headers as any;
     expect(headers['Content-Type']).toEqual('text/turtle');
     expect(headers['If-Match']).toEqual('12345');

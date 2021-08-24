@@ -8,7 +8,6 @@ import { Term, Quad, DatasetCore } from '@rdfjs/types';
  * @param object
  * @param graph
  */
-// eslint-disable-next-line max-len
 export const getOneMatchingQuad = (
   dataset: DatasetCore,
   subject?: Term,
@@ -20,7 +19,6 @@ export const getOneMatchingQuad = (
   return [...matches].shift();
 };
 
-// eslint-disable-next-line max-len
 export const getAllMatchingQuads = (
   dataset: DatasetCore,
   subject?: Term,

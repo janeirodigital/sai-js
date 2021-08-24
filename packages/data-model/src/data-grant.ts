@@ -30,7 +30,6 @@ export abstract class AbstractDataGrant extends Model {
     return this.getObject('registeredShapeTree').value;
   }
 
-  // TODO (elf-pavlik) see if it will need reference to source data grant
   /*
    * @remarks
    * This method returns Data Instance with no dataset, it should be

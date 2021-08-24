@@ -68,6 +68,7 @@ export class AllInstancesDataGrant extends AbstractDataGrant {
   }
 
   // TODO (elf-pavlik) verify expected access mode
+  // https://github.com/solid/data-interoperability-panel/issues/159
   @Memoize()
   get canCreate(): boolean {
     return this.accessMode.includes(ACL.Write.value);

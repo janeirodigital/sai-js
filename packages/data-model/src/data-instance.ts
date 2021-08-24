@@ -48,6 +48,7 @@ export class DataInstance extends Model {
   }
 
   // TODO (elf-pavlik) set HTTP Link header pointing to Data Registration when used to create
+  // https://github.com/janeirodigital/sai-js/issues/22
   /*
    * @param dataset - dataset to replace current one with
    * @throws Error if fails
@@ -75,7 +76,8 @@ export class DataInstance extends Model {
     if (this.dataGrant instanceof InheritInstancesDataGrant) {
       throw new Error('child instance can not have child instances');
     } else {
-      // TODO (elf-pavlik) extract as getter
+      // TODO (elf-pavlik) extract as method findChildGrant(shapeTree)
+      // https://github.com/janeirodigital/sai-js/issues/21
       childGrant = [...this.dataGrant.hasInheritingGrant].find((grant) => grant.registeredShapeTree === shapeTree);
     }
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -94,7 +96,8 @@ export class DataInstance extends Model {
     if (this.dataGrant instanceof InheritInstancesDataGrant) {
       throw new Error('child instance can not have child instances');
     } else {
-      // TODO (elf-pavlik) extract as getter
+      // TODO (elf-pavlik) extract as method findChildGrant(shapeTree)
+      // https://github.com/janeirodigital/sai-js/issues/21
       const childGrant = [...this.dataGrant.hasInheritingGrant].find(
         (grant) => grant.registeredShapeTree === shapeTree
       );
@@ -110,11 +113,11 @@ export class DataInstance extends Model {
     const shapePath = this.shapeTree.getShapePathForReferenced(child.dataGrant.registeredShapeTree);
     const predicate = getPredicate(shapePath, this.shapeTree.shapeText);
 
-    // TODO (elf-pavlik) set graph name
     const referenceQuad = DataFactory.quad(
       DataFactory.namedNode(this.iri),
       DataFactory.namedNode(predicate),
-      DataFactory.namedNode(child.iri)
+      DataFactory.namedNode(child.iri),
+      [...this.dataset][0].graph
     );
     this.dataset.add(referenceQuad);
     await this.update(this.dataset);
