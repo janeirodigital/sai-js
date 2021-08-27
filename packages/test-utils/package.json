@@ -1,6 +1,6 @@
 {
   "name": "@janeirodigital/interop-test-utils",
-  "version": "0.1.0",
+  "version": "1.0.0-rc.0",
   "description": "Internal testing utilities intended to be used by other modules implementing Solid Application Interoperability specification. Intended to only be used as development dependency.",
   "contributors": [
     {
@@ -37,7 +37,7 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@janeirodigital/interop-utils": "^0.1.0",
+    "@janeirodigital/interop-utils": "^1.0.0-rc.0",
     "data-interoperability-panel": "solid/data-interoperability-panel#836b4b"
   },
   "devDependencies": {
