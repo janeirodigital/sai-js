@@ -2,6 +2,7 @@ import { DataFactory } from 'n3';
 import { DatasetCore } from '@rdfjs/types';
 import { InteropFactory, ApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
 import {
+  WhatwgFetch,
   RdfFetch,
   fetchWrapper,
   getOneMatchingQuad,
@@ -10,7 +11,7 @@ import {
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 
 interface ApplicationDependencies {
-  fetch: RdfFetch;
+  fetch: WhatwgFetch;
   randomUUID(): string;
 }
 
@@ -28,7 +29,7 @@ export class Application {
   constructor(webId: string, dependencies: ApplicationDependencies) {
     this.webId = webId;
     this.fetch = fetchWrapper(dependencies.fetch);
-    this.factory = new InteropFactory({ fetch: dependencies.fetch, randomUUID: dependencies.randomUUID });
+    this.factory = new InteropFactory({ fetch: this.fetch, randomUUID: dependencies.randomUUID });
   }
 
   private async bootstrap(): Promise<void> {

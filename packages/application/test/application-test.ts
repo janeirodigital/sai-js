@@ -4,7 +4,7 @@ import { jest } from '@jest/globals';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { ApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
-import { RdfResponse } from '@janeirodigital/interop-utils';
+import { RdfResponse, WhatwgFetch } from '@janeirodigital/interop-utils';
 import { Application } from '../src';
 
 const webId = 'https://alice.example/#id';
@@ -15,7 +15,7 @@ const linkString = `
 `;
 
 test('should build application registration', async () => {
-  const mocked = jest.fn(fetch);
+  const mocked = jest.fn(fetch as WhatwgFetch);
   mocked
     .mockResolvedValueOnce(await fetch(webId))
     .mockResolvedValueOnce({ ok: true, headers: { get: () => linkString } } as unknown as RdfResponse);
@@ -24,7 +24,7 @@ test('should build application registration', async () => {
 });
 
 test('should throw if no appliction registration', async () => {
-  const mocked = jest.fn(fetch);
+  const mocked = jest.fn(fetch as WhatwgFetch);
   mocked
     .mockResolvedValueOnce(await fetch(webId))
     .mockResolvedValueOnce({ ok: true, headers: { get: () => '' } } as unknown as RdfResponse);
@@ -32,7 +32,7 @@ test('should throw if no appliction registration', async () => {
 });
 
 test('should have dataOwners getter', async () => {
-  const mocked = jest.fn(fetch);
+  const mocked = jest.fn(fetch as WhatwgFetch);
   mocked
     .mockResolvedValueOnce(await fetch(webId))
     .mockResolvedValueOnce({ ok: true, headers: { get: () => linkString } } as unknown as RdfResponse);

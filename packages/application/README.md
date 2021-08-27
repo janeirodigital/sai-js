@@ -12,15 +12,15 @@
 import { DatasetCore } from '@rdfjs/types';
 import { Application } from '@janeirodigital/interop-application';
 import { DataInstance } from '@janeirodigital/interop-data-model';
-import { fetch } from 'solid-auth-fetcher';
+import { Session } from '@inrupt/solid-client-authn-node';
 import { randomUUID } from 'crypto';
-import { N3Store } from 'n3';
+import { Store } from 'n3';
 
-class Project {
+class Custom {
   localDataset: DatasetCore;
 
   constructor(private dataInstance: DataInstance) {
-    this.localDataset = new N3Store([...dataInstance.dataset]);
+    this.localDataset = new Store([...dataInstance.dataset]);
   }
 
   delete(): Promise<void> {
@@ -38,29 +38,40 @@ class Project {
   set name(name: string): void {
     // manipulate this.localDataset to change project name
   }
+}
 
+class Project extends Custom {
+  static shapeTree = 'https://solidshapes.example/trees/Project';
+}
+class Task extends Custom {
   static shapeTree = 'https://solidshapes.example/trees/Project';
 }
 
 (async function () {
+  // authentication is handled by separate library
+  // for example https://docs.inrupt.com/developer-tools/javascript/client-libraries/authentication/
 
-  // TODO (elf-pavlik) add  log in example
-  // https://github.com/janeirodigital/sai-js/issues/16
-  // const webId = //TODO
+  const session = new Session();
+  await session.login({
+    /* options */
+  });
+
+  // For simplicity we ommit handing redirect to user's Solid-OIDC Provider
+  // Following lines assume session.info.isLoggedIn === true
 
   // create new application
   // fetch need to take care of authentication
-  const application = await Application.build(webId, { fetch, randomUUID });
+  const application = await Application.build(session.info.webId, { fetch: session.fetch, randomUUID });
 
   // application provides list of all data owners
   // we can find one matching currently logged in user
-  const user = application.dataOwners.find((agent) => agent.iri === webId);
+  const user = application.dataOwners.find((agent) => agent.iri === session.info.webId);
 
   const projects = [];
   // agent has one or more data registrations
   for (const registration of user.selectRegistrations(Project.shapeTree)) {
     // registration provides async iterator of Data Instances from that data registration
-    for await (const dataInstance of registration.dataInstances {
+    for await (const dataInstance of registration.dataInstances) {
       // data instance will provide RDFJS DatasetCore with all the data
       // one can create app specific instances
       projects.push(new Project(dataInstance));
@@ -77,7 +88,7 @@ class Project {
 
   // DataInstance#update
   const projectToUpdate = projects.find(/* logic */);
-  projectToUpadate.name = 'Very very important thing';
+  projectToUpdate.name = 'Very very important thing';
   try {
     await projectToUpdate.update();
   } catch (e) {
@@ -85,21 +96,19 @@ class Project {
   }
 
   // DataRegistration#newDataInstance
-  const registration = user.selectRegistrations(projectShapeTree).find(/* logic */);
-  if (registration.canCreate) {
-    const newProject = registration.newDataInstance();
-    newProject.name = 'Another thing';
-    try {
-      await newProject.update();
-    } catch (e) {
-      // handle error
-    }
+  const registration = user.selectRegistrations(Project.shapeTree).find(/* logic */);
+  const newProject = new Project(registration.newDataInstance());
+  newProject.name = 'Another thing';
+  try {
+    await newProject.update();
+  } catch (e) {
+    // handle error
   }
 
   // also data instance acting as parent provides convienience method
   const projectToCreateTaskIn = projects.find(/* logic */);
   const newTask = new Task(projectToCreateTaskIn.newChildDataInstance(Task.shapeTree));
-  task.name = 'some TODO';
+  newTask.name = 'some TODO';
   try {
     await newTask.update();
   } catch (e) {
