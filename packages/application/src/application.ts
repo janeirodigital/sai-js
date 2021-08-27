@@ -21,7 +21,7 @@ export class Application {
 
   webId: string;
 
-  authorizationAgent: string;
+  hasAuthorizationAgent: string;
 
   hasApplicationRegistration: ApplicationRegistration;
 
@@ -32,7 +32,7 @@ export class Application {
   }
 
   private async bootstrap(): Promise<void> {
-    this.authorizationAgent = await this.discoverAuthorizationAgent();
+    this.hasAuthorizationAgent = await this.discoverAuthorizationAgent();
     const applicationRegistrationIri = await this.discoverRegistration();
     if (applicationRegistrationIri) {
       this.hasApplicationRegistration = await this.factory.applicationRegistration(applicationRegistrationIri);
@@ -40,18 +40,18 @@ export class Application {
       throw new Error('support planned in the future');
       // TODO (elf-pavlik) implement flow with Authorization Agent
       // https://github.com/janeirodigital/sai-js/issues/15
-      // this.initiateRegistration(this.authorizationAgent)
+      // this.initiateRegistration(this.hasAuthorizationAgent)
     }
   }
 
   async discoverAuthorizationAgent(): Promise<string> {
     const userDataset: DatasetCore = await (await this.fetch(this.webId)).dataset();
-    const authorizationAgentPattern = [DataFactory.namedNode(this.webId), INTEROP.authorizationAgent, null];
+    const authorizationAgentPattern = [DataFactory.namedNode(this.webId), INTEROP.hasAuthorizationAgent, null];
     return getOneMatchingQuad(userDataset, ...authorizationAgentPattern).object.value;
   }
 
   async discoverRegistration(): Promise<string> {
-    const response = await this.fetch(this.authorizationAgent, { method: 'HEAD' });
+    const response = await this.fetch(this.hasAuthorizationAgent, { method: 'HEAD' });
     return getApplicationRegistrationIri(response.headers.get('Link'));
   }
 
