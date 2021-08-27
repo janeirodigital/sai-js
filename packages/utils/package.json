@@ -1,6 +1,6 @@
 {
   "name": "@janeirodigital/interop-utils",
-  "version": "1.0.0-rc.0",
+  "version": "1.0.0-rc.1",
   "description": "Internal utilities intended to be used by other modules implementing Solid Application Interoperability specification",
   "contributors": [
     {
