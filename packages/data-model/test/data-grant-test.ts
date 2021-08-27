@@ -3,8 +3,8 @@ import 'jest-rdf';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { InteropFactory } from '../src';
 import { ACL } from '@janeirodigital/interop-namespaces';
+import { InteropFactory } from '../src';
 
 const factory = new InteropFactory({ fetch, randomUUID });
 const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';

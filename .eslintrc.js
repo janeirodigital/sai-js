@@ -16,7 +16,8 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'no-restricted-syntax': 'off',
     'no-useless-constructor': 'off',
-    'dot-notation': 'off'
+    'dot-notation': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off'
   },
   overrides: [
     {

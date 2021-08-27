@@ -5,7 +5,7 @@ import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
-import { DataGrant, DataInstance, InteropFactory, ShapeTree } from '../src';
+import { DataGrant, DataInstance, InteropFactory } from '../src';
 
 const factory = new InteropFactory({ fetch, randomUUID });
 const snippetIri = 'https://pro.alice.example/7a130c38-668a-4775-821a-08b38f2306fb#project';
@@ -29,7 +29,7 @@ describe('getChildInstancesIterator', () => {
     const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
     const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
     const accessReceipt = await factory.accessReceipt(accessReceiptIri);
-    const dataGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === dataGrantIri) as DataGrant;
+    const dataGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === dataGrantIri);
     const dataInstance = await DataInstance.build(snippetIri, dataGrant, factory);
     let count = 0;
     for await (const child of dataInstance.getChildInstancesIterator(taskShapeTree)) {
@@ -52,7 +52,7 @@ describe('newChildDataInstance', () => {
     const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
     const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
     const accessReceipt = await factory.accessReceipt(accessReceiptIri);
-    const dataGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === dataGrantIri) as DataGrant;
+    const dataGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === dataGrantIri);
     const dataInstance = await DataInstance.build(snippetIri, dataGrant, factory);
     expect(dataInstance.newChildDataInstance(taskShapeTree)).toBeInstanceOf(DataInstance);
   });
@@ -70,7 +70,7 @@ test('should forward accessMode from the grant', async () => {
   const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
   const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
   const accessReceipt = await factory.accessReceipt(accessReceiptIri);
-  const dataGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === dataGrantIri) as DataGrant;
+  const dataGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === dataGrantIri);
   const dataInstance = await DataInstance.build(snippetIri, dataGrant, factory);
   expect(dataInstance.accessMode).toEqual(dataGrant.accessMode);
 });

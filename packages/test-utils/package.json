@@ -30,6 +30,7 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
+    "@janeirodigital/interop-utils": "^0.1.0",
     "data-interoperability-panel": "solid/data-interoperability-panel#836b4b"
   },
   "devDependencies": {
