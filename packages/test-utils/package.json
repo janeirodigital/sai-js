@@ -1,7 +1,7 @@
 {
   "name": "@janeirodigital/interop-test-utils",
   "version": "0.1.0",
-  "description": "> TODO: description",
+  "description": "Internal testing utilities intended to be used by other modules implementing Solid Application Interoperability specification. Intended to only be used as development dependency.",
   "contributors": [
     {
       "name": "elf Pavlik",

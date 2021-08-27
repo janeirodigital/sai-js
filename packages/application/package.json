@@ -1,7 +1,7 @@
 {
   "name": "@janeirodigital/interop-application",
   "version": "0.1.0",
-  "description": "> TODO: description",
+  "description": "Top level module for applications confirming to Solid Application Interoperability specification",
   "contributors": [
     {
       "name": "elf Pavlik",

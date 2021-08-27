@@ -1,7 +1,7 @@
 {
   "name": "@janeirodigital/interop-data-model",
   "version": "0.1.0",
-  "description": "> TODO: description",
+  "description": "Internal data model intended to be used by other modules implementing Solid Application Interoperability specification",
   "contributors": [
     {
       "name": "elf Pavlik",
