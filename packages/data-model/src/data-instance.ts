@@ -71,15 +71,16 @@ export class DataInstance extends Model {
     return findChildReferences(this.iri, this.dataset, this.shapeTree.validatedBy, this.shapeTree.shapeText, shapePath);
   }
 
-  getChildInstancesIterator(shapeTree: string): AsyncIterable<DataInstance> {
-    let childGrant = null as null | InheritInstancesDataGrant;
+  findChildGrant(shapeTree: string): InheritInstancesDataGrant {
     if (this.dataGrant instanceof InheritInstancesDataGrant) {
       throw new Error('child instance can not have child instances');
     } else {
-      // TODO (elf-pavlik) extract as method findChildGrant(shapeTree)
-      // https://github.com/janeirodigital/sai-js/issues/21
-      childGrant = [...this.dataGrant.hasInheritingGrant].find((grant) => grant.registeredShapeTree === shapeTree);
+      return [...this.dataGrant.hasInheritingGrant].find((grant) => grant.registeredShapeTree === shapeTree);
     }
+  }
+
+  getChildInstancesIterator(shapeTree: string): AsyncIterable<DataInstance> {
+    let childGrant = this.findChildGrant(shapeTree);
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const instance = this;
     return {
@@ -93,16 +94,8 @@ export class DataInstance extends Model {
   }
 
   newChildDataInstance(shapeTree: string): DataInstance {
-    if (this.dataGrant instanceof InheritInstancesDataGrant) {
-      throw new Error('child instance can not have child instances');
-    } else {
-      // TODO (elf-pavlik) extract as method findChildGrant(shapeTree)
-      // https://github.com/janeirodigital/sai-js/issues/21
-      const childGrant = [...this.dataGrant.hasInheritingGrant].find(
-        (grant) => grant.registeredShapeTree === shapeTree
-      );
-      return childGrant.newDataInstance(this);
-    }
+    let childGrant = this.findChildGrant(shapeTree);
+    return childGrant.newDataInstance(this);
   }
 
   get accessMode(): string[] {
