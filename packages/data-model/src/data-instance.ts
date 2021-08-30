@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
 import { DatasetCore } from '@rdfjs/types';
-import { findChildReferences, getPredicate } from '@janeirodigital/interop-utils';
+import { findChildReferences, getPredicate, targetDataRegistrationLink } from '@janeirodigital/interop-utils';
 import { Model, InteropFactory, DataGrant, InheritInstancesDataGrant, ShapeTree } from '.';
 
 export class DataInstance extends Model {
@@ -47,8 +47,6 @@ export class DataInstance extends Model {
     }
   }
 
-  // TODO (elf-pavlik) set HTTP Link header pointing to Data Registration when used to create
-  // https://github.com/janeirodigital/sai-js/issues/22
   /*
    * @param dataset - dataset to replace current one with
    * @throws Error if fails
@@ -58,7 +56,11 @@ export class DataInstance extends Model {
     if (this.parent && this.draft) {
       await this.parent.updateAddingChildReference(this);
     }
-    const { ok } = await this.fetch(this.iri, { method: 'PUT', dataset });
+    const { ok } = await this.fetch(this.iri, {
+      method: 'PUT',
+      dataset,
+      headers: { Link: targetDataRegistrationLink(this.dataGrant.hasDataRegistration) }
+    });
     if (!ok) {
       throw new Error('failed to update');
     }

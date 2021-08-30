@@ -89,4 +89,21 @@ describe('fetchWrapper', () => {
       expect(quad.graph.value).toBe(iri);
     }
   });
+
+  test('should forward the headers', async () => {
+    const mock = jest.fn(fetchMock);
+    const rdfFetch = fetchWrapper(mock);
+    const initHeaders: { [key: string]: string } = {
+      'Some-Header-1': 'some value 1',
+      'Some-Header-2': 'some value 2',
+      'Some-Header-3': 'some value 3'
+    };
+    await rdfFetch('https://some.iri', { headers: initHeaders });
+    expect(mock.mock.calls[0][0]).toBe('https://some.iri');
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    const headers = mock.mock.calls[0][1].headers as any;
+    for (const headerName in initHeaders) {
+      expect(headers[headerName]).toStrictEqual(initHeaders[headerName]);
+    }
+  });
 });

@@ -1,13 +1,24 @@
-import { getApplicationRegistrationIri } from '../src';
+import { getApplicationRegistrationIri, targetDataRegistrationLink } from '../src';
 
-const linkHeaderText = `
-  <https://projectron.example/#app>;
-  anchor="https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659";
-  rel="http://www.w3.org/ns/solid/interop#registeredApplication"
-`;
+describe('getApplicationRegistrationIri', () => {
+  const linkHeaderText = `
+    <https://projectron.example/#app>;
+    anchor="https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659";
+    rel="http://www.w3.org/ns/solid/interop#registeredApplication"
+  `;
 
-test('should match correct application registration iri', () => {
-  expect(getApplicationRegistrationIri(linkHeaderText)).toBe(
-    'https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659'
-  );
+  test('should match correct application registration iri', () => {
+    expect(getApplicationRegistrationIri(linkHeaderText)).toBe(
+      'https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659'
+    );
+  });
+});
+
+describe('targetDataRegistrationLink', () => {
+  test('should create correct link to target registration', () => {
+    const dataRegistrationIri = 'http://some.iri';
+    expect(targetDataRegistrationLink(dataRegistrationIri)).toBe(
+      `<${dataRegistrationIri}>; rel="http://www.w3.org/ns/solid/interop#targetDataRegistration"`
+    );
+  });
 });

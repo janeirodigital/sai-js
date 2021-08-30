@@ -120,11 +120,17 @@ describe('update', () => {
     otherProjectIri = 'https://pro.alice.example/ccbd77ae-f769-4e07-b41f-5136501e13e7#project';
     differentDataset = (await factory.dataInstance(otherProjectIri, defaultDataGrant)).dataset;
   });
+
   test('should properly use fetch', async () => {
     const localFactory = new InteropFactory({ fetch: jest.fn(fetch), randomUUID });
     const dataInstance = await localFactory.dataInstance(snippetIri, defaultDataGrant);
+    const dataRegistrationIri = 'https://pro.alice.example/773605f0-b5bf-4d46-878d-5c167eac8b5d';
     await dataInstance.update(differentDataset);
-    expect(localFactory.fetch).toHaveBeenCalledWith(snippetIri, { method: 'PUT', dataset: differentDataset });
+    expect(localFactory.fetch).toHaveBeenCalledWith(snippetIri, {
+      method: 'PUT',
+      dataset: differentDataset,
+      headers: { Link: `<${dataRegistrationIri}>; rel="http://www.w3.org/ns/solid/interop#targetDataRegistration"` }
+    });
   });
 
   test('should set updated dataset on the data instance', async () => {

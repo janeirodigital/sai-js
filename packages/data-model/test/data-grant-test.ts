@@ -20,6 +20,12 @@ test('should set the accessMode', async () => {
   expect(dataGrant.accessMode).toContain(ACL.Write.value);
 });
 
+test('should set the hasDataRegistration', async () => {
+  const dataGrant = await factory.dataGrant(dataGrantIri);
+  const dataRegistrationIri = 'https://pro.alice.example/773605f0-b5bf-4d46-878d-5c167eac8b5d';
+  expect(dataGrant.hasDataRegistration).toBe(dataRegistrationIri);
+});
+
 test('should set the factory', async () => {
   const dataGrant = await factory.dataGrant(dataGrantIri);
   expect(dataGrant.factory).toBe(factory);

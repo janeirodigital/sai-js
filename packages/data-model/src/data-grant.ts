@@ -30,6 +30,11 @@ export abstract class AbstractDataGrant extends Model {
     return this.getObject('registeredShapeTree').value;
   }
 
+  @Memoize()
+  get hasDataRegistration(): string {
+    return this.getObject('hasDataRegistration').value;
+  }
+
   /*
    * @remarks
    * This method returns Data Instance with no dataset, it should be
