@@ -32,9 +32,11 @@ async function unwrappedRdfFetch(
   }
   const response = await whatwgFetch(iri, requestInit);
   const rdfResponse = { ...response } as RdfResponse;
-  // TODO (elf-pavlik) check if Content-Type is text/turtle
-  // https://github.com/janeirodigital/sai-js/issues/18
   rdfResponse.dataset = async function dataset() {
+    let contentType = response.headers.get('Content-Type');
+    if (contentType === null || !contentType.match('text/turtle')) {
+      throw Error(`Content-Type was ${contentType}`);
+    }
     // TODO (elf-pavlik) set graph name
     // https://github.com/janeirodigital/sai-js/issues/19
     return parseTurtle(await response.text());

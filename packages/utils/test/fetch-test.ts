@@ -28,7 +28,9 @@ describe('fetchWrapper', () => {
 
   test('should set dataset on response', async () => {
     const mock = jest.fn(fetchMock);
-    mock.mockReturnValueOnce(Promise.resolve({ text: async () => snippet } as Response));
+    mock.mockReturnValueOnce(
+      Promise.resolve({ text: async () => snippet, headers: { get: (_) => 'text/turtle' } } as Response)
+    );
     const rdfFetch = fetchWrapper(mock);
     const response = await rdfFetch('https://some.iri');
 
@@ -49,5 +51,28 @@ describe('fetchWrapper', () => {
     const headers = mock.mock.calls[0][1].headers as any;
     expect(headers['Content-Type']).toEqual('text/turtle');
     expect(headers['If-Match']).toEqual('12345');
+  });
+
+  test('should throw if dataset called when different Content-Type', async () => {
+    const mock = jest.fn(fetchMock);
+    mock.mockReturnValueOnce(
+      Promise.resolve({ text: async () => snippet, headers: { get: (_) => 'text/shex' } } as Response)
+    );
+    const rdfFetch = fetchWrapper(mock);
+    const response = await rdfFetch('https://some.iri');
+    expect(response.dataset()).rejects.toThrow('Content-Type was text/shex');
+  });
+
+  test('should handle Content-Type header with paramter', async () => {
+    const mock = jest.fn(fetchMock);
+    mock.mockReturnValueOnce(
+      Promise.resolve({ text: async () => snippet, headers: { get: (_) => 'text/turtle; charset=UTF-8' } } as Response)
+    );
+    const rdfFetch = fetchWrapper(mock);
+    const response = await rdfFetch('https://some.iri');
+
+    const expectedDataset = await parseTurtle(snippet);
+    const actualDataset = await response.dataset();
+    expect(actualDataset.size).toBe(expectedDataset.size);
   });
 });

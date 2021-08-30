@@ -45,3 +45,15 @@ test('should set text on response', async () => {
   const text = await response.text();
   expect(text.length).toBeGreaterThan(0);
 });
+
+test('should provide Content-Type header', async () => {
+  const url = 'https://solidshapes.example/shapes/Project';
+  const response = await fetch(url);
+  expect(response.headers.get('Content-Type')).toBe('text/turtle');
+});
+
+test('should throw when getting header other than Content-Type', async () => {
+  const url = 'https://solidshapes.example/shapes/Project';
+  const response = await fetch(url);
+  expect(() => response.headers.get('Something-Else')).toThrow('Something-Else not supported');
+});

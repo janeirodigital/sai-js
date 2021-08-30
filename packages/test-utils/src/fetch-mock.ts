@@ -14,7 +14,18 @@ export const fetch = async function fetch(url: string, options?: RdfRequestInit)
     return Promise.resolve(data[strippedUrl]);
   };
   // @ts-ignore
-  const response: RdfResponse = { ok: true, text };
+  const response: RdfResponse = {
+    ok: true,
+    text,
+    headers: {
+      get: function (name) {
+        if (name === 'Content-Type') {
+          return 'text/turtle';
+        }
+        throw Error(`${name} not supported`);
+      }
+    } as Headers
+  };
   // @ts-ignore
   if (!options?.headers?.Accept || options.headers.Accept.match('text/turtle')) {
     response.dataset = async function dataset() {
