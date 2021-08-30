@@ -75,4 +75,18 @@ describe('fetchWrapper', () => {
     const actualDataset = await response.dataset();
     expect(actualDataset.size).toBe(expectedDataset.size);
   });
+
+  test('should set response.url as graph when parsing turtle', async () => {
+    const iri = 'https://some.iri';
+    const mock = jest.fn(fetchMock);
+    mock.mockReturnValueOnce(
+      Promise.resolve({ url: iri, text: async () => snippet, headers: { get: (_) => 'text/turtle' } } as Response)
+    );
+    const rdfFetch = fetchWrapper(mock);
+    const response = await rdfFetch(iri);
+    const actualDataset = await response.dataset();
+    for (let quad of [...actualDataset]) {
+      expect(quad.graph.value).toBe(iri);
+    }
+  });
 });

@@ -37,9 +37,7 @@ async function unwrappedRdfFetch(
     if (contentType === null || !contentType.match('text/turtle')) {
       throw Error(`Content-Type was ${contentType}`);
     }
-    // TODO (elf-pavlik) set graph name
-    // https://github.com/janeirodigital/sai-js/issues/19
-    return parseTurtle(await response.text());
+    return parseTurtle(await response.text(), response.url);
   };
   return rdfResponse;
 }

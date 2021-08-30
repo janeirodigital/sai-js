@@ -40,4 +40,28 @@ describe('Turtle parser', () => {
     const incorrectSnippet = 'This is not valid turtle!';
     expect(parseTurtle(incorrectSnippet)).rejects.toBeTruthy();
   });
+
+  test('should use source as fallback base', async () => {
+    const noBaseSnippet = `
+      <> a <Some> .
+    `;
+    const source = 'https://some.example/';
+    const dataset = await parseTurtle(noBaseSnippet, source);
+    const quad = [...dataset][0];
+    expect(quad.subject.value).toBe(source);
+    expect(quad.object.value).toBe(`${source}Some`);
+  });
+
+  test('should use embeded base over source', async () => {
+    const embeddedBase = 'https://embeded.example/';
+    const withBaseSnippet = `
+      BASE <${embeddedBase}>
+      <> a <Some> .
+    `;
+    const source = 'https://some.example/';
+    const dataset = await parseTurtle(withBaseSnippet, source);
+    const quad = [...dataset][0];
+    expect(quad.subject.value).toBe(embeddedBase);
+    expect(quad.object.value).toBe(`${embeddedBase}Some`);
+  });
 });

@@ -1,7 +1,5 @@
 import { Quad, DatasetCore } from '@rdfjs/types';
-import {
-  Store, Parser, DataFactory,
-} from 'n3';
+import { Store, Parser, DataFactory } from 'n3';
 
 /**
  * Wrapper around N3.Parser.parse to convert from callback style to Promise.
@@ -12,7 +10,11 @@ import {
 export const parseTurtle = async (text: string, source = ''): Promise<DatasetCore> => {
   const store = new Store();
   return new Promise((resolve, reject) => {
-    const parser = new Parser();
+    const parserOptions: { baseIRI?: string } = {};
+    if (source) {
+      parserOptions.baseIRI = source;
+    }
+    const parser = new Parser(parserOptions);
     parser.parse(text, (error: Error, quad: Quad) => {
       if (error) {
         reject(error);
