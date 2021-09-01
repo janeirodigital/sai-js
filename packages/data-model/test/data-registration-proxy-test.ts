@@ -8,7 +8,8 @@ import {
   AllInstancesDataGrant,
   InteropFactory,
   SelectedInstancesDataGrant,
-  DataInstance
+  DataInstance,
+  InheritInstancesDataGrant
 } from '../src';
 
 const factory = new InteropFactory({ fetch, randomUUID });
@@ -39,5 +40,14 @@ test('should throw error if SelectedInstances grant', async () => {
   const dataRegistrationProxy = new DataRegistrationProxy(grant);
   expect(() => {
     dataRegistrationProxy.newDataInstance();
-  }).toThrowError();
+  }).toThrow('cannot create instances based on SelectedInstances data grant');
+});
+
+test('should throw error if InheritedInstances grant and no parent', async () => {
+  const selectedInstancesGrantIri = 'https://auth.alice.example/9827ae00-2778-4655-9f22-08bb9daaee26';
+  const grant = (await factory.dataGrant(selectedInstancesGrantIri)) as InheritInstancesDataGrant;
+  const dataRegistrationProxy = new DataRegistrationProxy(grant);
+  expect(() => {
+    dataRegistrationProxy.newDataInstance();
+  }).toThrow('cannot create instances based on InheritInstances data grant');
 });
