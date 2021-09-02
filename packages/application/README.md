@@ -44,7 +44,7 @@ class Project extends Custom {
   static shapeTree = 'https://solidshapes.example/trees/Project';
 }
 class Task extends Custom {
-  static shapeTree = 'https://solidshapes.example/trees/Project';
+  static shapeTree = 'https://solidshapes.example/trees/Task';
 }
 
 (async function () {
