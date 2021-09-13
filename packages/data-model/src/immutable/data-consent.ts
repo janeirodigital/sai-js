@@ -1,13 +1,13 @@
 import { DataFactory } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ApplicationFactory, DataGrant, ImmutableResource } from '..';
+import { ReadableDataConsent, ImmutableResource, AuthorizationAgentFactory } from '..';
 
 type StringData = {
-  dataOwner: string;
   registeredShapeTree: string;
-  hasDataRegistration: string;
-  scopeOfGrant: string;
-  inheritsFromGrant?: string;
+  scopeOfConsent: string;
+  dataOwner?: string;
+  hasDataRegistration?: string;
+  inheritsFromConsent?: string;
 };
 
 type ArrayData = {
@@ -16,18 +16,18 @@ type ArrayData = {
   hasDataInstance?: string[];
 };
 
-export type DataGrantData = StringData & ArrayData;
+export type DataConsentData = StringData & ArrayData;
 
-export class ImmutableDataGrant extends ImmutableResource {
-  public constructor(iri: string, factory: ApplicationFactory, data: DataGrantData) {
+export class ImmutableDataConsent extends ImmutableResource {
+  public constructor(iri: string, factory: AuthorizationAgentFactory, data: DataConsentData) {
     super(iri, factory, data);
     const thisNode = DataFactory.namedNode(this.iri);
     const props: (keyof StringData)[] = [
       'dataOwner',
       'registeredShapeTree',
       'hasDataRegistration',
-      'scopeOfGrant',
-      'inheritsFromGrant'
+      'scopeOfConsent',
+      'inheritsFromConsent'
     ];
     for (const prop of props) {
       if (data[prop]) {
@@ -44,9 +44,13 @@ export class ImmutableDataGrant extends ImmutableResource {
     }
   }
 
-  public static async build(iri: string, factory: ApplicationFactory, data: DataGrantData): Promise<DataGrant> {
-    const dataGrant = new ImmutableDataGrant(iri, factory, data);
-    await dataGrant.build();
-    return factory.readable.dataGrant(iri);
+  public static async build(
+    iri: string,
+    factory: AuthorizationAgentFactory,
+    data: DataConsentData
+  ): Promise<ReadableDataConsent> {
+    const instance = new ImmutableDataConsent(iri, factory, data);
+    await instance.build();
+    return factory.readable.dataConsent(iri);
   }
 }
