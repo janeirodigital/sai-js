@@ -6,6 +6,16 @@
 [![npm version](https://badge.fury.io/js/%40janeirodigital%2Finterop-application.svg)](https://www.npmjs.com/package/@janeirodigital/interop-application)
 [![MIT license](https://img.shields.io/github/license/janeirodigital/sai-js)](https://github.com/janeirodigital/sai-js/blob/main/LICENSE)
 
+## Early access
+
+[Specifications](https://github.com/solid/data-interoperability-panel#solid-application-interoperability)
+this library implements are still work in progress. While we track changes
+to public API of this library with semver, underlying data will be slightly changing
+for the rest of 2021. We are commited to keep this implementation up to date.
+Still if you plan to use your application in production please ask specification editors
+on [public chatroom](https://gitter.im/solid/data-interoperability-panel)
+about the data model stability.
+
 ## Example
 
 ```ts
