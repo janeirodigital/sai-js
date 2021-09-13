@@ -19,7 +19,7 @@ export class ReadableDataRegistration extends ReadableResource {
   }
 
   @Memoize()
-  get contains(): string[] | undefined {
+  get contains(): string[] {
     return this.getObjectsArray('contains', LDP).map((object) => object.value);
   }
 
