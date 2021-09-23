@@ -1,9 +1,9 @@
 import { DataFactory } from 'n3';
 import { DatasetCore } from '@rdfjs/types';
 import { findChildReferences, getPredicate, targetDataRegistrationLink } from '@janeirodigital/interop-utils';
-import { Model, InteropFactory, DataGrant, InheritInstancesDataGrant, ShapeTree } from '.';
+import { ReadableResource, InteropFactory, DataGrant, InheritInstancesDataGrant, ShapeTree } from '.';
 
-export class DataInstance extends Model {
+export class DataInstance extends ReadableResource {
   dataGrant: DataGrant;
 
   parent: DataInstance;

@@ -1,9 +1,9 @@
 import { DataFactory } from 'n3';
 import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { Model, AccessReceipt, InteropFactory } from '.';
+import { ReadableResource, AccessReceipt, InteropFactory } from '.';
 
-export class ApplicationRegistration extends Model {
+export class ApplicationRegistration extends ReadableResource {
   hasAccessReceipt: AccessReceipt;
 
   private async buildAccessReceipt(): Promise<void> {

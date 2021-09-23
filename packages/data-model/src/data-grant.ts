@@ -3,9 +3,9 @@ import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { Model, DataInstance, InteropFactory, DataGrant } from '.';
+import { ReadableResource, DataInstance, InteropFactory, DataGrant } from '.';
 
-export abstract class AbstractDataGrant extends Model {
+export abstract class AbstractDataGrant extends ReadableResource {
   dataset: DatasetCore;
 
   public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore) {

@@ -1,8 +1,8 @@
 import { Memoize } from 'typescript-memoize';
 import { LDP } from '@janeirodigital/interop-namespaces';
-import { Model, InteropFactory } from '.';
+import { ReadableResource, InteropFactory } from '.';
 
-export class DataRegistration extends Model {
+export class DataRegistration extends ReadableResource {
   private async bootstrap(): Promise<void> {
     await this.fetchData();
   }

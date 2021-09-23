@@ -1,4 +1,4 @@
-export { Model } from './model';
+export { ReadableResource } from './readable-resource';
 export { InteropFactory } from './factory';
 export { AccessReceipt } from './access-receipt';
 export { ApplicationRegistration } from './application-registration';

@@ -1,9 +1,9 @@
 import { DataFactory } from 'n3';
 import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { Model, InteropFactory, DataGrant } from '.';
+import { ReadableResource, InteropFactory, DataGrant } from '.';
 
-export class AccessReceipt extends Model {
+export class AccessReceipt extends ReadableResource {
   hasDataGrant: DataGrant[] = [];
 
   private async buildDataGrants(): Promise<void> {
