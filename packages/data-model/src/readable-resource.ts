@@ -4,7 +4,7 @@ import { RdfFetch, getOneMatchingQuad, getAllMatchingQuads } from '@janeirodigit
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { InteropFactory } from '.';
 
-export class Model {
+export class ReadableResource {
   fetch: RdfFetch;
 
   factory: InteropFactory;

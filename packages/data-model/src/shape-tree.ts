@@ -2,9 +2,9 @@ import { Memoize } from 'typescript-memoize';
 import { DataFactory } from 'n3';
 import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { SHAPETREES } from '@janeirodigital/interop-namespaces';
-import { Model, InteropFactory } from '.';
+import { ReadableResource, InteropFactory } from '.';
 
-export class ShapeTree extends Model {
+export class ShapeTree extends ReadableResource {
   shapeText: string;
 
   private async bootstrap(): Promise<void> {
