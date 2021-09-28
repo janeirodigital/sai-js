@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
 import { DatasetCore } from '@rdfjs/types';
-import { InteropFactory, ApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
+import { InteropFactory, ReadableApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
 import {
   WhatwgFetch,
   RdfFetch,
@@ -24,7 +24,7 @@ export class Application {
 
   hasAuthorizationAgent: string;
 
-  hasApplicationRegistration: ApplicationRegistration;
+  hasApplicationRegistration: ReadableApplicationRegistration;
 
   constructor(webId: string, dependencies: ApplicationDependencies) {
     this.webId = webId;

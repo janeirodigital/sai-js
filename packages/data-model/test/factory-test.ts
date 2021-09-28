@@ -2,7 +2,7 @@
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { parseTurtle } from '@janeirodigital/interop-utils';
 import { randomUUID } from 'crypto';
-import { ApplicationRegistration, InteropFactory } from '../src';
+import { ReadableApplicationRegistration, InteropFactory } from '../src';
 
 describe('constructor', () => {
   it('should set fetch', () => {
@@ -15,7 +15,7 @@ test('builds application registration', async () => {
   const factory = new InteropFactory({ fetch, randomUUID });
   const applicationRegistrationUrl = 'https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659';
   const applicationRegistration = await factory.applicationRegistration(applicationRegistrationUrl);
-  expect(applicationRegistration).toBeInstanceOf(ApplicationRegistration);
+  expect(applicationRegistration).toBeInstanceOf(ReadableApplicationRegistration);
 });
 
 test('throws for grant with invalid scope', async () => {
