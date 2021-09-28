@@ -3,7 +3,7 @@ import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { ReadableResource, InteropFactory, DataGrant } from '.';
 
-export class AccessReceipt extends ReadableResource {
+export class AccessGrant extends ReadableResource {
   hasDataGrant: DataGrant[] = [];
 
   private async buildDataGrants(): Promise<void> {
@@ -20,8 +20,8 @@ export class AccessReceipt extends ReadableResource {
     await this.buildDataGrants();
   }
 
-  public static async build(iri: string, factory: InteropFactory): Promise<AccessReceipt> {
-    const instance = new AccessReceipt(iri, factory);
+  public static async build(iri: string, factory: InteropFactory): Promise<AccessGrant> {
+    const instance = new AccessGrant(iri, factory);
     await instance.bootstrap();
     return instance;
   }

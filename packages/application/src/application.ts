@@ -67,7 +67,7 @@ export class Application {
    * @public
    */
   get dataOwners(): DataOwner[] {
-    return this.hasApplicationRegistration.hasAccessReceipt.hasDataGrant.reduce((acc, grant) => {
+    return this.hasApplicationRegistration.hasAccessGrant.hasDataGrant.reduce((acc, grant) => {
       let owner: DataOwner = acc.find((agent) => agent.iri === grant.dataOwner);
       if (!owner) {
         owner = new DataOwner(grant.dataOwner);

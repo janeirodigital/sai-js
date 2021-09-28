@@ -1,7 +1,7 @@
 export { ReadableResource } from './readable-resource';
 export { ImmutableResource } from './immutable-resource';
 export { InteropFactory } from './factory';
-export { AccessReceipt } from './access-receipt';
+export { AccessGrant } from './access-grant';
 export { ApplicationRegistration } from './application-registration';
 export { DataRegistration } from './data-registration';
 export { AbstractDataGrant } from './data-grant';
