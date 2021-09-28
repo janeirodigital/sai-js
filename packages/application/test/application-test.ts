@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 import { jest } from '@jest/globals';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
-import { ApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
+import { ReadableApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
 import { RdfResponse, WhatwgFetch } from '@janeirodigital/interop-utils';
 import { Application } from '../src';
 
@@ -20,7 +20,7 @@ test('should build application registration', async () => {
     .mockResolvedValueOnce(await fetch(webId))
     .mockResolvedValueOnce({ ok: true, headers: { get: () => linkString } } as unknown as RdfResponse);
   const app = await Application.build(webId, { fetch: mocked, randomUUID });
-  expect(app.hasApplicationRegistration).toBeInstanceOf(ApplicationRegistration);
+  expect(app.hasApplicationRegistration).toBeInstanceOf(ReadableApplicationRegistration);
 });
 
 test('should throw if no appliction registration', async () => {

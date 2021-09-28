@@ -3,7 +3,7 @@ import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { ReadableResource, AccessGrant, InteropFactory } from '.';
 
-export class ApplicationRegistration extends ReadableResource {
+export class ReadableApplicationRegistration extends ReadableResource {
   hasAccessGrant: AccessGrant;
 
   private async buildAccessGrant(): Promise<void> {
@@ -17,8 +17,8 @@ export class ApplicationRegistration extends ReadableResource {
     await this.buildAccessGrant();
   }
 
-  public static async build(iri: string, factory: InteropFactory): Promise<ApplicationRegistration> {
-    const instance = new ApplicationRegistration(iri, factory);
+  public static async build(iri: string, factory: InteropFactory): Promise<ReadableApplicationRegistration> {
+    const instance = new ReadableApplicationRegistration(iri, factory);
     await instance.bootstrap();
     return instance;
   }

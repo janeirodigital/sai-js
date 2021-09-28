@@ -3,7 +3,7 @@ import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { getOneMatchingQuad, RdfFetch } from '@janeirodigital/interop-utils';
 import {
   AccessGrant,
-  ApplicationRegistration,
+  ReadableApplicationRegistration,
   DataRegistration,
   DataInstance,
   InheritInstancesDataGrant,
@@ -51,8 +51,8 @@ export class InteropFactory {
     return AccessGrant.build(iri, this);
   }
 
-  async applicationRegistration(iri: string): Promise<ApplicationRegistration> {
-    return ApplicationRegistration.build(iri, this);
+  async applicationRegistration(iri: string): Promise<ReadableApplicationRegistration> {
+    return ReadableApplicationRegistration.build(iri, this);
   }
 
   async dataRegistration(iri: string): Promise<DataRegistration> {
