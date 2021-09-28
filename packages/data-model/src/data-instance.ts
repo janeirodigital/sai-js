@@ -70,7 +70,7 @@ export class DataInstance extends ReadableResource {
 
   async getChildReferencesForShapeTree(shapeTree: string): Promise<string[]> {
     const shapePath = this.shapeTree.getShapePathForReferenced(shapeTree);
-    return findChildReferences(this.iri, this.dataset, this.shapeTree.validatedBy, this.shapeTree.shapeText, shapePath);
+    return findChildReferences(this.iri, this.dataset, this.shapeTree.shape, this.shapeTree.shapeText, shapePath);
   }
 
   findChildGrant(shapeTree: string): InheritInstancesDataGrant {

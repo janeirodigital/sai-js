@@ -4,19 +4,19 @@ import 'jest-rdf';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { AccessReceipt, DataInstance, InteropFactory, InheritInstancesDataGrant, AbstractDataGrant } from '../src';
+import { AccessGrant, DataInstance, InteropFactory, InheritInstancesDataGrant, AbstractDataGrant } from '../src';
 
 const factory = new InteropFactory({ fetch, randomUUID });
 const selectedInstancesDataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
-const accessReceiptIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
+const accessGrantIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
 
 const inheritsFromSelectedInstancesIri = 'https://auth.alice.example/9827ae00-2778-4655-9f22-08bb9daaee26';
 const inheritsFromAllInstancesIri = 'https://auth.alice.example/54b1a123-23ca-4733-9371-700b52b9c567';
 
-let accessReceipt: AccessReceipt;
+let accessGrant: AccessGrant;
 
 beforeAll(async () => {
-  accessReceipt = await factory.accessReceipt(accessReceiptIri);
+  accessGrant = await factory.accessGrant(accessGrantIri);
 });
 
 test('should use correct subclass', async () => {
@@ -51,7 +51,7 @@ test('should set inheritsFromGrant', async () => {
 });
 
 test('should provide data instance iterator for InheritInstances of AllInstances', async () => {
-  const inheritingGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === inheritsFromAllInstancesIri);
+  const inheritingGrant = accessGrant.hasDataGrant.find((grant) => grant.iri === inheritsFromAllInstancesIri);
   let count = 0;
   for await (const instance of inheritingGrant.getDataInstanceIterator()) {
     expect(instance).toBeInstanceOf(DataInstance);
@@ -61,7 +61,7 @@ test('should provide data instance iterator for InheritInstances of AllInstances
 });
 
 test('should provide data instance iterator for InheritInstances of SelectedInstances', async () => {
-  const inheritingGrant = accessReceipt.hasDataGrant.find((grant) => grant.iri === inheritsFromSelectedInstancesIri);
+  const inheritingGrant = accessGrant.hasDataGrant.find((grant) => grant.iri === inheritsFromSelectedInstancesIri);
   let count = 0;
   for await (const instance of inheritingGrant.getDataInstanceIterator()) {
     expect(instance).toBeInstanceOf(DataInstance);

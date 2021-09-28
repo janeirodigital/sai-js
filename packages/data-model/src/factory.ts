@@ -2,7 +2,7 @@ import { DataFactory, NamedNode } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { getOneMatchingQuad, RdfFetch } from '@janeirodigital/interop-utils';
 import {
-  AccessReceipt,
+  AccessGrant,
   ApplicationRegistration,
   DataRegistration,
   DataInstance,
@@ -47,8 +47,8 @@ export class InteropFactory {
     };
   }
 
-  async accessReceipt(iri: string): Promise<AccessReceipt> {
-    return AccessReceipt.build(iri, this);
+  async accessGrant(iri: string): Promise<AccessGrant> {
+    return AccessGrant.build(iri, this);
   }
 
   async applicationRegistration(iri: string): Promise<ApplicationRegistration> {

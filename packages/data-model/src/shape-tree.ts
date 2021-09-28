@@ -9,7 +9,7 @@ export class ShapeTree extends ReadableResource {
 
   private async bootstrap(): Promise<void> {
     await this.fetchData();
-    this.shapeText = await (await this.fetch(this.validatedBy, { headers: { Accept: 'text/shex' } })).text();
+    this.shapeText = await (await this.fetch(this.shape, { headers: { Accept: 'text/shex' } })).text();
   }
 
   public static async build(iri: string, factory: InteropFactory): Promise<ShapeTree> {
@@ -26,7 +26,7 @@ export class ShapeTree extends ReadableResource {
   }
 
   @Memoize()
-  get validatedBy(): string {
-    return this.getObject('validatedBy', SHAPETREES).value;
+  get shape(): string {
+    return this.getObject('shape', SHAPETREES).value;
   }
 }

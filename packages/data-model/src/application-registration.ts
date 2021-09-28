@@ -1,20 +1,20 @@
 import { DataFactory } from 'n3';
 import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, AccessReceipt, InteropFactory } from '.';
+import { ReadableResource, AccessGrant, InteropFactory } from '.';
 
 export class ApplicationRegistration extends ReadableResource {
-  hasAccessReceipt: AccessReceipt;
+  hasAccessGrant: AccessGrant;
 
-  private async buildAccessReceipt(): Promise<void> {
-    const quadPattern = [DataFactory.namedNode(this.iri), INTEROP.hasAccessReceipt, null, null];
-    const accessReceiptIri = getOneMatchingQuad(this.dataset, ...quadPattern).object.value;
-    this.hasAccessReceipt = await this.factory.accessReceipt(accessReceiptIri);
+  private async buildAccessGrant(): Promise<void> {
+    const quadPattern = [DataFactory.namedNode(this.iri), INTEROP.hasAccessGrant, null, null];
+    const accessGrantIri = getOneMatchingQuad(this.dataset, ...quadPattern).object.value;
+    this.hasAccessGrant = await this.factory.accessGrant(accessGrantIri);
   }
 
   private async bootstrap(): Promise<void> {
     await this.fetchData();
-    await this.buildAccessReceipt();
+    await this.buildAccessGrant();
   }
 
   public static async build(iri: string, factory: InteropFactory): Promise<ApplicationRegistration> {
