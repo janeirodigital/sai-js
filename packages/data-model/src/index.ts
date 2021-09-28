@@ -1,8 +1,10 @@
 export { ReadableResource } from './readable-resource';
 export { ImmutableResource } from './immutable-resource';
+export { CRUDResource } from './crud-resource';
 export { InteropFactory } from './factory';
 export { AccessGrant } from './access-grant';
 export { ReadableApplicationRegistration } from './readable-application-registration';
+export { CRUDApplicationRegistration } from './crud-application-registration';
 export { DataRegistration } from './data-registration';
 export { AbstractDataGrant } from './data-grant';
 export { ImmutableDataGrant } from './immutable-data-grant';
