@@ -1,7 +1,7 @@
 import { DataGrant, DataInstance, SelectedInstancesDataGrant } from '.';
-import { InheritInstancesDataGrant } from './data-grants';
+import { InheritInstancesDataGrant } from './readable';
 
-export class DataRegistrationProxy {
+export class ReadableDataRegistrationProxy {
   constructor(private grant: DataGrant) {}
 
   public get dataInstances(): AsyncIterable<DataInstance> {

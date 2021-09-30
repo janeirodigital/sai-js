@@ -1,7 +1,7 @@
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { DataFactory, Store } from 'n3';
-import { InteropFactory, ReadableResource } from '.';
+import { InteropFactory, ReadableResource } from '..';
 
 type Data = { [key: string]: string | string[] };
 

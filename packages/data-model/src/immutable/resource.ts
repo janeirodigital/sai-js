@@ -1,7 +1,7 @@
 import { DatasetCore } from '@rdfjs/types';
 import { Store } from 'n3';
 import { RdfFetch } from '@janeirodigital/interop-utils';
-import { InteropFactory } from '.';
+import { InteropFactory } from '..';
 
 type Data = { [key: string]: string | string[] };
 

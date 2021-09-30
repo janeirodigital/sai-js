@@ -1,7 +1,7 @@
 import { DataFactory } from 'n3';
 import { DatasetCore } from '@rdfjs/types';
 import { findChildReferences, getPredicate, targetDataRegistrationLink } from '@janeirodigital/interop-utils';
-import { ReadableResource, InteropFactory, DataGrant, InheritInstancesDataGrant, ShapeTree } from '.';
+import { ReadableResource, InteropFactory, DataGrant, InheritInstancesDataGrant, ReadableShapeTree } from '.';
 
 export class DataInstance extends ReadableResource {
   dataGrant: DataGrant;
@@ -10,7 +10,7 @@ export class DataInstance extends ReadableResource {
 
   draft: boolean;
 
-  shapeTree: ShapeTree;
+  shapeTree: ReadableShapeTree;
 
   private async bootstrap(): Promise<void> {
     await this.fetchData();

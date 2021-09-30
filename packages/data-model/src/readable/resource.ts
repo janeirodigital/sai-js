@@ -2,7 +2,7 @@ import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { RdfFetch, getOneMatchingQuad, getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { InteropFactory } from '.';
+import { InteropFactory } from '..';
 
 export class ReadableResource {
   fetch: RdfFetch;

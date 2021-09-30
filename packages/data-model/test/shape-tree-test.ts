@@ -1,14 +1,14 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { ShapeTree, InteropFactory } from '../src';
+import { ReadableShapeTree, InteropFactory } from '../src';
 
 const factory = new InteropFactory({ fetch, randomUUID });
 const snippetIri = 'https://solidshapes.example/trees/Project';
 
 test('factory should build a shape tree', async () => {
   const shapeTree = await factory.shapeTree(snippetIri);
-  expect(shapeTree).toBeInstanceOf(ShapeTree);
+  expect(shapeTree).toBeInstanceOf(ReadableShapeTree);
 });
 
 test('factory should always use the same instance for the same shape tree', async () => {

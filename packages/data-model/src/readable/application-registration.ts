@@ -1,10 +1,10 @@
 import { DataFactory } from 'n3';
 import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, AccessGrant, InteropFactory } from '.';
+import { ReadableResource, ReadableAccessGrant, InteropFactory } from '..';
 
 export class ReadableApplicationRegistration extends ReadableResource {
-  hasAccessGrant: AccessGrant;
+  hasAccessGrant: ReadableAccessGrant;
 
   private async buildAccessGrant(): Promise<void> {
     const quadPattern = [DataFactory.namedNode(this.iri), INTEROP.hasAccessGrant, null, null];

@@ -1,7 +1,7 @@
 import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
 import { DataFactory } from 'n3';
-import { InteropFactory } from '.';
-import { CRUDResource } from './crud-resource';
+import { InteropFactory } from '..';
+import { CRUDResource } from './resource';
 
 type Data = {
   registeredBy: string;

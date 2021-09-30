@@ -105,7 +105,7 @@ class Task extends Custom {
     // handle error
   }
 
-  // DataRegistration#newDataInstance
+  // DataRegistrationProxy#newDataInstance
   const registration = user.selectRegistrations(Project.shapeTree).find(/* logic */);
   const newProject = new Project(registration.newDataInstance());
   newProject.name = 'Another thing';
@@ -115,7 +115,7 @@ class Task extends Custom {
     // handle error
   }
 
-  // for inherited grants DataRegistration#newDataInstance parent data instance is required
+  // for inherited grants DataRegistrationProxy#newDataInstance parent data instance is required
   // for that reason also data instance acting as parent provides convienience method
   const projectToCreateTaskIn = projects.find(/* logic */);
   const newTask = new Task(projectToCreateTaskIn.newChildDataInstance(Task.shapeTree));

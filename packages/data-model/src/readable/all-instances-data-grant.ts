@@ -1,14 +1,13 @@
 import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
 import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
-import { AbstractDataGrant, InheritInstancesDataGrant, DataInstance, InteropFactory } from '..';
+import { AbstractDataGrant, InheritInstancesDataGrant } from '.';
+import { DataInstance, InteropFactory } from '..';
 
-export class SelectedInstancesDataGrant extends AbstractDataGrant {
+export class AllInstancesDataGrant extends AbstractDataGrant {
   hasInheritingGrant: Set<InheritInstancesDataGrant>;
-
-  canCreate = false;
 
   public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore) {
     super(iri, factory, dataset);
@@ -19,8 +18,8 @@ export class SelectedInstancesDataGrant extends AbstractDataGrant {
     iri: string,
     factory: InteropFactory,
     dataset: DatasetCore
-  ): Promise<SelectedInstancesDataGrant> {
-    const instance = new SelectedInstancesDataGrant(iri, factory, dataset);
+  ): Promise<AllInstancesDataGrant> {
+    const instance = new AllInstancesDataGrant(iri, factory, dataset);
     for (const inheritingGrantIri of instance.hasInheritingGrantIriList) {
       // eslint-disable-next-line no-await-in-loop
       const inheritingGrant = (await factory.dataGrant(inheritingGrantIri)) as InheritInstancesDataGrant;
@@ -36,11 +35,16 @@ export class SelectedInstancesDataGrant extends AbstractDataGrant {
     const dataGrant = this;
     return {
       async *[Symbol.asyncIterator]() {
-        for (const instanceIri of dataGrant.hasDataInstance) {
+        const dataRegistration = await factory.dataRegistration(dataGrant.hasDataRegistrationIri);
+        for (const instanceIri of dataRegistration.contains) {
           yield factory.dataInstance(instanceIri, dataGrant);
         }
       }
     };
+  }
+
+  public newDataInstance(): DataInstance {
+    return AbstractDataGrant.newDataInstance(this);
   }
 
   @Memoize()
@@ -64,8 +68,10 @@ export class SelectedInstancesDataGrant extends AbstractDataGrant {
     return getAllMatchingQuads(this.dataset, ...quadPattern).map((quad) => quad.subject.value);
   }
 
+  // TODO (elf-pavlik) verify expected access mode
+  // https://github.com/solid/data-interoperability-panel/issues/159
   @Memoize()
-  get hasDataInstance(): string[] {
-    return this.getObjectsArray('hasDataInstance').map((object) => object.value);
+  get canCreate(): boolean {
+    return this.accessMode.includes(ACL.Write.value);
   }
 }
