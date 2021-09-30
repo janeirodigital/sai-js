@@ -17,7 +17,7 @@ export class ImmutableResource {
   data: Data;
 
   // dataset gets populated in consturtor of each sub class
-  constructor(iri: string, data: Data, factory: InteropFactory) {
+  constructor(iri: string, factory: InteropFactory, data: Data) {
     this.iri = iri;
     this.factory = factory;
     this.fetch = factory.fetch;

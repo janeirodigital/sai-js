@@ -17,8 +17,8 @@ type Data = StringData & {
 };
 
 export class ImmutableDataGrant extends ImmutableResource {
-  public constructor(iri: string, data: Data, factory: InteropFactory) {
-    super(iri, data, factory);
+  public constructor(iri: string, factory: InteropFactory, data: Data) {
+    super(iri, factory, data);
     const thisNode = DataFactory.namedNode(this.iri);
     const props: (keyof StringData)[] = [
       'dataOwner',

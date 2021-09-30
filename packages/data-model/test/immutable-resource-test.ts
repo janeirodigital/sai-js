@@ -12,7 +12,7 @@ const snippetIri = 'https://some.iri/';
 describe('build', () => {
   test('should PUT its data', async () => {
     const localFactory = new InteropFactory({ fetch: jest.fn(fetch), randomUUID });
-    const resource = new ImmutableResource(snippetIri, {}, localFactory);
+    const resource = new ImmutableResource(snippetIri, localFactory, {});
     await resource.build();
 
     expect(localFactory.fetch).toHaveBeenCalledWith(snippetIri, {
@@ -24,7 +24,7 @@ describe('build', () => {
   test('should throw if PUT failed', async () => {
     const fakeFetch = () => Promise.resolve({ ok: false });
     const localFactory = new InteropFactory({ fetch: fakeFetch as unknown as RdfFetch, randomUUID });
-    const resource = new ImmutableResource(snippetIri, {}, localFactory);
+    const resource = new ImmutableResource(snippetIri, localFactory, {});
 
     return expect(resource.build()).rejects.toThrow('failed');
   });
