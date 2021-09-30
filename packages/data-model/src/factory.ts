@@ -2,15 +2,15 @@ import { DataFactory, NamedNode } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { getOneMatchingQuad, RdfFetch } from '@janeirodigital/interop-utils';
 import {
-  AccessGrant,
+  ReadableAccessGrant,
   ReadableApplicationRegistration,
-  DataRegistration,
+  ReadableDataRegistration,
   DataInstance,
   InheritInstancesDataGrant,
   AllInstancesDataGrant,
   SelectedInstancesDataGrant,
   DataGrant,
-  ShapeTree
+  ReadableShapeTree
 } from '.';
 
 interface CachedDataGrants {
@@ -18,7 +18,7 @@ interface CachedDataGrants {
 }
 
 interface CachedShapeTrees {
-  [key: string]: ShapeTree;
+  [key: string]: ReadableShapeTree;
 }
 
 interface Cache {
@@ -47,28 +47,28 @@ export class InteropFactory {
     };
   }
 
-  async accessGrant(iri: string): Promise<AccessGrant> {
-    return AccessGrant.build(iri, this);
+  async accessGrant(iri: string): Promise<ReadableAccessGrant> {
+    return ReadableAccessGrant.build(iri, this);
   }
 
   async applicationRegistration(iri: string): Promise<ReadableApplicationRegistration> {
     return ReadableApplicationRegistration.build(iri, this);
   }
 
-  async dataRegistration(iri: string): Promise<DataRegistration> {
-    return DataRegistration.build(iri, this);
+  async dataRegistration(iri: string): Promise<ReadableDataRegistration> {
+    return ReadableDataRegistration.build(iri, this);
   }
 
   async dataInstance(iri: string, grant: DataGrant, parent?: DataInstance): Promise<DataInstance> {
     return DataInstance.build(iri, grant, this, parent);
   }
 
-  async shapeTree(iri: string): Promise<ShapeTree> {
+  async shapeTree(iri: string): Promise<ReadableShapeTree> {
     // return cached if exists
     const cached = this.cache.shapeTree[iri];
     if (cached) return cached;
 
-    const shapeTree = await ShapeTree.build(iri, this);
+    const shapeTree = await ReadableShapeTree.build(iri, this);
 
     // store in cache for future access
     this.cache.shapeTree[iri] = shapeTree;

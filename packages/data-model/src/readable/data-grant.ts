@@ -3,7 +3,7 @@ import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, DataInstance, InteropFactory, DataGrant } from '.';
+import { ReadableResource, DataInstance, InteropFactory, DataGrant } from '..';
 
 export abstract class AbstractDataGrant extends ReadableResource {
   dataset: DatasetCore;
@@ -40,7 +40,7 @@ export abstract class AbstractDataGrant extends ReadableResource {
    * This method returns Data Instance with no dataset, it should be
    * used with `DataInstance#update` to add datset and store it on the server
    *
-   * @returns new DataInstance with IRI based on prefix from DataRegistration
+   * @returns new DataInstance with IRI based on prefix from ReadableDataRegistration
    */
   public static newDataInstance(sourceGrant: DataGrant, parent?: DataInstance): DataInstance {
     const iri = `${sourceGrant.iriPrefix}${sourceGrant.factory.randomUUID()}`;

@@ -1,6 +1,7 @@
 import { Memoize } from 'typescript-memoize';
 import { ACL } from '@janeirodigital/interop-namespaces';
-import { AbstractDataGrant, InheritableDataGrant, DataInstance } from '..';
+import { AbstractDataGrant, InheritableDataGrant } from '.';
+import { DataInstance } from '..';
 
 export class InheritInstancesDataGrant extends AbstractDataGrant {
   inheritsFromGrant: InheritableDataGrant;

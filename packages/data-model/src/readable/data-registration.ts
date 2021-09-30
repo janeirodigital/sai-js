@@ -1,14 +1,14 @@
 import { Memoize } from 'typescript-memoize';
 import { LDP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, InteropFactory } from '.';
+import { ReadableResource, InteropFactory } from '..';
 
-export class DataRegistration extends ReadableResource {
+export class ReadableDataRegistration extends ReadableResource {
   private async bootstrap(): Promise<void> {
     await this.fetchData();
   }
 
-  public static async build(iri: string, factory: InteropFactory): Promise<DataRegistration> {
-    const instance = new DataRegistration(iri, factory);
+  public static async build(iri: string, factory: InteropFactory): Promise<ReadableDataRegistration> {
+    const instance = new ReadableDataRegistration(iri, factory);
     await instance.bootstrap();
     return instance;
   }

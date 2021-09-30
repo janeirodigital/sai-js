@@ -1,13 +1,13 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { DataOwner, AccessGrant, InteropFactory } from '../src';
+import { DataOwner, ReadableAccessGrant, InteropFactory } from '../src';
 
 const factory = new InteropFactory({ fetch, randomUUID });
 const snippetIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
 
 test('should select Registrations', async () => {
-  const accessGrant = await AccessGrant.build(snippetIri, factory);
+  const accessGrant = await ReadableAccessGrant.build(snippetIri, factory);
   const webid = 'https://acme.example/#corp';
   const dataOwner = new DataOwner(webid);
   dataOwner.issuedGrants = accessGrant.hasDataGrant.filter((grant) => grant.dataOwner === webid);

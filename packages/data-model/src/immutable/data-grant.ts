@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { InteropFactory, ImmutableResource } from '.';
+import { InteropFactory, ImmutableResource } from '..';
 
 type StringData = {
   dataOwner: string;

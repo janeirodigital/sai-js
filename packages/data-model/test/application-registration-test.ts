@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { ReadableApplicationRegistration, AccessGrant, InteropFactory } from '../src';
+import { ReadableApplicationRegistration, ReadableAccessGrant, InteropFactory } from '../src';
 
 const factory = new InteropFactory({ fetch, randomUUID });
 const snippetIri = 'https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659';
@@ -21,7 +21,7 @@ describe('build', () => {
   test('should build related access grant', async () => {
     const applicationRegistration = await ReadableApplicationRegistration.build(snippetIri, factory);
     const accessGrant = applicationRegistration.hasAccessGrant;
-    expect(accessGrant).toBeInstanceOf(AccessGrant);
+    expect(accessGrant).toBeInstanceOf(ReadableAccessGrant);
     expect(accessGrant.iri).toBe(accessGrantIri);
   });
 });

@@ -2,9 +2,9 @@ import { Memoize } from 'typescript-memoize';
 import { DataFactory } from 'n3';
 import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { SHAPETREES } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, InteropFactory } from '.';
+import { ReadableResource, InteropFactory } from '..';
 
-export class ShapeTree extends ReadableResource {
+export class ReadableShapeTree extends ReadableResource {
   shapeText: string;
 
   private async bootstrap(): Promise<void> {
@@ -12,8 +12,8 @@ export class ShapeTree extends ReadableResource {
     this.shapeText = await (await this.fetch(this.shape, { headers: { Accept: 'text/shex' } })).text();
   }
 
-  public static async build(iri: string, factory: InteropFactory): Promise<ShapeTree> {
-    const instance = new ShapeTree(iri, factory);
+  public static async build(iri: string, factory: InteropFactory): Promise<ReadableShapeTree> {
+    const instance = new ReadableShapeTree(iri, factory);
     await instance.bootstrap();
     return instance;
   }
