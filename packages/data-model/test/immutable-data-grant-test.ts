@@ -45,7 +45,7 @@ describe('constructor', () => {
       ...commonQuads
     ];
 
-    const dataGrant = new ImmutableDataGrant(snippetIri, allInstancesData, factory);
+    const dataGrant = new ImmutableDataGrant(snippetIri, factory, allInstancesData);
     expect(dataGrant.dataset).toBeRdfDatasetContaining(...allInstancesQuads);
   });
 
@@ -74,7 +74,7 @@ describe('constructor', () => {
       ...commonQuads
     ];
 
-    const dataGrant = new ImmutableDataGrant(snippetIri, selectedInstancesData, factory);
+    const dataGrant = new ImmutableDataGrant(snippetIri, factory, selectedInstancesData);
     expect(dataGrant.dataset).toBeRdfDatasetContaining(...selectedInstancesQuads);
   });
 
@@ -98,7 +98,7 @@ describe('constructor', () => {
       ...commonQuads
     ];
 
-    const dataGrant = new ImmutableDataGrant(snippetIri, inheritInstancesData, factory);
+    const dataGrant = new ImmutableDataGrant(snippetIri, factory, inheritInstancesData);
     expect(dataGrant.dataset).toBeRdfDatasetContaining(...inheritInstancesQuads);
   });
 
@@ -122,7 +122,7 @@ describe('constructor', () => {
       ...commonQuads
     ];
 
-    const dataGrant = new ImmutableDataGrant(snippetIri, allInstancesData, factory);
+    const dataGrant = new ImmutableDataGrant(snippetIri, factory, allInstancesData);
     expect(dataGrant.dataset).toBeRdfDatasetContaining(...allInstancesQuads);
   });
 });
