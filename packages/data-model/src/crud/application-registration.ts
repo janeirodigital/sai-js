@@ -1,9 +1,9 @@
 import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
 import { DataFactory } from 'n3';
-import { InteropFactory } from '..';
+import { AuthorizationAgentFactory } from '..';
 import { CRUDResource } from './resource';
 
-type Data = {
+export type ApplicationRegistrationData = {
   registeredBy: string;
   registeredWith: string;
   registeredAgent: string;
@@ -11,9 +11,9 @@ type Data = {
 };
 
 export class CRUDApplicationRegistration extends CRUDResource {
-  data?: Data;
+  data?: ApplicationRegistrationData;
 
-  constructor(iri: string, factory: InteropFactory, data?: Data) {
+  constructor(iri: string, factory: AuthorizationAgentFactory, data?: ApplicationRegistrationData) {
     super(iri, factory, data);
   }
 
@@ -32,7 +32,12 @@ export class CRUDApplicationRegistration extends CRUDResource {
   }
 
   private datasetFromData(): void {
-    const props: (keyof Data)[] = ['registeredBy', 'registeredWith', 'registeredAgent', 'hasAccessGrant'];
+    const props: (keyof ApplicationRegistrationData)[] = [
+      'registeredBy',
+      'registeredWith',
+      'registeredAgent',
+      'hasAccessGrant'
+    ];
     for (const prop of props) {
       this.dataset.add(
         DataFactory.quad(DataFactory.namedNode(this.iri), INTEROP[prop], DataFactory.namedNode(this.data[prop]))
@@ -92,7 +97,11 @@ export class CRUDApplicationRegistration extends CRUDResource {
     );
   }
 
-  public static async build(iri: string, factory: InteropFactory, data?: Data): Promise<CRUDApplicationRegistration> {
+  public static async build(
+    iri: string,
+    factory: AuthorizationAgentFactory,
+    data?: ApplicationRegistrationData
+  ): Promise<CRUDApplicationRegistration> {
     const instance = new CRUDApplicationRegistration(iri, factory, data);
     await instance.bootstrap();
     return instance;

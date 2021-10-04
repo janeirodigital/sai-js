@@ -6,18 +6,18 @@ import { randomUUID } from 'crypto';
 import {
   ReadableDataRegistrationProxy,
   AllInstancesDataGrant,
-  InteropFactory,
+  ApplicationFactory,
   SelectedInstancesDataGrant,
   DataInstance,
   InheritInstancesDataGrant
 } from '../src';
 
-const factory = new InteropFactory({ fetch, randomUUID });
+const factory = new ApplicationFactory({ fetch, randomUUID });
 
 const grantIri = 'https://auth.alice.example/7b2bc4ff-b4b8-47b8-96f6-06695f4c5126';
 
 test('should delegate dataInstances to grant', async () => {
-  const grant = await factory.dataGrant(grantIri);
+  const grant = await factory.readable.dataGrant(grantIri);
   const spy = jest.spyOn(grant, 'getDataInstanceIterator');
   const dataRegistrationProxy = new ReadableDataRegistrationProxy(grant);
   for await (const dataInstance of dataRegistrationProxy.dataInstances) {
@@ -27,7 +27,7 @@ test('should delegate dataInstances to grant', async () => {
 });
 
 test('should delegate newDataInstance to grant', async () => {
-  const grant = (await factory.dataGrant(grantIri)) as AllInstancesDataGrant;
+  const grant = (await factory.readable.dataGrant(grantIri)) as AllInstancesDataGrant;
   const dataRegistrationProxy = new ReadableDataRegistrationProxy(grant);
   const spy = jest.spyOn(grant, 'newDataInstance');
   dataRegistrationProxy.newDataInstance();
@@ -36,7 +36,7 @@ test('should delegate newDataInstance to grant', async () => {
 
 test('should throw error if SelectedInstances grant', async () => {
   const selectedInstancesGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
-  const grant = (await factory.dataGrant(selectedInstancesGrantIri)) as SelectedInstancesDataGrant;
+  const grant = (await factory.readable.dataGrant(selectedInstancesGrantIri)) as SelectedInstancesDataGrant;
   const dataRegistrationProxy = new ReadableDataRegistrationProxy(grant);
   expect(() => {
     dataRegistrationProxy.newDataInstance();
@@ -45,7 +45,7 @@ test('should throw error if SelectedInstances grant', async () => {
 
 test('should throw error if InheritedInstances grant and no parent', async () => {
   const selectedInstancesGrantIri = 'https://auth.alice.example/9827ae00-2778-4655-9f22-08bb9daaee26';
-  const grant = (await factory.dataGrant(selectedInstancesGrantIri)) as InheritInstancesDataGrant;
+  const grant = (await factory.readable.dataGrant(selectedInstancesGrantIri)) as InheritInstancesDataGrant;
   const dataRegistrationProxy = new ReadableDataRegistrationProxy(grant);
   expect(() => {
     dataRegistrationProxy.newDataInstance();

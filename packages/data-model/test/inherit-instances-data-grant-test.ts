@@ -7,12 +7,12 @@ import { INTEROP } from '@janeirodigital/interop-namespaces';
 import {
   ReadableAccessGrant,
   DataInstance,
-  InteropFactory,
+  ApplicationFactory,
   InheritInstancesDataGrant,
   AbstractDataGrant
 } from '../src';
 
-const factory = new InteropFactory({ fetch, randomUUID });
+const factory = new ApplicationFactory({ fetch, randomUUID });
 const selectedInstancesDataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
 const accessGrantIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
 
@@ -22,37 +22,37 @@ const inheritsFromAllInstancesIri = 'https://auth.alice.example/54b1a123-23ca-47
 let accessGrant: ReadableAccessGrant;
 
 beforeAll(async () => {
-  accessGrant = await factory.accessGrant(accessGrantIri);
+  accessGrant = await factory.readable.accessGrant(accessGrantIri);
 });
 
 test('should use correct subclass', async () => {
-  const dataGrant = await factory.dataGrant(inheritsFromSelectedInstancesIri);
+  const dataGrant = await factory.readable.dataGrant(inheritsFromSelectedInstancesIri);
   expect(dataGrant).toBeInstanceOf(InheritInstancesDataGrant);
 });
 
 test('should set correct scopeOfGrant', async () => {
-  const dataGrant = await factory.dataGrant(inheritsFromSelectedInstancesIri);
+  const dataGrant = await factory.readable.dataGrant(inheritsFromSelectedInstancesIri);
   expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.InheritInstances);
 });
 
 test('should set iriPrefix', async () => {
-  const dataGrant = await factory.dataGrant(inheritsFromSelectedInstancesIri);
+  const dataGrant = await factory.readable.dataGrant(inheritsFromSelectedInstancesIri);
   const iriPrefix = 'https://pro.alice.example/';
   expect(dataGrant.iriPrefix).toEqual(iriPrefix);
 });
 
 test('should set correct canCreate', async () => {
-  const dataGrant = await factory.dataGrant(inheritsFromSelectedInstancesIri);
+  const dataGrant = await factory.readable.dataGrant(inheritsFromSelectedInstancesIri);
   expect(dataGrant.canCreate).toBeTruthy();
 });
 
 test('should set inheritsFromGrantIri', async () => {
-  const dataGrant = (await factory.dataGrant(inheritsFromSelectedInstancesIri)) as InheritInstancesDataGrant;
+  const dataGrant = (await factory.readable.dataGrant(inheritsFromSelectedInstancesIri)) as InheritInstancesDataGrant;
   expect(dataGrant.inheritsFromGrantIri).toBe(selectedInstancesDataGrantIri);
 });
 
 test('should set inheritsFromGrant', async () => {
-  const dataGrant = (await factory.dataGrant(inheritsFromSelectedInstancesIri)) as InheritInstancesDataGrant;
+  const dataGrant = (await factory.readable.dataGrant(inheritsFromSelectedInstancesIri)) as InheritInstancesDataGrant;
   expect(dataGrant.inheritsFromGrant).toBeInstanceOf(AbstractDataGrant);
 });
 
@@ -79,7 +79,7 @@ test('should provide data instance iterator for InheritInstances of SelectedInst
 describe('newDataInstance', () => {
   test('should create data instance', async () => {
     const parentInstanceIri = 'https://pro.alice.example/ccbd77ae-f769-4e07-b41f-5136501e13e7#project';
-    const dataGrant = (await factory.dataGrant(inheritsFromSelectedInstancesIri)) as InheritInstancesDataGrant;
+    const dataGrant = (await factory.readable.dataGrant(inheritsFromSelectedInstancesIri)) as InheritInstancesDataGrant;
     const parentInstance = await factory.dataInstance(parentInstanceIri, dataGrant.inheritsFromGrant);
     const newDataInstance = dataGrant.newDataInstance(parentInstance);
     expect(newDataInstance.iri).toMatch(dataGrant.iriPrefix);

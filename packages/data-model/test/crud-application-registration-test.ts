@@ -5,9 +5,9 @@ import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory } from 'n3';
 import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
-import { CRUDApplicationRegistration, InteropFactory } from '../src';
+import { CRUDApplicationRegistration, AuthorizationAgentFactory } from '../src';
 
-const factory = new InteropFactory({ fetch, randomUUID });
+const factory = new AuthorizationAgentFactory({ fetch, randomUUID });
 const snippetIri = 'https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659';
 const newSnippetIri = 'https://auth.alice.example/afb6a337-40df-4fbe-9b00-5c9c1e56c812';
 const accessGrantIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';

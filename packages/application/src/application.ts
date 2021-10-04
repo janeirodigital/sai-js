@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
 import { DatasetCore } from '@rdfjs/types';
-import { InteropFactory, ReadableApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
+import { ApplicationFactory, ReadableApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
 import {
   WhatwgFetch,
   RdfFetch,
@@ -16,7 +16,7 @@ interface ApplicationDependencies {
 }
 
 export class Application {
-  factory: InteropFactory;
+  factory: ApplicationFactory;
 
   fetch: RdfFetch;
 
@@ -29,14 +29,14 @@ export class Application {
   constructor(webId: string, dependencies: ApplicationDependencies) {
     this.webId = webId;
     this.fetch = fetchWrapper(dependencies.fetch);
-    this.factory = new InteropFactory({ fetch: this.fetch, randomUUID: dependencies.randomUUID });
+    this.factory = new ApplicationFactory({ fetch: this.fetch, randomUUID: dependencies.randomUUID });
   }
 
   private async bootstrap(): Promise<void> {
     this.hasAuthorizationAgent = await this.discoverAuthorizationAgent();
     const applicationRegistrationIri = await this.discoverRegistration();
     if (applicationRegistrationIri) {
-      this.hasApplicationRegistration = await this.factory.applicationRegistration(applicationRegistrationIri);
+      this.hasApplicationRegistration = await this.factory.readable.applicationRegistration(applicationRegistrationIri);
     } else {
       throw new Error('support planned in the future');
       // TODO (elf-pavlik) implement flow with Authorization Agent
