@@ -24,7 +24,7 @@ export class SelectedInstancesDataGrant extends AbstractDataGrant {
     const instance = new SelectedInstancesDataGrant(iri, factory, dataset);
     for (const inheritingGrantIri of instance.hasInheritingGrantIriList) {
       // eslint-disable-next-line no-await-in-loop
-      const inheritingGrant = (await factory.dataGrant(inheritingGrantIri)) as InheritInstancesDataGrant;
+      const inheritingGrant = (await factory.readable.dataGrant(inheritingGrantIri)) as InheritInstancesDataGrant;
       inheritingGrant.inheritsFromGrant = instance;
       instance.hasInheritingGrant.add(inheritingGrant);
     }

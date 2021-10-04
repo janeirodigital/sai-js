@@ -9,7 +9,7 @@ export class ReadableApplicationRegistration extends ReadableResource {
   private async buildAccessGrant(): Promise<void> {
     const quadPattern = [DataFactory.namedNode(this.iri), INTEROP.hasAccessGrant, null, null];
     const accessGrantIri = getOneMatchingQuad(this.dataset, ...quadPattern).object.value;
-    this.hasAccessGrant = await this.factory.accessGrant(accessGrantIri);
+    this.hasAccessGrant = await this.factory.readable.accessGrant(accessGrantIri);
   }
 
   private async bootstrap(): Promise<void> {

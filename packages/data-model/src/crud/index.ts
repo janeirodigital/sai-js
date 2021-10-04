@@ -1,2 +1,2 @@
 export { CRUDResource } from './resource';
-export { CRUDApplicationRegistration } from './application-registration';
+export * from './application-registration';

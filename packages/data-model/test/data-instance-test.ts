@@ -5,16 +5,16 @@ import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
-import { DataGrant, DataInstance, InteropFactory } from '../src';
+import { DataGrant, DataInstance, ApplicationFactory } from '../src';
 
-const factory = new InteropFactory({ fetch, randomUUID });
+const factory = new ApplicationFactory({ fetch, randomUUID });
 const snippetIri = 'https://pro.alice.example/7a130c38-668a-4775-821a-08b38f2306fb#project';
 const defaultDataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
 const taskShapeTree = 'https://solidshapes.example/trees/Task';
 let defaultDataGrant: DataGrant;
 
 beforeAll(async () => {
-  defaultDataGrant = await factory.dataGrant(defaultDataGrantIri);
+  defaultDataGrant = await factory.readable.dataGrant(defaultDataGrantIri);
 });
 
 describe('build', () => {
@@ -28,7 +28,7 @@ describe('getChildInstancesIterator', () => {
   test('should iterate over children data instances', async () => {
     const accessGrantIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
     const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
-    const accessGrant = await factory.accessGrant(accessGrantIri);
+    const accessGrant = await factory.readable.accessGrant(accessGrantIri);
     const dataGrant = accessGrant.hasDataGrant.find((grant) => grant.iri === dataGrantIri);
     const dataInstance = await DataInstance.build(snippetIri, dataGrant, factory);
     let count = 0;
@@ -41,7 +41,7 @@ describe('getChildInstancesIterator', () => {
   test('should throw if called on child data instance', async () => {
     const dataInstanceIri = 'https://home.alice.example/f950bae5-247c-49b2-a537-b12cda8d5758#task';
     const inheritingDataGrantIri = 'https://auth.alice.example/54b1a123-23ca-4733-9371-700b52b9c567';
-    const inheritingDataGrant = await factory.dataGrant(inheritingDataGrantIri);
+    const inheritingDataGrant = await factory.readable.dataGrant(inheritingDataGrantIri);
     const dataInstance = await DataInstance.build(dataInstanceIri, inheritingDataGrant, factory);
     expect(() => dataInstance.getChildInstancesIterator(taskShapeTree)).toThrow('can not have child instance');
   });
@@ -51,7 +51,7 @@ describe('newChildDataInstance', () => {
   test('should provide newChildDataInstance method', async () => {
     const accessGrantIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
     const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
-    const accessGrant = await factory.accessGrant(accessGrantIri);
+    const accessGrant = await factory.readable.accessGrant(accessGrantIri);
     const dataGrant = accessGrant.hasDataGrant.find((grant) => grant.iri === dataGrantIri);
     const dataInstance = await DataInstance.build(snippetIri, dataGrant, factory);
     expect(dataInstance.newChildDataInstance(taskShapeTree)).toBeInstanceOf(DataInstance);
@@ -60,7 +60,7 @@ describe('newChildDataInstance', () => {
   test('should throw if called on child data instance', async () => {
     const dataInstanceIri = 'https://home.alice.example/f950bae5-247c-49b2-a537-b12cda8d5758#task';
     const inheritingDataGrantIri = 'https://auth.alice.example/54b1a123-23ca-4733-9371-700b52b9c567';
-    const inheritingDataGrant = await factory.dataGrant(inheritingDataGrantIri);
+    const inheritingDataGrant = await factory.readable.dataGrant(inheritingDataGrantIri);
     const dataInstance = await DataInstance.build(dataInstanceIri, inheritingDataGrant, factory);
     expect(() => dataInstance.newChildDataInstance(taskShapeTree)).toThrow('can not have child instance');
   });
@@ -69,7 +69,7 @@ describe('newChildDataInstance', () => {
 test('should forward accessMode from the grant', async () => {
   const accessGrantIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
   const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
-  const accessGrant = await factory.accessGrant(accessGrantIri);
+  const accessGrant = await factory.readable.accessGrant(accessGrantIri);
   const dataGrant = accessGrant.hasDataGrant.find((grant) => grant.iri === dataGrantIri);
   const dataInstance = await DataInstance.build(snippetIri, dataGrant, factory);
   expect(dataInstance.accessMode).toEqual(dataGrant.accessMode);
@@ -77,7 +77,7 @@ test('should forward accessMode from the grant', async () => {
 
 describe('delete', () => {
   test('should properly use fetch', async () => {
-    const localFactory = new InteropFactory({ fetch: jest.fn(fetch), randomUUID });
+    const localFactory = new ApplicationFactory({ fetch: jest.fn(fetch), randomUUID });
     const dataInstance = await localFactory.dataInstance(snippetIri, defaultDataGrant);
     await dataInstance.delete();
     expect(localFactory.fetch).toHaveBeenCalledWith(snippetIri, { method: 'DELETE' });
@@ -85,7 +85,7 @@ describe('delete', () => {
 
   test('should throw if failed', async () => {
     const fakeFetch = () => Promise.resolve({ ok: false });
-    const localFactory = new InteropFactory({ fetch, randomUUID });
+    const localFactory = new ApplicationFactory({ fetch, randomUUID });
     const dataInstance = await localFactory.dataInstance(snippetIri, defaultDataGrant);
     // @ts-ignore
     dataInstance.fetch = fakeFetch;
@@ -122,7 +122,7 @@ describe('update', () => {
   });
 
   test('should properly use fetch', async () => {
-    const localFactory = new InteropFactory({ fetch: jest.fn(fetch), randomUUID });
+    const localFactory = new ApplicationFactory({ fetch: jest.fn(fetch), randomUUID });
     const dataInstance = await localFactory.dataInstance(snippetIri, defaultDataGrant);
     const dataRegistrationIri = 'https://pro.alice.example/773605f0-b5bf-4d46-878d-5c167eac8b5d';
     await dataInstance.update(differentDataset);
@@ -134,7 +134,7 @@ describe('update', () => {
   });
 
   test('should set updated dataset on the data instance', async () => {
-    const localFactory = new InteropFactory({ fetch: jest.fn(fetch), randomUUID });
+    const localFactory = new ApplicationFactory({ fetch: jest.fn(fetch), randomUUID });
     const dataInstance = await localFactory.dataInstance(snippetIri, defaultDataGrant);
     await dataInstance.update(differentDataset);
     expect(dataInstance.dataset).toBe(differentDataset);
@@ -142,7 +142,7 @@ describe('update', () => {
 
   test('should throw if failed', async () => {
     const fakeFetch = () => Promise.resolve({ ok: false });
-    const localFactory = new InteropFactory({ fetch, randomUUID });
+    const localFactory = new ApplicationFactory({ fetch, randomUUID });
     const dataInstance = await localFactory.dataInstance(snippetIri, defaultDataGrant);
     // @ts-ignore
     dataInstance.fetch = fakeFetch;

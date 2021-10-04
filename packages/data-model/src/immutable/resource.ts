@@ -1,14 +1,14 @@
 import { DatasetCore } from '@rdfjs/types';
 import { Store } from 'n3';
 import { RdfFetch } from '@janeirodigital/interop-utils';
-import { InteropFactory } from '..';
+import { ApplicationFactory } from '..';
 
 type Data = { [key: string]: string | string[] };
 
 export class ImmutableResource {
   fetch: RdfFetch;
 
-  factory: InteropFactory;
+  factory: ApplicationFactory;
 
   iri: string;
 
@@ -17,7 +17,7 @@ export class ImmutableResource {
   data: Data;
 
   // dataset gets populated in consturtor of each sub class
-  constructor(iri: string, factory: InteropFactory, data: Data) {
+  constructor(iri: string, factory: ApplicationFactory, data: Data) {
     this.iri = iri;
     this.factory = factory;
     this.fetch = factory.fetch;

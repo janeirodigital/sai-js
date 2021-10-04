@@ -22,7 +22,7 @@ export class AllInstancesDataGrant extends AbstractDataGrant {
     const instance = new AllInstancesDataGrant(iri, factory, dataset);
     for (const inheritingGrantIri of instance.hasInheritingGrantIriList) {
       // eslint-disable-next-line no-await-in-loop
-      const inheritingGrant = (await factory.dataGrant(inheritingGrantIri)) as InheritInstancesDataGrant;
+      const inheritingGrant = (await factory.readable.dataGrant(inheritingGrantIri)) as InheritInstancesDataGrant;
       inheritingGrant.inheritsFromGrant = instance;
       instance.hasInheritingGrant.add(inheritingGrant);
     }
@@ -35,7 +35,7 @@ export class AllInstancesDataGrant extends AbstractDataGrant {
     const dataGrant = this;
     return {
       async *[Symbol.asyncIterator]() {
-        const dataRegistration = await factory.dataRegistration(dataGrant.hasDataRegistrationIri);
+        const dataRegistration = await factory.readable.dataRegistration(dataGrant.hasDataRegistrationIri);
         for (const instanceIri of dataRegistration.contains) {
           yield factory.dataInstance(instanceIri, dataGrant);
         }

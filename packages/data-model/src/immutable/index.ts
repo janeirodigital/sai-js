@@ -1,2 +1,2 @@
 export { ImmutableResource } from './resource';
-export { ImmutableDataGrant } from './data-grant';
+export * from './data-grant';

@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { InteropFactory, ImmutableResource } from '..';
+import { ApplicationFactory, DataGrant, ImmutableResource } from '..';
 
 type StringData = {
   dataOwner: string;
@@ -10,14 +10,14 @@ type StringData = {
   inheritsFromGrant?: string;
 };
 
-type Data = StringData & {
+export type DataGrantData = StringData & {
   accessMode: string[];
   creatorAccessMode?: string[];
   hasDataInstance?: string[];
 };
 
 export class ImmutableDataGrant extends ImmutableResource {
-  public constructor(iri: string, factory: InteropFactory, data: Data) {
+  public constructor(iri: string, factory: ApplicationFactory, data: DataGrantData) {
     super(iri, factory, data);
     const thisNode = DataFactory.namedNode(this.iri);
     const props: (keyof StringData)[] = [
@@ -45,5 +45,10 @@ export class ImmutableDataGrant extends ImmutableResource {
         this.dataset.add(DataFactory.quad(thisNode, INTEROP.hasDataInstance, DataFactory.namedNode(instance)));
       }
     }
+  }
+  public static async build(iri: string, factory: ApplicationFactory, data: DataGrantData): Promise<DataGrant> {
+    const dataGrant = new ImmutableDataGrant(iri, factory, data);
+    await dataGrant.build();
+    return factory.readable.dataGrant(iri);
   }
 }

@@ -4,10 +4,10 @@ import 'jest-rdf';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { INTEROP, ACL } from '@janeirodigital/interop-namespaces';
 import { randomUUID } from 'crypto';
-import { ImmutableDataGrant, InteropFactory } from '../src';
+import { ImmutableDataGrant, ApplicationFactory } from '../src';
 import { DataFactory } from 'n3';
 
-const factory = new InteropFactory({ fetch, randomUUID });
+const factory = new ApplicationFactory({ fetch, randomUUID });
 const snippetIri = 'https://some.iri/';
 const commonData = {
   dataOwner: 'https://alice.example/#id',
