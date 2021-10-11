@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
 import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
-import { AuthorizationAgentFactory, ImmutableResource, ReadableAccessGrant } from '..';
+import { AuthorizationAgentFactory, ImmutableDataGrant, ImmutableResource, ReadableAccessGrant } from '..';
 
 type StringData = {
   registeredBy: string;
@@ -10,12 +10,15 @@ type StringData = {
 };
 
 export type AccessGrantData = StringData & {
-  hasDataGrant: string[];
+  dataGrants: ImmutableDataGrant[];
 };
 
 export class ImmutableAccessGrant extends ImmutableResource {
+  dataGrants: ImmutableDataGrant[];
+
   public constructor(iri: string, factory: AuthorizationAgentFactory, data: AccessGrantData) {
     super(iri, factory, data);
+    this.dataGrants = data.dataGrants;
     const thisNode = DataFactory.namedNode(this.iri);
     const props: (keyof StringData)[] = ['registeredBy', 'registeredWith', 'registeredAgent', 'hasAccessNeedGroup'];
     for (const prop of props) {
@@ -23,21 +26,29 @@ export class ImmutableAccessGrant extends ImmutableResource {
         this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
       }
     }
-    for (const dataConsent of data.hasDataGrant) {
-      this.dataset.add(DataFactory.quad(thisNode, INTEROP.hasDataGrant, DataFactory.namedNode(dataConsent)));
+    for (const dataGrant of data.dataGrants) {
+      this.dataset.add(DataFactory.quad(thisNode, INTEROP.hasDataGrant, DataFactory.namedNode(dataGrant.iri)));
     }
     this.dataset.add(
       DataFactory.quad(thisNode, INTEROP.registeredAt, DataFactory.literal(new Date().toISOString(), XSD.dateTime))
     );
   }
 
+  public async store(): Promise<ReadableAccessGrant> {
+    // store all data grants first
+    await Promise.all(this.dataGrants.map((grant) => grant.put()));
+
+    await this.put();
+
+    return this.factory.readable.accessGrant(this.iri);
+  }
+
+  // TODO remove async or this function
   public static async build(
     iri: string,
     factory: AuthorizationAgentFactory,
     data: AccessGrantData
-  ): Promise<ReadableAccessGrant> {
-    const dataGrant = new ImmutableAccessGrant(iri, factory, data);
-    await dataGrant.build();
-    return factory.readable.accessGrant(iri);
+  ): Promise<ImmutableAccessGrant> {
+    return new ImmutableAccessGrant(iri, factory, data);
   }
 }

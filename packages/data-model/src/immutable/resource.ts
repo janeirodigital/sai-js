@@ -3,7 +3,7 @@ import { Store } from 'n3';
 import { RdfFetch } from '@janeirodigital/interop-utils';
 import { ApplicationFactory } from '..';
 
-type Data = { [key: string]: string | string[] };
+type Data = { [key: string]: any };
 
 export class ImmutableResource {
   fetch: RdfFetch;
@@ -16,6 +16,8 @@ export class ImmutableResource {
 
   data: Data;
 
+  stored = false;
+
   // dataset gets populated in consturtor of each sub class
   constructor(iri: string, factory: ApplicationFactory, data: Data) {
     this.iri = iri;
@@ -25,13 +27,25 @@ export class ImmutableResource {
     this.dataset = new Store();
   }
 
-  public async build(): Promise<void> {
+  /*
+   * Immutable resource is always created new, never updated
+   * for that reason it will always use If-None-Match: * header.
+   */
+  public async put(): Promise<void> {
+    if (this.stored) {
+      throw new Error('this resource has been already stored');
+    }
     const { ok } = await this.fetch(this.iri, {
       method: 'PUT',
-      dataset: this.dataset
+      dataset: this.dataset,
+      headers: {
+        'If-None-Match': '*'
+      }
     });
-    if (!ok) {
-      throw new Error('failed to update');
+    if (ok) {
+      this.stored = true;
+    } else {
+      throw new Error('failed to store');
     }
   }
 }

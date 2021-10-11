@@ -40,19 +40,19 @@ export class AuthorizationAgentFactory extends BaseFactory {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;
     return {
-      dataGrant: async function dataGrant(iri: string, data: DataGrantData): Promise<DataGrant> {
+      dataGrant: async function dataGrant(iri: string, data: DataGrantData): Promise<ImmutableDataGrant> {
         return ImmutableDataGrant.build(iri, factory, data);
       },
-      accessGrant: async function accessGrant(iri: string, data: AccessGrantData): Promise<ReadableAccessGrant> {
+      accessGrant: async function accessGrant(iri: string, data: AccessGrantData): Promise<ImmutableAccessGrant> {
         return ImmutableAccessGrant.build(iri, factory, data);
       },
-      dataConsent: async function dataConsent(iri: string, data: DataConsentData): Promise<ReadableDataConsent> {
+      dataConsent: async function dataConsent(iri: string, data: DataConsentData): Promise<ImmutableDataConsent> {
         return ImmutableDataConsent.build(iri, factory, data);
       },
       accessConsent: async function accessConsent(
         iri: string,
         data: AccessConsentData
-      ): Promise<ReadableAccessConsent> {
+      ): Promise<ImmutableAccessConsent> {
         return ImmutableAccessConsent.build(iri, factory, data);
       }
     };

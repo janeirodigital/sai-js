@@ -2,22 +2,24 @@
 import { jest } from '@jest/globals';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
+import { RdfFetch } from '@janeirodigital/interop-utils';
 import { randomUUID } from 'crypto';
 import { ImmutableResource, ApplicationFactory } from '../../src';
-import { RdfFetch } from '@janeirodigital/interop-utils';
 
-const factory = new ApplicationFactory({ fetch, randomUUID });
 const snippetIri = 'https://some.iri/';
 
-describe('build', () => {
+describe('put', () => {
   test('should PUT its data', async () => {
     const localFactory = new ApplicationFactory({ fetch: jest.fn(fetch), randomUUID });
     const resource = new ImmutableResource(snippetIri, localFactory, {});
-    await resource.build();
+    await resource.put();
 
     expect(localFactory.fetch).toHaveBeenCalledWith(snippetIri, {
       method: 'PUT',
-      dataset: resource.dataset
+      dataset: resource.dataset,
+      headers: {
+        'If-None-Match': '*'
+      }
     });
   });
 
@@ -26,6 +28,6 @@ describe('build', () => {
     const localFactory = new ApplicationFactory({ fetch: fakeFetch as unknown as RdfFetch, randomUUID });
     const resource = new ImmutableResource(snippetIri, localFactory, {});
 
-    return expect(resource.build()).rejects.toThrow('failed');
+    return expect(resource.put()).rejects.toThrow('failed');
   });
 });

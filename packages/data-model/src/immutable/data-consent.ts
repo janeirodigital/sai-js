@@ -44,13 +44,12 @@ export class ImmutableDataConsent extends ImmutableResource {
     }
   }
 
+  // TODO remove async or this function
   public static async build(
     iri: string,
     factory: AuthorizationAgentFactory,
     data: DataConsentData
-  ): Promise<ReadableDataConsent> {
-    const instance = new ImmutableDataConsent(iri, factory, data);
-    await instance.build();
-    return factory.readable.dataConsent(iri);
+  ): Promise<ImmutableDataConsent> {
+    return new ImmutableDataConsent(iri, factory, data);
   }
 }

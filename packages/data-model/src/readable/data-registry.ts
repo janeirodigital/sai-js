@@ -1,11 +1,9 @@
-import { Memoize } from 'typescript-memoize';
 import { ReadableDataRegistration, ReadableResource } from '.';
 import { AuthorizationAgentFactory } from '..';
 
 export class ReadableDataRegistry extends ReadableResource {
   factory: AuthorizationAgentFactory;
 
-  @Memoize()
   get hasRegistration(): string[] {
     return this.getObjectsArray('hasRegistration').map((obj) => obj.value);
   }
@@ -24,7 +22,7 @@ export class ReadableDataRegistry extends ReadableResource {
   }
 
   async bootstrap(): Promise<void> {
-    this.fetchData();
+    await this.fetchData();
   }
 
   static async build(iri: string, factory: AuthorizationAgentFactory): Promise<ReadableDataRegistry> {

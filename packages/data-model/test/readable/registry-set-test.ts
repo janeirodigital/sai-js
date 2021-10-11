@@ -17,6 +17,8 @@ describe('build', () => {
     expect(registrySet.dataset.size).toBeGreaterThan(0);
   });
 
+  test.todo('should set hasDataRegistry');
+
   test('should set hasAgentRegistry', async () => {
     const agentRegistryIri = 'https://auth.alice.example/1cf3e08b-ffe2-465a-ac5b-94ce165cb8f0';
     const registrySet = await factory.readable.registrySet(snippetIri);

@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ApplicationFactory, DataGrant, ImmutableResource } from '..';
+import { ApplicationFactory, ImmutableResource } from '..';
 
 type StringData = {
   dataOwner: string;
@@ -44,9 +44,12 @@ export class ImmutableDataGrant extends ImmutableResource {
     }
   }
 
-  public static async build(iri: string, factory: ApplicationFactory, data: DataGrantData): Promise<DataGrant> {
-    const dataGrant = new ImmutableDataGrant(iri, factory, data);
-    await dataGrant.build();
-    return factory.readable.dataGrant(iri);
+  // TODO remove async or this function
+  public static async build(
+    iri: string,
+    factory: ApplicationFactory,
+    data: DataGrantData
+  ): Promise<ImmutableDataGrant> {
+    return new ImmutableDataGrant(iri, factory, data);
   }
 }
