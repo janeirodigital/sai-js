@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { ReadableShapeTree, ApplicationFactory } from '../src';
+import { ReadableShapeTree, ApplicationFactory } from '../../src';
 
 const factory = new ApplicationFactory({ fetch, randomUUID });
 const snippetIri = 'https://solidshapes.example/trees/Project';

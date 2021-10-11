@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { ReadableAccessConsent, AuthorizationAgentFactory } from '../src';
+import { ReadableAccessConsent, AuthorizationAgentFactory } from '../../src';
 
 const factory = new AuthorizationAgentFactory({ fetch, randomUUID });
 const snippetIri = 'https://auth.alice.example/96feb105-063e-4996-ab74-5e504c6ceae5';

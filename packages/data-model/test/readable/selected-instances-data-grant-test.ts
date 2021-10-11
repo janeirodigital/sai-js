@@ -4,35 +4,35 @@ import 'jest-rdf';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { AllInstancesDataGrant, DataInstance, ApplicationFactory } from '../src';
+import { DataInstance, ApplicationFactory, SelectedInstancesDataGrant } from '../../src';
 
 const factory = new ApplicationFactory({ fetch, randomUUID });
-const snippetIri = 'https://auth.alice.example/7b2bc4ff-b4b8-47b8-96f6-06695f4c5126';
+const snippetIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
 
 test('should use correct subclass', async () => {
   const dataGrant = await factory.readable.dataGrant(snippetIri);
-  expect(dataGrant).toBeInstanceOf(AllInstancesDataGrant);
+  expect(dataGrant).toBeInstanceOf(SelectedInstancesDataGrant);
 });
 
 test('should set correct scopeOfGrant', async () => {
   const dataGrant = await factory.readable.dataGrant(snippetIri);
-  expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.AllInstances);
-});
-
-test('should set correct canCreate', async () => {
-  const dataGrant = await factory.readable.dataGrant(snippetIri);
-  expect(dataGrant.canCreate).toBeTruthy();
+  expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.SelectedInstances);
 });
 
 test('should set iriPrefix', async () => {
   const dataGrant = await factory.readable.dataGrant(snippetIri);
-  const iriPrefix = 'https://home.alice.example/';
+  const iriPrefix = 'https://pro.alice.example/';
   expect(dataGrant.iriPrefix).toEqual(iriPrefix);
 });
 
+test('should set correct canCreate', async () => {
+  const dataGrant = await factory.readable.dataGrant(snippetIri);
+  expect(dataGrant.canCreate).toBeFalsy();
+});
+
 test('should set hasDataRegistrationIri', async () => {
-  const dataGrant = (await factory.readable.dataGrant(snippetIri)) as AllInstancesDataGrant;
-  const dataRegistrationIri = 'https://home.alice.example/f6ccd3a4-45ea-4f98-8a36-98eac92a6720';
+  const dataGrant = (await factory.readable.dataGrant(snippetIri)) as SelectedInstancesDataGrant;
+  const dataRegistrationIri = 'https://pro.alice.example/773605f0-b5bf-4d46-878d-5c167eac8b5d';
   expect(dataGrant.hasDataRegistrationIri).toBe(dataRegistrationIri);
 });
 
@@ -44,12 +44,4 @@ test('should provide data instance iterator', async () => {
     count += 1;
   }
   expect(count).toBe(1);
-});
-
-describe('newDataInstance', () => {
-  test('should create data instance', async () => {
-    const dataGrant = (await factory.readable.dataGrant(snippetIri)) as AllInstancesDataGrant;
-    const newDataInstance = dataGrant.newDataInstance();
-    expect(newDataInstance.iri).toMatch(dataGrant.iriPrefix);
-  });
 });

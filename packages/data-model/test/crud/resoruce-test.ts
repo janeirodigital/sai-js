@@ -3,7 +3,7 @@ import { jest } from '@jest/globals';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { ApplicationFactory, CRUDResource } from '../src';
+import { ApplicationFactory, CRUDResource } from '../../src';
 
 const snippetIri = 'https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659';
 
