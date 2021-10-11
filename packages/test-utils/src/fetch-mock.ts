@@ -18,7 +18,7 @@ export const fetch = async function fetch(url: string, options?: RdfRequestInit)
     ok: true,
     text,
     headers: {
-      get: function (name) {
+      get(name) {
         if (name === 'Content-Type') {
           return 'text/turtle';
         }
@@ -29,6 +29,7 @@ export const fetch = async function fetch(url: string, options?: RdfRequestInit)
   // @ts-ignore
   if (!options?.headers?.Accept || options.headers.Accept.match('text/turtle')) {
     response.dataset = async function dataset() {
+      if (!data[strippedUrl]) throw new Error(`missing snippet: ${strippedUrl}`);
       return parseTurtle(data[strippedUrl], strippedUrl);
     };
   }

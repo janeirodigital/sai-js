@@ -7,10 +7,9 @@ import {
   ReadableDataConsent,
   ReadableAgentRegistry,
   ReadableSocialAgentRegistration,
-  ReadableAccessGrant,
   ReadableDataRegistry
 } from '.';
-import { AuthorizationAgentFactory, DataGrant } from '..';
+import { AuthorizationAgentFactory, ImmutableAccessGrant, ImmutableDataGrant } from '..';
 
 export class ReadableAccessConsent extends ReadableResource {
   factory: AuthorizationAgentFactory;
@@ -48,24 +47,26 @@ export class ReadableAccessConsent extends ReadableResource {
     return this.getObject('registeredAgent').value;
   }
 
-  async newAccessGrant(agentRegistry: ReadableAgentRegistry, dataGrants: DataGrant[]): Promise<ReadableAccessGrant> {
+  async newAccessGrant(
+    agentRegistry: ReadableAgentRegistry,
+    dataGrants: ImmutableDataGrant[]
+  ): Promise<ImmutableAccessGrant> {
     let agentRegistration;
     for await (const registration of agentRegistry.socialAgentRegistrations) {
-      if (registration.registeredAgent.value === this.registeredAgent) {
+      if (registration.registeredAgent === this.registeredAgent) {
         agentRegistration = registration;
         break;
       }
     }
     // TODO iriPrefix
     const iri = `${agentRegistration.iri}${this.factory.randomUUID()}`;
-    const accessGrant = this.factory.immutable.accessGrant(iri, {
+    return this.factory.immutable.accessGrant(iri, {
       registeredBy: 'TODO',
       registeredWith: 'TODO',
       registeredAgent: this.registeredAgent,
       hasAccessNeedGroup: 'TODO',
-      hasDataGrant: dataGrants.map((grant) => grant.iri)
+      dataGrants
     });
-    return accessGrant;
   }
 
   /*
@@ -78,10 +79,10 @@ export class ReadableAccessConsent extends ReadableResource {
   public async generateAccessGrant(
     dataRegistries: ReadableDataRegistry[],
     agentRegistry: ReadableAgentRegistry
-  ): Promise<void> {
+  ): Promise<ImmutableAccessGrant> {
     const regularConsents: ReadableDataConsent[] = [];
     const childConsents: ReadableDataConsent[] = [];
-    let dataGrants: DataGrant[] = [];
+    let dataGrants: ImmutableDataGrant[] = [];
 
     for await (const dataConsent of this.dataConsents) {
       if (dataConsent.scopeOfConsent.value === INTEROP.Inherit) {
@@ -91,34 +92,11 @@ export class ReadableAccessConsent extends ReadableResource {
       }
     }
     for (const dataConsent of regularConsents) {
-      if (dataConsent.scopeOfConsent.value === INTEROP.All.value) {
-        // eslint-disable-next-line no-await-in-loop
-        dataGrants = [...(await dataConsent.generateSourceDataGrants(dataRegistries)), ...dataGrants];
-        // eslint-disable-next-line no-await-in-loop
-        for await (const agentRegistration of agentRegistry.socialAgentRegistrations) {
-          if (agentRegistration.registeredAgent.value !== this.registeredAgent) {
-            dataGrants = [...(await dataConsent.generateDelegatedDataGrants(agentRegistration)), ...dataGrants];
-          }
-        }
-      } else {
-        let dataOwnerRegistration: ReadableSocialAgentRegistration;
-        if (dataConsent.dataOwner && dataConsent.dataOwner !== this.registeredBy) {
-          // eslint-disable-next-line no-await-in-loop
-          for await (const agentRegistration of agentRegistry.socialAgentRegistrations) {
-            if (agentRegistration.registeredAgent.value === dataConsent.dataOwner) {
-              dataOwnerRegistration = agentRegistration;
-              break;
-            }
-          }
-        }
-        if (this.registeredBy === dataConsent.dataOwner) {
-          // eslint-disable-next-line no-await-in-loop
-          dataGrants = [...(await dataConsent.generateSourceDataGrants(dataRegistries)), ...dataGrants];
-        } else {
-          // eslint-disable-next-line no-await-in-loop
-          dataGrants = [...(await dataConsent.generateDelegatedDataGrants(dataOwnerRegistration)), ...dataGrants];
-        }
-      }
+      dataGrants = [
+        ...(await dataConsent.generateSourceDataGrants(dataRegistries)),
+        ...(await dataConsent.generateDelegatedDataGrants(agentRegistry)),
+        ...dataGrants
+      ];
     }
     for (const dataConsent of childConsents) {
       // TODO
@@ -126,8 +104,8 @@ export class ReadableAccessConsent extends ReadableResource {
     }
     // add all dataGrants to accessGrant
     // save new (draft) data grants
-    // save access Receipt
+    // save access receipt
 
-    await this.newAccessGrant(agentRegistry, dataGrants);
+    return this.newAccessGrant(agentRegistry, dataGrants);
   }
 }

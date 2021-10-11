@@ -1,13 +1,13 @@
 import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { iterable2array } from '@janeirodigital/interop-utils';
 import { NamedNode } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
 import {
   ReadableResource,
   AuthorizationAgentFactory,
-  ReadableSocialAgentRegistration,
-  DataGrant,
-  ReadableDataRegistry,
-  ReadableDataRegistration
+  ReadableAgentRegistry,
+  ImmutableDataGrant,
+  ReadableDataRegistry
 } from '..';
 
 // TODO (elf-pavlik) don't create non All consent where sub == dataowner
@@ -26,6 +26,11 @@ export class ReadableDataConsent extends ReadableResource {
   @Memoize()
   get scopeOfConsent(): NamedNode {
     return this.getObject('scopeOfConsent');
+  }
+
+  @Memoize()
+  get registeredBy(): string {
+    return this.getObject('registeredBy').value;
   }
 
   @Memoize()
@@ -55,46 +60,65 @@ export class ReadableDataConsent extends ReadableResource {
   }
 
   // TODO handle Inherit scope
-  public async generateDelegatedDataGrants(agentRegistration: ReadableSocialAgentRegistration): Promise<DataGrant[]> {
-    const accessGrant = agentRegistration.reciprocalRegistration?.hasAccessGrant;
-    if (!accessGrant) return [];
+  public async generateDelegatedDataGrants(agentRegistry: ReadableAgentRegistry): Promise<ImmutableDataGrant[]> {
+    let result: ImmutableDataGrant[] = [];
+    if (this.dataOwner && this.dataOwner === this.registeredBy) return [];
 
-    // match shape tree
-    let matchingDataGrants = accessGrant.hasDataGrant.filter(
-      (grant) => grant.registeredShapeTree === this.registeredShapeTree
-    );
+    //
+    for await (const agentRegistration of agentRegistry.socialAgentRegistrations) {
+      if (this.dataOwner && this.dataOwner !== agentRegistration.registeredAgent) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+      const accessGrant = agentRegistration.reciprocalRegistration?.hasAccessGrant;
+      if (!accessGrant) return [];
 
-    // match registration if restricted
-    if (this.hasDataRegistration) {
-      matchingDataGrants = matchingDataGrants.filter((grant) => grant.hasDataRegistration === this.hasDataRegistration);
-    }
+      // match shape tree
+      let matchingDataGrants = accessGrant.hasDataGrant.filter(
+        (grant) => grant.registeredShapeTree === this.registeredShapeTree
+      );
+      // match registration if restricted
+      if (this.hasDataRegistration) {
+        matchingDataGrants = matchingDataGrants.filter(
+          (grant) => grant.hasDataRegistration === this.hasDataRegistration
+        );
+      }
 
-    // create delegated grants
-    // TODO should be DelegatedDataGrant
-    return Promise.all(
-      matchingDataGrants.map((sourceGrant) => {
-        const iri = 'TODO';
-        const data = {
-          dataOwner: sourceGrant.dataOwner,
-          registeredShapeTree: sourceGrant.registeredShapeTree,
-          hasDataRegistration: sourceGrant.hasDataRegistration,
-          scopeOfGrant: sourceGrant.scopeOfGrant.value,
-          accessMode: this.accessMode
-        };
-        return this.factory.immutable.dataGrant(iri, data);
-      })
-    );
-  }
-
-  public async generateSourceDataGrants(dataRegistries: ReadableDataRegistry[]): Promise<DataGrant[]> {
-    const dataRegistrations: ReadableDataRegistration[] = [];
-
-    for (const registry of dataRegistries) {
-      // eslint-disable-next-line no-await-in-loop
-      for await (const registration of registry.registrations) {
-        dataRegistrations.push(registration);
+      // TODO should be DelegatedDataGrant
+      result = [
+        ...(await Promise.all(
+          matchingDataGrants.map((sourceGrant) => {
+            const iri = 'TODO';
+            const data = {
+              dataOwner: sourceGrant.dataOwner,
+              registeredShapeTree: sourceGrant.registeredShapeTree,
+              hasDataRegistration: sourceGrant.hasDataRegistration,
+              scopeOfGrant: sourceGrant.scopeOfGrant.value,
+              accessMode: this.accessMode
+            };
+            return this.factory.immutable.dataGrant(iri, data);
+          })
+        )),
+        ...result
+      ];
+      if (this.dataOwner && this.dataOwner === agentRegistration.registeredAgent) {
+        break;
       }
     }
+    return result;
+  }
+
+  public async generateSourceDataGrants(dataRegistries: ReadableDataRegistry[]): Promise<ImmutableDataGrant[]> {
+    // TODO: check grant scope
+    if (this.dataOwner && this.dataOwner !== this.registeredBy) return [];
+
+    // All
+    // AllFromAgent where agent is the owner of data registrations
+
+    // get data registrations from all data registries
+    const dataRegistrations = (
+      await Promise.all(dataRegistries.map((registry) => iterable2array(registry.registrations)))
+    ).flat();
 
     // match shape tree
     let matchingRegistrations = dataRegistrations.filter(
@@ -116,7 +140,7 @@ export class ReadableDataConsent extends ReadableResource {
           dataOwner: this.dataOwner,
           registeredShapeTree: this.registeredShapeTree,
           hasDataRegistration: registration.iri,
-          scopeOfGrant: INTEROP.AllInstances, // TODO adjust based on scope of consent
+          scopeOfGrant: INTEROP.All.value, // TODO adjust based on scope of consent
           accessMode: this.accessMode
         };
         return this.factory.immutable.dataGrant(iri, data);

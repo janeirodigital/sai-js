@@ -44,6 +44,7 @@ export class BaseFactory {
   }
 
   get readable() {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;
     return {
       accessGrant: async function accessGrant(iri: string): Promise<ReadableAccessGrant> {
@@ -82,16 +83,18 @@ export class BaseFactory {
         let scopedDataGrant;
         switch (scopeOfGrant.value) {
           case INTEROP.AllInstances.value:
+          case INTEROP.All.value: // TODO dedup after refactoring scope names
             scopedDataGrant = await AllInstancesDataGrant.build(iri, factory, dataset);
             break;
           case INTEROP.SelectedInstances.value:
             scopedDataGrant = await SelectedInstancesDataGrant.build(iri, factory, dataset);
             break;
           case INTEROP.InheritInstances.value:
+          case INTEROP.Inherit.value: // TODO dedup after refactoring scope names
             scopedDataGrant = new InheritInstancesDataGrant(iri, factory, dataset);
             break;
           default:
-            throw new Error(`Unknown scope: ${scopeOfGrant.value}`);
+            throw new Error(`Unknown scope: ${scopeOfGrant.value} on ${iri}`);
         }
 
         // store in cache for future access

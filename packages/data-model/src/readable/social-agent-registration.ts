@@ -16,8 +16,8 @@ export class ReadableSocialAgentRegistration extends ReadableResource {
   reciprocal: boolean;
 
   @Memoize()
-  get registeredAgent(): NamedNode {
-    return this.getObject('registeredAgent');
+  get registeredAgent(): string {
+    return this.getObject('registeredAgent').value;
   }
 
   private async buildAccessGrant(): Promise<void> {
