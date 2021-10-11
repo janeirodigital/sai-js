@@ -10,7 +10,7 @@ import {
   ApplicationFactory,
   InheritInstancesDataGrant,
   AbstractDataGrant
-} from '../src';
+} from '../../src';
 
 const factory = new ApplicationFactory({ fetch, randomUUID });
 const selectedInstancesDataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';

@@ -3,7 +3,7 @@ import { jest } from '@jest/globals';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { ImmutableResource, ApplicationFactory } from '../src';
+import { ImmutableResource, ApplicationFactory } from '../../src';
 import { RdfFetch } from '@janeirodigital/interop-utils';
 
 const factory = new ApplicationFactory({ fetch, randomUUID });

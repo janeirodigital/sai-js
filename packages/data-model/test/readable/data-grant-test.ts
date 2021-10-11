@@ -4,7 +4,7 @@ import 'jest-rdf';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { ACL } from '@janeirodigital/interop-namespaces';
-import { ApplicationFactory } from '../src';
+import { ApplicationFactory } from '../../src';
 
 const factory = new ApplicationFactory({ fetch, randomUUID });
 const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
