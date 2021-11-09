@@ -53,12 +53,12 @@ test('generateSourceDataGrants', async () => {
   const registrySet = await factory.readable.registrySet(registrySetIri);
   const dataConsent = await factory.readable.dataConsent(dataConsentIri);
   const sourceGrants = await dataConsent.generateSourceDataGrants(registrySet.hasDataRegistry);
-  // 'https://auth.alice.example/5dd87c6d-c352-41e5-a79c-6ae71bb20287',
-  // 'https://auth.alice.example/a723a19f-2275-41bf-a556-e6ae4fe880a8',
   const equivalentDataGrants = await Promise.all(
     [
       'https://auth.alice.example/067f19a8-1c9c-4b60-adde-c22d8e8e3814',
-      'https://auth.alice.example/d738e710-b06e-4ab6-9159-ee0d7d603402'
+      'https://auth.alice.example/d738e710-b06e-4ab6-9159-ee0d7d603402',
+      'https://auth.alice.example/5dd87c6d-c352-41e5-a79c-6ae71bb20287',
+      'https://auth.alice.example/a723a19f-2275-41bf-a556-e6ae4fe880a8'
     ].map((iri) => factory.readable.dataGrant(iri))
   );
   for (const sourceGrant of sourceGrants) {
@@ -75,12 +75,12 @@ test('generateDelegatedDataGrants', async () => {
   const registrySet = await factory.readable.registrySet(registrySetIri);
   const dataConsent = await factory.readable.dataConsent(dataConsentIri);
   const delegatedGrants = await dataConsent.generateDelegatedDataGrants(registrySet.hasAgentRegistry);
-  // 'https://auth.alice.example/c205e9da-2dc5-4d1f-8be9-a3f90c13eedc',
-  // 'https://auth.alice.example/68dd1212-b0f3-4611-aae2-f9f5ea30ee07',
   const equivalentDataGrants = await Promise.all(
     [
       'https://auth.alice.example/12daf870-a343-4684-b828-c67c5c9c997a',
-      'https://auth.alice.example/7be5a39f-583d-4464-8ad8-a39e24b99fce'
+      'https://auth.alice.example/7be5a39f-583d-4464-8ad8-a39e24b99fce',
+      'https://auth.alice.example/c205e9da-2dc5-4d1f-8be9-a3f90c13eedc',
+      'https://auth.alice.example/68dd1212-b0f3-4611-aae2-f9f5ea30ee07'
     ].map((iri) => factory.readable.dataGrant(iri))
   );
   for (const delegatedGrant of delegatedGrants) {
