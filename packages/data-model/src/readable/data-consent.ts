@@ -1,21 +1,35 @@
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { iterable2array } from '@janeirodigital/interop-utils';
+import { getAllMatchingQuads, iterable2array } from '@janeirodigital/interop-utils';
 import { NamedNode } from '@rdfjs/types';
+import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import {
   ReadableResource,
   AuthorizationAgentFactory,
   ReadableAgentRegistry,
   ImmutableDataGrant,
-  ReadableDataRegistry
+  DataGrantData,
+  ReadableDataRegistry,
+  ReadableDataRegistration,
+  ReadableSocialAgentRegistration,
+  InheritableDataGrant
 } from '..';
 
 // TODO (elf-pavlik) don't create non All consent where sub == dataowner
 export class ReadableDataConsent extends ReadableResource {
   factory: AuthorizationAgentFactory;
 
+  hasInheritingConsent: ReadableDataConsent[];
+
+  async inheritingConsents(): Promise<ReadableDataConsent[]> {
+    const pattern = [null, INTEROP.inheritsFromConsent, DataFactory.namedNode(this.iri)];
+    const childIris = getAllMatchingQuads(this.dataset, ...pattern).map((quad) => quad.subject.value);
+    return Promise.all(childIris.map((iri) => this.factory.readable.dataConsent(iri)));
+  }
+
   async bootstrap(): Promise<void> {
     await this.fetchData();
+    this.hasInheritingConsent = await this.inheritingConsents();
   }
 
   @Memoize()
@@ -59,8 +73,31 @@ export class ReadableDataConsent extends ReadableResource {
     return instance;
   }
 
-  // TODO handle Inherit scope
+  private generateChildDelegatedDataGrants(
+    parentGrantIri: string,
+    sourceGrant: InheritableDataGrant
+  ): ImmutableDataGrant[] {
+    return this.hasInheritingConsent.map((childConsent) => {
+      const childGrantIri = 'TODO';
+      const childSourceGrant = [...sourceGrant.hasInheritingGrant].find(
+        (grant) => grant.registeredShapeTree === childConsent.registeredShapeTree
+      );
+      const childData: DataGrantData = {
+        dataOwner: childSourceGrant.dataOwner,
+        registeredShapeTree: childConsent.registeredShapeTree,
+        hasDataRegistration: childSourceGrant.hasDataRegistration,
+        scopeOfGrant: INTEROP.Inherited.value,
+        accessMode: childConsent.accessMode.filter((mode) => childSourceGrant.accessMode.includes(mode)),
+        inheritsFromGrant: parentGrantIri
+      };
+      return this.factory.immutable.dataGrant(childGrantIri, childData);
+    });
+  }
+
   public async generateDelegatedDataGrants(agentRegistry: ReadableAgentRegistry): Promise<ImmutableDataGrant[]> {
+    if (this.scopeOfConsent === INTEROP.Inherited.value) {
+      throw new Error('this method should be callend on grants with Inherited scope');
+    }
     let result: ImmutableDataGrant[] = [];
     if (this.dataOwner && this.dataOwner === this.registeredBy) return [];
 
@@ -86,19 +123,26 @@ export class ReadableDataConsent extends ReadableResource {
 
       // TODO should be DelegatedDataGrant
       result = [
-        ...(await Promise.all(
-          matchingDataGrants.map((sourceGrant) => {
-            const iri = 'TODO';
-            const data = {
-              dataOwner: sourceGrant.dataOwner,
-              registeredShapeTree: sourceGrant.registeredShapeTree,
-              hasDataRegistration: sourceGrant.hasDataRegistration,
-              scopeOfGrant: sourceGrant.scopeOfGrant.value,
-              accessMode: this.accessMode
-            };
-            return this.factory.immutable.dataGrant(iri, data);
-          })
-        )),
+        ...matchingDataGrants.flatMap((sourceGrant) => {
+          const regularGrantIri = 'TODO';
+
+          const childDataGrants: ImmutableDataGrant[] = this.generateChildDelegatedDataGrants(
+            regularGrantIri,
+            sourceGrant as InheritableDataGrant
+          );
+          const data: DataGrantData = {
+            dataOwner: sourceGrant.dataOwner,
+            registeredShapeTree: sourceGrant.registeredShapeTree,
+            hasDataRegistration: sourceGrant.hasDataRegistration,
+            scopeOfGrant: sourceGrant.scopeOfGrant.value,
+            accessMode: this.accessMode.filter((mode) => sourceGrant.accessMode.includes(mode))
+          };
+          if (childDataGrants.length) {
+            data.hasInheritingGrant = childDataGrants.map((grant) => grant.iri);
+          }
+          const regularGrant = this.factory.immutable.dataGrant(regularGrantIri, data);
+          return [regularGrant, ...childDataGrants];
+        }),
         ...result
       ];
       if (this.dataOwner && this.dataOwner === agentRegistration.registeredAgent) {
@@ -108,17 +152,46 @@ export class ReadableDataConsent extends ReadableResource {
     return result;
   }
 
+  private generateChildSourceDataGrants(
+    parentGrantIri: string,
+    registration: ReadableDataRegistration,
+    dataRegistries: ReadableDataRegistration[][]
+  ): ImmutableDataGrant[] {
+    return this.hasInheritingConsent.map((childConsent) => {
+      const childGrantIri = 'TODO';
+      // child data registration must be in the same data registry as parent one
+      // each data registry has only one data registration for any given shape tree
+      const dataRegistration = dataRegistries
+        .find((registry) => registry.find((reg) => reg.iri === registration.iri))
+        .find((reg) => reg.registeredShapeTree === childConsent.registeredShapeTree);
+      const childData: DataGrantData = {
+        dataOwner: childConsent.registeredBy,
+        registeredShapeTree: childConsent.registeredShapeTree,
+        hasDataRegistration: dataRegistration.iri,
+        scopeOfGrant: INTEROP.Inherited.value,
+        accessMode: childConsent.accessMode,
+        inheritsFromGrant: parentGrantIri
+      };
+      return this.factory.immutable.dataGrant(childGrantIri, childData);
+    });
+  }
+
   public async generateSourceDataGrants(dataRegistries: ReadableDataRegistry[]): Promise<ImmutableDataGrant[]> {
-    // TODO: check grant scope
+    if (this.scopeOfConsent === INTEROP.Inherited.value) {
+      throw new Error('this method should be callend on grants with Inherited scope');
+    }
+    /* Source grants are only created if Data Consent is registred by the data owner.
+     * This can only happen with either scope:
+     * - All - there will be no dataOwner set
+     * - AllFromAgent - dataOwner will equal registeredBy
+     */
     if (this.dataOwner && this.dataOwner !== this.registeredBy) return [];
 
-    // All
-    // AllFromAgent where agent is the owner of data registrations
-
     // get data registrations from all data registries
-    const dataRegistrations = (
-      await Promise.all(dataRegistries.map((registry) => iterable2array(registry.registrations)))
-    ).flat();
+    const dataRegistriesArr = await Promise.all(
+      dataRegistries.map((registry) => iterable2array(registry.registrations))
+    );
+    const dataRegistrations = dataRegistriesArr.flat();
 
     // match shape tree
     let matchingRegistrations = dataRegistrations.filter(
@@ -133,18 +206,31 @@ export class ReadableDataConsent extends ReadableResource {
     }
 
     // create source grants
-    return Promise.all(
-      matchingRegistrations.map((registration) => {
-        const iri = 'TODO';
-        const data = {
-          dataOwner: this.dataOwner,
-          registeredShapeTree: this.registeredShapeTree,
-          hasDataRegistration: registration.iri,
-          scopeOfGrant: INTEROP.AllFromRegistry.value, // TODO adjust based on scope of consent
-          accessMode: this.accessMode
-        };
-        return this.factory.immutable.dataGrant(iri, data);
-      })
-    );
+    return matchingRegistrations.flatMap((registration) => {
+      const regularGrantIri = 'TODO';
+
+      // create children if needed
+      const childDataGrants: ImmutableDataGrant[] = this.generateChildSourceDataGrants(
+        regularGrantIri,
+        registration,
+        dataRegistriesArr
+      );
+
+      let scopeOfGrant = INTEROP.AllFromRegistry.value;
+      if (this.scopeOfConsent === INTEROP.SelectedFromRegistry.value) scopeOfGrant = INTEROP.SelectedFromRegistry.value;
+      if (this.scopeOfConsent === INTEROP.Inherited.value) scopeOfGrant = INTEROP.Inherited.value;
+      const data: DataGrantData = {
+        dataOwner: this.registeredBy,
+        registeredShapeTree: this.registeredShapeTree,
+        hasDataRegistration: registration.iri,
+        scopeOfGrant,
+        accessMode: this.accessMode
+      };
+      if (childDataGrants.length) {
+        data.hasInheritingGrant = childDataGrants.map((grant) => grant.iri);
+      }
+      const regularGrant = this.factory.immutable.dataGrant(regularGrantIri, data);
+      return [regularGrant, ...childDataGrants];
+    });
   }
 }

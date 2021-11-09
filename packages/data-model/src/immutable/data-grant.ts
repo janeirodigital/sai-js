@@ -16,7 +16,11 @@ type ArrayData = {
   hasDataInstance?: string[];
 };
 
-export type DataGrantData = StringData & ArrayData;
+type InverseArrayData = {
+  hasInheritingGrant?: string[];
+};
+
+export type DataGrantData = StringData & ArrayData & InverseArrayData;
 
 export class ImmutableDataGrant extends ImmutableResource {
   public constructor(iri: string, factory: ApplicationFactory, data: DataGrantData) {
@@ -42,14 +46,10 @@ export class ImmutableDataGrant extends ImmutableResource {
         }
       }
     }
-  }
-
-  // TODO remove async or this function
-  public static async build(
-    iri: string,
-    factory: ApplicationFactory,
-    data: DataGrantData
-  ): Promise<ImmutableDataGrant> {
-    return new ImmutableDataGrant(iri, factory, data);
+    if (data.hasInheritingGrant) {
+      for (const child of data.hasInheritingGrant) {
+        this.dataset.add(DataFactory.quad(DataFactory.namedNode(child), INTEROP.inheritsFromGrant, thisNode));
+      }
+    }
   }
 }

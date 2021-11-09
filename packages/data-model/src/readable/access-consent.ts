@@ -80,14 +80,11 @@ export class ReadableAccessConsent extends ReadableResource {
     dataRegistries: ReadableDataRegistry[],
     agentRegistry: ReadableAgentRegistry
   ): Promise<ImmutableAccessGrant> {
-    const regularConsents: ReadableDataConsent[] = [];
-    const childConsents: ReadableDataConsent[] = [];
     let dataGrants: ImmutableDataGrant[] = [];
 
+    const regularConsents: ReadableDataConsent[] = [];
     for await (const dataConsent of this.dataConsents) {
-      if (dataConsent.scopeOfConsent.value === INTEROP.Inherit) {
-        childConsents.push(dataConsent);
-      } else {
+      if (dataConsent.scopeOfConsent.value !== INTEROP.Inherit) {
         regularConsents.push(dataConsent);
       }
     }
@@ -98,13 +95,6 @@ export class ReadableAccessConsent extends ReadableResource {
         ...dataGrants
       ];
     }
-    for (const dataConsent of childConsents) {
-      // TODO
-      // const parentConsent = dataConsent.parent;
-    }
-    // add all dataGrants to accessGrant
-    // save new (draft) data grants
-    // save access receipt
 
     return this.newAccessGrant(agentRegistry, dataGrants);
   }

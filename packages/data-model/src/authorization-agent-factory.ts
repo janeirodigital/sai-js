@@ -3,7 +3,6 @@ import {
   ApplicationRegistrationData,
   BaseFactory,
   DataGrantData,
-  DataGrant,
   ImmutableDataGrant,
   ReadableRegistrySet,
   ReadableAgentRegistry,
@@ -13,16 +12,16 @@ import {
   ReadableSocialAgentRegistration,
   ReadableDataRegistration,
   AccessGrantData,
-  ReadableAccessGrant,
   ImmutableAccessGrant,
-  ReadableDataRegistry,
   DataConsentData,
   AccessConsentData,
   ImmutableAccessConsent,
-  ImmutableDataConsent
+  ImmutableDataConsent,
+  ReadableDataRegistry
 } from '.';
 
 export class AuthorizationAgentFactory extends BaseFactory {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   get crud() {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;
@@ -36,12 +35,13 @@ export class AuthorizationAgentFactory extends BaseFactory {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   get immutable() {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;
     return {
-      dataGrant: async function dataGrant(iri: string, data: DataGrantData): Promise<ImmutableDataGrant> {
-        return ImmutableDataGrant.build(iri, factory, data);
+      dataGrant: function dataGrant(iri: string, data: DataGrantData): ImmutableDataGrant {
+        return new ImmutableDataGrant(iri, factory, data);
       },
       accessGrant: async function accessGrant(iri: string, data: AccessGrantData): Promise<ImmutableAccessGrant> {
         return ImmutableAccessGrant.build(iri, factory, data);
@@ -58,6 +58,7 @@ export class AuthorizationAgentFactory extends BaseFactory {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   get readable() {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;
