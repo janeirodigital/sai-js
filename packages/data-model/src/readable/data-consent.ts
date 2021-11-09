@@ -140,7 +140,7 @@ export class ReadableDataConsent extends ReadableResource {
           dataOwner: this.dataOwner,
           registeredShapeTree: this.registeredShapeTree,
           hasDataRegistration: registration.iri,
-          scopeOfGrant: INTEROP.All.value, // TODO adjust based on scope of consent
+          scopeOfGrant: INTEROP.AllFromRegistry.value, // TODO adjust based on scope of consent
           accessMode: this.accessMode
         };
         return this.factory.immutable.dataGrant(iri, data);

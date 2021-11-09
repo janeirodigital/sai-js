@@ -23,7 +23,7 @@ describe('immutable', () => {
 
   test('builds AllInstances data grant', async () => {
     const allInstancesData = {
-      scopeOfGrant: INTEROP.AllInstances.value,
+      scopeOfGrant: INTEROP.AllFromRegistry.value,
       ...commonData
     };
     const factory = new AuthorizationAgentFactory({ fetch, randomUUID });
@@ -34,7 +34,7 @@ describe('immutable', () => {
 
   test('builds SelectedInstances data grant', async () => {
     const selectedInstancesData = {
-      scopeOfGrant: INTEROP.SelectedInstances.value,
+      scopeOfGrant: INTEROP.SelectedFromRegistry.value,
       ...commonData
     };
     const factory = new AuthorizationAgentFactory({ fetch, randomUUID });
@@ -45,7 +45,7 @@ describe('immutable', () => {
 
   test('builds InheritInstances data grant', async () => {
     const inheritnstancesData = {
-      scopeOfGrant: INTEROP.InheritInstances.value,
+      scopeOfGrant: INTEROP.Inherited.value,
       ...commonData
     };
     const factory = new AuthorizationAgentFactory({ fetch, randomUUID });
