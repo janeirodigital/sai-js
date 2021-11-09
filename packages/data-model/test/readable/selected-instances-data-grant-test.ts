@@ -16,7 +16,7 @@ test('should use correct subclass', async () => {
 
 test('should set correct scopeOfGrant', async () => {
   const dataGrant = await factory.readable.dataGrant(snippetIri);
-  expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.SelectedInstances);
+  expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.SelectedFromRegistry);
 });
 
 test('should set iriPrefix', async () => {

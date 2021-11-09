@@ -82,15 +82,13 @@ export class BaseFactory {
         const scopeOfGrant = getOneMatchingQuad(dataset, ...quadPattern).object as NamedNode;
         let scopedDataGrant;
         switch (scopeOfGrant.value) {
-          case INTEROP.AllInstances.value:
-          case INTEROP.All.value: // TODO dedup after refactoring scope names
+          case INTEROP.AllFromRegistry.value:
             scopedDataGrant = await AllInstancesDataGrant.build(iri, factory, dataset);
             break;
-          case INTEROP.SelectedInstances.value:
+          case INTEROP.SelectedFromRegistry.value:
             scopedDataGrant = await SelectedInstancesDataGrant.build(iri, factory, dataset);
             break;
-          case INTEROP.InheritInstances.value:
-          case INTEROP.Inherit.value: // TODO dedup after refactoring scope names
+          case INTEROP.Inherited.value:
             scopedDataGrant = new InheritInstancesDataGrant(iri, factory, dataset);
             break;
           default:

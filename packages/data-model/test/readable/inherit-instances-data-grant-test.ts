@@ -32,7 +32,7 @@ test('should use correct subclass', async () => {
 
 test('should set correct scopeOfGrant', async () => {
   const dataGrant = await factory.readable.dataGrant(inheritsFromSelectedInstancesIri);
-  expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.InheritInstances);
+  expect(dataGrant.scopeOfGrant).toEqualRdfTerm(INTEROP.Inherited);
 });
 
 test('should set iriPrefix', async () => {

@@ -33,14 +33,14 @@ const commonQuads = [
 describe('constructor', () => {
   test('should set dataset for AllInstances scope', async () => {
     const allInstancesData = {
-      scopeOfGrant: INTEROP.AllInstances.value,
+      scopeOfGrant: INTEROP.AllFromRegistry.value,
       ...commonData
     };
     const allInstancesQuads = [
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.scopeOfGrant,
-        DataFactory.namedNode(INTEROP.AllInstances)
+        DataFactory.namedNode(INTEROP.AllFromRegistry)
       ),
       ...commonQuads
     ];
@@ -51,7 +51,7 @@ describe('constructor', () => {
 
   test('should set dataset for SelectedInstances scope', async () => {
     const selectedInstancesData = {
-      scopeOfGrant: INTEROP.SelectedInstances.value,
+      scopeOfGrant: INTEROP.SelectedFromRegistry.value,
       hasDataInstance: ['https://some.iri/a', 'https://some.iri/b'],
       ...commonData
     };
@@ -59,7 +59,7 @@ describe('constructor', () => {
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.scopeOfGrant,
-        DataFactory.namedNode(INTEROP.SelectedInstances)
+        DataFactory.namedNode(INTEROP.SelectedFromRegistry)
       ),
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
@@ -80,7 +80,7 @@ describe('constructor', () => {
 
   test('should set dataset for InheritInstances scope', async () => {
     const inheritInstancesData = {
-      scopeOfGrant: INTEROP.InheritInstances.value,
+      scopeOfGrant: INTEROP.Inherited.value,
       inheritsFromGrant: 'https://some.iri/gr',
       ...commonData
     };
@@ -88,7 +88,7 @@ describe('constructor', () => {
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.scopeOfGrant,
-        DataFactory.namedNode(INTEROP.InheritInstances)
+        DataFactory.namedNode(INTEROP.Inherited)
       ),
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
@@ -104,7 +104,7 @@ describe('constructor', () => {
 
   test('should set dataset with creatorAccessMode', async () => {
     const allInstancesData = {
-      scopeOfGrant: INTEROP.AllInstances.value,
+      scopeOfGrant: INTEROP.AllFromRegistry.value,
       creatorAccessMode: [ACL.Update.value],
       ...commonData
     };
@@ -112,7 +112,7 @@ describe('constructor', () => {
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.scopeOfGrant,
-        DataFactory.namedNode(INTEROP.AllInstances)
+        DataFactory.namedNode(INTEROP.AllFromRegistry)
       ),
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
