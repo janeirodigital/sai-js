@@ -33,6 +33,52 @@ function compareGrants(generatedGrant: ImmutableDataGrant, equivalentGrant: Data
     ).object;
     if (generatedObject.value !== equivalentObject.value) return false;
   }
+  // INTEROP.inheritsFromGrant
+  // we don't check values, just if both exist or both don't exist
+  const generatedInherits = getAllMatchingQuads(
+    generatedGrant.dataset,
+    DataFactory.namedNode(generatedGrant.iri),
+    INTEROP.inheritsFromGrant
+  );
+  const equivalentInherits = getAllMatchingQuads(
+    equivalentGrant.dataset,
+    DataFactory.namedNode(equivalentGrant.iri),
+    INTEROP.inheritsFromGrant
+  );
+  if (generatedInherits.length !== equivalentInherits.length) return false;
+
+  // INTEROP.inheritsFromGrant - inverse
+  // we only check if number of statements is the same
+  const generatedInverseInherits = getAllMatchingQuads(
+    generatedGrant.dataset,
+    null,
+    INTEROP.inheritsFromGrant,
+    DataFactory.namedNode(generatedGrant.iri)
+  );
+  const equivalentInverseInherits = getAllMatchingQuads(
+    equivalentGrant.dataset,
+    null,
+    INTEROP.inheritsFromGrant,
+    DataFactory.namedNode(equivalentGrant.iri)
+  );
+  if (generatedInverseInherits.length !== equivalentInverseInherits.length) return false;
+
+  // INTEROP.delegationOfGrant
+  // we check if either both don't exist or both exist
+  // if both exist we compare values
+  const generatedDelegation = getOneMatchingQuad(
+    generatedGrant.dataset,
+    DataFactory.namedNode(generatedGrant.iri),
+    INTEROP.delegationOfGrant
+  )?.object;
+  const equivalentDelegation = getOneMatchingQuad(
+    equivalentGrant.dataset,
+    DataFactory.namedNode(equivalentGrant.iri),
+    INTEROP.delegationOfGrant
+  )?.object;
+  if (generatedDelegation?.value !== equivalentDelegation?.value) return false;
+
+  // INTEROP.accessMode
   const generatedAccessModes = getAllMatchingQuads(
     generatedGrant.dataset,
     DataFactory.namedNode(generatedGrant.iri),

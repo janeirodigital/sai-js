@@ -14,7 +14,6 @@ import {
   InheritableDataGrant
 } from '..';
 
-// TODO (elf-pavlik) don't create non All consent where sub == dataowner
 export class ReadableDataConsent extends ReadableResource {
   factory: AuthorizationAgentFactory;
 
@@ -77,7 +76,7 @@ export class ReadableDataConsent extends ReadableResource {
     sourceGrant: InheritableDataGrant
   ): ImmutableDataGrant[] {
     return this.hasInheritingConsent.map((childConsent) => {
-      const childGrantIri = 'TODO';
+      const childGrantIri = this.factory.randomUUID(); // TODO gen iri
       const childSourceGrant = [...sourceGrant.hasInheritingGrant].find(
         (grant) => grant.registeredShapeTree === childConsent.registeredShapeTree
       );
@@ -87,12 +86,14 @@ export class ReadableDataConsent extends ReadableResource {
         hasDataRegistration: childSourceGrant.hasDataRegistration,
         scopeOfGrant: INTEROP.Inherited.value,
         accessMode: childConsent.accessMode.filter((mode) => childSourceGrant.accessMode.includes(mode)),
-        inheritsFromGrant: parentGrantIri
+        inheritsFromGrant: parentGrantIri,
+        delegationOfGrant: childSourceGrant.iri
       };
       return this.factory.immutable.dataGrant(childGrantIri, childData);
     });
   }
 
+  // TODO (elf-pavlik) don't create delegated grants where grantee == dataowner
   public async generateDelegatedDataGrants(agentRegistry: ReadableAgentRegistry): Promise<ImmutableDataGrant[]> {
     if (this.scopeOfConsent === INTEROP.Inherited.value) {
       throw new Error('this method should be callend on grants with Inherited scope');
@@ -120,10 +121,9 @@ export class ReadableDataConsent extends ReadableResource {
         );
       }
 
-      // TODO should be DelegatedDataGrant
       result = [
         ...matchingDataGrants.flatMap((sourceGrant) => {
-          const regularGrantIri = 'TODO';
+          const regularGrantIri = this.factory.randomUUID(); // TODO gen iri
 
           const childDataGrants: ImmutableDataGrant[] = this.generateChildDelegatedDataGrants(
             regularGrantIri,
@@ -134,6 +134,7 @@ export class ReadableDataConsent extends ReadableResource {
             registeredShapeTree: sourceGrant.registeredShapeTree,
             hasDataRegistration: sourceGrant.hasDataRegistration,
             scopeOfGrant: sourceGrant.scopeOfGrant.value,
+            delegationOfGrant: sourceGrant.iri,
             accessMode: this.accessMode.filter((mode) => sourceGrant.accessMode.includes(mode))
           };
           if (childDataGrants.length) {
@@ -157,7 +158,7 @@ export class ReadableDataConsent extends ReadableResource {
     dataRegistries: ReadableDataRegistration[][]
   ): ImmutableDataGrant[] {
     return this.hasInheritingConsent.map((childConsent) => {
-      const childGrantIri = 'TODO';
+      const childGrantIri = this.factory.randomUUID(); // TODO gen iri
       // child data registration must be in the same data registry as parent one
       // each data registry has only one data registration for any given shape tree
       const dataRegistration = dataRegistries
@@ -206,7 +207,7 @@ export class ReadableDataConsent extends ReadableResource {
 
     // create source grants
     return matchingRegistrations.flatMap((registration) => {
-      const regularGrantIri = 'TODO';
+      const regularGrantIri = this.factory.randomUUID(); // TODO gen iri
 
       // create children if needed
       const childDataGrants: ImmutableDataGrant[] = this.generateChildSourceDataGrants(
