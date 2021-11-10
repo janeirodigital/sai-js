@@ -48,17 +48,14 @@ export class AuthorizationAgentFactory extends BaseFactory {
       dataGrant: function dataGrant(iri: string, data: DataGrantData): ImmutableDataGrant {
         return new ImmutableDataGrant(iri, factory, data);
       },
-      accessGrant: async function accessGrant(iri: string, data: AccessGrantData): Promise<ImmutableAccessGrant> {
-        return ImmutableAccessGrant.build(iri, factory, data);
+      accessGrant: function accessGrant(iri: string, data: AccessGrantData): ImmutableAccessGrant {
+        return new ImmutableAccessGrant(iri, factory, data);
       },
-      dataConsent: async function dataConsent(iri: string, data: DataConsentData): Promise<ImmutableDataConsent> {
-        return ImmutableDataConsent.build(iri, factory, data);
+      dataConsent: function dataConsent(iri: string, data: DataConsentData): ImmutableDataConsent {
+        return new ImmutableDataConsent(iri, factory, data);
       },
-      accessConsent: async function accessConsent(
-        iri: string,
-        data: AccessConsentData
-      ): Promise<ImmutableAccessConsent> {
-        return ImmutableAccessConsent.build(iri, factory, data);
+      accessConsent: function accessConsent(iri: string, data: AccessConsentData): ImmutableAccessConsent {
+        return new ImmutableAccessConsent(iri, factory, data);
       }
     };
   }

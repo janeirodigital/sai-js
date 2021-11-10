@@ -42,13 +42,4 @@ export class ImmutableAccessGrant extends ImmutableResource {
 
     return this.factory.readable.accessGrant(this.iri);
   }
-
-  // TODO remove async or this function
-  public static async build(
-    iri: string,
-    factory: AuthorizationAgentFactory,
-    data: AccessGrantData
-  ): Promise<ImmutableAccessGrant> {
-    return new ImmutableAccessGrant(iri, factory, data);
-  }
 }
