@@ -47,6 +47,11 @@ export class ReadableAccessConsent extends ReadableResource {
     return this.getObject('registeredAgent').value;
   }
 
+  @Memoize()
+  get hasAccessNeedGroup(): string {
+    return this.getObject('hasAccessNeedGroup').value;
+  }
+
   async newAccessGrant(
     agentRegistry: ReadableAgentRegistry,
     dataGrants: ImmutableDataGrant[]
@@ -61,10 +66,10 @@ export class ReadableAccessConsent extends ReadableResource {
     // TODO iriPrefix
     const iri = `${agentRegistration.iri}${this.factory.randomUUID()}`;
     return this.factory.immutable.accessGrant(iri, {
-      registeredBy: 'TODO',
-      registeredWith: 'TODO',
+      registeredBy: this.factory.webId,
+      registeredWith: this.factory.agentId,
       registeredAgent: this.registeredAgent,
-      hasAccessNeedGroup: 'TODO',
+      hasAccessNeedGroup: this.hasAccessNeedGroup,
       dataGrants
     });
   }
@@ -90,7 +95,9 @@ export class ReadableAccessConsent extends ReadableResource {
     }
     for (const dataConsent of regularConsents) {
       dataGrants = [
+        // eslint-disable-next-line no-await-in-loop
         ...(await dataConsent.generateSourceDataGrants(dataRegistries)),
+        // eslint-disable-next-line no-await-in-loop
         ...(await dataConsent.generateDelegatedDataGrants(agentRegistry)),
         ...dataGrants
       ];

@@ -37,7 +37,10 @@ export class AuthorizationAgent {
 
   constructor(private webId: string, private agentId: string, dependencies: AuthorizationAgentDependencies) {
     this.fetch = fetchWrapper(dependencies.fetch);
-    this.factory = new AuthorizationAgentFactory({ fetch: this.fetch, randomUUID: dependencies.randomUUID });
+    this.factory = new AuthorizationAgentFactory(webId, agentId, {
+      fetch: this.fetch,
+      randomUUID: dependencies.randomUUID
+    });
   }
 
   private async discoverRegistrySet(): Promise<string> {
@@ -107,11 +110,5 @@ export class AuthorizationAgent {
       this.registrySet.hasAgentRegistry
     );
     await accessGrant.store();
-
-    if (priorAccessConsent) {
-      // ....
-      // TODO delete prior access consent and data consents
-      // this.factory.deleteResource(priorAccessConsent.iri)
-    }
   }
 }
