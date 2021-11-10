@@ -76,9 +76,15 @@ export class AuthorizationAgent {
     return instance;
   }
 
-  // TODO consider transactional aspect
-  // TODO reuse existing data consents if possible
-
+  /*
+   * Sincle solid doesn't provide atomic transactions we should follow this order
+   * 1. Create Access Consent with Data Consents (or reuse existing when possible)
+   *    AccessConsent#store does it
+   * 2. Update Access Consent Registry in single request
+   *   * a) Remove reference to prior Access Consent
+   *   * b) Add reference to new Access Consent
+   * TODO: reuse existing Data Consents wherever possible - see Data Consent tests
+   */
   public async recordAccessConsent(consent: AccessConsentStructure): Promise<void> {
     let priorAccessConsent;
     for await (const accCons of this.accessConsents) {
@@ -88,14 +94,15 @@ export class AuthorizationAgent {
       }
     }
     // create data consents
+    // TODO (elf-pavlik) don't create data consent where grantee == dataowner
     const dataConsents: ImmutableDataConsent[] = await Promise.all(
       consent.dataConsents.map((dataConsent) => {
-        const dataConsentIri = ''; // TODO gen iri
+        const dataConsentIri = this.factory.randomUUID(); // TODO gen iri
         return this.factory.immutable.dataConsent(dataConsentIri, dataConsent);
       })
     );
 
-    const consentIri = ''; // TODO gen iri
+    const consentIri = this.factory.randomUUID(); // TODO gen iri
     const data = {
       registeredWith: this.agentId,
       registeredBy: this.webId,
@@ -103,7 +110,7 @@ export class AuthorizationAgent {
       hasAccessNeedGroup: consent.hasAccessNeedGroup,
       dataConsents
     };
-    const accessConsent = await this.factory.immutable.accessConsent(consentIri, data);
+    const accessConsent = this.factory.immutable.accessConsent(consentIri, data);
     const rAccessConsent = await accessConsent.store();
     const accessGrant = await rAccessConsent.generateAccessGrant(
       this.registrySet.hasDataRegistry,

@@ -2,13 +2,7 @@ import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import {
-  ReadableResource,
-  ReadableDataConsent,
-  ReadableAgentRegistry,
-  ReadableSocialAgentRegistration,
-  ReadableDataRegistry
-} from '.';
+import { ReadableResource, ReadableDataConsent, ReadableAgentRegistry, ReadableDataRegistry } from '.';
 import { AuthorizationAgentFactory, ImmutableAccessGrant, ImmutableDataGrant } from '..';
 
 export class ReadableAccessConsent extends ReadableResource {

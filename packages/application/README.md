@@ -119,7 +119,7 @@ class Task extends Custom {
   // for that reason also data instance acting as parent provides convienience method
   const projectToCreateTaskIn = projects.find(/* logic */);
   const newTask = new Task(projectToCreateTaskIn.newChildDataInstance(Task.shapeTree));
-  newTask.name = 'some TODO';
+  newTask.name = 'some task';
   try {
     await newTask.update();
   } catch (e) {

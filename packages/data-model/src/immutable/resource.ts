@@ -30,6 +30,7 @@ export class ImmutableResource {
   /*
    * Immutable resource is always created new, never updated
    * for that reason it will always use If-None-Match: * header.
+   * TODO: take into account retry - 412 shouldn't fail operation
    */
   public async put(): Promise<void> {
     if (this.stored) {

@@ -38,19 +38,9 @@ export class ImmutableAccessConsent extends ImmutableResource {
 
   public async store(): Promise<ReadableAccessConsent> {
     // store all data grants first
+    // TODO: take into account retrying - if given grant already exists just move on
     await Promise.all(this.dataConsents.map((grant) => grant.put()));
-
     await this.put();
-
     return this.factory.readable.accessConsent(this.iri);
-  }
-
-  // TODO remove async or this function
-  public static async build(
-    iri: string,
-    factory: AuthorizationAgentFactory,
-    data: AccessConsentData
-  ): Promise<ImmutableAccessConsent> {
-    return new ImmutableAccessConsent(iri, factory, data);
   }
 }
