@@ -1,5 +1,6 @@
 import { DataFactory } from 'n3';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { NamedNode } from '@rdfjs/types';
+import { INTEROP, RDF } from '@janeirodigital/interop-namespaces';
 import { ApplicationFactory, ImmutableResource } from '..';
 
 type StringData = {
@@ -8,6 +9,7 @@ type StringData = {
   hasDataRegistration: string;
   scopeOfGrant: string;
   inheritsFromGrant?: string;
+  delegationOfGrant?: string;
 };
 
 type ArrayData = {
@@ -31,8 +33,14 @@ export class ImmutableDataGrant extends ImmutableResource {
       'registeredShapeTree',
       'hasDataRegistration',
       'scopeOfGrant',
-      'inheritsFromGrant'
+      'inheritsFromGrant',
+      'delegationOfGrant'
     ];
+
+    // set type
+    const type: NamedNode = data.delegationOfGrant ? INTEROP.DelegatedDataGrant : INTEROP.DataGrant;
+    this.dataset.add(DataFactory.quad(thisNode, RDF.type, type));
+    // set string data
     for (const prop of props) {
       if (data[prop]) {
         this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
