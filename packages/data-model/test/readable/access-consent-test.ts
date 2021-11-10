@@ -3,7 +3,9 @@ import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { ReadableDataConsent, AuthorizationAgentFactory } from '../../src';
 
-const factory = new AuthorizationAgentFactory({ fetch, randomUUID });
+const webId = 'https://alice.example/#id';
+const agentId = 'https://jarvis.alice.example/#agent';
+const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
 const snippetIri = 'https://auth.alice.example/eac2c39c-c8b3-4880-8b9f-a3e12f7f6372';
 
 test('should provide dataConsents', async () => {

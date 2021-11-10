@@ -3,7 +3,9 @@ import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { ReadableSocialAgentRegistration, AuthorizationAgentFactory, ReadableAccessGrant } from '../../src';
 
-const factory = new AuthorizationAgentFactory({ fetch, randomUUID });
+const webId = 'https://alice.example/#id';
+const agentId = 'https://jarvis.alice.example/#agent';
+const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
 const snippetIri = 'https://auth.alice.example/5dc3c14e-7830-475f-b8e3-4748d6c0bccb';
 
 describe('build', () => {

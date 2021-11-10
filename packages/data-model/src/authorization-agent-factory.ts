@@ -17,10 +17,15 @@ import {
   AccessConsentData,
   ImmutableAccessConsent,
   ImmutableDataConsent,
-  ReadableDataRegistry
+  ReadableDataRegistry,
+  FactoryDependencies
 } from '.';
 
 export class AuthorizationAgentFactory extends BaseFactory {
+  constructor(public webId: string, public agentId: string, dependencies: FactoryDependencies) {
+    super(dependencies);
+  }
+
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   get crud() {
     // eslint-disable-next-line @typescript-eslint/no-this-alias

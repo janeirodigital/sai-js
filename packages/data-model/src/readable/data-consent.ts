@@ -11,7 +11,6 @@ import {
   DataGrantData,
   ReadableDataRegistry,
   ReadableDataRegistration,
-  ReadableSocialAgentRegistration,
   InheritableDataGrant
 } from '..';
 

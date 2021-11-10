@@ -8,7 +8,9 @@ import { DataFactory } from 'n3';
 import { randomUUID } from 'crypto';
 import { AuthorizationAgentFactory, DataGrant, ImmutableDataGrant } from '../../src';
 
-const factory = new AuthorizationAgentFactory({ fetch, randomUUID });
+const webId = 'https://alice.example/#id';
+const agentId = 'https://jarvis.alice.example/#agent';
+const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
 const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
 
 function compareGrants(generatedGrant: ImmutableDataGrant, equivalentGrant: DataGrant): boolean {
