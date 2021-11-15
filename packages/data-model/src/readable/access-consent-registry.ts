@@ -17,6 +17,11 @@ export class ReadableAccessConsentRegistry extends ReadableResource {
     return instance;
   }
 
+  // TODO (elf-pavlik) extract as mixin
+  public iriForContained(): string {
+    return `${this.iri}${this.factory.randomUUID()}`;
+  }
+
   get accessConsents(): AsyncIterable<ReadableAccessConsent> {
     const accessConsentPattern = [DataFactory.namedNode(this.iri), INTEROP.hasAccessConsent, null, null];
     const accessConsentIris = getAllMatchingQuads(this.dataset, ...accessConsentPattern).map((q) => q.object.value);

@@ -97,12 +97,12 @@ export class AuthorizationAgent {
     // TODO (elf-pavlik) don't create data consent where grantee == dataowner
     const dataConsents: ImmutableDataConsent[] = await Promise.all(
       consent.dataConsents.map((dataConsent) => {
-        const dataConsentIri = this.factory.randomUUID(); // TODO gen iri
+        const dataConsentIri = this.registrySet.hasAccessConsentRegistry.iriForContained();
         return this.factory.immutable.dataConsent(dataConsentIri, dataConsent);
       })
     );
 
-    const consentIri = this.factory.randomUUID(); // TODO gen iri
+    const consentIri = this.registrySet.hasAccessConsentRegistry.iriForContained();
     const data = {
       registeredWith: this.agentId,
       registeredBy: this.webId,

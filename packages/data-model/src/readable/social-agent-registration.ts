@@ -47,6 +47,11 @@ export class ReadableSocialAgentRegistration extends ReadableResource {
     }
   }
 
+  // TODO (elf-pavlik) extract as mixin
+  public iriForContained(): string {
+    return `${this.iri}${this.factory.randomUUID()}`;
+  }
+
   public static async build(
     iri: string,
     factory: AuthorizationAgentFactory,

@@ -22,3 +22,8 @@ export { ReadableDataRegistry } from './data-registry';
 export { ReadableAgentRegistry } from './agent-registry';
 export { ReadableAccessConsentRegistry } from './access-consent-registry';
 export { ReadableSocialAgentRegistration } from './social-agent-registration';
+
+import { ReadableApplicationRegistration } from './application-registration';
+import { ReadableSocialAgentRegistration } from './social-agent-registration';
+
+export type ReadableAgentRegistration = ReadableApplicationRegistration | ReadableSocialAgentRegistration;
