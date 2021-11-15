@@ -11,7 +11,8 @@ import {
   DataGrantData,
   ReadableDataRegistry,
   ReadableDataRegistration,
-  InheritableDataGrant
+  InheritableDataGrant,
+  ReadableAgentRegistration
 } from '..';
 
 export class ReadableDataConsent extends ReadableResource {
@@ -73,10 +74,11 @@ export class ReadableDataConsent extends ReadableResource {
 
   private generateChildDelegatedDataGrants(
     parentGrantIri: string,
-    sourceGrant: InheritableDataGrant
+    sourceGrant: InheritableDataGrant,
+    granteeRegistration: ReadableAgentRegistration
   ): ImmutableDataGrant[] {
     return this.hasInheritingConsent.map((childConsent) => {
-      const childGrantIri = this.factory.randomUUID(); // TODO gen iri
+      const childGrantIri = granteeRegistration.iriForContained();
       const childSourceGrant = [...sourceGrant.hasInheritingGrant].find(
         (grant) => grant.registeredShapeTree === childConsent.registeredShapeTree
       );
@@ -94,7 +96,10 @@ export class ReadableDataConsent extends ReadableResource {
   }
 
   // TODO (elf-pavlik) don't create delegated grants where grantee == dataowner
-  public async generateDelegatedDataGrants(agentRegistry: ReadableAgentRegistry): Promise<ImmutableDataGrant[]> {
+  public async generateDelegatedDataGrants(
+    agentRegistry: ReadableAgentRegistry,
+    granteeRegistration: ReadableAgentRegistration
+  ): Promise<ImmutableDataGrant[]> {
     if (this.scopeOfConsent === INTEROP.Inherited.value) {
       throw new Error('this method should be callend on grants with Inherited scope');
     }
@@ -123,11 +128,12 @@ export class ReadableDataConsent extends ReadableResource {
 
       result = [
         ...matchingDataGrants.flatMap((sourceGrant) => {
-          const regularGrantIri = this.factory.randomUUID(); // TODO gen iri
+          const regularGrantIri = granteeRegistration.iriForContained();
 
           const childDataGrants: ImmutableDataGrant[] = this.generateChildDelegatedDataGrants(
             regularGrantIri,
-            sourceGrant as InheritableDataGrant
+            sourceGrant as InheritableDataGrant,
+            granteeRegistration
           );
           const data: DataGrantData = {
             dataOwner: sourceGrant.dataOwner,
@@ -155,10 +161,11 @@ export class ReadableDataConsent extends ReadableResource {
   private generateChildSourceDataGrants(
     parentGrantIri: string,
     registration: ReadableDataRegistration,
-    dataRegistries: ReadableDataRegistration[][]
+    dataRegistries: ReadableDataRegistration[][],
+    granteeRegistration: ReadableAgentRegistration
   ): ImmutableDataGrant[] {
     return this.hasInheritingConsent.map((childConsent) => {
-      const childGrantIri = this.factory.randomUUID(); // TODO gen iri
+      const childGrantIri = granteeRegistration.iriForContained();
       // child data registration must be in the same data registry as parent one
       // each data registry has only one data registration for any given shape tree
       const dataRegistration = dataRegistries
@@ -176,7 +183,10 @@ export class ReadableDataConsent extends ReadableResource {
     });
   }
 
-  public async generateSourceDataGrants(dataRegistries: ReadableDataRegistry[]): Promise<ImmutableDataGrant[]> {
+  public async generateSourceDataGrants(
+    dataRegistries: ReadableDataRegistry[],
+    granteeRegistration: ReadableAgentRegistration
+  ): Promise<ImmutableDataGrant[]> {
     if (this.scopeOfConsent === INTEROP.Inherited.value) {
       throw new Error('this method should be callend on grants with Inherited scope');
     }
@@ -207,13 +217,14 @@ export class ReadableDataConsent extends ReadableResource {
 
     // create source grants
     return matchingRegistrations.flatMap((registration) => {
-      const regularGrantIri = this.factory.randomUUID(); // TODO gen iri
+      const regularGrantIri = granteeRegistration.iriForContained();
 
       // create children if needed
       const childDataGrants: ImmutableDataGrant[] = this.generateChildSourceDataGrants(
         regularGrantIri,
         registration,
-        dataRegistriesArr
+        dataRegistriesArr,
+        granteeRegistration
       );
 
       let scopeOfGrant = INTEROP.AllFromRegistry.value;

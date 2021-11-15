@@ -2,7 +2,13 @@ import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, ReadableDataConsent, ReadableAgentRegistry, ReadableDataRegistry } from '.';
+import {
+  ReadableResource,
+  ReadableDataConsent,
+  ReadableAgentRegistry,
+  ReadableDataRegistry,
+  ReadableAgentRegistration
+} from '.';
 import { AuthorizationAgentFactory, ImmutableAccessGrant, ImmutableDataGrant } from '..';
 
 export class ReadableAccessConsent extends ReadableResource {
@@ -46,28 +52,6 @@ export class ReadableAccessConsent extends ReadableResource {
     return this.getObject('hasAccessNeedGroup').value;
   }
 
-  async newAccessGrant(
-    agentRegistry: ReadableAgentRegistry,
-    dataGrants: ImmutableDataGrant[]
-  ): Promise<ImmutableAccessGrant> {
-    let agentRegistration;
-    for await (const registration of agentRegistry.socialAgentRegistrations) {
-      if (registration.registeredAgent === this.registeredAgent) {
-        agentRegistration = registration;
-        break;
-      }
-    }
-    // TODO iriPrefix
-    const iri = `${agentRegistration.iri}${this.factory.randomUUID()}`;
-    return this.factory.immutable.accessGrant(iri, {
-      registeredBy: this.factory.webId,
-      registeredWith: this.factory.agentId,
-      registeredAgent: this.registeredAgent,
-      hasAccessNeedGroup: this.hasAccessNeedGroup,
-      dataGrants
-    });
-  }
-
   /*
    * This method takes into consideration:
    * Scope of each DataConsent
@@ -79,6 +63,24 @@ export class ReadableAccessConsent extends ReadableResource {
     dataRegistries: ReadableDataRegistry[],
     agentRegistry: ReadableAgentRegistry
   ): Promise<ImmutableAccessGrant> {
+    let granteeRegistration: ReadableAgentRegistration;
+    for await (const registration of agentRegistry.applicationRegistrations) {
+      if (registration.registeredAgent === this.registeredAgent) {
+        granteeRegistration = registration;
+        break;
+      }
+    }
+    if (!granteeRegistration) {
+      for await (const registration of agentRegistry.socialAgentRegistrations) {
+        if (registration.registeredAgent === this.registeredAgent) {
+          granteeRegistration = registration;
+          break;
+        }
+      }
+    }
+    // TODO (elf-pavlik) handle case where agent registration has to be created
+    if (!granteeRegistration) throw new Error('Agent Registration not found');
+
     let dataGrants: ImmutableDataGrant[] = [];
 
     const regularConsents: ReadableDataConsent[] = [];
@@ -90,13 +92,20 @@ export class ReadableAccessConsent extends ReadableResource {
     for (const dataConsent of regularConsents) {
       dataGrants = [
         // eslint-disable-next-line no-await-in-loop
-        ...(await dataConsent.generateSourceDataGrants(dataRegistries)),
+        ...(await dataConsent.generateSourceDataGrants(dataRegistries, granteeRegistration)),
         // eslint-disable-next-line no-await-in-loop
-        ...(await dataConsent.generateDelegatedDataGrants(agentRegistry)),
+        ...(await dataConsent.generateDelegatedDataGrants(agentRegistry, granteeRegistration)),
         ...dataGrants
       ];
     }
 
-    return this.newAccessGrant(agentRegistry, dataGrants);
+    const accessGrantIri = granteeRegistration.iriForContained();
+    return this.factory.immutable.accessGrant(accessGrantIri, {
+      registeredBy: this.factory.webId,
+      registeredWith: this.factory.agentId,
+      registeredAgent: this.registeredAgent,
+      hasAccessNeedGroup: this.hasAccessNeedGroup,
+      dataGrants
+    });
   }
 }

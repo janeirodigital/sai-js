@@ -12,6 +12,7 @@ const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
 const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
 const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
+const granteeRegistrationIri = 'https://auth.alice.example/5dc3c14e-7830-475f-b8e3-4748d6c0bccb';
 
 function compareGrants(generatedGrant: ImmutableDataGrant, equivalentGrant: DataGrant): boolean {
   const predicates = [
@@ -99,8 +100,9 @@ function compareGrants(generatedGrant: ImmutableDataGrant, equivalentGrant: Data
 test('generateSourceDataGrants', async () => {
   const dataConsentIri = 'https://auth.alice.example/a691ee69-97d8-45c0-bb03-8e887b2db806';
   const registrySet = await factory.readable.registrySet(registrySetIri);
+  const granteeRegistration = await factory.readable.socialAgentRegistration(granteeRegistrationIri);
   const dataConsent = await factory.readable.dataConsent(dataConsentIri);
-  const sourceGrants = await dataConsent.generateSourceDataGrants(registrySet.hasDataRegistry);
+  const sourceGrants = await dataConsent.generateSourceDataGrants(registrySet.hasDataRegistry, granteeRegistration);
   const equivalentDataGrants = await Promise.all(
     [
       'https://auth.alice.example/067f19a8-1c9c-4b60-adde-c22d8e8e3814',
@@ -121,8 +123,12 @@ test('generateSourceDataGrants', async () => {
 test('generateDelegatedDataGrants', async () => {
   const dataConsentIri = 'https://auth.alice.example/e2765d6c-848a-4fc0-9092-556903730263';
   const registrySet = await factory.readable.registrySet(registrySetIri);
+  const granteeRegistration = await factory.readable.socialAgentRegistration(granteeRegistrationIri);
   const dataConsent = await factory.readable.dataConsent(dataConsentIri);
-  const delegatedGrants = await dataConsent.generateDelegatedDataGrants(registrySet.hasAgentRegistry);
+  const delegatedGrants = await dataConsent.generateDelegatedDataGrants(
+    registrySet.hasAgentRegistry,
+    granteeRegistration
+  );
   const equivalentDataGrants = await Promise.all(
     [
       'https://auth.alice.example/12daf870-a343-4684-b828-c67c5c9c997a',
