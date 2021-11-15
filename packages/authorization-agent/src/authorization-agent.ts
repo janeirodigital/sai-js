@@ -6,7 +6,8 @@ import {
   ReadableAccessConsent,
   ReadableApplicationRegistration,
   ReadableSocialAgentRegistration,
-  ImmutableDataConsent
+  ImmutableDataConsent,
+  DataConsentData
 } from '@janeirodigital/interop-data-model';
 import { WhatwgFetch, RdfFetch, fetchWrapper, getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
@@ -16,16 +17,10 @@ interface AuthorizationAgentDependencies {
   randomUUID(): string;
 }
 
-type DataConsentStructure = {
-  scopeOfConsent: string;
-  registeredShapeTree: string;
-  accessMode: string[];
-};
-
 type AccessConsentStructure = {
   registeredAgent: string;
   hasAccessNeedGroup: string;
-  dataConsents: DataConsentStructure[];
+  dataConsents: DataConsentData[];
 };
 
 export class AuthorizationAgent {
@@ -94,9 +89,14 @@ export class AuthorizationAgent {
       }
     }
     // create data consents
-    // TODO (elf-pavlik) don't create data consent where grantee == dataowner
+
+    // don't create data consent where grantee == dataowner
+    const validDataConsents = consent.dataConsents.filter(
+      (dataConsent) => dataConsent.dataOwner !== dataConsent.registeredAgent
+    );
+
     const dataConsents: ImmutableDataConsent[] = await Promise.all(
-      consent.dataConsents.map((dataConsent) => {
+      validDataConsents.map((dataConsent) => {
         const dataConsentIri = this.registrySet.hasAccessConsentRegistry.iriForContained();
         return this.factory.immutable.dataConsent(dataConsentIri, dataConsent);
       })

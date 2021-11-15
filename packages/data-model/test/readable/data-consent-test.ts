@@ -102,6 +102,7 @@ test('generateSourceDataGrants', async () => {
   const registrySet = await factory.readable.registrySet(registrySetIri);
   const granteeRegistration = await factory.readable.socialAgentRegistration(granteeRegistrationIri);
   const dataConsent = await factory.readable.dataConsent(dataConsentIri);
+  // @ts-ignore
   const sourceGrants = await dataConsent.generateSourceDataGrants(registrySet.hasDataRegistry, granteeRegistration);
   const equivalentDataGrants = await Promise.all(
     [
@@ -125,6 +126,7 @@ test('generateDelegatedDataGrants', async () => {
   const registrySet = await factory.readable.registrySet(registrySetIri);
   const granteeRegistration = await factory.readable.socialAgentRegistration(granteeRegistrationIri);
   const dataConsent = await factory.readable.dataConsent(dataConsentIri);
+  // @ts-ignore
   const delegatedGrants = await dataConsent.generateDelegatedDataGrants(
     registrySet.hasAgentRegistry,
     granteeRegistration

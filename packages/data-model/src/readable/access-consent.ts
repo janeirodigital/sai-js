@@ -81,7 +81,7 @@ export class ReadableAccessConsent extends ReadableResource {
     // TODO (elf-pavlik) handle case where agent registration has to be created
     if (!granteeRegistration) throw new Error('Agent Registration not found');
 
-    let dataGrants: ImmutableDataGrant[] = [];
+    const dataGrants: ImmutableDataGrant[] = [];
 
     const regularConsents: ReadableDataConsent[] = [];
     for await (const dataConsent of this.dataConsents) {
@@ -90,13 +90,8 @@ export class ReadableAccessConsent extends ReadableResource {
       }
     }
     for (const dataConsent of regularConsents) {
-      dataGrants = [
-        // eslint-disable-next-line no-await-in-loop
-        ...(await dataConsent.generateSourceDataGrants(dataRegistries, granteeRegistration)),
-        // eslint-disable-next-line no-await-in-loop
-        ...(await dataConsent.generateDelegatedDataGrants(agentRegistry, granteeRegistration)),
-        ...dataGrants
-      ];
+      // eslint-disable-next-line no-await-in-loop
+      dataGrants.push(...(await dataConsent.generateDataGrants(dataRegistries, agentRegistry, granteeRegistration)));
     }
 
     const accessGrantIri = granteeRegistration.iriForContained();
