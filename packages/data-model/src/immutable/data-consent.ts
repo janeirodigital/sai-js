@@ -1,8 +1,9 @@
 import { DataFactory } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableDataConsent, ImmutableResource, AuthorizationAgentFactory } from '..';
+import { ImmutableResource, AuthorizationAgentFactory } from '..';
 
 type StringData = {
+  registeredAgent: string;
   registeredShapeTree: string;
   scopeOfConsent: string;
   dataOwner?: string;
@@ -23,6 +24,7 @@ export class ImmutableDataConsent extends ImmutableResource {
     super(iri, factory, data);
     const thisNode = DataFactory.namedNode(this.iri);
     const props: (keyof StringData)[] = [
+      'registeredAgent',
       'dataOwner',
       'registeredShapeTree',
       'hasDataRegistration',

@@ -32,6 +32,11 @@ export class ReadableDataConsent extends ReadableResource {
   }
 
   @Memoize()
+  get registeredAgent(): string {
+    return this.getObject('registeredAgent').value;
+  }
+
+  @Memoize()
   get registeredShapeTree(): string {
     return this.getObject('registeredShapeTree').value;
   }
@@ -95,8 +100,7 @@ export class ReadableDataConsent extends ReadableResource {
     });
   }
 
-  // TODO (elf-pavlik) don't create delegated grants where grantee == dataowner
-  public async generateDelegatedDataGrants(
+  private async generateDelegatedDataGrants(
     agentRegistry: ReadableAgentRegistry,
     granteeRegistration: ReadableAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
@@ -104,11 +108,15 @@ export class ReadableDataConsent extends ReadableResource {
       throw new Error('this method should be callend on grants with Inherited scope');
     }
     let result: ImmutableDataGrant[] = [];
-    if (this.dataOwner && this.dataOwner === this.registeredBy) return [];
 
-    //
     for await (const agentRegistration of agentRegistry.socialAgentRegistrations) {
+      // data onwer is specified but it is not their registration
       if (this.dataOwner && this.dataOwner !== agentRegistration.registeredAgent) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+      // don't create delegated data grants for data owned by the grantee (registeredAgent)
+      if (this.registeredAgent === agentRegistration.registeredAgent) {
         // eslint-disable-next-line no-continue
         continue;
       }
@@ -151,6 +159,7 @@ export class ReadableDataConsent extends ReadableResource {
         }),
         ...result
       ];
+      // data owner is specified and their registration was found
       if (this.dataOwner && this.dataOwner === agentRegistration.registeredAgent) {
         break;
       }
@@ -183,19 +192,13 @@ export class ReadableDataConsent extends ReadableResource {
     });
   }
 
-  public async generateSourceDataGrants(
+  private async generateSourceDataGrants(
     dataRegistries: ReadableDataRegistry[],
     granteeRegistration: ReadableAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
     if (this.scopeOfConsent === INTEROP.Inherited.value) {
       throw new Error('this method should be callend on grants with Inherited scope');
     }
-    /* Source grants are only created if Data Consent is registred by the data owner.
-     * This can only happen with either scope:
-     * - All - there will be no dataOwner set
-     * - AllFromAgent - dataOwner will equal registeredBy
-     */
-    if (this.dataOwner && this.dataOwner !== this.registeredBy) return [];
 
     // get data registrations from all data registries
     const dataRegistriesArr = await Promise.all(
@@ -243,5 +246,37 @@ export class ReadableDataConsent extends ReadableResource {
       const regularGrant = this.factory.immutable.dataGrant(regularGrantIri, data);
       return [regularGrant, ...childDataGrants];
     });
+  }
+
+  public async generateDataGrants(
+    dataRegistries: ReadableDataRegistry[],
+    agentRegistry: ReadableAgentRegistry,
+    granteeRegistration: ReadableAgentRegistration
+  ): Promise<ImmutableDataGrant[]> {
+    const dataGrants: ImmutableDataGrant[] = [];
+    /* Source grants are only created if Data Consent is registred by the data owner.
+     * This can only happen with scope:
+     * - All - there will be no dataOwner set
+     * - AllFromAgent - dataOwner will equal registeredBy
+     * - lower with same condition as previous
+     * Otherwise only delegated data grants are created
+     */
+    if (!this.dataOwner || this.dataOwner === this.registeredBy) {
+      dataGrants.push(...(await this.generateSourceDataGrants(dataRegistries, granteeRegistration)));
+    }
+
+    // do not create delegated data grants if granted by data owner, source grants will be created instead
+    /* Delegated grants are only created for data owned by others than agent granting the consent
+     * This can only happen with scopes:
+     * - All - there will be no dataOwner set
+     * - All From Agent - dataOwner will be different than registeredBy
+     * - lower with same condition as previous
+     * Otherwise only source data grants are created
+     */
+    if (!this.dataOwner || this.dataOwner !== this.registeredBy) {
+      dataGrants.push(...(await this.generateDelegatedDataGrants(agentRegistry, granteeRegistration)));
+    }
+
+    return dataGrants;
   }
 }
