@@ -22,9 +22,7 @@ export class ImmutableAccessGrant extends ImmutableResource {
     const thisNode = DataFactory.namedNode(this.iri);
     const props: (keyof StringData)[] = ['registeredBy', 'registeredWith', 'registeredAgent', 'hasAccessNeedGroup'];
     for (const prop of props) {
-      if (data[prop]) {
-        this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
-      }
+      this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
     }
     for (const dataGrant of data.dataGrants) {
       this.dataset.add(DataFactory.quad(thisNode, INTEROP.hasDataGrant, DataFactory.namedNode(dataGrant.iri)));

@@ -30,4 +30,11 @@ describe('put', () => {
 
     return expect(resource.put()).rejects.toThrow('failed');
   });
+
+  test('should throw if already stored', async () => {
+    const localFactory = new ApplicationFactory({ fetch, randomUUID });
+    const resource = new ImmutableResource(snippetIri, localFactory, {});
+    await resource.put();
+    return expect(resource.put()).rejects.toThrow('this resource has been already stored');
+  });
 });

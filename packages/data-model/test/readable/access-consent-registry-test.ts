@@ -17,3 +17,8 @@ test('should provide accessConsents', async () => {
   }
   expect(count).toBe(2);
 });
+
+test('should provide iriForContained method', async () => {
+  const registry = await factory.readable.accessConsentRegistry(snippetIri);
+  expect(registry.iriForContained()).toMatch(registry.iri);
+});

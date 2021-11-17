@@ -24,9 +24,7 @@ export class ImmutableAccessConsent extends ImmutableResource {
     const thisNode = DataFactory.namedNode(this.iri);
     const props: (keyof StringData)[] = ['registeredBy', 'registeredWith', 'registeredAgent', 'hasAccessNeedGroup'];
     for (const prop of props) {
-      if (data[prop]) {
-        this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
-      }
+      this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
     }
     for (const dataConsent of data.dataConsents) {
       this.dataset.add(DataFactory.quad(thisNode, INTEROP.hasDataConsent, DataFactory.namedNode(dataConsent.iri)));

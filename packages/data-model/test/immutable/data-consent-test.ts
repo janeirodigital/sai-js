@@ -5,20 +5,19 @@ import 'jest-rdf';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { INTEROP, ACL } from '@janeirodigital/interop-namespaces';
 import { randomUUID } from 'crypto';
-import { ImmutableDataGrant, AuthorizationAgentFactory } from '../../src';
+import { ImmutableDataConsent, AuthorizationAgentFactory } from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
 const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
 const snippetIri = 'https://some.iri/';
 const commonData = {
-  dataOwner: 'https://alice.example/#id',
+  registeredAgent: 'https://projectron.example/#app',
   registeredShapeTree: 'https://solidshapes.example/tree/Project',
   hasDataRegistration: 'https://pro.alice.example/123',
   accessMode: [ACL.Read.value]
 };
 const commonQuads = [
-  DataFactory.quad(DataFactory.namedNode(snippetIri), INTEROP.dataOwner, DataFactory.namedNode(commonData.dataOwner)),
   DataFactory.quad(
     DataFactory.namedNode(snippetIri),
     INTEROP.registeredShapeTree,
@@ -33,34 +32,49 @@ const commonQuads = [
 ];
 
 describe('constructor', () => {
+  test.todo('should set dataset for All scope');
+  test.todo('should set dataset for AllFromAgent scope');
+
   test('should set dataset for AllFromRegistry scope', async () => {
     const allInstancesData = {
-      scopeOfGrant: INTEROP.AllFromRegistry.value,
+      dataOwner: 'https://alice.example/#id',
+      scopeOfConsent: INTEROP.AllFromRegistry.value,
       ...commonData
     };
     const allInstancesQuads = [
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
-        INTEROP.scopeOfGrant,
+        INTEROP.dataOwner,
+        DataFactory.namedNode(allInstancesData.dataOwner)
+      ),
+      DataFactory.quad(
+        DataFactory.namedNode(snippetIri),
+        INTEROP.scopeOfConsent,
         DataFactory.namedNode(INTEROP.AllFromRegistry)
       ),
       ...commonQuads
     ];
 
-    const dataGrant = new ImmutableDataGrant(snippetIri, factory, allInstancesData);
-    expect(dataGrant.dataset).toBeRdfDatasetContaining(...allInstancesQuads);
+    const dataConsent = new ImmutableDataConsent(snippetIri, factory, allInstancesData);
+    expect(dataConsent.dataset).toBeRdfDatasetContaining(...allInstancesQuads);
   });
 
   test('should set dataset for SelectedFromRegistry scope', async () => {
     const selectedInstancesData = {
-      scopeOfGrant: INTEROP.SelectedFromRegistry.value,
+      dataOwner: 'https://alice.example/#id',
+      scopeOfConsent: INTEROP.SelectedFromRegistry.value,
       hasDataInstance: ['https://some.iri/a', 'https://some.iri/b'],
       ...commonData
     };
     const selectedInstancesQuads = [
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
-        INTEROP.scopeOfGrant,
+        INTEROP.dataOwner,
+        DataFactory.namedNode(selectedInstancesData.dataOwner)
+      ),
+      DataFactory.quad(
+        DataFactory.namedNode(snippetIri),
+        INTEROP.scopeOfConsent,
         DataFactory.namedNode(INTEROP.SelectedFromRegistry)
       ),
       DataFactory.quad(
@@ -76,44 +90,56 @@ describe('constructor', () => {
       ...commonQuads
     ];
 
-    const dataGrant = new ImmutableDataGrant(snippetIri, factory, selectedInstancesData);
-    expect(dataGrant.dataset).toBeRdfDatasetContaining(...selectedInstancesQuads);
+    const dataConsent = new ImmutableDataConsent(snippetIri, factory, selectedInstancesData);
+    expect(dataConsent.dataset).toBeRdfDatasetContaining(...selectedInstancesQuads);
   });
 
-  test('should set dataset for Inherited scope', async () => {
+  test('should set dataset for InheritInstances scope', async () => {
     const inheritInstancesData = {
-      scopeOfGrant: INTEROP.Inherited.value,
-      inheritsFromGrant: 'https://some.iri/gr',
+      dataOwner: 'https://alice.example/#id',
+      scopeOfConsent: INTEROP.Inherited.value,
+      inheritsFromConsent: 'https://some.iri/gr',
       ...commonData
     };
     const inheritInstancesQuads = [
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
-        INTEROP.scopeOfGrant,
+        INTEROP.dataOwner,
+        DataFactory.namedNode(inheritInstancesData.dataOwner)
+      ),
+      DataFactory.quad(
+        DataFactory.namedNode(snippetIri),
+        INTEROP.scopeOfConsent,
         DataFactory.namedNode(INTEROP.Inherited)
       ),
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
-        INTEROP.inheritsFromGrant,
-        DataFactory.namedNode(inheritInstancesData.inheritsFromGrant)
+        INTEROP.inheritsFromConsent,
+        DataFactory.namedNode(inheritInstancesData.inheritsFromConsent)
       ),
       ...commonQuads
     ];
 
-    const dataGrant = new ImmutableDataGrant(snippetIri, factory, inheritInstancesData);
-    expect(dataGrant.dataset).toBeRdfDatasetContaining(...inheritInstancesQuads);
+    const dataConsent = new ImmutableDataConsent(snippetIri, factory, inheritInstancesData);
+    expect(dataConsent.dataset).toBeRdfDatasetContaining(...inheritInstancesQuads);
   });
 
   test('should set dataset with creatorAccessMode', async () => {
     const allInstancesData = {
-      scopeOfGrant: INTEROP.AllFromRegistry.value,
+      dataOwner: 'https://alice.example/#id',
+      scopeOfConsent: INTEROP.AllFromRegistry.value,
       creatorAccessMode: [ACL.Update.value],
       ...commonData
     };
     const allInstancesQuads = [
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
-        INTEROP.scopeOfGrant,
+        INTEROP.dataOwner,
+        DataFactory.namedNode(allInstancesData.dataOwner)
+      ),
+      DataFactory.quad(
+        DataFactory.namedNode(snippetIri),
+        INTEROP.scopeOfConsent,
         DataFactory.namedNode(INTEROP.AllFromRegistry)
       ),
       DataFactory.quad(
@@ -124,7 +150,7 @@ describe('constructor', () => {
       ...commonQuads
     ];
 
-    const dataGrant = new ImmutableDataGrant(snippetIri, factory, allInstancesData);
-    expect(dataGrant.dataset).toBeRdfDatasetContaining(...allInstancesQuads);
+    const dataConsent = new ImmutableDataConsent(snippetIri, factory, allInstancesData);
+    expect(dataConsent.dataset).toBeRdfDatasetContaining(...allInstancesQuads);
   });
 });
