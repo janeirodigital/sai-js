@@ -105,7 +105,7 @@ export class ReadableDataConsent extends ReadableResource {
     granteeRegistration: ReadableAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
     if (this.scopeOfConsent === INTEROP.Inherited.value) {
-      throw new Error('this method should be callend on grants with Inherited scope');
+      throw new Error('this method should not be callend on data consents with Inherited scope');
     }
     let result: ImmutableDataGrant[] = [];
 

@@ -77,9 +77,6 @@ export class AuthorizationAgentFactory extends BaseFactory {
       registrySet: async function registrySet(iri: string): Promise<ReadableRegistrySet> {
         return ReadableRegistrySet.build(iri, factory);
       },
-      dataRegistration: async function dataRegistration(iri: string): Promise<ReadableDataRegistration> {
-        return ReadableDataRegistration.build(iri, factory);
-      },
       agentRegistry: async function agentRegistry(iri: string): Promise<ReadableAgentRegistry> {
         return ReadableAgentRegistry.build(iri, factory);
       },
@@ -88,7 +85,7 @@ export class AuthorizationAgentFactory extends BaseFactory {
       },
       socialAgentRegistration: async function socialAgentRegistration(
         iri: string,
-        reciprocal = false
+        reciprocal?: boolean
       ): Promise<ReadableSocialAgentRegistration> {
         return ReadableSocialAgentRegistration.build(iri, factory, reciprocal);
       },

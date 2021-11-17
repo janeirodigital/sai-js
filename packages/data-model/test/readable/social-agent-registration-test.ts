@@ -9,9 +9,27 @@ const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUI
 const snippetIri = 'https://auth.alice.example/5dc3c14e-7830-475f-b8e3-4748d6c0bccb';
 
 describe('build', () => {
-  test('should return instance of Social Agent Registration', async () => {
+  test('should return instance of Social Agent Registration, with reciprocal', async () => {
     const socialAgentRegistration = await factory.readable.socialAgentRegistration(snippetIri);
     expect(socialAgentRegistration).toBeInstanceOf(ReadableSocialAgentRegistration);
+    expect(socialAgentRegistration.reciprocalRegistration).toBeInstanceOf(ReadableSocialAgentRegistration);
+  });
+
+  test('should return instance of Social Agent Registration, without reciprocal based on data', async () => {
+    const withoutReciprocalIri = 'https://auth.alice.example/76849244-0e74-4d8a-8d07-48eae753faa9';
+    const socialAgentRegistration = await factory.readable.socialAgentRegistration(withoutReciprocalIri);
+    expect(socialAgentRegistration).toBeInstanceOf(ReadableSocialAgentRegistration);
+    expect(socialAgentRegistration.reciprocalRegistration).toBeUndefined();
+  });
+
+  test('should provide registeredAgent getter', async () => {
+    const socialAgentRegistration = await factory.readable.socialAgentRegistration(snippetIri);
+    expect(socialAgentRegistration.registeredAgent).toBe('https://acme.example/#corp');
+  });
+
+  test('should provide iriForContained method', async () => {
+    const socialAgentRegistration = await factory.readable.socialAgentRegistration(snippetIri);
+    expect(socialAgentRegistration.iriForContained()).toMatch(socialAgentRegistration.iri);
   });
 
   test('should fetch its data', async () => {
