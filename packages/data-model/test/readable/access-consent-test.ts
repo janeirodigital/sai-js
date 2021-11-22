@@ -52,5 +52,13 @@ describe('generateAccessGrant', () => {
     );
     expect(accessGrant).toBeInstanceOf(ImmutableAccessGrant);
   });
-  test.todo('throws is agent registration does not exist');
+  test('throws is agent registration does not exist', async () => {
+    const consentWithNonExistentReg = 'https://auth.alice.example/0d12477a-a5ce-4b59-ab48-8be505ccd64c';
+    const accessConsent = await factory.readable.accessConsent(consentWithNonExistentReg);
+    const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
+    const registrySet = await factory.readable.registrySet(registrySetIri);
+    await expect(
+      accessConsent.generateAccessGrant(registrySet.hasDataRegistry, registrySet.hasAgentRegistry)
+    ).rejects.toThrow('Agent Registration not found');
+  });
 });
