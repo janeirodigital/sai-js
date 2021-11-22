@@ -42,8 +42,8 @@ export class ReadableDataConsent extends ReadableResource {
   }
 
   @Memoize()
-  get scopeOfConsent(): NamedNode {
-    return this.getObject('scopeOfConsent');
+  get scopeOfConsent(): string {
+    return this.getObject('scopeOfConsent').value;
   }
 
   @Memoize()
@@ -121,7 +121,9 @@ export class ReadableDataConsent extends ReadableResource {
         continue;
       }
       const accessGrant = agentRegistration.reciprocalRegistration?.hasAccessGrant;
-      if (!accessGrant) return [];
+
+      // eslint-disable-next-line no-continue
+      if (!accessGrant) continue;
 
       // match shape tree
       let matchingDataGrants = accessGrant.hasDataGrant.filter(
@@ -143,6 +145,7 @@ export class ReadableDataConsent extends ReadableResource {
             sourceGrant as InheritableDataGrant,
             granteeRegistration
           );
+          // TODO (elf-pavlik) use hasDataInstance if present
           const data: DataGrantData = {
             dataOwner: sourceGrant.dataOwner,
             registeredShapeTree: sourceGrant.registeredShapeTree,
@@ -159,10 +162,6 @@ export class ReadableDataConsent extends ReadableResource {
         }),
         ...result
       ];
-      // data owner is specified and their registration was found
-      if (this.dataOwner && this.dataOwner === agentRegistration.registeredAgent) {
-        break;
-      }
     }
     return result;
   }
@@ -197,7 +196,7 @@ export class ReadableDataConsent extends ReadableResource {
     granteeRegistration: ReadableAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
     if (this.scopeOfConsent === INTEROP.Inherited.value) {
-      throw new Error('this method should be callend on grants with Inherited scope');
+      throw new Error('this method should not be callend on data consents with Inherited scope');
     }
 
     // get data registrations from all data registries
@@ -232,7 +231,6 @@ export class ReadableDataConsent extends ReadableResource {
 
       let scopeOfGrant = INTEROP.AllFromRegistry.value;
       if (this.scopeOfConsent === INTEROP.SelectedFromRegistry.value) scopeOfGrant = INTEROP.SelectedFromRegistry.value;
-      if (this.scopeOfConsent === INTEROP.Inherited.value) scopeOfGrant = INTEROP.Inherited.value;
       const data: DataGrantData = {
         dataOwner: this.registeredBy,
         registeredShapeTree: this.registeredShapeTree,
@@ -240,6 +238,9 @@ export class ReadableDataConsent extends ReadableResource {
         scopeOfGrant,
         accessMode: this.accessMode
       };
+      if (this.hasDataInstance.length) {
+        data.hasDataInstance = this.hasDataInstance;
+      }
       if (childDataGrants.length) {
         data.hasInheritingGrant = childDataGrants.map((grant) => grant.iri);
       }

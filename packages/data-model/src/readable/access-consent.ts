@@ -85,7 +85,7 @@ export class ReadableAccessConsent extends ReadableResource {
 
     const regularConsents: ReadableDataConsent[] = [];
     for await (const dataConsent of this.dataConsents) {
-      if (dataConsent.scopeOfConsent.value !== INTEROP.Inherited) {
+      if (dataConsent.scopeOfConsent !== INTEROP.Inherited.value) {
         regularConsents.push(dataConsent);
       }
     }
