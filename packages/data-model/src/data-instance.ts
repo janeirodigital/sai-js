@@ -82,7 +82,7 @@ export class DataInstance extends ReadableResource {
   }
 
   getChildInstancesIterator(shapeTree: string): AsyncIterable<DataInstance> {
-    let childGrant = this.findChildGrant(shapeTree);
+    const childGrant = this.findChildGrant(shapeTree);
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const instance = this;
     return {
@@ -96,7 +96,7 @@ export class DataInstance extends ReadableResource {
   }
 
   newChildDataInstance(shapeTree: string): DataInstance {
-    let childGrant = this.findChildGrant(shapeTree);
+    const childGrant = this.findChildGrant(shapeTree);
     return childGrant.newDataInstance(this);
   }
 

@@ -10,7 +10,6 @@ import {
   ReadableDataConsent,
   ReadableAccessConsentRegistry,
   ReadableSocialAgentRegistration,
-  ReadableDataRegistration,
   AccessGrantData,
   ImmutableAccessGrant,
   DataConsentData,

@@ -13,7 +13,6 @@ import {
   ReadableAccessConsentRegistry,
   ReadableAgentRegistry,
   ReadableDataConsent,
-  ReadableDataRegistration,
   ReadableDataRegistry,
   ReadableRegistrySet,
   ReadableSocialAgentRegistration
@@ -77,7 +76,7 @@ describe('immutable', () => {
   test('builds Access Grant with Data Grant', async () => {
     const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
     const dataGrantIri = 'https://auth.alice.example/25b18e05-7f75-4e13-94f6-9950a67a89dd';
-    const dataGrant = await factory.immutable.dataGrant(dataGrantIri, {
+    const dataGrant = factory.immutable.dataGrant(dataGrantIri, {
       dataOwner: 'https://acme.example/#corp',
       registeredShapeTree: 'https://solidshapes.example/trees/Project',
       hasDataRegistration: 'https://finance.acme.example/4f3fbf70-49df-47ce-a573-dc54366b01ad',
@@ -100,7 +99,7 @@ describe('immutable', () => {
   test('builds Access Consent with Data Consent', async () => {
     const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
     const dataConsentIri = 'https://auth.alice.example/25b18e05-7f75-4e13-94f6-9950a67a89dd';
-    const dataConsent = await factory.immutable.dataConsent(dataConsentIri, {
+    const dataConsent = factory.immutable.dataConsent(dataConsentIri, {
       registeredAgent: 'https://projectron.example/#app',
       registeredShapeTree: 'https://solidshapes.example/trees/Project',
       accessMode: [ACL.Read.value, ACL.Write.value],

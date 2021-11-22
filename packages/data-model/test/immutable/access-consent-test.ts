@@ -15,7 +15,7 @@ const agentId = 'https://jarvis.alice.example/#agent';
 test('should set data and store', async () => {
   const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
   const dataConsentIri = 'https://auth.alice.example/25b18e05-7f75-4e13-94f6-9950a67a89dd';
-  const dataConsent = await factory.immutable.dataConsent(dataConsentIri, {
+  const dataConsent = factory.immutable.dataConsent(dataConsentIri, {
     registeredAgent: 'https://projectron.example/#app',
     registeredShapeTree: 'https://solidshapes.example/trees/Project',
     accessMode: [ACL.Read.value, ACL.Write.value],

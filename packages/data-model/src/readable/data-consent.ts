@@ -1,6 +1,5 @@
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { getAllMatchingQuads, iterable2array } from '@janeirodigital/interop-utils';
-import { NamedNode } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import {

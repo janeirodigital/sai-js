@@ -1,4 +1,3 @@
-import { NamedNode } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
