@@ -57,3 +57,9 @@ test('should throw when getting header other than Content-Type', async () => {
   const response = await fetch(url);
   expect(() => response.headers.get('Something-Else')).toThrow('Something-Else not supported');
 });
+
+test('should throw when snippet is missing', async () => {
+  const url = 'https://not-existing-snippet.example/';
+  const response = await fetch(url);
+  await expect(response.dataset).rejects.toThrow('missing snippet');
+});
