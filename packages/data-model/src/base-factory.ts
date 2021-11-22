@@ -43,6 +43,7 @@ export class BaseFactory {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   get readable() {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;

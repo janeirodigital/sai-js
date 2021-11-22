@@ -1,13 +1,12 @@
 import { RdfFetch } from '@janeirodigital/interop-utils';
+import { ApplicationFactory } from './application-factory';
+import { AuthorizationAgentFactory } from './authorization-agent-factory';
 
 export interface FactoryDependencies {
   fetch: RdfFetch;
   randomUUID(): string;
 }
 export { BaseFactory } from './base-factory';
-
-import { ApplicationFactory } from './application-factory';
-import { AuthorizationAgentFactory } from './authorization-agent-factory';
 
 export * from './readable';
 export * from './immutable';

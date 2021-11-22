@@ -1,13 +1,15 @@
-export { ReadableResource } from './resource';
-export { AbstractDataGrant } from './data-grant';
-
 import { AllInstancesDataGrant } from './all-instances-data-grant';
 import { InheritInstancesDataGrant } from './inherit-instances-data-grant';
 import { SelectedInstancesDataGrant } from './selected-instances-data-grant';
+import { ReadableApplicationRegistration } from './application-registration';
+import { ReadableSocialAgentRegistration } from './social-agent-registration';
 
 export type DataGrant = AllInstancesDataGrant | SelectedInstancesDataGrant | InheritInstancesDataGrant;
 export type InheritableDataGrant = AllInstancesDataGrant | SelectedInstancesDataGrant;
+export type ReadableAgentRegistration = ReadableApplicationRegistration | ReadableSocialAgentRegistration;
 
+export { ReadableResource } from './resource';
+export { AbstractDataGrant } from './data-grant';
 export { AllInstancesDataGrant } from './all-instances-data-grant';
 export { SelectedInstancesDataGrant } from './selected-instances-data-grant';
 export { InheritInstancesDataGrant } from './inherit-instances-data-grant';
@@ -22,8 +24,3 @@ export { ReadableDataRegistry } from './data-registry';
 export { ReadableAgentRegistry } from './agent-registry';
 export { ReadableAccessConsentRegistry } from './access-consent-registry';
 export { ReadableSocialAgentRegistration } from './social-agent-registration';
-
-import { ReadableApplicationRegistration } from './application-registration';
-import { ReadableSocialAgentRegistration } from './social-agent-registration';
-
-export type ReadableAgentRegistration = ReadableApplicationRegistration | ReadableSocialAgentRegistration;

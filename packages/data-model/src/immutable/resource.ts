@@ -3,6 +3,7 @@ import { Store } from 'n3';
 import { RdfFetch } from '@janeirodigital/interop-utils';
 import { ApplicationFactory } from '..';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Data = { [key: string]: any };
 
 export class ImmutableResource {

@@ -15,7 +15,7 @@ const agentId = 'https://jarvis.alice.example/#agent';
 test('should set data and store', async () => {
   const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
   const dataGrantIri = 'https://auth.alice.example/25b18e05-7f75-4e13-94f6-9950a67a89dd';
-  const dataGrant = await factory.immutable.dataGrant(dataGrantIri, {
+  const dataGrant = factory.immutable.dataGrant(dataGrantIri, {
     dataOwner: 'https://acme.example/#corp',
     registeredShapeTree: 'https://solidshapes.example/trees/Project',
     hasDataRegistration: 'https://finance.acme.example/4f3fbf70-49df-47ce-a573-dc54366b01ad',

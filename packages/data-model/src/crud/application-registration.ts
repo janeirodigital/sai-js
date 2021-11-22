@@ -61,6 +61,7 @@ export class CRUDApplicationRegistration extends CRUDResource {
     super.update();
   }
 
+  // eslint-disable-next-line consistent-return
   get registeredAt(): Date | undefined {
     const object = this.getObject('registeredAt');
     if (object) {
@@ -79,6 +80,7 @@ export class CRUDApplicationRegistration extends CRUDResource {
     );
   }
 
+  // eslint-disable-next-line consistent-return
   get updatedAt(): Date | undefined {
     const object = this.getObject('updatedAt');
     if (object) {
