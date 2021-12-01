@@ -2,10 +2,10 @@ import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, ReadableAccessGrant } from '.';
+import { ReadableAccessGrant, ReadableContainer } from '.';
 import { AuthorizationAgentFactory } from '..';
 
-export class ReadableSocialAgentRegistration extends ReadableResource {
+export class ReadableSocialAgentRegistration extends ReadableContainer {
   factory: AuthorizationAgentFactory;
 
   hasAccessGrant?: ReadableAccessGrant;
@@ -44,11 +44,6 @@ export class ReadableSocialAgentRegistration extends ReadableResource {
     if (!this.reciprocal) {
       await this.buildReciprocalRegistration();
     }
-  }
-
-  // TODO (elf-pavlik) extract as mixin
-  public iriForContained(): string {
-    return `${this.iri}${this.factory.randomUUID()}`;
   }
 
   public static async build(

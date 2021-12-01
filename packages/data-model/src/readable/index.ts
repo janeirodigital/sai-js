@@ -9,6 +9,7 @@ export type InheritableDataGrant = AllInstancesDataGrant | SelectedInstancesData
 export type ReadableAgentRegistration = ReadableApplicationRegistration | ReadableSocialAgentRegistration;
 
 export { ReadableResource } from './resource';
+export { ReadableContainer } from './container';
 export { AbstractDataGrant } from './data-grant';
 export { AllInstancesDataGrant } from './all-instances-data-grant';
 export { SelectedInstancesDataGrant } from './selected-instances-data-grant';
