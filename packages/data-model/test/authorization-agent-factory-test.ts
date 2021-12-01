@@ -5,6 +5,7 @@ import { randomUUID } from 'crypto';
 import {
   AuthorizationAgentFactory,
   CRUDApplicationRegistration,
+  CRUDSocialAgentRegistration,
   ImmutableAccessConsent,
   ImmutableAccessGrant,
   ImmutableDataConsent,
@@ -24,9 +25,16 @@ const agentId = 'https://jarvis.alice.example/#agent';
 describe('crud', () => {
   test('builds application registration', async () => {
     const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
-    const applicationRegistrationUrl = 'https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659';
-    const applicationRegistration = await factory.crud.applicationRegistration(applicationRegistrationUrl);
-    expect(applicationRegistration).toBeInstanceOf(CRUDApplicationRegistration);
+    const agentRegistrationUrl = 'https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659';
+    const agentRegistration = await factory.crud.applicationRegistration(agentRegistrationUrl);
+    expect(agentRegistration).toBeInstanceOf(CRUDApplicationRegistration);
+  });
+
+  test('builds social agent registration', async () => {
+    const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
+    const agentRegistrationUrl = 'https://auth.alice.example/b1f69979-dd47-4709-b2ed-a7119f29b135';
+    const agentRegistration = await factory.crud.socialAgentRegistration(agentRegistrationUrl);
+    expect(agentRegistration).toBeInstanceOf(CRUDSocialAgentRegistration);
   });
 });
 

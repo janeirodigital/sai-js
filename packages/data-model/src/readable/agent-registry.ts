@@ -1,8 +1,18 @@
 import { DataFactory } from 'n3';
 import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, ReadableApplicationRegistration, ReadableSocialAgentRegistration } from '.';
-import { AuthorizationAgentFactory } from '..';
+import {
+  ReadableResource,
+  ReadableApplicationRegistration,
+  ReadableSocialAgentRegistration,
+  ReadableAgentRegistration
+} from '.';
+import {
+  AuthorizationAgentFactory,
+  CRUDAgentRegistration,
+  CRUDApplicationRegistration,
+  CRUDSocialAgentRegistration
+} from '..';
 
 export class ReadableAgentRegistry extends ReadableResource {
   factory: AuthorizationAgentFactory;
@@ -41,5 +51,18 @@ export class ReadableAgentRegistry extends ReadableResource {
         }
       }
     };
+  }
+
+  public async findRegistration(iri: string): Promise<CRUDApplicationRegistration | CRUDSocialAgentRegistration> {
+    for await (const registration of this.applicationRegistrations) {
+      if (registration.registeredAgent === iri) {
+        return await this.factory.crud.applicationRegistration(registration.iri);
+      }
+    }
+    for await (const registration of this.socialAgentRegistrations) {
+      if (registration.registeredAgent === iri) {
+        return await this.factory.crud.socialAgentRegistration(registration.iri);
+      }
+    }
   }
 }

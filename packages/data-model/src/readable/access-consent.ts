@@ -61,26 +61,9 @@ export class ReadableAccessConsent extends ReadableResource {
 
   public async generateAccessGrant(
     dataRegistries: ReadableDataRegistry[],
-    agentRegistry: ReadableAgentRegistry
+    agentRegistry: ReadableAgentRegistry,
+    granteeRegistration: ReadableAgentRegistration
   ): Promise<ImmutableAccessGrant> {
-    let granteeRegistration: ReadableAgentRegistration;
-    for await (const registration of agentRegistry.applicationRegistrations) {
-      if (registration.registeredAgent === this.registeredAgent) {
-        granteeRegistration = registration;
-        break;
-      }
-    }
-    if (!granteeRegistration) {
-      for await (const registration of agentRegistry.socialAgentRegistrations) {
-        if (registration.registeredAgent === this.registeredAgent) {
-          granteeRegistration = registration;
-          break;
-        }
-      }
-    }
-    // TODO (elf-pavlik) handle case where agent registration has to be created
-    if (!granteeRegistration) throw new Error('Agent Registration not found');
-
     const dataGrants: ImmutableDataGrant[] = [];
 
     const regularConsents: ReadableDataConsent[] = [];

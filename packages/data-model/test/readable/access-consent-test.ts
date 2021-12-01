@@ -1,7 +1,13 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { ReadableDataConsent, AuthorizationAgentFactory, ImmutableAccessGrant } from '../../src';
+import {
+  ReadableDataConsent,
+  AuthorizationAgentFactory,
+  ImmutableAccessGrant,
+  CRUDApplicationRegistration,
+  CRUDSocialAgentRegistration
+} from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
@@ -35,9 +41,13 @@ describe('generateAccessGrant', () => {
     const accessConsent = await factory.readable.accessConsent(snippetIri);
     const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
     const registrySet = await factory.readable.registrySet(registrySetIri);
+    const agentRegistration = (await registrySet.hasAgentRegistry.findRegistration(
+      accessConsent.registeredAgent
+    )) as CRUDApplicationRegistration;
     const accessGrant = await accessConsent.generateAccessGrant(
       registrySet.hasDataRegistry,
-      registrySet.hasAgentRegistry
+      registrySet.hasAgentRegistry,
+      await agentRegistration.getReadable()
     );
     expect(accessGrant).toBeInstanceOf(ImmutableAccessGrant);
   });
@@ -46,19 +56,14 @@ describe('generateAccessGrant', () => {
     const accessConsent = await factory.readable.accessConsent(consentForSocialAgentIri);
     const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
     const registrySet = await factory.readable.registrySet(registrySetIri);
+    const agentRegistration = (await registrySet.hasAgentRegistry.findRegistration(
+      accessConsent.registeredAgent
+    )) as CRUDSocialAgentRegistration;
     const accessGrant = await accessConsent.generateAccessGrant(
       registrySet.hasDataRegistry,
-      registrySet.hasAgentRegistry
+      registrySet.hasAgentRegistry,
+      await agentRegistration.getReadable()
     );
     expect(accessGrant).toBeInstanceOf(ImmutableAccessGrant);
-  });
-  test('throws is agent registration does not exist', async () => {
-    const consentWithNonExistentReg = 'https://auth.alice.example/0d12477a-a5ce-4b59-ab48-8be505ccd64c';
-    const accessConsent = await factory.readable.accessConsent(consentWithNonExistentReg);
-    const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
-    const registrySet = await factory.readable.registrySet(registrySetIri);
-    await expect(
-      accessConsent.generateAccessGrant(registrySet.hasDataRegistry, registrySet.hasAgentRegistry)
-    ).rejects.toThrow('Agent Registration not found');
   });
 });
