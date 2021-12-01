@@ -1,10 +1,10 @@
 import { DataFactory } from 'n3';
 import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, ReadableAccessConsent } from '.';
+import { ReadableAccessConsent, ReadableContainer } from '.';
 import { AuthorizationAgentFactory } from '..';
 
-export class ReadableAccessConsentRegistry extends ReadableResource {
+export class ReadableAccessConsentRegistry extends ReadableContainer {
   factory: AuthorizationAgentFactory;
 
   async bootstrap(): Promise<void> {
@@ -15,11 +15,6 @@ export class ReadableAccessConsentRegistry extends ReadableResource {
     const instance = new ReadableAccessConsentRegistry(iri, factory);
     await instance.bootstrap();
     return instance;
-  }
-
-  // TODO (elf-pavlik) extract as mixin
-  public iriForContained(): string {
-    return `${this.iri}${this.factory.randomUUID()}`;
   }
 
   get accessConsents(): AsyncIterable<ReadableAccessConsent> {

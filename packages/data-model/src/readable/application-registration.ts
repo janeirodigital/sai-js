@@ -2,9 +2,9 @@ import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, ReadableAccessGrant, InteropFactory } from '..';
+import { ReadableAccessGrant, InteropFactory, ReadableContainer } from '..';
 
-export class ReadableApplicationRegistration extends ReadableResource {
+export class ReadableApplicationRegistration extends ReadableContainer {
   hasAccessGrant: ReadableAccessGrant;
 
   private async buildAccessGrant(): Promise<void> {
@@ -16,11 +16,6 @@ export class ReadableApplicationRegistration extends ReadableResource {
   private async bootstrap(): Promise<void> {
     await this.fetchData();
     await this.buildAccessGrant();
-  }
-
-  // TODO (elf-pavlik) extract as mixin
-  public iriForContained(): string {
-    return `${this.iri}${this.factory.randomUUID()}`;
   }
 
   @Memoize()
