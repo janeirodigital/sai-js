@@ -5,7 +5,7 @@ import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory } from 'n3';
 import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
-import { CRUDApplicationRegistration, AuthorizationAgentFactory } from '../../src';
+import { CRUDAgentRegistration, AuthorizationAgentFactory } from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
@@ -21,14 +21,14 @@ const data = {
 };
 
 describe('build', () => {
-  test('should return instance of Application Registration', async () => {
-    const applicationRegistration = await CRUDApplicationRegistration.build(snippetIri, factory);
-    expect(applicationRegistration).toBeInstanceOf(CRUDApplicationRegistration);
+  test('should return instance of Agent Registration', async () => {
+    const agentRegistration = await CRUDAgentRegistration.build(snippetIri, factory);
+    expect(agentRegistration).toBeInstanceOf(CRUDAgentRegistration);
   });
 
   test('should fetch its data if none passed', async () => {
-    const applicationRegistration = await CRUDApplicationRegistration.build(snippetIri, factory);
-    expect(applicationRegistration.dataset.size).toBe(7);
+    const agentRegistration = await CRUDAgentRegistration.build(snippetIri, factory);
+    expect(agentRegistration.dataset.size).toBe(7);
   });
 
   test('should set dataset if data passed', async () => {
@@ -54,74 +54,74 @@ describe('build', () => {
         DataFactory.namedNode(data.hasAccessGrant)
       )
     ];
-    const applicationRegistration = await CRUDApplicationRegistration.build(newSnippetIri, factory, data);
-    expect(applicationRegistration.dataset.size).toBe(4);
-    expect(applicationRegistration.dataset).toBeRdfDatasetContaining(...quads);
+    const agentRegistration = await CRUDAgentRegistration.build(newSnippetIri, factory, data);
+    expect(agentRegistration.dataset.size).toBe(4);
+    expect(agentRegistration.dataset).toBeRdfDatasetContaining(...quads);
   });
 
   test('should have updatedAt and registeredAt uset for new before update', async () => {
-    const applicationRegistration = await CRUDApplicationRegistration.build(newSnippetIri, factory, data);
-    expect(applicationRegistration.registeredAt).toBeUndefined();
-    expect(applicationRegistration.updatedAt).toBeUndefined();
+    const agentRegistration = await CRUDAgentRegistration.build(newSnippetIri, factory, data);
+    expect(agentRegistration.registeredAt).toBeUndefined();
+    expect(agentRegistration.updatedAt).toBeUndefined();
   });
 });
 
 describe('hasAccessGrant', () => {
   test('should have getter', async () => {
-    const applicationRegistration = await CRUDApplicationRegistration.build(snippetIri, factory);
-    expect(applicationRegistration.hasAccessGrant).toBe(accessGrantIri);
+    const agentRegistration = await CRUDAgentRegistration.build(snippetIri, factory);
+    expect(agentRegistration.hasAccessGrant).toBe(accessGrantIri);
   });
 
   test('setter should update dataset accordingly', async () => {
     const newIri = 'https://some.iri';
-    const applicationRegistration = await CRUDApplicationRegistration.build(snippetIri, factory);
-    applicationRegistration.hasAccessGrant = newIri;
-    expect(applicationRegistration.hasAccessGrant).toBe(newIri);
+    const agentRegistration = await CRUDAgentRegistration.build(snippetIri, factory);
+    agentRegistration.hasAccessGrant = newIri;
+    expect(agentRegistration.hasAccessGrant).toBe(newIri);
   });
 
   describe('update', () => {
     test('when data is avaliable registeredAt is set', async () => {
-      const applicationRegistration = await CRUDApplicationRegistration.build(newSnippetIri, factory, data);
-      applicationRegistration.update();
-      expect(applicationRegistration.registeredAt).toBeInstanceOf(Date);
+      const agentRegistration = await CRUDAgentRegistration.build(newSnippetIri, factory, data);
+      agentRegistration.update();
+      expect(agentRegistration.registeredAt).toBeInstanceOf(Date);
     });
 
     test('when data is avaliable updatedAt is set', async () => {
-      const applicationRegistration = await CRUDApplicationRegistration.build(newSnippetIri, factory, data);
-      applicationRegistration.update();
-      expect(applicationRegistration.updatedAt).toBeInstanceOf(Date);
+      const agentRegistration = await CRUDAgentRegistration.build(newSnippetIri, factory, data);
+      agentRegistration.update();
+      expect(agentRegistration.updatedAt).toBeInstanceOf(Date);
     });
 
     test('when data is not avaliable updatedAt is updated', async () => {
-      const applicationRegistration = await CRUDApplicationRegistration.build(snippetIri, factory);
-      const originalDate = applicationRegistration.updatedAt;
-      applicationRegistration.update();
-      expect(applicationRegistration.updatedAt.getTime()).toBeGreaterThan(originalDate.getTime());
+      const agentRegistration = await CRUDAgentRegistration.build(snippetIri, factory);
+      const originalDate = agentRegistration.updatedAt;
+      agentRegistration.update();
+      expect(agentRegistration.updatedAt.getTime()).toBeGreaterThan(originalDate.getTime());
     });
   });
 
   describe('setters', () => {
     test('registeredAt updates dataset', async () => {
       const currentDate = new Date();
-      const applicationRegistration = await CRUDApplicationRegistration.build(newSnippetIri, factory, data);
-      applicationRegistration.registeredAt = currentDate;
+      const agentRegistration = await CRUDAgentRegistration.build(newSnippetIri, factory, data);
+      agentRegistration.registeredAt = currentDate;
       const expectedQuad = DataFactory.quad(
         DataFactory.namedNode(newSnippetIri),
         INTEROP.registeredAt,
         DataFactory.literal(currentDate.toISOString(), XSD.dateTime)
       );
-      expect(applicationRegistration.dataset).toBeRdfDatasetContaining(expectedQuad);
+      expect(agentRegistration.dataset).toBeRdfDatasetContaining(expectedQuad);
     });
     test('updatedAt updates dataset', async () => {
       const currentDate = new Date();
-      const applicationRegistration = await CRUDApplicationRegistration.build(newSnippetIri, factory, data);
-      applicationRegistration.updatedAt = currentDate;
+      const agentRegistration = await CRUDAgentRegistration.build(newSnippetIri, factory, data);
+      agentRegistration.updatedAt = currentDate;
       const expectedQuad = DataFactory.quad(
         DataFactory.namedNode(newSnippetIri),
         INTEROP.updatedAt,
         DataFactory.literal(currentDate.toISOString(), XSD.dateTime)
       );
-      expect(applicationRegistration.dataset).toBeRdfDatasetContaining(expectedQuad);
+      expect(agentRegistration.dataset).toBeRdfDatasetContaining(expectedQuad);
     });
   });
 });

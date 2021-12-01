@@ -1,6 +1,6 @@
 import {
-  CRUDApplicationRegistration,
-  ApplicationRegistrationData,
+  CRUDAgentRegistration,
+  AgentRegistrationData,
   BaseFactory,
   DataGrantData,
   ImmutableDataGrant,
@@ -17,7 +17,9 @@ import {
   ImmutableAccessConsent,
   ImmutableDataConsent,
   ReadableDataRegistry,
-  FactoryDependencies
+  FactoryDependencies,
+  CRUDSocialAgentRegistration,
+  CRUDApplicationRegistration
 } from '.';
 
 export class AuthorizationAgentFactory extends BaseFactory {
@@ -32,9 +34,15 @@ export class AuthorizationAgentFactory extends BaseFactory {
     return {
       applicationRegistration: async function applicationRegistration(
         iri: string,
-        data?: ApplicationRegistrationData
+        data?: AgentRegistrationData
       ): Promise<CRUDApplicationRegistration> {
         return CRUDApplicationRegistration.build(iri, factory, data);
+      },
+      socialAgentRegistration: async function socialAgentRegistration(
+        iri: string,
+        data?: AgentRegistrationData
+      ): Promise<CRUDSocialAgentRegistration> {
+        return CRUDSocialAgentRegistration.build(iri, factory, data);
       }
     };
   }

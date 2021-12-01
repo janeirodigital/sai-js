@@ -112,10 +112,19 @@ export class AuthorizationAgent {
     };
     const accessConsent = this.factory.immutable.accessConsent(consentIri, data);
     const rAccessConsent = await accessConsent.store();
+
+    const granteeRegistration = await this.registrySet.hasAgentRegistry.findRegistration(consent.registeredAgent);
+
+    // TODO (elf-pavlik) handle case where agent registration has to be created
+
     const accessGrant = await rAccessConsent.generateAccessGrant(
       this.registrySet.hasDataRegistry,
-      this.registrySet.hasAgentRegistry
+      this.registrySet.hasAgentRegistry,
+      await granteeRegistration.getReadable()
     );
     await accessGrant.store();
+
+    granteeRegistration.hasAccessGrant = accessGrant.iri;
+    await granteeRegistration.update();
   }
 }
