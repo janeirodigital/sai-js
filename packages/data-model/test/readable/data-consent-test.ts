@@ -14,89 +14,6 @@ const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUI
 const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
 const granteeRegistrationIri = 'https://auth.alice.example/5dc3c14e-7830-475f-b8e3-4748d6c0bccb';
 
-function compareGrants(generatedGrant: ImmutableDataGrant, equivalentGrant: DataGrant): boolean {
-  const predicates = [
-    INTEROP.dataOwner,
-    INTEROP.registeredShapeTree,
-    INTEROP.hasDataRegistration,
-    INTEROP.scopeOfGrant
-  ];
-  for (const predicate of predicates) {
-    const generatedObject = getOneMatchingQuad(
-      generatedGrant.dataset,
-      DataFactory.namedNode(generatedGrant.iri),
-      predicate
-    ).object;
-    const equivalentObject = getOneMatchingQuad(
-      equivalentGrant.dataset,
-      DataFactory.namedNode(equivalentGrant.iri),
-      predicate
-    ).object;
-    if (generatedObject.value !== equivalentObject.value) return false;
-  }
-  // INTEROP.inheritsFromGrant
-  // we don't check values, just if both exist or both don't exist
-  const generatedInherits = getAllMatchingQuads(
-    generatedGrant.dataset,
-    DataFactory.namedNode(generatedGrant.iri),
-    INTEROP.inheritsFromGrant
-  );
-  const equivalentInherits = getAllMatchingQuads(
-    equivalentGrant.dataset,
-    DataFactory.namedNode(equivalentGrant.iri),
-    INTEROP.inheritsFromGrant
-  );
-  if (generatedInherits.length !== equivalentInherits.length) return false;
-
-  // INTEROP.inheritsFromGrant - inverse
-  // we only check if number of statements is the same
-  const generatedInverseInherits = getAllMatchingQuads(
-    generatedGrant.dataset,
-    null,
-    INTEROP.inheritsFromGrant,
-    DataFactory.namedNode(generatedGrant.iri)
-  );
-  const equivalentInverseInherits = getAllMatchingQuads(
-    equivalentGrant.dataset,
-    null,
-    INTEROP.inheritsFromGrant,
-    DataFactory.namedNode(equivalentGrant.iri)
-  );
-  if (generatedInverseInherits.length !== equivalentInverseInherits.length) return false;
-
-  // INTEROP.delegationOfGrant
-  // we check if either both don't exist or both exist
-  // if both exist we compare values
-  const generatedDelegation = getOneMatchingQuad(
-    generatedGrant.dataset,
-    DataFactory.namedNode(generatedGrant.iri),
-    INTEROP.delegationOfGrant
-  )?.object;
-  const equivalentDelegation = getOneMatchingQuad(
-    equivalentGrant.dataset,
-    DataFactory.namedNode(equivalentGrant.iri),
-    INTEROP.delegationOfGrant
-  )?.object;
-  if (generatedDelegation?.value !== equivalentDelegation?.value) return false;
-
-  // INTEROP.accessMode
-  const generatedAccessModes = getAllMatchingQuads(
-    generatedGrant.dataset,
-    DataFactory.namedNode(generatedGrant.iri),
-    INTEROP.accessMode
-  ).map((quad) => quad.object.value);
-  const equivalentAccessModes = getAllMatchingQuads(
-    equivalentGrant.dataset,
-    DataFactory.namedNode(equivalentGrant.iri),
-    INTEROP.accessMode
-  ).map((quad) => quad.object.value);
-
-  return (
-    generatedAccessModes.length === equivalentAccessModes.length &&
-    generatedAccessModes.every((mode) => equivalentAccessModes.includes(mode))
-  );
-}
-
 describe('getters', () => {
   test('should provide hasDataInstance', async () => {
     const selectedDataConsentIri = 'https://auth.alice.example/bee6bc10-2eb9-4b2d-b0c4-84c5d9039e53';
@@ -124,8 +41,8 @@ describe('generateSourceDataGrants', () => {
     for (const sourceGrant of sourceGrants) {
       const equivalent =
         sourceGrants.length === equivalentDataGrants.length &&
-        equivalentDataGrants.some((equivalentGrant) => compareGrants(sourceGrant, equivalentGrant));
-      // TODO convert compareGrants function into custom matcher
+        equivalentDataGrants.some((equivalentGrant) => equivalentGrant.checkEquivalence(sourceGrant));
+
       expect(equivalent).toBeTruthy();
     }
   });
@@ -191,8 +108,8 @@ describe('generateDelegatedDataGrants', () => {
     for (const delegatedGrant of delegatedGrants) {
       const equivalent =
         delegatedGrants.length === equivalentDataGrants.length &&
-        equivalentDataGrants.some((equivalentGrant) => compareGrants(delegatedGrant, equivalentGrant));
-      // TODO convert compareGrants function into custom matcher
+        equivalentDataGrants.some((equivalentGrant) => equivalentGrant.checkEquivalence(delegatedGrant));
+
       expect(equivalent).toBeTruthy();
     }
   });
