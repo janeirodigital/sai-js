@@ -6,7 +6,7 @@ export interface FactoryDependencies {
   fetch: RdfFetch;
   randomUUID(): string;
 }
-export { BaseFactory } from './base-factory';
+export * from './base-factory';
 
 export * from './readable';
 export * from './immutable';

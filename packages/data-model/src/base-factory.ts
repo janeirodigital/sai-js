@@ -27,7 +27,17 @@ interface Cache {
   shapeTree: CachedShapeTrees;
 }
 
+export interface BaseReadableFactory {
+  accessGrant(iri: string): Promise<ReadableAccessGrant>;
+  applicationRegistration(iri: string): Promise<ReadableApplicationRegistration>;
+  dataRegistration(iri: string): Promise<ReadableDataRegistration>;
+  shapeTree(iri: string): Promise<ReadableShapeTree>;
+  dataGrant(iri: string): Promise<DataGrant>;
+}
+
 export class BaseFactory {
+  readable: BaseReadableFactory;
+
   fetch: RdfFetch;
 
   randomUUID: () => string;
@@ -41,10 +51,12 @@ export class BaseFactory {
       dataGrant: {},
       shapeTree: {}
     };
+
+    this.readable = this.readableFactory();
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  get readable() {
+  protected readableFactory(): BaseReadableFactory {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;
     return {
