@@ -1,7 +1,7 @@
 import { DataFactory } from 'n3';
 import { NamedNode } from '@rdfjs/types';
 import { INTEROP, RDF } from '@janeirodigital/interop-namespaces';
-import { ApplicationFactory, ImmutableResource } from '..';
+import { ApplicationFactory, AuthorizationAgentFactory, ImmutableResource } from '..';
 
 type StringData = {
   dataOwner: string;
@@ -25,7 +25,7 @@ type InverseArrayData = {
 export type DataGrantData = StringData & ArrayData & InverseArrayData;
 
 export class ImmutableDataGrant extends ImmutableResource {
-  public constructor(iri: string, factory: ApplicationFactory, data: DataGrantData) {
+  public constructor(iri: string, factory: AuthorizationAgentFactory, data: DataGrantData) {
     super(iri, factory, data);
     const thisNode = DataFactory.namedNode(this.iri);
     const props: (keyof StringData)[] = [
