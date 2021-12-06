@@ -2,6 +2,7 @@ import {
   CRUDAgentRegistration,
   AgentRegistrationData,
   BaseFactory,
+  BaseReadableFactory,
   DataGrantData,
   ImmutableDataGrant,
   ReadableRegistrySet,
@@ -22,13 +23,42 @@ import {
   CRUDApplicationRegistration
 } from '.';
 
+interface AuthorizationAgentReadableFactory extends BaseReadableFactory {
+  accessConsent(iri: string): Promise<ReadableAccessConsent>;
+  dataConsent(iri: string): Promise<ReadableDataConsent>;
+  dataRegistry(iri: string): Promise<ReadableDataRegistry>;
+  registrySet(iri: string): Promise<ReadableRegistrySet>;
+  agentRegistry(iri: string): Promise<ReadableAgentRegistry>;
+  accessConsentRegistry(iri: string): Promise<ReadableAccessConsentRegistry>;
+  socialAgentRegistration(iri: string, reciprocal?: boolean): Promise<ReadableSocialAgentRegistration>;
+}
+interface CRUDFactory {
+  applicationRegistration(iri: string, data?: AgentRegistrationData): Promise<CRUDApplicationRegistration>;
+  socialAgentRegistration(iri: string, data?: AgentRegistrationData): Promise<CRUDSocialAgentRegistration>;
+}
+
+interface ImmutableFactory {
+  dataGrant(iri: string, data: DataGrantData): ImmutableDataGrant;
+  accessGrant(iri: string, data: AccessGrantData): ImmutableAccessGrant;
+  dataConsent(iri: string, data: DataConsentData): ImmutableDataConsent;
+  accessConsent(iri: string, data: AccessConsentData): ImmutableAccessConsent;
+}
+
 export class AuthorizationAgentFactory extends BaseFactory {
+  readable: AuthorizationAgentReadableFactory;
+  immutable: ImmutableFactory;
+  crud: CRUDFactory;
+
   constructor(public webId: string, public agentId: string, dependencies: FactoryDependencies) {
     super(dependencies);
+
+    this.readable = this.readableFactory();
+    this.immutable = this.immutableFactory();
+    this.crud = this.crudFactory();
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  get crud() {
+  private crudFactory(): CRUDFactory {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;
     return {
@@ -48,7 +78,7 @@ export class AuthorizationAgentFactory extends BaseFactory {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  get immutable() {
+  private immutableFactory(): ImmutableFactory {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;
     return {
@@ -68,7 +98,7 @@ export class AuthorizationAgentFactory extends BaseFactory {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  get readable() {
+  protected readableFactory() {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;
     return {
@@ -96,7 +126,7 @@ export class AuthorizationAgentFactory extends BaseFactory {
       ): Promise<ReadableSocialAgentRegistration> {
         return ReadableSocialAgentRegistration.build(iri, factory, reciprocal);
       },
-      ...super.readable
+      ...super.readableFactory()
     };
   }
 }
