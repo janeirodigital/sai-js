@@ -1,7 +1,7 @@
 import { DatasetCore } from '@rdfjs/types';
 import { Store } from 'n3';
 import { RdfFetch } from '@janeirodigital/interop-utils';
-import { ApplicationFactory } from '..';
+import { AuthorizationAgentFactory } from '..';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Data = { [key: string]: any };
@@ -9,7 +9,7 @@ type Data = { [key: string]: any };
 export class ImmutableResource {
   fetch: RdfFetch;
 
-  factory: ApplicationFactory;
+  factory: AuthorizationAgentFactory;
 
   iri: string;
 
@@ -20,7 +20,7 @@ export class ImmutableResource {
   stored = false;
 
   // dataset gets populated in consturtor of each sub class
-  constructor(iri: string, factory: ApplicationFactory, data: Data) {
+  constructor(iri: string, factory: AuthorizationAgentFactory, data: Data) {
     this.iri = iri;
     this.factory = factory;
     this.fetch = factory.fetch;
