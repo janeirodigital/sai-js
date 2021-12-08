@@ -1,5 +1,5 @@
-import { ReadableResource, ReadableAgentRegistry, ReadableAccessConsentRegistry, ReadableDataRegistry } from '.';
-import { AuthorizationAgentFactory } from '..';
+import { ReadableResource, ReadableAgentRegistry, ReadableAccessConsentRegistry } from '.';
+import { AuthorizationAgentFactory, CRUDDataRegistry } from '..';
 
 export class ReadableRegistrySet extends ReadableResource {
   factory: AuthorizationAgentFactory;
@@ -8,7 +8,7 @@ export class ReadableRegistrySet extends ReadableResource {
 
   hasAgentRegistry: ReadableAgentRegistry;
 
-  hasDataRegistry: ReadableDataRegistry[];
+  hasDataRegistry: CRUDDataRegistry[];
 
   private async bootstrap(): Promise<void> {
     await this.fetchData();

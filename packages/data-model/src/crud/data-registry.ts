@@ -1,7 +1,8 @@
-import { ReadableDataRegistration, ReadableResource } from '.';
+import { ReadableDataRegistration } from '../readable';
 import { AuthorizationAgentFactory } from '..';
+import { CRUDResource } from '.';
 
-export class ReadableDataRegistry extends ReadableResource {
+export class CRUDDataRegistry extends CRUDResource {
   factory: AuthorizationAgentFactory;
 
   get hasRegistration(): string[] {
@@ -25,8 +26,8 @@ export class ReadableDataRegistry extends ReadableResource {
     await this.fetchData();
   }
 
-  static async build(iri: string, factory: AuthorizationAgentFactory): Promise<ReadableDataRegistry> {
-    const instance = new ReadableDataRegistry(iri, factory);
+  static async build(iri: string, factory: AuthorizationAgentFactory): Promise<CRUDDataRegistry> {
+    const instance = new CRUDDataRegistry(iri, factory);
     await instance.bootstrap();
     return instance;
   }
