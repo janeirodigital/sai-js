@@ -1,7 +1,13 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { ReadableApplicationRegistration, ReadableSocialAgentRegistration, AuthorizationAgentFactory } from '../../src';
+import {
+  CRUDSocialAgentRegistration,
+  CRUDApplicationRegistration,
+  ReadableApplicationRegistration,
+  ReadableSocialAgentRegistration,
+  AuthorizationAgentFactory
+} from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
@@ -26,4 +32,18 @@ test('should provide socialAgentRegistrations', async () => {
     expect(consent).toBeInstanceOf(ReadableSocialAgentRegistration);
   }
   expect(count).toBe(2);
+});
+
+describe('findRegistration', () => {
+  test('finds application registration', async () => {
+    const applicationIri = 'https://projectron.example/#app';
+    const registry = await factory.readable.agentRegistry(snippetIri);
+    expect(await registry.findRegistration(applicationIri)).toBeInstanceOf(CRUDApplicationRegistration);
+  });
+
+  test('finds social agent registration', async () => {
+    const socialAgentIri = 'https://acme.example/#corp';
+    const registry = await factory.readable.agentRegistry(snippetIri);
+    expect(await registry.findRegistration(socialAgentIri)).toBeInstanceOf(CRUDSocialAgentRegistration);
+  });
 });
