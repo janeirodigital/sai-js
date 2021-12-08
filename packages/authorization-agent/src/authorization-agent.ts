@@ -79,17 +79,10 @@ export class AuthorizationAgent {
    *   * a) Remove reference to prior Access Consent
    *   * b) Add reference to new Access Consent
    * TODO: reuse existing Data Consents wherever possible - see Data Consent tests
+   * TODO: if prior consent existed relink it from Access Consent Registry
    */
   public async recordAccessConsent(consent: AccessConsentStructure): Promise<void> {
-    let priorAccessConsent;
-    for await (const accCons of this.accessConsents) {
-      if (accCons.registeredAgent === consent.registeredAgent) {
-        priorAccessConsent = accCons;
-        break;
-      }
-    }
     // create data consents
-
     // don't create data consent where grantee == dataowner
     const validDataConsents = consent.dataConsents.filter(
       (dataConsent) => dataConsent.dataOwner !== dataConsent.registeredAgent
