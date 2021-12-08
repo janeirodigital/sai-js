@@ -8,7 +8,7 @@ import {
   ReadableAgentRegistry,
   ImmutableDataGrant,
   DataGrantData,
-  ReadableDataRegistry,
+  CRUDDataRegistry,
   ReadableDataRegistration,
   InheritableDataGrant,
   ReadableAgentRegistration
@@ -191,7 +191,7 @@ export class ReadableDataConsent extends ReadableResource {
   }
 
   private async generateSourceDataGrants(
-    dataRegistries: ReadableDataRegistry[],
+    dataRegistries: CRUDDataRegistry[],
     granteeRegistration: ReadableAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
     if (this.scopeOfConsent === INTEROP.Inherited.value) {
@@ -249,7 +249,7 @@ export class ReadableDataConsent extends ReadableResource {
   }
 
   public async generateDataGrants(
-    dataRegistries: ReadableDataRegistry[],
+    dataRegistries: CRUDDataRegistry[],
     agentRegistry: ReadableAgentRegistry,
     granteeRegistration: ReadableAgentRegistration
   ): Promise<ImmutableDataGrant[]> {

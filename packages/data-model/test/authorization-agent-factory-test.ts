@@ -14,7 +14,7 @@ import {
   ReadableAccessConsentRegistry,
   ReadableAgentRegistry,
   ReadableDataConsent,
-  ReadableDataRegistry,
+  CRUDDataRegistry,
   ReadableRegistrySet,
   ReadableSocialAgentRegistration
 } from '../src';
@@ -143,7 +143,7 @@ describe('readable', () => {
   test('dataRegistry', async () => {
     const snippetIri = 'https://home.alice.example/2d3d97b4-a26d-434e-afa2-e3bc8e8e2b56';
     const dataRegistry = await factory.readable.dataRegistry(snippetIri);
-    expect(dataRegistry).toBeInstanceOf(ReadableDataRegistry);
+    expect(dataRegistry).toBeInstanceOf(CRUDDataRegistry);
   });
   test('registrySet', async () => {
     const snippetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';

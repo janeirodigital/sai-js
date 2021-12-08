@@ -2,14 +2,8 @@ import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import {
-  ReadableResource,
-  ReadableDataConsent,
-  ReadableAgentRegistry,
-  ReadableDataRegistry,
-  ReadableAgentRegistration
-} from '.';
-import { AuthorizationAgentFactory, ImmutableAccessGrant, ImmutableDataGrant } from '..';
+import { ReadableResource, ReadableDataConsent, ReadableAgentRegistry, ReadableAgentRegistration } from '.';
+import { AuthorizationAgentFactory, ImmutableAccessGrant, ImmutableDataGrant, CRUDDataRegistry } from '..';
 
 export class ReadableAccessConsent extends ReadableResource {
   factory: AuthorizationAgentFactory;
@@ -60,7 +54,7 @@ export class ReadableAccessConsent extends ReadableResource {
    */
 
   public async generateAccessGrant(
-    dataRegistries: ReadableDataRegistry[],
+    dataRegistries: CRUDDataRegistry[],
     agentRegistry: ReadableAgentRegistry,
     granteeRegistration: ReadableAgentRegistration
   ): Promise<ImmutableAccessGrant> {
