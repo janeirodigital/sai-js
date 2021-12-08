@@ -4,8 +4,6 @@ import { AuthorizationAgentFactory } from '..';
 import { CRUDResource } from './resource';
 
 export type AgentRegistrationData = {
-  registeredBy: string;
-  registeredWith: string;
   registeredAgent: string;
   hasAccessGrant: string;
 };
@@ -33,12 +31,7 @@ export class CRUDAgentRegistration extends CRUDResource {
   }
 
   private datasetFromData(): void {
-    const props: (keyof AgentRegistrationData)[] = [
-      'registeredBy',
-      'registeredWith',
-      'registeredAgent',
-      'hasAccessGrant'
-    ];
+    const props: (keyof AgentRegistrationData)[] = ['registeredAgent', 'hasAccessGrant'];
     for (const prop of props) {
       this.dataset.add(
         DataFactory.quad(DataFactory.namedNode(this.iri), INTEROP[prop], DataFactory.namedNode(this.data[prop]))
@@ -52,52 +45,6 @@ export class CRUDAgentRegistration extends CRUDResource {
     } else {
       this.datasetFromData();
     }
-  }
-
-  public async update(): Promise<void> {
-    if (this.data) {
-      this.registeredAt = new Date();
-    }
-    this.updatedAt = new Date();
-    super.update();
-  }
-
-  // eslint-disable-next-line consistent-return
-  get registeredAt(): Date | undefined {
-    const object = this.getObject('registeredAt');
-    if (object) {
-      return new Date(object.value);
-    }
-  }
-
-  set registeredAt(date: Date) {
-    this.deleteQuad('registeredAt');
-    this.dataset.add(
-      DataFactory.quad(
-        DataFactory.namedNode(this.iri),
-        INTEROP.registeredAt,
-        DataFactory.literal(date.toISOString(), XSD.dateTime)
-      )
-    );
-  }
-
-  // eslint-disable-next-line consistent-return
-  get updatedAt(): Date | undefined {
-    const object = this.getObject('updatedAt');
-    if (object) {
-      return new Date(object.value);
-    }
-  }
-
-  set updatedAt(date: Date) {
-    this.deleteQuad('updatedAt');
-    this.dataset.add(
-      DataFactory.quad(
-        DataFactory.namedNode(this.iri),
-        INTEROP.updatedAt,
-        DataFactory.literal(date.toISOString(), XSD.dateTime)
-      )
-    );
   }
 
   public static async build(
