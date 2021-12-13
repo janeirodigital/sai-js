@@ -1,7 +1,7 @@
 import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
-import { getAllMatchingQuads, getOneMatchingQuad } from '@janeirodigital/interop-utils';
+import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { ReadableResource, DataInstance, InteropFactory, DataGrant, ImmutableDataGrant } from '..';
 
@@ -59,86 +59,5 @@ export abstract class AbstractDataGrant extends ReadableResource {
       .object as NamedNode;
     const iriPrefixPattern = [dataRegistrationNode, INTEROP.iriPrefix, null, null];
     return getOneMatchingQuad(sourceGrant.dataset, ...iriPrefixPattern).object.value;
-  }
-
-  public checkEquivalence(otherGrant: ImmutableDataGrant): boolean {
-    const predicates = [
-      INTEROP.dataOwner,
-      INTEROP.registeredShapeTree,
-      INTEROP.hasDataRegistration,
-      INTEROP.scopeOfGrant
-    ];
-    // INTEROP.inheritsFromGrant
-    // we don't check values, just if both exist or both don't exist
-    const generatedInherits = getAllMatchingQuads(
-      otherGrant.dataset,
-      DataFactory.namedNode(otherGrant.iri),
-      INTEROP.inheritsFromGrant
-    );
-    const equivalentInherits = getAllMatchingQuads(
-      this.dataset,
-      DataFactory.namedNode(this.iri),
-      INTEROP.inheritsFromGrant
-    );
-    if (generatedInherits.length !== equivalentInherits.length) return false;
-
-    // INTEROP.inheritsFromGrant - inverse
-    // we only check if number of statements is the same
-    const generatedInverseInherits = getAllMatchingQuads(
-      otherGrant.dataset,
-      null,
-      INTEROP.inheritsFromGrant,
-      DataFactory.namedNode(otherGrant.iri)
-    );
-    const equivalentInverseInherits = getAllMatchingQuads(
-      this.dataset,
-      null,
-      INTEROP.inheritsFromGrant,
-      DataFactory.namedNode(this.iri)
-    );
-    // TODO(samurex): missing coverage
-    if (generatedInverseInherits.length !== equivalentInverseInherits.length) return false;
-
-    // INTEROP.delegationOfGrant
-    // we check if either both don't exist or both exist
-    // if both exist we compare values
-    const generatedDelegation = getOneMatchingQuad(
-      otherGrant.dataset,
-      DataFactory.namedNode(otherGrant.iri),
-      INTEROP.delegationOfGrant
-    )?.object;
-    const equivalentDelegation = getOneMatchingQuad(
-      this.dataset,
-      DataFactory.namedNode(this.iri),
-      INTEROP.delegationOfGrant
-    )?.object;
-    if (generatedDelegation?.value !== equivalentDelegation?.value) return false;
-
-    for (const predicate of predicates) {
-      const generatedObject = getOneMatchingQuad(
-        otherGrant.dataset,
-        DataFactory.namedNode(otherGrant.iri),
-        predicate
-      ).object;
-      const equivalentObject = getOneMatchingQuad(this.dataset, DataFactory.namedNode(this.iri), predicate).object;
-      if (generatedObject.value !== equivalentObject.value) return false;
-    }
-
-    // INTEROP.accessMode
-    const generatedAccessModes = getAllMatchingQuads(
-      otherGrant.dataset,
-      DataFactory.namedNode(otherGrant.iri),
-      INTEROP.accessMode
-    ).map((quad) => quad.object.value);
-    const equivalentAccessModes = getAllMatchingQuads(
-      this.dataset,
-      DataFactory.namedNode(this.iri),
-      INTEROP.accessMode
-    ).map((quad) => quad.object.value);
-
-    return (
-      generatedAccessModes.length === equivalentAccessModes.length &&
-      generatedAccessModes.every((mode) => equivalentAccessModes.includes(mode))
-    );
   }
 }

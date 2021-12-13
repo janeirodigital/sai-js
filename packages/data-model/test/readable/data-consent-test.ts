@@ -41,7 +41,7 @@ describe('generateSourceDataGrants', () => {
     for (const sourceGrant of sourceGrants) {
       const equivalent =
         sourceGrants.length === equivalentDataGrants.length &&
-        equivalentDataGrants.some((equivalentGrant) => equivalentGrant.checkEquivalence(sourceGrant));
+        equivalentDataGrants.some((equivalentGrant) => sourceGrant.checkEquivalence(equivalentGrant));
 
       expect(equivalent).toBeTruthy();
     }
@@ -108,7 +108,7 @@ describe('generateDelegatedDataGrants', () => {
     for (const delegatedGrant of delegatedGrants) {
       const equivalent =
         delegatedGrants.length === equivalentDataGrants.length &&
-        equivalentDataGrants.some((equivalentGrant) => equivalentGrant.checkEquivalence(delegatedGrant));
+        equivalentDataGrants.some((equivalentGrant) => delegatedGrant.checkEquivalence(equivalentGrant));
 
       expect(equivalent).toBeTruthy();
     }
