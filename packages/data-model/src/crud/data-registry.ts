@@ -1,8 +1,10 @@
 import { ReadableDataRegistration } from '../readable';
 import { AuthorizationAgentFactory } from '..';
-import { CRUDResource } from '.';
+import { CRUDContainer, CRUDDataRegistration } from '.';
+import { DataFactory } from 'n3';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
 
-export class CRUDDataRegistry extends CRUDResource {
+export class CRUDDataRegistry extends CRUDContainer {
   factory: AuthorizationAgentFactory;
 
   get hasRegistration(): string[] {
@@ -20,6 +22,26 @@ export class CRUDDataRegistry extends CRUDResource {
         }
       }
     };
+  }
+  async createRegistration(shapeTree: string): Promise<CRUDDataRegistration> {
+    for await (const registration of this.registrations) {
+      if (registration.registeredShapeTree === shapeTree) {
+        throw new Error('registration already exists');
+      }
+    }
+    const dataRegistration = await this.factory.crud.dataRegistration(this.iriForContained(), { shapeTree });
+    await dataRegistration.update();
+    // link to create data registration
+    this.dataset.add(
+      DataFactory.quad(
+        DataFactory.namedNode(this.iri),
+        INTEROP.hasRegistration,
+        DataFactory.namedNode(dataRegistration.iri)
+      )
+    );
+    // update itself to store changes
+    await this.update();
+    return dataRegistration;
   }
 
   async bootstrap(): Promise<void> {
