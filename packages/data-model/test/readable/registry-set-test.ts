@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { ReadableRegistrySet, AuthorizationAgentFactory } from '../../src';
+import { ReadableRegistrySet, AuthorizationAgentFactory, CRUDDataRegistry } from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
@@ -19,7 +19,13 @@ describe('build', () => {
     expect(registrySet.dataset.size).toBeGreaterThan(0);
   });
 
-  test.todo('should set hasDataRegistry');
+  test('should set hasDataRegistry', async () => {
+    const registrySet = await factory.readable.registrySet(snippetIri);
+    for (const dataRegistry of registrySet.hasDataRegistry) {
+      expect(dataRegistry).toBeInstanceOf(CRUDDataRegistry);
+    }
+    expect(registrySet.hasDataRegistry).toHaveLength(2);
+  });
 
   test('should set hasAgentRegistry', async () => {
     const agentRegistryIri = 'https://auth.alice.example/1cf3e08b-ffe2-465a-ac5b-94ce165cb8f0';
