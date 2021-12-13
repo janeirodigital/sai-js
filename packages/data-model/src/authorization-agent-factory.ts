@@ -20,13 +20,14 @@ import {
   CRUDDataRegistry,
   FactoryDependencies,
   CRUDSocialAgentRegistration,
-  CRUDApplicationRegistration
+  CRUDApplicationRegistration,
+  CRUDDataRegistration,
+  DataRegistrationData
 } from '.';
 
 interface AuthorizationAgentReadableFactory extends BaseReadableFactory {
   accessConsent(iri: string): Promise<ReadableAccessConsent>;
   dataConsent(iri: string): Promise<ReadableDataConsent>;
-  dataRegistry(iri: string): Promise<CRUDDataRegistry>;
   registrySet(iri: string): Promise<ReadableRegistrySet>;
   agentRegistry(iri: string): Promise<ReadableAgentRegistry>;
   accessConsentRegistry(iri: string): Promise<ReadableAccessConsentRegistry>;
@@ -35,6 +36,8 @@ interface AuthorizationAgentReadableFactory extends BaseReadableFactory {
 interface CRUDFactory {
   applicationRegistration(iri: string, data?: AgentRegistrationData): Promise<CRUDApplicationRegistration>;
   socialAgentRegistration(iri: string, data?: AgentRegistrationData): Promise<CRUDSocialAgentRegistration>;
+  dataRegistry(iri: string): Promise<CRUDDataRegistry>;
+  dataRegistration(iri: string, data?: DataRegistrationData): Promise<CRUDDataRegistration>;
 }
 
 interface ImmutableFactory {
@@ -73,6 +76,15 @@ export class AuthorizationAgentFactory extends BaseFactory {
         data?: AgentRegistrationData
       ): Promise<CRUDSocialAgentRegistration> {
         return CRUDSocialAgentRegistration.build(iri, factory, data);
+      },
+      dataRegistry: async function dataRegistry(iri: string): Promise<CRUDDataRegistry> {
+        return CRUDDataRegistry.build(iri, factory);
+      },
+      dataRegistration: async function dataRegistration(
+        iri: string,
+        data?: DataRegistrationData
+      ): Promise<CRUDDataRegistration> {
+        return CRUDDataRegistration.build(iri, factory, data);
       }
     };
   }
@@ -107,9 +119,6 @@ export class AuthorizationAgentFactory extends BaseFactory {
       },
       dataConsent: async function dataConsent(iri: string): Promise<ReadableDataConsent> {
         return ReadableDataConsent.build(iri, factory);
-      },
-      dataRegistry: async function dataRegistry(iri: string): Promise<CRUDDataRegistry> {
-        return CRUDDataRegistry.build(iri, factory);
       },
       registrySet: async function registrySet(iri: string): Promise<ReadableRegistrySet> {
         return ReadableRegistrySet.build(iri, factory);

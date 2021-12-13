@@ -17,7 +17,7 @@ export class ReadableRegistrySet extends ReadableResource {
     );
     this.hasAgentRegistry = await this.factory.readable.agentRegistry(this.getObject('hasAgentRegistry').value);
     const dataRegistryIris = this.getObjectsArray('hasDataRegistry').map((object) => object.value);
-    this.hasDataRegistry = await Promise.all(dataRegistryIris.map((iri) => this.factory.readable.dataRegistry(iri)));
+    this.hasDataRegistry = await Promise.all(dataRegistryIris.map((iri) => this.factory.crud.dataRegistry(iri)));
   }
 
   public static async build(iri: string, factory: AuthorizationAgentFactory): Promise<ReadableRegistrySet> {

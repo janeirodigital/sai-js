@@ -142,7 +142,7 @@ describe('readable', () => {
   });
   test('dataRegistry', async () => {
     const snippetIri = 'https://home.alice.example/2d3d97b4-a26d-434e-afa2-e3bc8e8e2b56';
-    const dataRegistry = await factory.readable.dataRegistry(snippetIri);
+    const dataRegistry = await factory.crud.dataRegistry(snippetIri);
     expect(dataRegistry).toBeInstanceOf(CRUDDataRegistry);
   });
   test('registrySet', async () => {
