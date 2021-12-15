@@ -9,7 +9,7 @@ import {
   ReadableAgentRegistry,
   ReadableAccessConsent,
   ReadableDataConsent,
-  ReadableAccessConsentRegistry,
+  CRUDAccessConsentRegistry,
   ReadableSocialAgentRegistration,
   AccessGrantData,
   ImmutableAccessGrant,
@@ -30,7 +30,6 @@ interface AuthorizationAgentReadableFactory extends BaseReadableFactory {
   dataConsent(iri: string): Promise<ReadableDataConsent>;
   registrySet(iri: string): Promise<ReadableRegistrySet>;
   agentRegistry(iri: string): Promise<ReadableAgentRegistry>;
-  accessConsentRegistry(iri: string): Promise<ReadableAccessConsentRegistry>;
   socialAgentRegistration(iri: string, reciprocal?: boolean): Promise<ReadableSocialAgentRegistration>;
 }
 interface CRUDFactory {
@@ -38,6 +37,7 @@ interface CRUDFactory {
   socialAgentRegistration(iri: string, data?: AgentRegistrationData): Promise<CRUDSocialAgentRegistration>;
   dataRegistry(iri: string): Promise<CRUDDataRegistry>;
   dataRegistration(iri: string, data?: DataRegistrationData): Promise<CRUDDataRegistration>;
+  accessConsentRegistry(iri: string): Promise<CRUDAccessConsentRegistry>;
 }
 
 interface ImmutableFactory {
@@ -85,6 +85,9 @@ export class AuthorizationAgentFactory extends BaseFactory {
         data?: DataRegistrationData
       ): Promise<CRUDDataRegistration> {
         return CRUDDataRegistration.build(iri, factory, data);
+      },
+      accessConsentRegistry: async function accessConsentRegistry(iri: string): Promise<CRUDAccessConsentRegistry> {
+        return CRUDAccessConsentRegistry.build(iri, factory);
       }
     };
   }
@@ -125,9 +128,6 @@ export class AuthorizationAgentFactory extends BaseFactory {
       },
       agentRegistry: async function agentRegistry(iri: string): Promise<ReadableAgentRegistry> {
         return ReadableAgentRegistry.build(iri, factory);
-      },
-      accessConsentRegistry: async function accessConsentRegistry(iri: string): Promise<ReadableAccessConsentRegistry> {
-        return ReadableAccessConsentRegistry.build(iri, factory);
       },
       socialAgentRegistration: async function socialAgentRegistration(
         iri: string,
