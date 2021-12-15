@@ -1,10 +1,10 @@
-import { ReadableResource, ReadableAgentRegistry, ReadableAccessConsentRegistry } from '.';
-import { AuthorizationAgentFactory, CRUDDataRegistry } from '..';
+import { ReadableResource, ReadableAgentRegistry } from '.';
+import { AuthorizationAgentFactory, CRUDDataRegistry, CRUDAccessConsentRegistry } from '..';
 
 export class ReadableRegistrySet extends ReadableResource {
   factory: AuthorizationAgentFactory;
 
-  hasAccessConsentRegistry: ReadableAccessConsentRegistry;
+  hasAccessConsentRegistry: CRUDAccessConsentRegistry;
 
   hasAgentRegistry: ReadableAgentRegistry;
 
@@ -12,7 +12,7 @@ export class ReadableRegistrySet extends ReadableResource {
 
   private async bootstrap(): Promise<void> {
     await this.fetchData();
-    this.hasAccessConsentRegistry = await this.factory.readable.accessConsentRegistry(
+    this.hasAccessConsentRegistry = await this.factory.crud.accessConsentRegistry(
       this.getObject('hasAccessConsentRegistry').value
     );
     this.hasAgentRegistry = await this.factory.readable.agentRegistry(this.getObject('hasAgentRegistry').value);

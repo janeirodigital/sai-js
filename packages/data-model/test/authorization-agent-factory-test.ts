@@ -11,7 +11,7 @@ import {
   ImmutableDataConsent,
   ImmutableDataGrant,
   ReadableAccessConsent,
-  ReadableAccessConsentRegistry,
+  CRUDAccessConsentRegistry,
   ReadableAgentRegistry,
   ReadableDataConsent,
   CRUDDataRegistry,
@@ -35,6 +35,20 @@ describe('crud', () => {
     const agentRegistrationUrl = 'https://auth.alice.example/b1f69979-dd47-4709-b2ed-a7119f29b135';
     const agentRegistration = await factory.crud.socialAgentRegistration(agentRegistrationUrl);
     expect(agentRegistration).toBeInstanceOf(CRUDSocialAgentRegistration);
+  });
+
+  test('accessConsentRegistry', async () => {
+    const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
+    const snippetIri = 'https://auth.alice.example/96feb105-063e-4996-ab74-5e504c6ceae5';
+    const accessConsentRegistry = await factory.crud.accessConsentRegistry(snippetIri);
+    expect(accessConsentRegistry).toBeInstanceOf(CRUDAccessConsentRegistry);
+  });
+
+  test('dataRegistry', async () => {
+    const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
+    const snippetIri = 'https://home.alice.example/2d3d97b4-a26d-434e-afa2-e3bc8e8e2b56';
+    const dataRegistry = await factory.crud.dataRegistry(snippetIri);
+    expect(dataRegistry).toBeInstanceOf(CRUDDataRegistry);
   });
 });
 
@@ -140,11 +154,7 @@ describe('readable', () => {
     const dataConsent = await factory.readable.dataConsent(snippetIri);
     expect(dataConsent).toBeInstanceOf(ReadableDataConsent);
   });
-  test('dataRegistry', async () => {
-    const snippetIri = 'https://home.alice.example/2d3d97b4-a26d-434e-afa2-e3bc8e8e2b56';
-    const dataRegistry = await factory.crud.dataRegistry(snippetIri);
-    expect(dataRegistry).toBeInstanceOf(CRUDDataRegistry);
-  });
+
   test('registrySet', async () => {
     const snippetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
     const registrySet = await factory.readable.registrySet(snippetIri);
@@ -155,11 +165,7 @@ describe('readable', () => {
     const agentRegistry = await factory.readable.agentRegistry(snippetIri);
     expect(agentRegistry).toBeInstanceOf(ReadableAgentRegistry);
   });
-  test('accessConsentRegistry', async () => {
-    const snippetIri = 'https://auth.alice.example/96feb105-063e-4996-ab74-5e504c6ceae5';
-    const accessConsentRegistry = await factory.readable.accessConsentRegistry(snippetIri);
-    expect(accessConsentRegistry).toBeInstanceOf(ReadableAccessConsentRegistry);
-  });
+
   test('socialAgentRegistration', async () => {
     const snippetIri = 'https://auth.alice.example/5dc3c14e-7830-475f-b8e3-4748d6c0bccb';
     const socialAgentRegistration = await factory.readable.socialAgentRegistration(snippetIri);

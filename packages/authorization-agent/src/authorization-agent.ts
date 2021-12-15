@@ -83,6 +83,7 @@ export class AuthorizationAgent {
    */
   public async recordAccessConsent(consent: AccessConsentStructure): Promise<void> {
     // create data consents
+
     // don't create data consent where grantee == dataowner
     const validDataConsents = consent.dataConsents.filter(
       (dataConsent) => dataConsent.dataOwner !== dataConsent.registeredAgent
@@ -106,6 +107,13 @@ export class AuthorizationAgent {
     const accessConsent = this.factory.immutable.accessConsent(consentIri, data);
     const rAccessConsent = await accessConsent.store();
 
+    // link to new access consent from access consent registry
+
+    // unlink prior access consent
+
+    // generate access grant with data grants
+
+    // find agent registration
     const granteeRegistration = await this.registrySet.hasAgentRegistry.findRegistration(consent.registeredAgent);
 
     // TODO (elf-pavlik) handle case where agent registration has to be created
@@ -117,6 +125,7 @@ export class AuthorizationAgent {
     );
     await accessGrant.store();
 
+    // link to new access grant and update agent registration
     granteeRegistration.hasAccessGrant = accessGrant.iri;
     await granteeRegistration.update();
   }

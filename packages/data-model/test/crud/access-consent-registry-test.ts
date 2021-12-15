@@ -9,7 +9,7 @@ const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUI
 const snippetIri = 'https://auth.alice.example/96feb105-063e-4996-ab74-5e504c6ceae5';
 
 test('should provide accessConsents', async () => {
-  const registry = await factory.readable.accessConsentRegistry(snippetIri);
+  const registry = await factory.crud.accessConsentRegistry(snippetIri);
   let count = 0;
   for await (const consent of registry.accessConsents) {
     count += 1;
@@ -19,6 +19,6 @@ test('should provide accessConsents', async () => {
 });
 
 test('should provide iriForContained method', async () => {
-  const registry = await factory.readable.accessConsentRegistry(snippetIri);
+  const registry = await factory.crud.accessConsentRegistry(snippetIri);
   expect(registry.iriForContained()).toMatch(registry.iri);
 });

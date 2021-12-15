@@ -22,5 +22,4 @@ export { ReadableAccessConsent } from './access-consent';
 export { ReadableDataConsent } from './data-consent';
 export { ReadableRegistrySet } from './registry-set';
 export { ReadableAgentRegistry } from './agent-registry';
-export { ReadableAccessConsentRegistry } from './access-consent-registry';
 export { ReadableSocialAgentRegistration } from './social-agent-registration';
