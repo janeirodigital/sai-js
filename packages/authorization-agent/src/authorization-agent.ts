@@ -108,8 +108,7 @@ export class AuthorizationAgent {
     const rAccessConsent = await accessConsent.store();
 
     // link to new access consent from access consent registry
-
-    // unlink prior access consent
+    await this.registrySet.hasAccessConsentRegistry.add(rAccessConsent);
 
     // generate access grant with data grants
 

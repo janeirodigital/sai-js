@@ -1,5 +1,5 @@
 import { DataFactory } from 'n3';
-import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
+import { getAllMatchingQuads, getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { ReadableAccessConsent } from '../readable';
 import { AuthorizationAgentFactory, CRUDContainer } from '..';
@@ -28,5 +28,38 @@ export class CRUDAccessConsentRegistry extends CRUDContainer {
         }
       }
     };
+  }
+
+  async findConsnent(agentIri: string): Promise<ReadableAccessConsent> {
+    for await (const consent of this.accessConsents) {
+      if (consent.registeredAgent === agentIri) {
+        return consent;
+      }
+    }
+  }
+
+  /*
+   * Links access consent from registry
+   * If prior consent exists for that agent it gets unlinked
+   * Updates itself
+   */
+  async add(accessConsent: ReadableAccessConsent): Promise<void> {
+    const subject = DataFactory.namedNode(this.iri);
+    const predicate = INTEROP.hasAccessConsent;
+    const object = DataFactory.namedNode(accessConsent.iri);
+    // unlink prevoius access consent for that grantee if exists
+    const priorConsent = await this.findConsnent(accessConsent.registeredAgent);
+    if (priorConsent) {
+      const priorQuad = getOneMatchingQuad(
+        this.dataset,
+        DataFactory.namedNode(this.iri),
+        INTEROP.hasAccessConsent,
+        DataFactory.namedNode(priorConsent.iri)
+      );
+      this.dataset.delete(priorQuad);
+    }
+    // add quad
+    this.dataset.add(DataFactory.quad(subject, predicate, object));
+    await this.update();
   }
 }
