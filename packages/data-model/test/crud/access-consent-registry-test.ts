@@ -4,12 +4,7 @@ import 'jest-rdf';
 import { jest } from '@jest/globals';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import {
-  ReadableAccessConsent,
-  AuthorizationAgentFactory,
-  CRUDAccessConsentRegistry,
-  ImmutableAccessConsent
-} from '../../src';
+import { ReadableAccessConsent, AuthorizationAgentFactory, CRUDAccessConsentRegistry } from '../../src';
 import { DataFactory } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { getAllMatchingQuads, getOneMatchingQuad } from '@janeirodigital/interop-utils';
@@ -42,7 +37,7 @@ describe('add', () => {
     registry = await factory.crud.accessConsentRegistry(snippetIri);
     consent = {
       iri: registry.iriForContained(),
-      registeredAgent: 'https://projectron.example/#app'
+      registeredAgent: 'https://someone.example/#id'
     } as unknown as ReadableAccessConsent;
   });
 
@@ -60,6 +55,10 @@ describe('add', () => {
   });
 
   test('should remove link to prior consent for that agent if exists', async () => {
+    consent = {
+      iri: registry.iriForContained(),
+      registeredAgent: 'https://projectron.example/#app'
+    } as unknown as ReadableAccessConsent;
     const projectronConsentIri = 'https://auth.alice.example/eac2c39c-c8b3-4880-8b9f-a3e12f7f6372';
     const priorQuads = [
       getOneMatchingQuad(
@@ -84,6 +83,22 @@ describe('add', () => {
     const numberOfConsentsBefore = getAllMatchingQuads(registry.dataset, null, INTEROP.hasAccessConsent).length;
     await registry.add(consent);
     const numberOfConsentsAfter = getAllMatchingQuads(registry.dataset, null, INTEROP.hasAccessConsent).length;
-    expect(numberOfConsentsAfter).toBe(numberOfConsentsBefore);
+    expect(numberOfConsentsAfter).toBe(numberOfConsentsBefore + 1);
+  });
+});
+
+describe('findConsent', () => {
+  test('should return access consent if exists', async () => {
+    const registry = await factory.crud.accessConsentRegistry(snippetIri);
+    const agentIri = 'https://projectron.example/#app';
+    const consent = await registry.findConsent(agentIri);
+    expect(consent).toBeInstanceOf(ReadableAccessConsent);
+  });
+
+  test('should return undefined if access consent does not exist', async () => {
+    const registry = await factory.crud.accessConsentRegistry(snippetIri);
+    const agentIri = 'https://non-existing.example/#oops';
+    const consent = await registry.findConsent(agentIri);
+    expect(consent).toBeUndefined();
   });
 });

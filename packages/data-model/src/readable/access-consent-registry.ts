@@ -30,12 +30,13 @@ export class CRUDAccessConsentRegistry extends CRUDContainer {
     };
   }
 
-  async findConsent(agentIri: string): Promise<ReadableAccessConsent | undefined> {
+  async findConsentent(agentIri: string): Promise<ReadableAccessConsent | undefined> {
     for await (const consent of this.accessConsents) {
       if (consent.registeredAgent === agentIri) {
         return consent;
       }
     }
+    return undefined;
   }
 
   /*
@@ -48,7 +49,7 @@ export class CRUDAccessConsentRegistry extends CRUDContainer {
     const predicate = INTEROP.hasAccessConsent;
     const object = DataFactory.namedNode(accessConsent.iri);
     // unlink prevoius access consent for that grantee if exists
-    const priorConsent = await this.findConsent(accessConsent.registeredAgent);
+    const priorConsent = await this.findConsentent(accessConsent.registeredAgent);
     if (priorConsent) {
       const priorQuad = getOneMatchingQuad(
         this.dataset,
