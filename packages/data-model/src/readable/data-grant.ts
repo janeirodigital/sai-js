@@ -44,13 +44,7 @@ export abstract class AbstractDataGrant extends ReadableResource {
    */
   public static newDataInstance(sourceGrant: DataGrant, parent?: DataInstance): DataInstance {
     const iri = `${sourceGrant.iriPrefix}${sourceGrant.factory.randomUUID()}`;
-    const instance = new DataInstance(iri, sourceGrant.factory);
-    instance.dataGrant = sourceGrant;
-    instance.draft = true;
-    if (parent) {
-      instance.parent = parent;
-    }
-    return instance;
+    return new DataInstance(iri, sourceGrant, sourceGrant.factory, parent, true);
   }
 
   public static iriPrefix(sourceGrant: DataGrant): string {
