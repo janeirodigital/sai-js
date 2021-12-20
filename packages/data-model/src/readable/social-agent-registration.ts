@@ -14,6 +14,11 @@ export class ReadableSocialAgentRegistration extends ReadableContainer {
 
   reciprocal: boolean;
 
+  public constructor(iri: string, factory: AuthorizationAgentFactory, reciprocal: boolean) {
+    super(iri, factory);
+    this.reciprocal = reciprocal;
+  }
+
   @Memoize()
   get registeredAgent(): string {
     return this.getObject('registeredAgent').value;
@@ -51,8 +56,7 @@ export class ReadableSocialAgentRegistration extends ReadableContainer {
     factory: AuthorizationAgentFactory,
     reciprocal = false
   ): Promise<ReadableSocialAgentRegistration> {
-    const instance = new ReadableSocialAgentRegistration(iri, factory);
-    instance.reciprocal = reciprocal;
+    const instance = new ReadableSocialAgentRegistration(iri, factory, reciprocal);
     await instance.bootstrap();
     return instance;
   }

@@ -22,13 +22,18 @@ export class SelectedInstancesDataGrant extends AbstractDataGrant {
     dataset: DatasetCore
   ): Promise<SelectedInstancesDataGrant> {
     const instance = new SelectedInstancesDataGrant(iri, factory, dataset);
-    for (const inheritingGrantIri of instance.hasInheritingGrantIriList) {
-      // eslint-disable-next-line no-await-in-loop
-      const inheritingGrant = (await factory.readable.dataGrant(inheritingGrantIri)) as InheritInstancesDataGrant;
-      inheritingGrant.inheritsFromGrant = instance;
-      instance.hasInheritingGrant.add(inheritingGrant);
-    }
+    await instance.bootstrap();
     return instance;
+  }
+
+  // TODO: deduplicate all instances data grant
+  private async bootstrap(): Promise<void> {
+    for (const inheritingGrantIri of this.hasInheritingGrantIriList) {
+      // eslint-disable-next-line no-await-in-loop
+      const inheritingGrant = (await this.factory.readable.dataGrant(inheritingGrantIri)) as InheritInstancesDataGrant;
+      inheritingGrant.inheritsFromGrant = this;
+      this.hasInheritingGrant.add(inheritingGrant);
+    }
   }
 
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
