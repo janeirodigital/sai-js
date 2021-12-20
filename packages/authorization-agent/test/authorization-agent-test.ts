@@ -104,13 +104,29 @@ describe('recordAccessConsent', () => {
     expect(accessConsentSpy.mock.calls[0][1]).toMatchObject(accessConsentData);
   });
 
+  test.skip('should link to new access consent from access consent registry', async () => {
+    const accessConsentRegistryAddSpy = jest.spyOn(agent.registrySet.hasAccessConsentRegistry, 'add');
+    await expect(
+      agent.recordAccessConsent({ dataConsents: [validDataConsetData], ...accessConsentData })
+    ).rejects.toThrow();
+    expect(accessConsentRegistryAddSpy).toBeCalled();
+  });
+});
+
+describe('generateAccessGrantForAccessConsent', () => {
   test('should call generateAccessGrant, store it and update registration', async () => {
+    const accessConsentIri = 'https://auth.alice.example/eac2c39c-c8b3-4880-8b9f-a3e12f7f6372';
+    const agent = await AuthorizationAgent.build(webId, agentId, { fetch: fetch as WhatwgFetch, randomUUID });
     const storeAccessGrantMock = jest.fn();
     const generateAccessGrantMock = jest.fn(() => ({ store: storeAccessGrantMock }));
     agent.factory.readable.accessConsent = jest.fn(
-      (iri) => ({ generateAccessGrant: generateAccessGrantMock } as unknown as Promise<ReadableAccessConsent>)
+      (iri) =>
+        ({
+          generateAccessGrant: generateAccessGrantMock,
+          registeredAgent: 'https://projectron.example/#app'
+        } as unknown as Promise<ReadableAccessConsent>)
     );
-    await agent.recordAccessConsent({ dataConsents: [validDataConsetData], ...accessConsentData });
+    await agent.generateAccessGrantForAccessConsent(accessConsentIri);
     expect(generateAccessGrantMock).toBeCalled();
     expect(storeAccessGrantMock).toBeCalled();
   });

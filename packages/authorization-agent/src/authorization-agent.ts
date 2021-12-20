@@ -79,7 +79,6 @@ export class AuthorizationAgent {
    *   * a) Remove reference to prior Access Consent
    *   * b) Add reference to new Access Consent
    * TODO: reuse existing Data Consents wherever possible - see Data Consent tests
-   * TODO: if prior consent existed relink it from Access Consent Registry
    */
   public async recordAccessConsent(consent: AccessConsentStructure): Promise<void> {
     // create data consents
@@ -109,15 +108,17 @@ export class AuthorizationAgent {
 
     // link to new access consent from access consent registry
     await this.registrySet.hasAccessConsentRegistry.add(rAccessConsent);
+  }
 
-    // generate access grant with data grants
+  public async generateAccessGrantForAccessConsent(accessConsentIri: string): Promise<void> {
+    const accessConsent = await this.factory.readable.accessConsent(accessConsentIri);
 
     // find agent registration
-    const granteeRegistration = await this.registrySet.hasAgentRegistry.findRegistration(consent.registeredAgent);
+    const granteeRegistration = await this.registrySet.hasAgentRegistry.findRegistration(accessConsent.registeredAgent);
 
     // TODO (elf-pavlik) handle case where agent registration has to be created
 
-    const accessGrant = await rAccessConsent.generateAccessGrant(
+    const accessGrant = await accessConsent.generateAccessGrant(
       this.registrySet.hasDataRegistry,
       this.registrySet.hasAgentRegistry,
       await granteeRegistration.getReadable()
