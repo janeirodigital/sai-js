@@ -2,7 +2,7 @@ import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, ReadableDataConsent, ReadableAgentRegistry, ReadableAgentRegistration } from '.';
+import { ReadableResource, ReadableDataConsent, ReadableAgentRegistry, ReadableAgentRegistration, DataGrant } from '.';
 import { AuthorizationAgentFactory, ImmutableAccessGrant, ImmutableDataGrant, CRUDDataRegistry } from '..';
 
 export class ReadableAccessConsent extends ReadableResource {
@@ -47,10 +47,8 @@ export class ReadableAccessConsent extends ReadableResource {
   }
 
   /*
-   * This method takes into consideration:
-   * Scope of each DataConsent
-   * If data consent is on issuer data (source data grants) or on someone else's data (delegated data grants)
-   * Enusres not to create delegated gransts on data grants from the consent subject
+   * Generates Access Grant with Data Grants
+   * TODO: Reuse equivalent Data Grants if Access Grant for that agent already exists
    */
 
   public async generateAccessGrant(
@@ -58,7 +56,7 @@ export class ReadableAccessConsent extends ReadableResource {
     agentRegistry: ReadableAgentRegistry,
     granteeRegistration: ReadableAgentRegistration
   ): Promise<ImmutableAccessGrant> {
-    const dataGrants: ImmutableDataGrant[] = [];
+    let dataGrants: ImmutableDataGrant[] = [];
 
     const regularConsents: ReadableDataConsent[] = [];
     for await (const dataConsent of this.dataConsents) {
@@ -71,13 +69,31 @@ export class ReadableAccessConsent extends ReadableResource {
       dataGrants.push(...(await dataConsent.generateDataGrants(dataRegistries, agentRegistry, granteeRegistration)));
     }
 
+    // reuse equivalent data grants if prior access grants exists
+    // TODO: review for Inherited scope
+    const priorAccessGrant = granteeRegistration.hasAccessGrant;
+
+    let finalGrants: (ImmutableDataGrant | DataGrant)[];
+
+    if (priorAccessGrant) {
+      finalGrants = dataGrants.map((dataGrant) => {
+        const priorGrant = priorAccessGrant.hasDataGrant.find((readableGrant) =>
+          dataGrant.checkEquivalence(readableGrant)
+        );
+        if (priorGrant) return priorGrant;
+        else return dataGrant;
+      });
+    } else {
+      finalGrants = dataGrants;
+    }
+
     const accessGrantIri = granteeRegistration.iriForContained();
     return this.factory.immutable.accessGrant(accessGrantIri, {
       registeredBy: this.factory.webId,
       registeredWith: this.factory.agentId,
       registeredAgent: this.registeredAgent,
       hasAccessNeedGroup: this.hasAccessNeedGroup,
-      dataGrants
+      dataGrants: finalGrants
     });
   }
 }

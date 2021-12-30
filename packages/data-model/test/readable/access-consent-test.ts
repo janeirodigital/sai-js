@@ -51,6 +51,25 @@ describe('generateAccessGrant', () => {
     );
     expect(accessGrant).toBeInstanceOf(ImmutableAccessGrant);
   });
+  test('uses new data grants if equivalent does not exists', async () => {
+    const accessConsent = await factory.readable.accessConsent(snippetIri);
+    const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
+    const registrySet = await factory.readable.registrySet(registrySetIri);
+    const agentRegistration = (await registrySet.hasAgentRegistry.findRegistration(
+      accessConsent.registeredAgent
+    )) as CRUDApplicationRegistration;
+    const readableAgentRegistration = await agentRegistration.getReadable();
+    // remove all of existing data grants
+    // TODO improve snippets for this test
+    readableAgentRegistration.hasAccessGrant.hasDataGrant = [];
+    const accessGrant = await accessConsent.generateAccessGrant(
+      registrySet.hasDataRegistry,
+      registrySet.hasAgentRegistry,
+      readableAgentRegistration
+    );
+    expect(accessGrant).toBeInstanceOf(ImmutableAccessGrant);
+    expect(accessGrant.dataGrants).toHaveLength(4);
+  });
   test('generates access grant for social agent', async () => {
     const consentForSocialAgentIri = 'https://auth.alice.example/75a2ef88-d4d4-4f05-af1e-c2a63af08cab';
     const accessConsent = await factory.readable.accessConsent(consentForSocialAgentIri);

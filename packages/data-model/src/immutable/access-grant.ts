@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
 import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
-import { AuthorizationAgentFactory, ImmutableDataGrant, ImmutableResource, ReadableAccessGrant } from '..';
+import { AuthorizationAgentFactory, DataGrant, ImmutableDataGrant, ImmutableResource, ReadableAccessGrant } from '..';
 
 type StringData = {
   registeredBy: string;
@@ -10,11 +10,11 @@ type StringData = {
 };
 
 export type AccessGrantData = StringData & {
-  dataGrants: ImmutableDataGrant[];
+  dataGrants: (ImmutableDataGrant | DataGrant)[];
 };
 
 export class ImmutableAccessGrant extends ImmutableResource {
-  dataGrants: ImmutableDataGrant[];
+  dataGrants: (ImmutableDataGrant | DataGrant)[];
 
   public constructor(iri: string, factory: AuthorizationAgentFactory, data: AccessGrantData) {
     super(iri, factory, data);
@@ -33,8 +33,14 @@ export class ImmutableAccessGrant extends ImmutableResource {
   }
 
   public async store(): Promise<ReadableAccessGrant> {
-    // store all data grants first
-    await Promise.all(this.dataGrants.map((grant) => grant.put()));
+    // store all immutable data grants first
+    await Promise.all(
+      this.dataGrants.map((grant) => {
+        if (grant instanceof ImmutableDataGrant) {
+          grant.put();
+        }
+      })
+    );
 
     await this.put();
 
