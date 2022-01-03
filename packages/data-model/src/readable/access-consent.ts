@@ -2,7 +2,14 @@ import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, ReadableDataConsent, ReadableAgentRegistry, ReadableAgentRegistration, DataGrant } from '.';
+import {
+  ReadableResource,
+  ReadableDataConsent,
+  ReadableAgentRegistry,
+  ReadableAgentRegistration,
+  DataGrant,
+  InheritableDataGrant
+} from '.';
 import { AuthorizationAgentFactory, ImmutableAccessGrant, ImmutableDataGrant, CRUDDataRegistry } from '..';
 
 export class ReadableAccessConsent extends ReadableResource {
@@ -46,6 +53,34 @@ export class ReadableAccessConsent extends ReadableResource {
     return this.getObject('hasAccessNeedGroup').value;
   }
 
+  // reuse equivalent data grants
+  // reuse all child grants if parent grant was reused
+  private reuseDataGrants(
+    immutableDataGrants: ImmutableDataGrant[],
+    readableDataGrants: DataGrant[]
+  ): (ImmutableDataGrant | DataGrant)[] {
+    const finalGrants: (ImmutableDataGrant | DataGrant)[] = [];
+    const parentGrants = immutableDataGrants.filter((grant) => grant.data.scopeOfGrant !== INTEROP.Inherited.value);
+    for (const parentGrant of parentGrants) {
+      const priorGrant = readableDataGrants.find((readableGrant) =>
+        parentGrant.checkEquivalence(readableGrant)
+      ) as InheritableDataGrant;
+      if (priorGrant) {
+        finalGrants.push(priorGrant);
+        if (priorGrant.hasInheritingGrant) {
+          finalGrants.push(...priorGrant.hasInheritingGrant);
+        }
+      } else {
+        finalGrants.push(parentGrant);
+        // push all children if any
+        if (parentGrant.data.hasInheritingGrant.length) {
+          finalGrants.push(...parentGrant.data.hasInheritingGrant);
+        }
+      }
+    }
+
+    return finalGrants;
+  }
   /*
    * Generates Access Grant with Data Grants
    * TODO: Reuse equivalent Data Grants if Access Grant for that agent already exists
@@ -69,20 +104,10 @@ export class ReadableAccessConsent extends ReadableResource {
       dataGrants.push(...(await dataConsent.generateDataGrants(dataRegistries, agentRegistry, granteeRegistration)));
     }
 
-    // reuse equivalent data grants if prior access grants exists
-    // TODO: review for Inherited scope
-    const priorAccessGrant = granteeRegistration.hasAccessGrant;
-
     let finalGrants: (ImmutableDataGrant | DataGrant)[];
-
+    const priorAccessGrant = granteeRegistration.hasAccessGrant;
     if (priorAccessGrant) {
-      finalGrants = dataGrants.map((dataGrant) => {
-        const priorGrant = priorAccessGrant.hasDataGrant.find((readableGrant) =>
-          dataGrant.checkEquivalence(readableGrant)
-        );
-        if (priorGrant) return priorGrant;
-        else return dataGrant;
-      });
+      finalGrants = this.reuseDataGrants(dataGrants, priorAccessGrant.hasDataGrant);
     } else {
       finalGrants = dataGrants;
     }

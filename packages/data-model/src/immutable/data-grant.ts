@@ -1,7 +1,7 @@
 import { DataFactory } from 'n3';
 import { NamedNode } from '@rdfjs/types';
 import { INTEROP, RDF } from '@janeirodigital/interop-namespaces';
-import { ApplicationFactory, AuthorizationAgentFactory, DataGrant, ImmutableResource } from '..';
+import { ApplicationFactory, AuthorizationAgentFactory, DataGrant, ImmutableResource, InheritableDataGrant } from '..';
 import { getAllMatchingQuads, getOneMatchingQuad } from '@janeirodigital/interop-utils';
 
 type StringData = {
@@ -20,12 +20,14 @@ type ArrayData = {
 };
 
 type InverseArrayData = {
-  hasInheritingGrant?: string[];
+  hasInheritingGrant?: ImmutableDataGrant[];
 };
 
 export type DataGrantData = StringData & ArrayData & InverseArrayData;
 
 export class ImmutableDataGrant extends ImmutableResource {
+  data: DataGrantData;
+
   public constructor(iri: string, factory: AuthorizationAgentFactory, data: DataGrantData) {
     super(iri, factory, data);
     const thisNode = DataFactory.namedNode(this.iri);
@@ -57,10 +59,11 @@ export class ImmutableDataGrant extends ImmutableResource {
     }
     if (data.hasInheritingGrant) {
       for (const child of data.hasInheritingGrant) {
-        this.dataset.add(DataFactory.quad(DataFactory.namedNode(child), INTEROP.inheritsFromGrant, thisNode));
+        this.dataset.add(DataFactory.quad(DataFactory.namedNode(child.iri), INTEROP.inheritsFromGrant, thisNode));
       }
     }
   }
+
   public checkEquivalence(otherGrant: DataGrant): boolean {
     const predicates = [
       INTEROP.dataOwner,
@@ -83,7 +86,6 @@ export class ImmutableDataGrant extends ImmutableResource {
     if (generatedInherits.length !== equivalentInherits.length) return false;
 
     // INTEROP.inheritsFromGrant - inverse
-    // we only check if number of statements is the same
     const generatedInverseInherits = getAllMatchingQuads(
       otherGrant.dataset,
       null,
@@ -97,7 +99,21 @@ export class ImmutableDataGrant extends ImmutableResource {
       DataFactory.namedNode(this.iri)
     );
     // TODO(samurex): missing coverage
+    // check if same number of inheriting grants
     if (generatedInverseInherits.length !== equivalentInverseInherits.length) return false;
+
+    // if has inheriting grants
+    // check if all children are equivalent as well
+    if (generatedInverseInherits.length) {
+      if (
+        !this.data.hasInheritingGrant.every((inheritingGrant) =>
+          [...(otherGrant as InheritableDataGrant).hasInheritingGrant].some((otherInheritingGrant) =>
+            inheritingGrant.checkEquivalence(otherInheritingGrant)
+          )
+        )
+      )
+        return false;
+    }
 
     // INTEROP.delegationOfGrant
     // we check if either both don't exist or both exist

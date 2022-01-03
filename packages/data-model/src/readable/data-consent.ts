@@ -154,7 +154,7 @@ export class ReadableDataConsent extends ReadableResource {
             accessMode: this.accessMode.filter((mode) => sourceGrant.accessMode.includes(mode))
           };
           if (childDataGrants.length) {
-            data.hasInheritingGrant = childDataGrants.map((grant) => grant.iri);
+            data.hasInheritingGrant = childDataGrants;
           }
           const regularGrant = this.factory.immutable.dataGrant(regularGrantIri, data);
           return [regularGrant, ...childDataGrants];
@@ -241,7 +241,7 @@ export class ReadableDataConsent extends ReadableResource {
         data.hasDataInstance = this.hasDataInstance;
       }
       if (childDataGrants.length) {
-        data.hasInheritingGrant = childDataGrants.map((grant) => grant.iri);
+        data.hasInheritingGrant = childDataGrants;
       }
       const regularGrant = this.factory.immutable.dataGrant(regularGrantIri, data);
       return [regularGrant, ...childDataGrants];
