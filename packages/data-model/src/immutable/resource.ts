@@ -1,29 +1,19 @@
 import { DatasetCore } from '@rdfjs/types';
 import { Store } from 'n3';
 import { RdfFetch } from '@janeirodigital/interop-utils';
-import { AuthorizationAgentFactory } from '..';
+import { AuthorizationAgentFactory, Resource } from '..';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Data = { [key: string]: any };
 
-export class ImmutableResource {
-  fetch: RdfFetch;
-
-  factory: AuthorizationAgentFactory;
-
-  iri: string;
-
-  dataset: DatasetCore;
-
+export class ImmutableResource extends Resource {
   data: Data;
 
   stored = false;
 
   // dataset gets populated in consturtor of each sub class
   constructor(iri: string, factory: AuthorizationAgentFactory, data: Data) {
-    this.iri = iri;
-    this.factory = factory;
-    this.fetch = factory.fetch;
+    super(iri, factory);
     this.data = data;
     this.dataset = new Store();
   }

@@ -7,6 +7,7 @@ export interface FactoryDependencies {
   randomUUID(): string;
 }
 export * from './base-factory';
+export * from './resource';
 
 export * from './readable';
 export * from './immutable';
