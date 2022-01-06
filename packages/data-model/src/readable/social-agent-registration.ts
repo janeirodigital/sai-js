@@ -33,8 +33,7 @@ export class ReadableSocialAgentRegistration extends ReadableContainer {
 
   // TODO (elf-pavlik) recover if reciprocal can't be fetched
   private async buildReciprocalRegistration(): Promise<void> {
-    const quadPattern = [DataFactory.namedNode(this.iri), INTEROP.reciprocalRegistration, null, null];
-    const reciprocalRegistrationIri = getOneMatchingQuad(this.dataset, ...quadPattern)?.object.value;
+    const reciprocalRegistrationIri = this.getObject(INTEROP.reciprocalRegistration)?.value;
     if (reciprocalRegistrationIri) {
       this.reciprocalRegistration = await this.factory.readable.socialAgentRegistration(
         reciprocalRegistrationIri,

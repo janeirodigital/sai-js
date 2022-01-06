@@ -26,8 +26,7 @@ export class ReadableAccessConsent extends ReadableResource {
   }
 
   get dataConsents(): AsyncIterable<ReadableDataConsent> {
-    const dataConsentPattern = [DataFactory.namedNode(this.iri), INTEROP.hasDataConsent, null, null];
-    const dataConsentIris = getAllMatchingQuads(this.dataset, ...dataConsentPattern).map((q) => q.object.value);
+    const dataConsentIris = this.getObjectsArray(INTEROP.hasDataConsent).map((object) => object.value);
     const { factory } = this;
     return {
       async *[Symbol.asyncIterator]() {

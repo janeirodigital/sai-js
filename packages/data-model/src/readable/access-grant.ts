@@ -1,5 +1,4 @@
 import { DataFactory } from 'n3';
-import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { ReadableResource, DataGrant, InteropFactory } from '..';
 
@@ -7,8 +6,7 @@ export class ReadableAccessGrant extends ReadableResource {
   hasDataGrant: DataGrant[] = [];
 
   private async buildDataGrants(): Promise<void> {
-    const quadPattern = [DataFactory.namedNode(this.iri), INTEROP.hasDataGrant, null, null];
-    const grantIriList = getAllMatchingQuads(this.dataset, ...quadPattern).map((quad) => quad.object.value);
+    const grantIriList = this.getObjectsArray(INTEROP.hasDataGrant).map((object) => object.value);
     for (const grantIri of grantIriList) {
       // eslint-disable-next-line no-await-in-loop
       this.hasDataGrant.push(await this.factory.readable.dataGrant(grantIri));

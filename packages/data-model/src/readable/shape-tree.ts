@@ -1,6 +1,5 @@
 import { Memoize } from 'typescript-memoize';
 import { DataFactory } from 'n3';
-import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { SHAPETREES } from '@janeirodigital/interop-namespaces';
 import { ReadableResource, InteropFactory } from '..';
 
@@ -19,10 +18,8 @@ export class ReadableShapeTree extends ReadableResource {
   }
 
   getShapePathForReferenced(shapeTree: string): string {
-    const referencedPattern = [null, SHAPETREES.hasShapeTree, DataFactory.namedNode(shapeTree), null];
-    const referencedNode = getOneMatchingQuad(this.dataset, ...referencedPattern).subject;
-    const shapePathPattern = [referencedNode, SHAPETREES.viaShapePath, null];
-    return getOneMatchingQuad(this.dataset, ...shapePathPattern).object.value;
+    const referencedNode = this.getQuad(null, SHAPETREES.hasShapeTree, DataFactory.namedNode(shapeTree)).subject;
+    return this.getQuad(referencedNode, SHAPETREES.viaShapePath).object.value;
   }
 
   @Memoize()

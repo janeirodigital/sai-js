@@ -1,9 +1,17 @@
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { getAllMatchingQuads, getOneMatchingQuad, RdfFetch } from '@janeirodigital/interop-utils';
-import { DatasetCore } from '@rdfjs/types';
-import { DataFactory, NamedNode } from 'n3';
+import { DatasetCore, NamedNode, Quad, Term } from '@rdfjs/types';
+import { DataFactory, Store } from 'n3';
 import { BaseFactory } from '.';
 
+type QuadPosition = 'object' | 'subject';
+
+function createQuadPattern(quadPosition: QuadPosition, iri: string, property: string | NamedNode, namespace: any) {
+  const predicate = typeof property === 'string' ? namespace[property] : property;
+  return quadPosition === 'object'
+    ? [DataFactory.namedNode(iri), predicate, null, null]
+    : [null, predicate, DataFactory.namedNode(iri), null];
+}
 export class Resource {
   fetch: RdfFetch;
 
@@ -11,7 +19,7 @@ export class Resource {
 
   iri: string;
 
-  dataset: DatasetCore;
+  dataset: DatasetCore = new Store();
 
   constructor(iri: string, factory: BaseFactory) {
     this.iri = iri;
@@ -19,13 +27,50 @@ export class Resource {
     this.fetch = factory.fetch;
   }
 
-  public getObject(property: string, namespace = INTEROP): NamedNode | undefined {
-    const quadPattern = [DataFactory.namedNode(this.iri), namespace[property], null, null];
-    return getOneMatchingQuad(this.dataset, ...quadPattern)?.object as NamedNode | undefined;
+  public getQuad(subject?: Term, predicate?: Term, object?: Term, graph?: Term): Quad | undefined {
+    return getOneMatchingQuad(this.dataset, ...arguments);
   }
 
-  public getObjectsArray(property: string, namespace = INTEROP): NamedNode[] {
-    const quadPattern = [DataFactory.namedNode(this.iri), namespace[property], null, null];
-    return getAllMatchingQuads(this.dataset, ...quadPattern).map((quad) => quad.object) as NamedNode[];
+  public getQuadArray(subject?: Term, predicate?: Term, object?: Term, graph?: Term): Quad[] {
+    return getAllMatchingQuads(this.dataset, ...arguments);
+  }
+
+  private getTerm(
+    quadPosition: QuadPosition,
+    property: string | NamedNode,
+    namespace = INTEROP
+  ): NamedNode | undefined {
+    const quadPattern = createQuadPattern(quadPosition, this.iri, property, namespace);
+    const quad = getOneMatchingQuad(this.dataset, ...quadPattern);
+    return quad && (quad[quadPosition] as NamedNode | undefined);
+  }
+
+  private getTermArray(quadPosition: QuadPosition, property: string | NamedNode, namespace = INTEROP): NamedNode[] {
+    const quadPattern = createQuadPattern(quadPosition, this.iri, property, namespace);
+    return getAllMatchingQuads(this.dataset, ...quadPattern).map((quad) => quad[quadPosition]) as NamedNode[];
+  }
+
+  public getSubject(property: NamedNode): NamedNode | undefined;
+  public getSubject(property: string, namespace?: any): NamedNode | undefined;
+  public getSubject(property: string | NamedNode, namespace?: any): NamedNode | undefined {
+    return this.getTerm('subject', property, namespace);
+  }
+
+  public getObject(property: NamedNode): NamedNode | undefined;
+  public getObject(property: string, namespace?: any): NamedNode | undefined;
+  public getObject(property: string | NamedNode, namespace?: any): NamedNode | undefined {
+    return this.getTerm('object', property, namespace);
+  }
+
+  public getObjectsArray(property: NamedNode): NamedNode[];
+  public getObjectsArray(property: string, namespace?: any): NamedNode[];
+  public getObjectsArray(property: string | NamedNode, namespace?: any): NamedNode[] {
+    return this.getTermArray('object', property, namespace);
+  }
+
+  public getSubjectsArray(property: NamedNode): NamedNode[];
+  public getSubjectsArray(property: string, namespace?: any): NamedNode[];
+  public getSubjectsArray(property: string | NamedNode, namespace?: any): NamedNode[] {
+    return this.getTermArray('subject', property, namespace);
   }
 }

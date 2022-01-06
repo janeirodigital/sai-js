@@ -66,8 +66,7 @@ export class SelectedInstancesDataGrant extends AbstractDataGrant {
 
   @Memoize()
   get hasInheritingGrantIriList(): string[] {
-    const quadPattern = [null, INTEROP.inheritsFromGrant, DataFactory.namedNode(this.iri)];
-    return getAllMatchingQuads(this.dataset, ...quadPattern).map((quad) => quad.subject.value);
+    return this.getSubjectsArray(INTEROP.inheritsFromGrant).map((subject) => subject.value);
   }
 
   @Memoize()

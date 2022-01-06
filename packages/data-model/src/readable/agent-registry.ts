@@ -28,8 +28,7 @@ export class ReadableAgentRegistry extends ReadableResource {
   }
 
   get applicationRegistrations(): AsyncIterable<ReadableApplicationRegistration> {
-    const pattern = [DataFactory.namedNode(this.iri), INTEROP.hasApplicationRegistration, null, null];
-    const iris = getAllMatchingQuads(this.dataset, ...pattern).map((q) => q.object.value);
+    const iris = this.getObjectsArray(INTEROP.hasApplicationRegistration).map((object) => object.value);
     const { factory } = this;
     return {
       async *[Symbol.asyncIterator]() {
@@ -41,8 +40,7 @@ export class ReadableAgentRegistry extends ReadableResource {
   }
 
   get socialAgentRegistrations(): AsyncIterable<ReadableSocialAgentRegistration> {
-    const pattern = [DataFactory.namedNode(this.iri), INTEROP.hasSocialAgentRegistration, null, null];
-    const iris = getAllMatchingQuads(this.dataset, ...pattern).map((q) => q.object.value);
+    const iris = this.getObjectsArray(INTEROP.hasSocialAgentRegistration).map((object) => object.value);
     const { factory } = this;
     return {
       async *[Symbol.asyncIterator]() {

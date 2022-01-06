@@ -1,7 +1,6 @@
 import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
-import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { ReadableResource, DataInstance, InteropFactory, DataGrant, ImmutableDataGrant } from '..';
 
@@ -48,10 +47,9 @@ export abstract class AbstractDataGrant extends ReadableResource {
   }
 
   public static iriPrefix(sourceGrant: DataGrant): string {
-    const dataRegistrationPattern = [DataFactory.namedNode(sourceGrant.iri), INTEROP.hasDataRegistration, null, null];
-    const dataRegistrationNode = getOneMatchingQuad(sourceGrant.dataset, ...dataRegistrationPattern)
-      .object as NamedNode;
-    const iriPrefixPattern = [dataRegistrationNode, INTEROP.iriPrefix, null, null];
-    return getOneMatchingQuad(sourceGrant.dataset, ...iriPrefixPattern).object.value;
+    const dataRegistrationPattern = [DataFactory.namedNode(sourceGrant.iri), INTEROP.hasDataRegistration];
+    const dataRegistrationNode = sourceGrant.getQuad(...dataRegistrationPattern).object as NamedNode;
+    const iriPrefixPattern = [dataRegistrationNode, INTEROP.iriPrefix];
+    return sourceGrant.getQuad(...iriPrefixPattern).object.value;
   }
 }

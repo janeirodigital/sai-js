@@ -1,5 +1,4 @@
 import { DataFactory } from 'n3';
-import { getAllMatchingQuads, getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { ReadableAccessConsent } from '../readable';
 import { AuthorizationAgentFactory, CRUDContainer } from '..';
@@ -18,8 +17,8 @@ export class CRUDAccessConsentRegistry extends CRUDContainer {
   }
 
   get accessConsents(): AsyncIterable<ReadableAccessConsent> {
-    const accessConsentPattern = [DataFactory.namedNode(this.iri), INTEROP.hasAccessConsent, null, null];
-    const accessConsentIris = getAllMatchingQuads(this.dataset, ...accessConsentPattern).map((q) => q.object.value);
+    const accessConsentPattern = [DataFactory.namedNode(this.iri), INTEROP.hasAccessConsent];
+    const accessConsentIris = this.getQuadArray(...accessConsentPattern).map((q) => q.object.value);
     const { factory } = this;
     return {
       async *[Symbol.asyncIterator]() {
@@ -50,8 +49,7 @@ export class CRUDAccessConsentRegistry extends CRUDContainer {
     // unlink prevoius access consent for that grantee if exists
     const priorConsent = await this.findConsent(accessConsent.registeredAgent);
     if (priorConsent) {
-      const priorQuad = getOneMatchingQuad(
-        this.dataset,
+      const priorQuad = this.getQuad(
         DataFactory.namedNode(this.iri),
         INTEROP.hasAccessConsent,
         DataFactory.namedNode(priorConsent.iri)

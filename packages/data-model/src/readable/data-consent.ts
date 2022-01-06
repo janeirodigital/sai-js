@@ -20,8 +20,7 @@ export class ReadableDataConsent extends ReadableResource {
   hasInheritingConsent: ReadableDataConsent[];
 
   async inheritingConsents(): Promise<ReadableDataConsent[]> {
-    const pattern = [null, INTEROP.inheritsFromConsent, DataFactory.namedNode(this.iri)];
-    const childIris = getAllMatchingQuads(this.dataset, ...pattern).map((quad) => quad.subject.value);
+    const childIris = this.getSubjectsArray(INTEROP.inheritsFromConsent).map((subject) => subject.value);
     return Promise.all(childIris.map((iri) => this.factory.readable.dataConsent(iri)));
   }
 

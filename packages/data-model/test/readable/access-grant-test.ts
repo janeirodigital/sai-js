@@ -7,7 +7,7 @@ const factory = new ApplicationFactory({ fetch, randomUUID });
 const snippetIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
 
 describe('build', () => {
-  test('should return instance of Access Receipt', async () => {
+  test.only('should return instance of Access Receipt', async () => {
     const accessGrant = await ReadableAccessGrant.build(snippetIri, factory);
     expect(accessGrant).toBeInstanceOf(ReadableAccessGrant);
   });

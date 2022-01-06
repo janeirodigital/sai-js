@@ -61,8 +61,7 @@ describe('add', () => {
     } as unknown as ReadableAccessConsent;
     const projectronConsentIri = 'https://auth.alice.example/eac2c39c-c8b3-4880-8b9f-a3e12f7f6372';
     const priorQuads = [
-      getOneMatchingQuad(
-        registry.dataset,
+      registry.getQuad(
         DataFactory.namedNode(registry.iri),
         INTEROP.hasAccessConsent,
         DataFactory.namedNode(projectronConsentIri)
@@ -80,9 +79,9 @@ describe('add', () => {
   });
 
   test('should not remove consents for other agents', async () => {
-    const numberOfConsentsBefore = getAllMatchingQuads(registry.dataset, null, INTEROP.hasAccessConsent).length;
+    const numberOfConsentsBefore = registry.getQuadArray(null, INTEROP.hasAccessConsent).length;
     await registry.add(consent);
-    const numberOfConsentsAfter = getAllMatchingQuads(registry.dataset, null, INTEROP.hasAccessConsent).length;
+    const numberOfConsentsAfter = registry.getQuadArray(null, INTEROP.hasAccessConsent).length;
     expect(numberOfConsentsAfter).toBe(numberOfConsentsBefore + 1);
   });
 });

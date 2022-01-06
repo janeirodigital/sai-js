@@ -68,8 +68,7 @@ export class AllInstancesDataGrant extends AbstractDataGrant {
 
   @Memoize()
   get hasInheritingGrantIriList(): string[] {
-    const quadPattern = [null, INTEROP.inheritsFromGrant, DataFactory.namedNode(this.iri)];
-    return getAllMatchingQuads(this.dataset, ...quadPattern).map((quad) => quad.subject.value);
+    return this.getSubjectsArray('inheritsFromGrant').map((subject) => subject.value);
   }
 
   // TODO (elf-pavlik) verify expected access mode

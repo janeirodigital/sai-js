@@ -1,5 +1,4 @@
 import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
-import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { DataFactory, Store } from 'n3';
 import { AuthorizationAgentFactory, InteropFactory, ReadableResource } from '..';
 
@@ -20,7 +19,7 @@ export class CRUDResource extends ReadableResource {
   }
 
   protected deleteQuad(property: string, namespace = INTEROP): void {
-    const existing = getOneMatchingQuad(this.dataset, DataFactory.namedNode(this.iri), namespace[property]);
+    const existing = this.getQuad(DataFactory.namedNode(this.iri), namespace[property]);
     if (existing) {
       this.dataset.delete(existing);
     }
