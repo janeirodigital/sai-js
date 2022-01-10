@@ -3,17 +3,10 @@ import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
 import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
-import { AbstractDataGrant, InheritInstancesDataGrant } from '.';
+import { AbstractDataGrant, InheritableDataGrant, InheritInstancesDataGrant } from '.';
 import { DataInstance, InteropFactory } from '..';
 
-export class AllInstancesDataGrant extends AbstractDataGrant {
-  hasInheritingGrant: Set<InheritInstancesDataGrant>;
-
-  public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore) {
-    super(iri, factory, dataset);
-    this.hasInheritingGrant = new Set();
-  }
-
+export class AllInstancesDataGrant extends InheritableDataGrant {
   public static async build(
     iri: string,
     factory: InteropFactory,
@@ -24,22 +17,13 @@ export class AllInstancesDataGrant extends AbstractDataGrant {
     return instance;
   }
 
-  private async bootstrap(): Promise<void> {
-    for (const inheritingGrantIri of this.hasInheritingGrantIriList) {
-      // eslint-disable-next-line no-await-in-loop
-      const inheritingGrant = (await this.factory.readable.dataGrant(inheritingGrantIri)) as InheritInstancesDataGrant;
-      inheritingGrant.inheritsFromGrant = this;
-      this.hasInheritingGrant.add(inheritingGrant);
-    }
-  }
-
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
     const { factory } = this;
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const dataGrant = this;
     return {
       async *[Symbol.asyncIterator]() {
-        const dataRegistration = await factory.readable.dataRegistration(dataGrant.hasDataRegistrationIri);
+        const dataRegistration = await factory.readable.dataRegistration(dataGrant.hasDataRegistration);
         for (const instanceIri of dataRegistration.contains) {
           yield factory.dataInstance(instanceIri, dataGrant);
         }
@@ -49,26 +33,6 @@ export class AllInstancesDataGrant extends AbstractDataGrant {
 
   public newDataInstance(): DataInstance {
     return AbstractDataGrant.newDataInstance(this);
-  }
-
-  @Memoize()
-  get hasDataRegistrationIri(): string {
-    return this.getObject('hasDataRegistration').value;
-  }
-
-  @Memoize()
-  get dataOwner(): string {
-    return this.getObject('dataOwner').value;
-  }
-
-  @Memoize()
-  get iriPrefix(): string {
-    return AbstractDataGrant.iriPrefix(this);
-  }
-
-  @Memoize()
-  get hasInheritingGrantIriList(): string[] {
-    return this.getSubjectsArray('inheritsFromGrant').map((subject) => subject.value);
   }
 
   // TODO (elf-pavlik) verify expected access mode

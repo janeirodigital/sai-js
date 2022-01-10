@@ -1,20 +1,10 @@
 import { DatasetCore } from '@rdfjs/types';
-import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
-import { AbstractDataGrant, InheritInstancesDataGrant } from '.';
+import { InheritableDataGrant, InheritInstancesDataGrant } from '.';
 import { InteropFactory, DataInstance } from '..';
 
-export class SelectedInstancesDataGrant extends AbstractDataGrant {
-  hasInheritingGrant: Set<InheritInstancesDataGrant>;
-
+export class SelectedInstancesDataGrant extends InheritableDataGrant {
   canCreate = false;
-
-  public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore) {
-    super(iri, factory, dataset);
-    this.hasInheritingGrant = new Set();
-  }
 
   public static async build(
     iri: string,
@@ -24,16 +14,6 @@ export class SelectedInstancesDataGrant extends AbstractDataGrant {
     const instance = new SelectedInstancesDataGrant(iri, factory, dataset);
     await instance.bootstrap();
     return instance;
-  }
-
-  // TODO: deduplicate all instances data grant
-  private async bootstrap(): Promise<void> {
-    for (const inheritingGrantIri of this.hasInheritingGrantIriList) {
-      // eslint-disable-next-line no-await-in-loop
-      const inheritingGrant = (await this.factory.readable.dataGrant(inheritingGrantIri)) as InheritInstancesDataGrant;
-      inheritingGrant.inheritsFromGrant = this;
-      this.hasInheritingGrant.add(inheritingGrant);
-    }
   }
 
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
@@ -47,26 +27,6 @@ export class SelectedInstancesDataGrant extends AbstractDataGrant {
         }
       }
     };
-  }
-
-  @Memoize()
-  get hasDataRegistrationIri(): string {
-    return this.getObject('hasDataRegistration').value;
-  }
-
-  @Memoize()
-  get dataOwner(): string {
-    return this.getObject('dataOwner').value;
-  }
-
-  @Memoize()
-  get iriPrefix(): string {
-    return AbstractDataGrant.iriPrefix(this);
-  }
-
-  @Memoize()
-  get hasInheritingGrantIriList(): string[] {
-    return this.getSubjectsArray(INTEROP.inheritsFromGrant).map((subject) => subject.value);
   }
 
   @Memoize()

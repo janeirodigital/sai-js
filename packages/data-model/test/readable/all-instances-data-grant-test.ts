@@ -30,10 +30,10 @@ test('should set iriPrefix', async () => {
   expect(dataGrant.iriPrefix).toEqual(iriPrefix);
 });
 
-test('should set hasDataRegistrationIri', async () => {
+test('should set hasDataRegistration', async () => {
   const dataGrant = (await factory.readable.dataGrant(snippetIri)) as AllInstancesDataGrant;
   const dataRegistrationIri = 'https://home.alice.example/f6ccd3a4-45ea-4f98-8a36-98eac92a6720';
-  expect(dataGrant.hasDataRegistrationIri).toBe(dataRegistrationIri);
+  expect(dataGrant.hasDataRegistration).toBe(dataRegistrationIri);
 });
 
 test('should provide data instance iterator', async () => {

@@ -5,12 +5,12 @@ import { ReadableApplicationRegistration } from './application-registration';
 import { ReadableSocialAgentRegistration } from './social-agent-registration';
 
 export type DataGrant = AllInstancesDataGrant | SelectedInstancesDataGrant | InheritInstancesDataGrant;
-export type InheritableDataGrant = AllInstancesDataGrant | SelectedInstancesDataGrant;
 export type ReadableAgentRegistration = ReadableApplicationRegistration | ReadableSocialAgentRegistration;
 
 export { ReadableResource } from './resource';
 export { ReadableContainer } from './container';
 export { AbstractDataGrant } from './data-grant';
+export { InheritableDataGrant } from './inheritable-data-grant';
 export { AllInstancesDataGrant } from './all-instances-data-grant';
 export { SelectedInstancesDataGrant } from './selected-instances-data-grant';
 export { InheritInstancesDataGrant } from './inherit-instances-data-grant';

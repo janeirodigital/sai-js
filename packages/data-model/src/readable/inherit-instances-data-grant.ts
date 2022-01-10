@@ -1,10 +1,10 @@
 import { Memoize } from 'typescript-memoize';
 import { ACL } from '@janeirodigital/interop-namespaces';
-import { AbstractDataGrant, InheritableDataGrant } from '.';
+import { AbstractDataGrant, AllInstancesDataGrant, SelectedInstancesDataGrant } from '.';
 import { DataInstance } from '..';
 
 export class InheritInstancesDataGrant extends AbstractDataGrant {
-  inheritsFromGrant: InheritableDataGrant;
+  inheritsFromGrant: AllInstancesDataGrant | SelectedInstancesDataGrant;
 
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -26,16 +26,6 @@ export class InheritInstancesDataGrant extends AbstractDataGrant {
   @Memoize()
   get inheritsFromGrantIri(): string {
     return this.getObject('inheritsFromGrant').value;
-  }
-
-  @Memoize()
-  get dataOwner(): string {
-    return this.getObject('dataOwner').value;
-  }
-
-  @Memoize()
-  get iriPrefix(): string {
-    return AbstractDataGrant.iriPrefix(this);
   }
 
   // TODO (elf-pavlik) verify expected access mode

@@ -30,10 +30,10 @@ test('should set correct canCreate', async () => {
   expect(dataGrant.canCreate).toBeFalsy();
 });
 
-test('should set hasDataRegistrationIri', async () => {
+test('should set hasDataRegistration', async () => {
   const dataGrant = (await factory.readable.dataGrant(snippetIri)) as SelectedInstancesDataGrant;
   const dataRegistrationIri = 'https://pro.alice.example/773605f0-b5bf-4d46-878d-5c167eac8b5d';
-  expect(dataGrant.hasDataRegistrationIri).toBe(dataRegistrationIri);
+  expect(dataGrant.hasDataRegistration).toBe(dataRegistrationIri);
 });
 
 test('should provide data instance iterator', async () => {

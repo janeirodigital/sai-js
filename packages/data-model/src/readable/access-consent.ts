@@ -8,7 +8,8 @@ import {
   ReadableAgentRegistry,
   ReadableAgentRegistration,
   DataGrant,
-  InheritableDataGrant
+  AllInstancesDataGrant,
+  SelectedInstancesDataGrant
 } from '.';
 import { AuthorizationAgentFactory, ImmutableAccessGrant, ImmutableDataGrant, CRUDDataRegistry } from '..';
 
@@ -61,9 +62,9 @@ export class ReadableAccessConsent extends ReadableResource {
     const finalGrants: (ImmutableDataGrant | DataGrant)[] = [];
     const parentGrants = immutableDataGrants.filter((grant) => grant.data.scopeOfGrant !== INTEROP.Inherited.value);
     for (const parentGrant of parentGrants) {
-      const priorGrant = readableDataGrants.find((readableGrant) =>
-        parentGrant.checkEquivalence(readableGrant)
-      ) as InheritableDataGrant;
+      const priorGrant = readableDataGrants.find((readableGrant) => parentGrant.checkEquivalence(readableGrant)) as
+        | AllInstancesDataGrant
+        | SelectedInstancesDataGrant;
       if (priorGrant) {
         finalGrants.push(priorGrant);
         if (priorGrant.hasInheritingGrant) {

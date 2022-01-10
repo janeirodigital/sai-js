@@ -15,6 +15,11 @@ export abstract class AbstractDataGrant extends ReadableResource {
   abstract getDataInstanceIterator(): AsyncIterable<DataInstance>;
 
   @Memoize()
+  get dataOwner(): string {
+    return this.getObject('dataOwner').value;
+  }
+
+  @Memoize()
   get scopeOfGrant(): NamedNode {
     return this.getObject('scopeOfGrant');
   }
@@ -46,10 +51,11 @@ export abstract class AbstractDataGrant extends ReadableResource {
     return new DataInstance(iri, sourceGrant, sourceGrant.factory, parent, true);
   }
 
-  public static iriPrefix(sourceGrant: DataGrant): string {
-    const dataRegistrationPattern = [DataFactory.namedNode(sourceGrant.iri), INTEROP.hasDataRegistration];
-    const dataRegistrationNode = sourceGrant.getQuad(...dataRegistrationPattern).object as NamedNode;
+  @Memoize()
+  get iriPrefix(): string {
+    const dataRegistrationPattern = [DataFactory.namedNode(this.iri), INTEROP.hasDataRegistration];
+    const dataRegistrationNode = this.getQuad(...dataRegistrationPattern).object as NamedNode;
     const iriPrefixPattern = [dataRegistrationNode, INTEROP.iriPrefix];
-    return sourceGrant.getQuad(...iriPrefixPattern).object.value;
+    return this.getQuad(...iriPrefixPattern).object.value;
   }
 }
