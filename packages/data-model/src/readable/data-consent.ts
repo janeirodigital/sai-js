@@ -1,6 +1,5 @@
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { getAllMatchingQuads, iterable2array } from '@janeirodigital/interop-utils';
-import { DataFactory } from 'n3';
+import { iterable2array } from '@janeirodigital/interop-utils';
 import { Memoize } from 'typescript-memoize';
 import {
   ReadableResource,
@@ -143,7 +142,7 @@ export class ReadableDataConsent extends ReadableResource {
             sourceGrant as InheritableDataGrant,
             granteeRegistration
           );
-          // TODO (elf-pavlik) use hasDataInstance if present
+          // TODO (elf-pavlik) use hasDataInstance if present - add snippet
           const data: DataGrantData = {
             dataOwner: sourceGrant.dataOwner,
             registeredShapeTree: sourceGrant.registeredShapeTree,

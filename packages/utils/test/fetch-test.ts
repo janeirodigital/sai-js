@@ -85,7 +85,7 @@ describe('fetchWrapper', () => {
     const rdfFetch = fetchWrapper(mock);
     const response = await rdfFetch(iri);
     const actualDataset = await response.dataset();
-    for (let quad of [...actualDataset]) {
+    for (const quad of [...actualDataset]) {
       expect(quad.graph.value).toBe(iri);
     }
   });

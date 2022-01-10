@@ -1,7 +1,7 @@
 import { DataFactory } from 'n3';
 import { NamedNode } from '@rdfjs/types';
 import { INTEROP, RDF } from '@janeirodigital/interop-namespaces';
-import { ApplicationFactory, AuthorizationAgentFactory, DataGrant, ImmutableResource, InheritableDataGrant } from '..';
+import { AuthorizationAgentFactory, DataGrant, ImmutableResource, InheritableDataGrant } from '..';
 
 type StringData = {
   dataOwner: string;

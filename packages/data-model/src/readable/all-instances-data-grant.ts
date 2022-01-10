@@ -1,9 +1,7 @@
 import { DatasetCore } from '@rdfjs/types';
-import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
-import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
-import { getAllMatchingQuads } from '@janeirodigital/interop-utils';
-import { AbstractDataGrant, InheritableDataGrant, InheritInstancesDataGrant } from '.';
+import { ACL } from '@janeirodigital/interop-namespaces';
+import { AbstractDataGrant, InheritableDataGrant } from '.';
 import { DataInstance, InteropFactory } from '..';
 
 export class AllInstancesDataGrant extends InheritableDataGrant {

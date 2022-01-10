@@ -1,4 +1,4 @@
-import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { DataFactory } from 'n3';
 import { AuthorizationAgentFactory } from '..';
 import { CRUDResource } from './resource';
@@ -10,6 +10,7 @@ export type AgentRegistrationData = {
 
 export class CRUDAgentRegistration extends CRUDResource {
   data?: AgentRegistrationData;
+
   factory: AuthorizationAgentFactory;
 
   constructor(iri: string, factory: AuthorizationAgentFactory, data?: AgentRegistrationData) {

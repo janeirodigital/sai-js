@@ -5,9 +5,9 @@ import 'jest-rdf';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { ApplicationFactory, AuthorizationAgentFactory, CRUDResource } from '../../src';
 import { DataFactory, Store } from 'n3';
 import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
+import { ApplicationFactory, AuthorizationAgentFactory, CRUDResource } from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';

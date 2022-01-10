@@ -1,8 +1,8 @@
+import { DataFactory } from 'n3';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { ReadableDataRegistration } from '../readable';
 import { AuthorizationAgentFactory } from '..';
 import { CRUDContainer, CRUDDataRegistration } from '.';
-import { DataFactory } from 'n3';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
 
 export class CRUDDataRegistry extends CRUDContainer {
   factory: AuthorizationAgentFactory;
@@ -23,6 +23,7 @@ export class CRUDDataRegistry extends CRUDContainer {
       }
     };
   }
+
   async createRegistration(shapeTree: string): Promise<CRUDDataRegistration> {
     for await (const registration of this.registrations) {
       if (registration.registeredShapeTree === shapeTree) {

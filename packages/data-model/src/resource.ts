@@ -28,11 +28,11 @@ export class Resource {
   }
 
   public getQuad(subject?: Term, predicate?: Term, object?: Term, graph?: Term): Quad | undefined {
-    return getOneMatchingQuad(this.dataset, ...arguments);
+    return getOneMatchingQuad(this.dataset, subject, predicate, object, graph);
   }
 
   public getQuadArray(subject?: Term, predicate?: Term, object?: Term, graph?: Term): Quad[] {
-    return getAllMatchingQuads(this.dataset, ...arguments);
+    return getAllMatchingQuads(this.dataset, subject, predicate, object, graph);
   }
 
   private getTerm(
@@ -51,25 +51,33 @@ export class Resource {
   }
 
   public getSubject(property: NamedNode): NamedNode | undefined;
+
   public getSubject(property: string, namespace?: any): NamedNode | undefined;
+
   public getSubject(property: string | NamedNode, namespace?: any): NamedNode | undefined {
     return this.getTerm('subject', property, namespace);
   }
 
   public getObject(property: NamedNode): NamedNode | undefined;
+
   public getObject(property: string, namespace?: any): NamedNode | undefined;
+
   public getObject(property: string | NamedNode, namespace?: any): NamedNode | undefined {
     return this.getTerm('object', property, namespace);
   }
 
   public getObjectsArray(property: NamedNode): NamedNode[];
+
   public getObjectsArray(property: string, namespace?: any): NamedNode[];
+
   public getObjectsArray(property: string | NamedNode, namespace?: any): NamedNode[] {
     return this.getTermArray('object', property, namespace);
   }
 
   public getSubjectsArray(property: NamedNode): NamedNode[];
+
   public getSubjectsArray(property: string, namespace?: any): NamedNode[];
+
   public getSubjectsArray(property: string | NamedNode, namespace?: any): NamedNode[] {
     return this.getTermArray('subject', property, namespace);
   }

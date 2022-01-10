@@ -1,5 +1,4 @@
 import {
-  CRUDAgentRegistration,
   AgentRegistrationData,
   BaseFactory,
   BaseReadableFactory,
@@ -49,7 +48,9 @@ interface ImmutableFactory {
 
 export class AuthorizationAgentFactory extends BaseFactory {
   readable: AuthorizationAgentReadableFactory;
+
   immutable: ImmutableFactory;
+
   crud: CRUDFactory;
 
   constructor(public webId: string, public agentId: string, dependencies: FactoryDependencies) {

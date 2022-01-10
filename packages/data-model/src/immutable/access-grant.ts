@@ -37,8 +37,9 @@ export class ImmutableAccessGrant extends ImmutableResource {
     await Promise.all(
       this.dataGrants.map((grant) => {
         if (grant instanceof ImmutableDataGrant) {
-          grant.put();
+          return grant.put();
         }
+        return Promise.resolve();
       })
     );
 

@@ -4,10 +4,10 @@ import 'jest-rdf';
 import { jest } from '@jest/globals';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { ReadableAccessConsent, AuthorizationAgentFactory, CRUDAccessConsentRegistry } from '../../src';
 import { DataFactory } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { getAllMatchingQuads, getOneMatchingQuad } from '@janeirodigital/interop-utils';
+import { ReadableAccessConsent, AuthorizationAgentFactory, CRUDAccessConsentRegistry } from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';

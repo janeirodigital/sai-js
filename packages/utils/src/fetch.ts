@@ -33,7 +33,7 @@ async function unwrappedRdfFetch(
   const response = await whatwgFetch(iri, requestInit);
   const rdfResponse = { ...response } as RdfResponse;
   rdfResponse.dataset = async function dataset() {
-    let contentType = response.headers.get('Content-Type');
+    const contentType = response.headers.get('Content-Type');
     if (contentType === null || !contentType.match('text/turtle')) {
       throw Error(`Content-Type was ${contentType}`);
     }

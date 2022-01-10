@@ -1,6 +1,6 @@
 import { DatasetCore } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
-import { InheritableDataGrant, InheritInstancesDataGrant } from '.';
+import { InheritableDataGrant } from '.';
 import { InteropFactory, DataInstance } from '..';
 
 export class SelectedInstancesDataGrant extends InheritableDataGrant {

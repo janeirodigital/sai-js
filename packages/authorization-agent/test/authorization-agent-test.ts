@@ -15,9 +15,9 @@ import {
   AccessConsentData
 } from '@janeirodigital/interop-data-model';
 import { WhatwgFetch } from '@janeirodigital/interop-utils';
-import { AuthorizationAgent } from '../src';
 import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
 import { Mock, SpyInstance } from 'jest-mock';
+import { AuthorizationAgent } from '../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://alice.jarvis.example/#agent';
@@ -81,9 +81,9 @@ describe('recordAccessConsent', () => {
     scopeOfConsent: INTEROP.AllFromAgent
   };
 
-  let agent: AuthorizationAgent,
-    dataConsentSpy: SpyInstance<ImmutableDataConsent, [iri: string, data: DataConsentData]>,
-    accessConsentSpy: SpyInstance<ImmutableAccessConsent, [iri: string, data: AccessConsentData]>;
+  let agent: AuthorizationAgent;
+  let dataConsentSpy: SpyInstance<ImmutableDataConsent, [iri: string, data: DataConsentData]>;
+  let accessConsentSpy: SpyInstance<ImmutableAccessConsent, [iri: string, data: AccessConsentData]>;
 
   beforeEach(async () => {
     agent = await AuthorizationAgent.build(webId, agentId, { fetch: fetch as WhatwgFetch, randomUUID });

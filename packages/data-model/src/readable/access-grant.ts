@@ -1,4 +1,3 @@
-import { DataFactory } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { ReadableResource, DataGrant, InteropFactory } from '..';
 

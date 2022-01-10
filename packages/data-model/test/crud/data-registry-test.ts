@@ -5,14 +5,14 @@ import { jest } from '@jest/globals';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
+import { DataFactory } from 'n3';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
 import {
   AuthorizationAgentFactory,
   ReadableDataRegistration,
   CRUDDataRegistration,
   DataRegistrationData
 } from '../../src';
-import { DataFactory } from 'n3';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';

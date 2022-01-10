@@ -1,7 +1,4 @@
-import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
-import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { ReadableAccessGrant, InteropFactory, ReadableContainer } from '..';
 
 export class ReadableApplicationRegistration extends ReadableContainer {

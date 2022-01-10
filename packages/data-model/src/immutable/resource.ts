@@ -1,6 +1,4 @@
-import { DatasetCore } from '@rdfjs/types';
 import { Store } from 'n3';
-import { RdfFetch } from '@janeirodigital/interop-utils';
 import { AuthorizationAgentFactory, Resource } from '..';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
