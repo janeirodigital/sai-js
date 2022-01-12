@@ -4,7 +4,7 @@ import 'jest-rdf';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { ACL } from '@janeirodigital/interop-namespaces';
-import { ApplicationFactory } from '../../src';
+import { ApplicationFactory, AllFromRegistryDataGrant } from '../../src';
 
 const factory = new ApplicationFactory({ fetch, randomUUID });
 const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
@@ -38,5 +38,15 @@ test('should set registeredShapeTree', async () => {
 });
 
 describe('newDataInstance', () => {
-  test.todo('sets dataGrant on created data instance');
+  const allFromRegistryIri = 'https://auth.alice.example/7b2bc4ff-b4b8-47b8-96f6-06695f4c5126';
+  test('sets dataGrant on created data instance', async () => {
+    const dataGrant = (await factory.readable.dataGrant(allFromRegistryIri)) as AllFromRegistryDataGrant;
+    const newInstance = dataGrant.newDataInstance();
+    expect(newInstance.dataGrant.iri).toBe(dataGrant.iri);
+  });
+  test('sets draft to true', async () => {
+    const dataGrant = (await factory.readable.dataGrant(allFromRegistryIri)) as AllFromRegistryDataGrant;
+    const newInstance = dataGrant.newDataInstance();
+    expect(newInstance.draft).toBe(true);
+  });
 });

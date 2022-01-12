@@ -32,9 +32,6 @@ const commonQuads = [
 ];
 
 describe('constructor', () => {
-  test.todo('should set dataset for All scope');
-  test.todo('should set dataset for AllFromAgent scope');
-
   test('should set dataset for AllFromRegistry scope', async () => {
     const allFromRegistryData = {
       dataOwner: 'https://alice.example/#id',
