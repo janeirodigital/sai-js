@@ -6,8 +6,8 @@ import {
   ReadableAgentRegistry,
   ReadableAgentRegistration,
   DataGrant,
-  AllInstancesDataGrant,
-  SelectedInstancesDataGrant
+  AllFromRegistryDataGrant,
+  SelectedFromRegistryDataGrant
 } from '.';
 import { AuthorizationAgentFactory, ImmutableAccessGrant, ImmutableDataGrant, CRUDDataRegistry } from '..';
 
@@ -21,8 +21,8 @@ function reuseDataGrants(
   const parentGrants = immutableDataGrants.filter((grant) => grant.data.scopeOfGrant !== INTEROP.Inherited.value);
   for (const parentGrant of parentGrants) {
     const priorGrant = readableDataGrants.find((readableGrant) => parentGrant.checkEquivalence(readableGrant)) as
-      | AllInstancesDataGrant
-      | SelectedInstancesDataGrant;
+      | AllFromRegistryDataGrant
+      | SelectedFromRegistryDataGrant;
     if (priorGrant) {
       finalGrants.push(priorGrant);
       if (priorGrant.hasInheritingGrant) {

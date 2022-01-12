@@ -4,13 +4,13 @@ import { ACL } from '@janeirodigital/interop-namespaces';
 import { AbstractDataGrant, InheritableDataGrant } from '.';
 import { DataInstance, InteropFactory } from '..';
 
-export class AllInstancesDataGrant extends InheritableDataGrant {
+export class AllFromRegistryDataGrant extends InheritableDataGrant {
   public static async build(
     iri: string,
     factory: InteropFactory,
     dataset: DatasetCore
-  ): Promise<AllInstancesDataGrant> {
-    const instance = new AllInstancesDataGrant(iri, factory, dataset);
+  ): Promise<AllFromRegistryDataGrant> {
+    const instance = new AllFromRegistryDataGrant(iri, factory, dataset);
     await instance.bootstrap();
     return instance;
   }

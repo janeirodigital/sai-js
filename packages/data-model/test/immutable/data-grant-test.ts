@@ -34,11 +34,11 @@ const commonQuads = [
 
 describe('constructor', () => {
   test('should set dataset for AllFromRegistry scope', async () => {
-    const allInstancesData = {
+    const allFromRegistryData = {
       scopeOfGrant: INTEROP.AllFromRegistry.value,
       ...commonData
     };
-    const allInstancesQuads = [
+    const allFromRegistryQuads = [
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.scopeOfGrant,
@@ -47,17 +47,17 @@ describe('constructor', () => {
       ...commonQuads
     ];
 
-    const dataGrant = new ImmutableDataGrant(snippetIri, factory, allInstancesData);
-    expect(dataGrant.dataset).toBeRdfDatasetContaining(...allInstancesQuads);
+    const dataGrant = new ImmutableDataGrant(snippetIri, factory, allFromRegistryData);
+    expect(dataGrant.dataset).toBeRdfDatasetContaining(...allFromRegistryQuads);
   });
 
   test('should set dataset for SelectedFromRegistry scope', async () => {
-    const selectedInstancesData = {
+    const selectedFromRegistryData = {
       scopeOfGrant: INTEROP.SelectedFromRegistry.value,
       hasDataInstance: ['https://some.iri/a', 'https://some.iri/b'],
       ...commonData
     };
-    const selectedInstancesQuads = [
+    const selectedFromRegistryQuads = [
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.scopeOfGrant,
@@ -76,17 +76,17 @@ describe('constructor', () => {
       ...commonQuads
     ];
 
-    const dataGrant = new ImmutableDataGrant(snippetIri, factory, selectedInstancesData);
-    expect(dataGrant.dataset).toBeRdfDatasetContaining(...selectedInstancesQuads);
+    const dataGrant = new ImmutableDataGrant(snippetIri, factory, selectedFromRegistryData);
+    expect(dataGrant.dataset).toBeRdfDatasetContaining(...selectedFromRegistryQuads);
   });
 
   test('should set dataset for Inherited scope', async () => {
-    const inheritInstancesData = {
+    const inheritedData = {
       scopeOfGrant: INTEROP.Inherited.value,
       inheritsFromGrant: 'https://some.iri/gr',
       ...commonData
     };
-    const inheritInstancesQuads = [
+    const inheritedQuads = [
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.scopeOfGrant,
@@ -95,22 +95,22 @@ describe('constructor', () => {
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.inheritsFromGrant,
-        DataFactory.namedNode(inheritInstancesData.inheritsFromGrant)
+        DataFactory.namedNode(inheritedData.inheritsFromGrant)
       ),
       ...commonQuads
     ];
 
-    const dataGrant = new ImmutableDataGrant(snippetIri, factory, inheritInstancesData);
-    expect(dataGrant.dataset).toBeRdfDatasetContaining(...inheritInstancesQuads);
+    const dataGrant = new ImmutableDataGrant(snippetIri, factory, inheritedData);
+    expect(dataGrant.dataset).toBeRdfDatasetContaining(...inheritedQuads);
   });
 
   test('should set dataset with creatorAccessMode', async () => {
-    const allInstancesData = {
+    const allFromRegistryData = {
       scopeOfGrant: INTEROP.AllFromRegistry.value,
       creatorAccessMode: [ACL.Update.value],
       ...commonData
     };
-    const allInstancesQuads = [
+    const allFromRegistryQuads = [
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.scopeOfGrant,
@@ -124,7 +124,7 @@ describe('constructor', () => {
       ...commonQuads
     ];
 
-    const dataGrant = new ImmutableDataGrant(snippetIri, factory, allInstancesData);
-    expect(dataGrant.dataset).toBeRdfDatasetContaining(...allInstancesQuads);
+    const dataGrant = new ImmutableDataGrant(snippetIri, factory, allFromRegistryData);
+    expect(dataGrant.dataset).toBeRdfDatasetContaining(...allFromRegistryQuads);
   });
 });

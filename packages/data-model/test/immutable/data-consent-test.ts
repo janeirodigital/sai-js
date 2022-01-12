@@ -36,16 +36,16 @@ describe('constructor', () => {
   test.todo('should set dataset for AllFromAgent scope');
 
   test('should set dataset for AllFromRegistry scope', async () => {
-    const allInstancesData = {
+    const allFromRegistryData = {
       dataOwner: 'https://alice.example/#id',
       scopeOfConsent: INTEROP.AllFromRegistry.value,
       ...commonData
     };
-    const allInstancesQuads = [
+    const allFromRegistryQuads = [
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.dataOwner,
-        DataFactory.namedNode(allInstancesData.dataOwner)
+        DataFactory.namedNode(allFromRegistryData.dataOwner)
       ),
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
@@ -55,22 +55,22 @@ describe('constructor', () => {
       ...commonQuads
     ];
 
-    const dataConsent = new ImmutableDataConsent(snippetIri, factory, allInstancesData);
-    expect(dataConsent.dataset).toBeRdfDatasetContaining(...allInstancesQuads);
+    const dataConsent = new ImmutableDataConsent(snippetIri, factory, allFromRegistryData);
+    expect(dataConsent.dataset).toBeRdfDatasetContaining(...allFromRegistryQuads);
   });
 
   test('should set dataset for SelectedFromRegistry scope', async () => {
-    const selectedInstancesData = {
+    const selectedFromRegistryData = {
       dataOwner: 'https://alice.example/#id',
       scopeOfConsent: INTEROP.SelectedFromRegistry.value,
       hasDataInstance: ['https://some.iri/a', 'https://some.iri/b'],
       ...commonData
     };
-    const selectedInstancesQuads = [
+    const selectedFromRegistryQuads = [
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.dataOwner,
-        DataFactory.namedNode(selectedInstancesData.dataOwner)
+        DataFactory.namedNode(selectedFromRegistryData.dataOwner)
       ),
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
@@ -90,22 +90,22 @@ describe('constructor', () => {
       ...commonQuads
     ];
 
-    const dataConsent = new ImmutableDataConsent(snippetIri, factory, selectedInstancesData);
-    expect(dataConsent.dataset).toBeRdfDatasetContaining(...selectedInstancesQuads);
+    const dataConsent = new ImmutableDataConsent(snippetIri, factory, selectedFromRegistryData);
+    expect(dataConsent.dataset).toBeRdfDatasetContaining(...selectedFromRegistryQuads);
   });
 
-  test('should set dataset for InheritInstances scope', async () => {
-    const inheritInstancesData = {
+  test('should set dataset for Inherited scope', async () => {
+    const inheritedData = {
       dataOwner: 'https://alice.example/#id',
       scopeOfConsent: INTEROP.Inherited.value,
       inheritsFromConsent: 'https://some.iri/gr',
       ...commonData
     };
-    const inheritInstancesQuads = [
+    const inheritedQuads = [
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.dataOwner,
-        DataFactory.namedNode(inheritInstancesData.dataOwner)
+        DataFactory.namedNode(inheritedData.dataOwner)
       ),
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
@@ -115,27 +115,27 @@ describe('constructor', () => {
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.inheritsFromConsent,
-        DataFactory.namedNode(inheritInstancesData.inheritsFromConsent)
+        DataFactory.namedNode(inheritedData.inheritsFromConsent)
       ),
       ...commonQuads
     ];
 
-    const dataConsent = new ImmutableDataConsent(snippetIri, factory, inheritInstancesData);
-    expect(dataConsent.dataset).toBeRdfDatasetContaining(...inheritInstancesQuads);
+    const dataConsent = new ImmutableDataConsent(snippetIri, factory, inheritedData);
+    expect(dataConsent.dataset).toBeRdfDatasetContaining(...inheritedQuads);
   });
 
   test('should set dataset with creatorAccessMode', async () => {
-    const allInstancesData = {
+    const allFromRegistryData = {
       dataOwner: 'https://alice.example/#id',
       scopeOfConsent: INTEROP.AllFromRegistry.value,
       creatorAccessMode: [ACL.Update.value],
       ...commonData
     };
-    const allInstancesQuads = [
+    const allFromRegistryQuads = [
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.dataOwner,
-        DataFactory.namedNode(allInstancesData.dataOwner)
+        DataFactory.namedNode(allFromRegistryData.dataOwner)
       ),
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
@@ -150,7 +150,7 @@ describe('constructor', () => {
       ...commonQuads
     ];
 
-    const dataConsent = new ImmutableDataConsent(snippetIri, factory, allInstancesData);
-    expect(dataConsent.dataset).toBeRdfDatasetContaining(...allInstancesQuads);
+    const dataConsent = new ImmutableDataConsent(snippetIri, factory, allFromRegistryData);
+    expect(dataConsent.dataset).toBeRdfDatasetContaining(...allFromRegistryQuads);
   });
 });

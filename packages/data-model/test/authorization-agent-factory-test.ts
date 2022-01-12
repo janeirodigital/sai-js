@@ -61,29 +61,29 @@ describe('immutable', () => {
       accessMode: [ACL.Read.value]
     };
 
-    test('builds AllInstances data grant', async () => {
-      const allInstancesData = {
+    test('builds AllFromRegistry data grant', async () => {
+      const allFromRegistryData = {
         scopeOfGrant: INTEROP.AllFromRegistry.value,
         ...commonData
       };
       const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
       const dataGrantIri = 'https://auth.alice.example/7b2bc4ff-b4b8-47b8-96f6-06695f4c5126';
-      const dataGrant = factory.immutable.dataGrant(dataGrantIri, allInstancesData);
+      const dataGrant = factory.immutable.dataGrant(dataGrantIri, allFromRegistryData);
       expect(dataGrant).toBeInstanceOf(ImmutableDataGrant);
     });
 
-    test('builds SelectedInstances data grant', async () => {
-      const selectedInstancesData = {
+    test('builds SelectedFromRegistry data grant', async () => {
+      const selectedFromRegistryData = {
         scopeOfGrant: INTEROP.SelectedFromRegistry.value,
         ...commonData
       };
       const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
       const dataGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
-      const dataGrant = factory.immutable.dataGrant(dataGrantIri, selectedInstancesData);
+      const dataGrant = factory.immutable.dataGrant(dataGrantIri, selectedFromRegistryData);
       expect(dataGrant).toBeInstanceOf(ImmutableDataGrant);
     });
 
-    test('builds InheritInstances data grant', async () => {
+    test('builds Inherited data grant', async () => {
       const inheritnstancesData = {
         scopeOfGrant: INTEROP.Inherited.value,
         ...commonData

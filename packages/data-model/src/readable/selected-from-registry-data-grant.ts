@@ -3,15 +3,15 @@ import { Memoize } from 'typescript-memoize';
 import { InheritableDataGrant } from '.';
 import { InteropFactory, DataInstance } from '..';
 
-export class SelectedInstancesDataGrant extends InheritableDataGrant {
+export class SelectedFromRegistryDataGrant extends InheritableDataGrant {
   canCreate = false;
 
   public static async build(
     iri: string,
     factory: InteropFactory,
     dataset: DatasetCore
-  ): Promise<SelectedInstancesDataGrant> {
-    const instance = new SelectedInstancesDataGrant(iri, factory, dataset);
+  ): Promise<SelectedFromRegistryDataGrant> {
+    const instance = new SelectedFromRegistryDataGrant(iri, factory, dataset);
     await instance.bootstrap();
     return instance;
   }

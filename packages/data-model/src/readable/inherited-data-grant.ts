@@ -1,10 +1,10 @@
 import { Memoize } from 'typescript-memoize';
 import { ACL } from '@janeirodigital/interop-namespaces';
-import { AbstractDataGrant, AllInstancesDataGrant, SelectedInstancesDataGrant } from '.';
+import { AbstractDataGrant, AllFromRegistryDataGrant, SelectedFromRegistryDataGrant } from '.';
 import { DataInstance } from '..';
 
-export class InheritInstancesDataGrant extends AbstractDataGrant {
-  inheritsFromGrant: AllInstancesDataGrant | SelectedInstancesDataGrant;
+export class InheritedDataGrant extends AbstractDataGrant {
+  inheritsFromGrant: AllFromRegistryDataGrant | SelectedFromRegistryDataGrant;
 
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
     // eslint-disable-next-line @typescript-eslint/no-this-alias

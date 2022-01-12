@@ -1,5 +1,5 @@
-import { DataGrant, DataInstance, SelectedInstancesDataGrant } from '.';
-import { InheritInstancesDataGrant } from './readable';
+import { DataGrant, DataInstance, SelectedFromRegistryDataGrant } from '.';
+import { InheritedDataGrant } from './readable';
 
 export class ReadableDataRegistrationProxy {
   constructor(private grant: DataGrant) {}
@@ -9,10 +9,10 @@ export class ReadableDataRegistrationProxy {
   }
 
   public newDataInstance(parent?: DataInstance): DataInstance {
-    if (this.grant instanceof SelectedInstancesDataGrant) {
-      throw new Error('cannot create instances based on SelectedInstances data grant');
-    } else if (!parent && this.grant instanceof InheritInstancesDataGrant) {
-      throw new Error('cannot create instances based on InheritInstances data grant without parent');
+    if (this.grant instanceof SelectedFromRegistryDataGrant) {
+      throw new Error('cannot create instances based on SelectedFromRegistry data grant');
+    } else if (!parent && this.grant instanceof InheritedDataGrant) {
+      throw new Error('cannot create instances based on Inherited data grant without parent');
     }
     return this.grant.newDataInstance(parent);
   }

@@ -6,9 +6,9 @@ import {
   ReadableApplicationRegistration,
   ReadableDataRegistration,
   DataInstance,
-  InheritInstancesDataGrant,
-  AllInstancesDataGrant,
-  SelectedInstancesDataGrant,
+  InheritedDataGrant,
+  AllFromRegistryDataGrant,
+  SelectedFromRegistryDataGrant,
   DataGrant,
   ReadableShapeTree,
   FactoryDependencies
@@ -96,13 +96,13 @@ export class BaseFactory {
         let scopedDataGrant;
         switch (scopeOfGrant.value) {
           case INTEROP.AllFromRegistry.value:
-            scopedDataGrant = await AllInstancesDataGrant.build(iri, factory, dataset);
+            scopedDataGrant = await AllFromRegistryDataGrant.build(iri, factory, dataset);
             break;
           case INTEROP.SelectedFromRegistry.value:
-            scopedDataGrant = await SelectedInstancesDataGrant.build(iri, factory, dataset);
+            scopedDataGrant = await SelectedFromRegistryDataGrant.build(iri, factory, dataset);
             break;
           case INTEROP.Inherited.value:
-            scopedDataGrant = new InheritInstancesDataGrant(iri, factory, dataset);
+            scopedDataGrant = new InheritedDataGrant(iri, factory, dataset);
             break;
           default:
             throw new Error(`Unknown scope: ${scopeOfGrant.value} on ${iri}`);

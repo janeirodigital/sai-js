@@ -1,7 +1,7 @@
 import { DataFactory } from 'n3';
 import { DatasetCore } from '@rdfjs/types';
 import { findChildReferences, getPredicate, targetDataRegistrationLink } from '@janeirodigital/interop-utils';
-import { ReadableResource, ApplicationFactory, DataGrant, InheritInstancesDataGrant, ReadableShapeTree } from '.';
+import { ReadableResource, ApplicationFactory, DataGrant, InheritedDataGrant, ReadableShapeTree } from '.';
 
 export class DataInstance extends ReadableResource {
   dataGrant: DataGrant;
@@ -83,8 +83,8 @@ export class DataInstance extends ReadableResource {
     return findChildReferences(this.iri, this.dataset, this.shapeTree.shape, this.shapeTree.shapeText, shapePath);
   }
 
-  findChildGrant(shapeTree: string): InheritInstancesDataGrant {
-    if (this.dataGrant instanceof InheritInstancesDataGrant) {
+  findChildGrant(shapeTree: string): InheritedDataGrant {
+    if (this.dataGrant instanceof InheritedDataGrant) {
       throw new Error('child instance can not have child instances');
     } else {
       return [...this.dataGrant.hasInheritingGrant].find((grant) => grant.registeredShapeTree === shapeTree);

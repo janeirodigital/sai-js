@@ -5,11 +5,11 @@ import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import {
   ReadableDataRegistrationProxy,
-  AllInstancesDataGrant,
+  AllFromRegistryDataGrant,
   ApplicationFactory,
-  SelectedInstancesDataGrant,
+  SelectedFromRegistryDataGrant,
   DataInstance,
-  InheritInstancesDataGrant
+  InheritedDataGrant
 } from '../src';
 
 const factory = new ApplicationFactory({ fetch, randomUUID });
@@ -27,27 +27,27 @@ test('should delegate dataInstances to grant', async () => {
 });
 
 test('should delegate newDataInstance to grant', async () => {
-  const grant = (await factory.readable.dataGrant(grantIri)) as AllInstancesDataGrant;
+  const grant = (await factory.readable.dataGrant(grantIri)) as AllFromRegistryDataGrant;
   const dataRegistrationProxy = new ReadableDataRegistrationProxy(grant);
   const spy = jest.spyOn(grant, 'newDataInstance');
   dataRegistrationProxy.newDataInstance();
   expect(spy).toHaveBeenCalledTimes(1);
 });
 
-test('should throw error if SelectedInstances grant', async () => {
-  const selectedInstancesGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
-  const grant = (await factory.readable.dataGrant(selectedInstancesGrantIri)) as SelectedInstancesDataGrant;
+test('should throw error if SelectedFromRegistry grant', async () => {
+  const selectedFromRegistryGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
+  const grant = (await factory.readable.dataGrant(selectedFromRegistryGrantIri)) as SelectedFromRegistryDataGrant;
   const dataRegistrationProxy = new ReadableDataRegistrationProxy(grant);
   expect(() => {
     dataRegistrationProxy.newDataInstance();
-  }).toThrow('cannot create instances based on SelectedInstances data grant');
+  }).toThrow('cannot create instances based on SelectedFromRegistry data grant');
 });
 
 test('should throw error if InheritedInstances grant and no parent', async () => {
-  const selectedInstancesGrantIri = 'https://auth.alice.example/9827ae00-2778-4655-9f22-08bb9daaee26';
-  const grant = (await factory.readable.dataGrant(selectedInstancesGrantIri)) as InheritInstancesDataGrant;
+  const selectedFromRegistryGrantIri = 'https://auth.alice.example/9827ae00-2778-4655-9f22-08bb9daaee26';
+  const grant = (await factory.readable.dataGrant(selectedFromRegistryGrantIri)) as InheritedDataGrant;
   const dataRegistrationProxy = new ReadableDataRegistrationProxy(grant);
   expect(() => {
     dataRegistrationProxy.newDataInstance();
-  }).toThrow('cannot create instances based on InheritInstances data grant');
+  }).toThrow('cannot create instances based on Inherited data grant');
 });

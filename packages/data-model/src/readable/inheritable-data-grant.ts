@@ -1,11 +1,11 @@
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { DatasetCore } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
-import { AbstractDataGrant, AllInstancesDataGrant, InheritInstancesDataGrant, SelectedInstancesDataGrant } from '.';
+import { AbstractDataGrant, AllFromRegistryDataGrant, InheritedDataGrant, SelectedFromRegistryDataGrant } from '.';
 import { InteropFactory } from '..';
 
 export abstract class InheritableDataGrant extends AbstractDataGrant {
-  hasInheritingGrant: Set<InheritInstancesDataGrant>;
+  hasInheritingGrant: Set<InheritedDataGrant>;
 
   public constructor(iri: string, factory: InteropFactory, dataset: DatasetCore) {
     super(iri, factory, dataset);
@@ -15,8 +15,8 @@ export abstract class InheritableDataGrant extends AbstractDataGrant {
   protected async bootstrap(): Promise<void> {
     for (const inheritingGrantIri of this.hasInheritingGrantIriList) {
       // eslint-disable-next-line no-await-in-loop
-      const inheritingGrant = (await this.factory.readable.dataGrant(inheritingGrantIri)) as InheritInstancesDataGrant;
-      inheritingGrant.inheritsFromGrant = this as unknown as AllInstancesDataGrant | SelectedInstancesDataGrant;
+      const inheritingGrant = (await this.factory.readable.dataGrant(inheritingGrantIri)) as InheritedDataGrant;
+      inheritingGrant.inheritsFromGrant = this as unknown as AllFromRegistryDataGrant | SelectedFromRegistryDataGrant;
       this.hasInheritingGrant.add(inheritingGrant);
     }
   }
