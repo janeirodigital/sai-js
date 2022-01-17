@@ -7,7 +7,9 @@ import {
   ReadableApplicationRegistration,
   ReadableSocialAgentRegistration,
   ImmutableDataConsent,
-  DataConsentData
+  DataConsentData,
+  CRUDSocialAgentRegistration,
+  CRUDApplicationRegistration
 } from '@janeirodigital/interop-data-model';
 import { WhatwgFetch, RdfFetch, fetchWrapper, getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
@@ -110,23 +112,29 @@ export class AuthorizationAgent {
     await this.registrySet.hasAccessConsentRegistry.add(rAccessConsent);
   }
 
-  public async generateAccessGrantForAccessConsent(accessConsentIri: string): Promise<void> {
+  public async generateAccessGrant(
+    accessConsentIri: string,
+    agentRegistration: CRUDSocialAgentRegistration | CRUDApplicationRegistration
+  ): Promise<void> {
     const accessConsent = await this.factory.readable.accessConsent(accessConsentIri);
+    const readableAgentRegistration = await agentRegistration.getReadable();
 
-    // find agent registration
-    const granteeRegistration = await this.registrySet.hasAgentRegistry.findRegistration(accessConsent.registeredAgent);
+    // check if agentRegistration if for the consent grantee
+    if (accessConsent.registeredAgent !== readableAgentRegistration.registeredAgent) {
+      throw new Error('agent registration has to be for the consent grantee');
+    }
 
-    // TODO (elf-pavlik) handle case where agent registration has to be created
-
+    // generate access grant (with data grants) and store it
     const accessGrant = await accessConsent.generateAccessGrant(
       this.registrySet.hasDataRegistry,
       this.registrySet.hasAgentRegistry,
-      await granteeRegistration.getReadable()
+      readableAgentRegistration
     );
     await accessGrant.store();
 
     // link to new access grant and update agent registration
-    granteeRegistration.hasAccessGrant = accessGrant.iri;
-    await granteeRegistration.update();
+    // eslint-disable-next-line no-param-reassign
+    agentRegistration.hasAccessGrant = accessGrant.iri;
+    await agentRegistration.update();
   }
 }

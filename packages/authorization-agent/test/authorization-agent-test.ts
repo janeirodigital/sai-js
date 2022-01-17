@@ -2,6 +2,8 @@ import { randomUUID } from 'crypto';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
 // eslint-disable-next-line import/no-extraneous-dependencies
+import { SpyInstance } from 'jest-mock';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import {
   ReadableRegistrySet,
@@ -10,13 +12,11 @@ import {
   ReadableSocialAgentRegistration,
   ImmutableDataConsent,
   ImmutableAccessConsent,
-  ImmutableAccessGrant,
   DataConsentData,
   AccessConsentData
 } from '@janeirodigital/interop-data-model';
 import { WhatwgFetch } from '@janeirodigital/interop-utils';
 import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
-import { Mock, SpyInstance } from 'jest-mock';
 import { AuthorizationAgent } from '../src';
 
 const webId = 'https://alice.example/#id';
@@ -82,12 +82,10 @@ describe('recordAccessConsent', () => {
   };
 
   let agent: AuthorizationAgent;
-  let dataConsentSpy: SpyInstance<ImmutableDataConsent, [iri: string, data: DataConsentData]>;
   let accessConsentSpy: SpyInstance<ImmutableAccessConsent, [iri: string, data: AccessConsentData]>;
 
   beforeEach(async () => {
     agent = await AuthorizationAgent.build(webId, agentId, { fetch: fetch as WhatwgFetch, randomUUID });
-    dataConsentSpy = jest.spyOn(agent.factory.immutable, 'dataConsent');
     accessConsentSpy = jest.spyOn(agent.factory.immutable, 'accessConsent');
   });
 
@@ -113,21 +111,32 @@ describe('recordAccessConsent', () => {
   });
 });
 
-describe('generateAccessGrantForAccessConsent', () => {
+describe('generateAccessGrant', () => {
   test('should call generateAccessGrant, store it and update registration', async () => {
     const accessConsentIri = 'https://auth.alice.example/eac2c39c-c8b3-4880-8b9f-a3e12f7f6372';
     const agent = await AuthorizationAgent.build(webId, agentId, { fetch: fetch as WhatwgFetch, randomUUID });
+    const registeredAgentIri = 'https://projectron.example/#app';
+    const agentRegistration = await agent.registrySet.hasAgentRegistry.findRegistration(registeredAgentIri);
     const storeAccessGrantMock = jest.fn();
     const generateAccessGrantMock = jest.fn(() => ({ store: storeAccessGrantMock }));
     agent.factory.readable.accessConsent = jest.fn(
-      (iri) =>
+      () =>
         ({
           generateAccessGrant: generateAccessGrantMock,
-          registeredAgent: 'https://projectron.example/#app'
+          registeredAgent: registeredAgentIri
         } as unknown as Promise<ReadableAccessConsent>)
     );
-    await agent.generateAccessGrantForAccessConsent(accessConsentIri);
+    await agent.generateAccessGrant(accessConsentIri, agentRegistration);
     expect(generateAccessGrantMock).toBeCalled();
     expect(storeAccessGrantMock).toBeCalled();
+  });
+  test('should throw if agent registartion is not for consent grantee', async () => {
+    const accessConsentIri = 'https://auth.alice.example/eac2c39c-c8b3-4880-8b9f-a3e12f7f6372';
+    const agent = await AuthorizationAgent.build(webId, agentId, { fetch: fetch as WhatwgFetch, randomUUID });
+    const otherAgentIri = 'https://performchart.example/#app';
+    const agentRegistration = await agent.registrySet.hasAgentRegistry.findRegistration(otherAgentIri);
+    await expect(() => agent.generateAccessGrant(accessConsentIri, agentRegistration)).rejects.toThrow(
+      'agent registration has to be for the consent grantee'
+    );
   });
 });
