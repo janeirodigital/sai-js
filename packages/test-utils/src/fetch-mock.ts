@@ -1,20 +1,14 @@
-import { RdfRequestInit, RdfResponse, parseTurtle, RdfFetch } from '@janeirodigital/interop-utils';
+import { WhatwgFetch, RdfFetch, fetchWrapper } from '@janeirodigital/interop-utils';
 import data from 'data-interoperability-panel';
 
-export const fetch = async function fetch(url: string, options?: RdfRequestInit): Promise<RdfResponse> {
-  // just ok PUT
-  if (options?.method === 'PUT') {
-    // @ts-ignore
-    return { ok: true };
-  }
-
+async function common(url: string, options?: RequestInit, state?: {[key: string]: string}): Promise<Response> {
   // strip fragment
   const strippedUrl = url.replace(/#.*$/, '');
   const text = async function text() {
     return Promise.resolve(data[strippedUrl]);
   };
   // @ts-ignore
-  const response: RdfResponse = {
+  const response: Response = {
     ok: true,
     text,
     headers: {
@@ -28,10 +22,51 @@ export const fetch = async function fetch(url: string, options?: RdfRequestInit)
   };
   // @ts-ignore
   if (!options?.headers?.Accept || options.headers.Accept.match('text/turtle')) {
-    response.dataset = async function dataset() {
-      if (!data[strippedUrl]) throw new Error(`missing snippet: ${strippedUrl}`);
-      return parseTurtle(data[strippedUrl], strippedUrl);
+    response.text = async function responseText() {
+      let turtle: string
+      if (state) {
+        turtle = state[strippedUrl]
+      }
+      turtle = turtle || data[strippedUrl]
+      if (!turtle) {
+        throw new Error(`missing snippet: ${strippedUrl}`)
+      }
+      return turtle
     };
   }
   return response;
-} as RdfFetch;
+}
+
+function addState(state: { [key: string]: string }): WhatwgFetch {
+  return async function statefulFetch(url: string, options?: RequestInit): Promise<Response> {
+  if (options?.method === 'PUT') {
+    // eslint-disable-next-line no-param-reassign
+    state[url] = options.body as string
+    // @ts-ignore
+    return { ok: true };
+  }
+
+  return common(url, options, state);
+} as WhatwgFetch;
+}
+
+export function createFetch(): RdfFetch {
+  const state: { [key: string]: string } = {};
+  return fetchWrapper(addState(state))
+}
+
+export function createStatefulFetch(): WhatwgFetch {
+  const state: { [key: string]: string } = {};
+  return addState(state)
+}
+
+export const statelessFetch = async function statelessFetch(url: string, options?: RequestInit): Promise<Response> {
+  // just ok PUT
+  if (options?.method === 'PUT') {
+    // @ts-ignore
+    return { ok: true };
+  }
+  return common(url, options);
+} as WhatwgFetch;
+
+export const fetch = fetchWrapper(statelessFetch)

@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { fetch } from '@janeirodigital/interop-test-utils';
+import { statelessFetch } from '@janeirodigital/interop-test-utils';
 import { ReadableApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
 import { RdfResponse, WhatwgFetch } from '@janeirodigital/interop-utils';
 import { Application } from '../src';
@@ -15,26 +15,26 @@ const linkString = `
 `;
 
 test('should build application registration', async () => {
-  const mocked = jest.fn(fetch as WhatwgFetch);
+  const mocked = jest.fn(statelessFetch);
   mocked
-    .mockResolvedValueOnce(await fetch(webId))
+    .mockResolvedValueOnce(await statelessFetch(webId))
     .mockResolvedValueOnce({ ok: true, headers: { get: () => linkString } } as unknown as RdfResponse);
   const app = await Application.build(webId, { fetch: mocked, randomUUID });
   expect(app.hasApplicationRegistration).toBeInstanceOf(ReadableApplicationRegistration);
 });
 
 test('should throw if no appliction registration', async () => {
-  const mocked = jest.fn(fetch as WhatwgFetch);
+  const mocked = jest.fn(statelessFetch);
   mocked
-    .mockResolvedValueOnce(await fetch(webId))
+    .mockResolvedValueOnce(await statelessFetch(webId))
     .mockResolvedValueOnce({ ok: true, headers: { get: () => '' } } as unknown as RdfResponse);
   expect(Application.build(webId, { fetch: mocked, randomUUID })).rejects.toThrow('support planned');
 });
 
 test('should have dataOwners getter', async () => {
-  const mocked = jest.fn(fetch as WhatwgFetch);
+  const mocked = jest.fn(statelessFetch);
   mocked
-    .mockResolvedValueOnce(await fetch(webId))
+    .mockResolvedValueOnce(await statelessFetch(webId))
     .mockResolvedValueOnce({ ok: true, headers: { get: () => linkString } } as unknown as RdfResponse);
   const app = await Application.build(webId, { fetch: mocked, randomUUID });
   expect(app.dataOwners).toHaveLength(3);
