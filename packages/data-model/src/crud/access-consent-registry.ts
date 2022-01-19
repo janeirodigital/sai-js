@@ -1,7 +1,7 @@
 import { DataFactory } from 'n3';
+import { iterable2array } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableAccessConsent } from '../readable';
-import { AuthorizationAgentFactory, CRUDContainer } from '..';
+import { AuthorizationAgentFactory, CRUDContainer, ReadableAccessConsent, ReadableAccessGrant } from '..';
 
 export class CRUDAccessConsentRegistry extends CRUDContainer {
   factory: AuthorizationAgentFactory;
@@ -29,6 +29,7 @@ export class CRUDAccessConsentRegistry extends CRUDContainer {
     };
   }
 
+  // eslint-disable-next-line consistent-return
   async findConsent(agentIri: string): Promise<ReadableAccessConsent | undefined> {
     for await (const consent of this.accessConsents) {
       if (consent.registeredAgent === agentIri) {
@@ -59,5 +60,22 @@ export class CRUDAccessConsentRegistry extends CRUDContainer {
     // add quad
     this.dataset.add(DataFactory.quad(subject, predicate, object));
     await this.update();
+  }
+
+  // match dataOwner on data consents - scope All will have no dataOwner but we want it to also match
+  async findConsentsDelegatingGrant(dataOwner: string): Promise<ReadableAccessConsent[]> {
+    const matching: ReadableAccessConsent[] = [];
+    for await (const accessConsent of this.accessConsents) {
+      let matches = false;
+      for await (const dataConsent of accessConsent.dataConsents) {
+        if (!dataConsent.dataOwner || dataConsent.dataOwner === dataOwner) {
+          matches = true;
+        }
+      }
+      if (matches) {
+        matching.push(accessConsent);
+      }
+    }
+    return matching;
   }
 }

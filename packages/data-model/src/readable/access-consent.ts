@@ -66,7 +66,7 @@ export class ReadableAccessConsent extends ReadableResource {
 
   @Memoize()
   get registeredBy(): string {
-    return this.getObject('registeredBy')?.value;
+    return this.getObject('registeredBy').value;
   }
 
   @Memoize()

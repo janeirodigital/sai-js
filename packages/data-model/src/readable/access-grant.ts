@@ -1,3 +1,4 @@
+import { Memoize } from 'typescript-memoize';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { ReadableResource, DataGrant, InteropFactory } from '..';
 
@@ -15,6 +16,12 @@ export class ReadableAccessGrant extends ReadableResource {
   async bootstrap(): Promise<void> {
     await this.fetchData();
     await this.buildDataGrants();
+  }
+
+  // TODO: update to grantedBy
+  @Memoize()
+  get fromAgent(): string {
+    return this.getObject('fromAgent').value;
   }
 
   public static async build(iri: string, factory: InteropFactory): Promise<ReadableAccessGrant> {

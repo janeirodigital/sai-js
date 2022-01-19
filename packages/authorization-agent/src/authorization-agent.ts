@@ -9,7 +9,8 @@ import {
   ImmutableDataConsent,
   DataConsentData,
   CRUDSocialAgentRegistration,
-  CRUDApplicationRegistration
+  CRUDApplicationRegistration,
+  ImmutableDataGrant
 } from '@janeirodigital/interop-data-model';
 import { WhatwgFetch, RdfFetch, fetchWrapper, getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
@@ -82,7 +83,7 @@ export class AuthorizationAgent {
    *   * b) Add reference to new Access Consent
    * TODO: reuse existing Data Consents wherever possible - see Data Consent tests
    */
-  public async recordAccessConsent(consent: AccessConsentStructure): Promise<void> {
+  public async recordAccessConsent(consent: AccessConsentStructure): Promise<ReadableAccessConsent> {
     // create data consents
 
     // don't create data consent where grantee == dataowner
@@ -110,6 +111,7 @@ export class AuthorizationAgent {
 
     // link to new access consent from access consent registry
     await this.registrySet.hasAccessConsentRegistry.add(rAccessConsent);
+    return rAccessConsent;
   }
 
   public async generateAccessGrant(
@@ -130,11 +132,34 @@ export class AuthorizationAgent {
       this.registrySet.hasAgentRegistry,
       readableAgentRegistration
     );
-    await accessGrant.store();
 
-    // link to new access grant and update agent registration
-    // eslint-disable-next-line no-param-reassign
-    agentRegistration.hasAccessGrant = accessGrant.iri;
-    await agentRegistration.update();
+    // only store new access grant and update registration if any data grant changed
+    // TODO: verify if a data grant was removed - previos had more data grants
+    if (accessGrant.dataGrants.some((grant) => grant instanceof ImmutableDataGrant)) {
+      const rAccessGrant = await accessGrant.store();
+
+      // link to new access grant and update agent registration
+      // eslint-disable-next-line no-param-reassign
+      agentRegistration.hasAccessGrant = rAccessGrant.iri;
+      await agentRegistration.update();
+    }
+  }
+
+  /**
+   * Replaces all access grants, which have data grant delegating from that owner
+   * TODO: explore how to optimize, matching on shape trees can fail if access was removed
+   */
+  public async updateDelegatedGrants(dataOwnerRegistration: ReadableSocialAgentRegistration): Promise<void> {
+    const affectedConsents = await this.registrySet.hasAccessConsentRegistry.findConsentsDelegatingGrant(
+      dataOwnerRegistration.registeredAgent
+    );
+    await Promise.all(
+      affectedConsents.map(async (accessConsent) => {
+        const agentRegistration = await this.registrySet.hasAgentRegistry.findRegistration(
+          accessConsent.registeredAgent
+        );
+        return this.generateAccessGrant(accessConsent.iri, agentRegistration);
+      })
+    );
   }
 }
