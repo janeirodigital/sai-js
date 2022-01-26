@@ -65,13 +65,13 @@ export class ReadableAccessConsent extends ReadableResource {
   }
 
   @Memoize()
-  get registeredBy(): string {
-    return this.getObject('registeredBy').value;
+  get grantedBy(): string {
+    return this.getObject('grantedBy').value;
   }
 
   @Memoize()
-  get registeredAgent(): string {
-    return this.getObject('registeredAgent').value;
+  get grantee(): string {
+    return this.getObject('grantee').value;
   }
 
   @Memoize()
@@ -111,9 +111,9 @@ export class ReadableAccessConsent extends ReadableResource {
 
     const accessGrantIri = granteeRegistration.iriForContained();
     return this.factory.immutable.accessGrant(accessGrantIri, {
-      registeredBy: this.factory.webId,
-      registeredWith: this.factory.agentId,
-      registeredAgent: this.registeredAgent,
+      grantedBy: this.factory.webId,
+      grantedWith: this.factory.agentId,
+      grantee: this.grantee,
       hasAccessNeedGroup: this.hasAccessNeedGroup,
       dataGrants: finalGrants
     });

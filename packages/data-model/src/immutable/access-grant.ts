@@ -3,9 +3,9 @@ import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
 import { AuthorizationAgentFactory, DataGrant, ImmutableDataGrant, ImmutableResource, ReadableAccessGrant } from '..';
 
 type StringData = {
-  registeredBy: string;
-  registeredWith: string;
-  registeredAgent: string;
+  grantedBy: string;
+  grantedWith: string;
+  grantee: string;
   hasAccessNeedGroup: string;
 };
 
@@ -20,7 +20,7 @@ export class ImmutableAccessGrant extends ImmutableResource {
     super(iri, factory, data);
     this.dataGrants = data.dataGrants;
     const thisNode = DataFactory.namedNode(this.iri);
-    const props: (keyof StringData)[] = ['registeredBy', 'registeredWith', 'registeredAgent', 'hasAccessNeedGroup'];
+    const props: (keyof StringData)[] = ['grantedBy', 'grantedWith', 'grantee', 'hasAccessNeedGroup'];
     for (const prop of props) {
       this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
     }
@@ -28,7 +28,7 @@ export class ImmutableAccessGrant extends ImmutableResource {
       this.dataset.add(DataFactory.quad(thisNode, INTEROP.hasDataGrant, DataFactory.namedNode(dataGrant.iri)));
     }
     this.dataset.add(
-      DataFactory.quad(thisNode, INTEROP.registeredAt, DataFactory.literal(new Date().toISOString(), XSD.dateTime))
+      DataFactory.quad(thisNode, INTEROP.grantedAt, DataFactory.literal(new Date().toISOString(), XSD.dateTime))
     );
   }
 

@@ -3,7 +3,7 @@ import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { ImmutableResource, AuthorizationAgentFactory } from '..';
 
 type StringData = {
-  registeredAgent: string;
+  grantee: string;
   registeredShapeTree: string;
   scopeOfConsent: string;
   dataOwner?: string;
@@ -24,7 +24,7 @@ export class ImmutableDataConsent extends ImmutableResource {
     super(iri, factory, data);
     const thisNode = DataFactory.namedNode(this.iri);
     const props: (keyof StringData)[] = [
-      'registeredAgent',
+      'grantee',
       'dataOwner',
       'registeredShapeTree',
       'hasDataRegistration',

@@ -26,9 +26,9 @@ test('should set data and store', async () => {
   const readableDataGrant = await factory.readable.dataGrant(readableDataGrantIri);
 
   const accessGrantData: AccessGrantData = {
-    registeredBy: webId,
-    registeredWith: agentId,
-    registeredAgent: 'https://projectron.example/#app',
+    grantedBy: webId,
+    grantedWith: agentId,
+    grantee: 'https://projectron.example/#app',
     hasAccessNeedGroup: 'https://projectron.example/#some-access-group',
     dataGrants: [immutableDataGrant, readableDataGrant]
   };
@@ -45,7 +45,7 @@ test('should set data and store', async () => {
       DataFactory.namedNode(readableDataGrant.iri)
     )
   ];
-  const props: (keyof AccessGrantData)[] = ['registeredBy', 'registeredWith', 'registeredAgent', 'hasAccessNeedGroup'];
+  const props: (keyof AccessGrantData)[] = ['grantedBy', 'grantedWith', 'grantee', 'hasAccessNeedGroup'];
   for (const prop of props) {
     accessGrantQuads.push(
       DataFactory.quad(

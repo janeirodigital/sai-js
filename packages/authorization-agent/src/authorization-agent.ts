@@ -21,7 +21,7 @@ interface AuthorizationAgentDependencies {
 }
 
 type AccessConsentStructure = {
-  registeredAgent: string;
+  grantee: string;
   hasAccessNeedGroup: string;
   dataConsents: DataConsentData[];
 };
@@ -88,7 +88,7 @@ export class AuthorizationAgent {
 
     // don't create data consent where grantee == dataowner
     const validDataConsents = consent.dataConsents.filter(
-      (dataConsent) => dataConsent.dataOwner !== dataConsent.registeredAgent
+      (dataConsent) => dataConsent.dataOwner !== dataConsent.grantee
     );
 
     const dataConsents: ImmutableDataConsent[] = await Promise.all(
@@ -100,9 +100,9 @@ export class AuthorizationAgent {
 
     const consentIri = this.registrySet.hasAccessConsentRegistry.iriForContained();
     const data = {
-      registeredWith: this.agentId,
-      registeredBy: this.webId,
-      registeredAgent: consent.registeredAgent,
+      grantedWith: this.agentId,
+      grantedBy: this.webId,
+      grantee: consent.grantee,
       hasAccessNeedGroup: consent.hasAccessNeedGroup,
       dataConsents
     };
@@ -122,7 +122,7 @@ export class AuthorizationAgent {
     const readableAgentRegistration = await agentRegistration.getReadable();
 
     // check if agentRegistration if for the consent grantee
-    if (accessConsent.registeredAgent !== readableAgentRegistration.registeredAgent) {
+    if (accessConsent.grantee !== readableAgentRegistration.registeredAgent) {
       throw new Error('agent registration has to be for the consent grantee');
     }
 
@@ -155,9 +155,7 @@ export class AuthorizationAgent {
     );
     await Promise.all(
       affectedConsents.map(async (accessConsent) => {
-        const agentRegistration = await this.registrySet.hasAgentRegistry.findRegistration(
-          accessConsent.registeredAgent
-        );
+        const agentRegistration = await this.registrySet.hasAgentRegistry.findRegistration(accessConsent.grantee);
         return this.generateAccessGrant(accessConsent.iri, agentRegistration);
       })
     );

@@ -25,14 +25,14 @@ describe('getters', () => {
     expect(count).toBe(4);
   });
 
-  test('should provide registeredBy', async () => {
+  test('should provide grantedBy', async () => {
     const accessConsent = await factory.readable.accessConsent(snippetIri);
-    expect(accessConsent.registeredBy).toBe('https://alice.example/#id');
+    expect(accessConsent.grantedBy).toBe('https://alice.example/#id');
   });
 
-  test('should provide registeredAgent', async () => {
+  test('should provide grantee', async () => {
     const accessConsent = await factory.readable.accessConsent(snippetIri);
-    expect(accessConsent.registeredAgent).toBe('https://projectron.example/#app');
+    expect(accessConsent.grantee).toBe('https://projectron.example/#app');
   });
 });
 
@@ -42,7 +42,7 @@ describe('generateAccessGrant', () => {
     const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
     const registrySet = await factory.readable.registrySet(registrySetIri);
     const agentRegistration = (await registrySet.hasAgentRegistry.findRegistration(
-      accessConsent.registeredAgent
+      accessConsent.grantee
     )) as CRUDApplicationRegistration;
     const accessGrant = await accessConsent.generateAccessGrant(
       registrySet.hasDataRegistry,
@@ -56,7 +56,7 @@ describe('generateAccessGrant', () => {
     const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
     const registrySet = await factory.readable.registrySet(registrySetIri);
     const agentRegistration = (await registrySet.hasAgentRegistry.findRegistration(
-      accessConsent.registeredAgent
+      accessConsent.grantee
     )) as CRUDApplicationRegistration;
     const readableAgentRegistration = await agentRegistration.getReadable();
     // remove all of existing data grants
@@ -76,7 +76,7 @@ describe('generateAccessGrant', () => {
     const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
     const registrySet = await factory.readable.registrySet(registrySetIri);
     const agentRegistration = (await registrySet.hasAgentRegistry.findRegistration(
-      accessConsent.registeredAgent
+      accessConsent.grantee
     )) as CRUDSocialAgentRegistration;
     const accessGrant = await accessConsent.generateAccessGrant(
       registrySet.hasDataRegistry,

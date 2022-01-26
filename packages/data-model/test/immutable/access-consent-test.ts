@@ -16,15 +16,15 @@ test('should set data and store', async () => {
   const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
   const dataConsentIri = 'https://auth.alice.example/25b18e05-7f75-4e13-94f6-9950a67a89dd';
   const dataConsent = factory.immutable.dataConsent(dataConsentIri, {
-    registeredAgent: 'https://projectron.example/#app',
+    grantee: 'https://projectron.example/#app',
     registeredShapeTree: 'https://solidshapes.example/trees/Project',
     accessMode: [ACL.Read.value, ACL.Write.value],
     scopeOfConsent: INTEROP.All.value
   });
   const accessConsentData = {
-    registeredBy: webId,
-    registeredWith: agentId,
-    registeredAgent: 'https://projectron.example/#app',
+    grantedBy: webId,
+    grantedWith: agentId,
+    grantee: 'https://projectron.example/#app',
     hasAccessNeedGroup: 'https://projectron.example/#some-access-group',
     dataConsents: [dataConsent]
   };
@@ -36,12 +36,7 @@ test('should set data and store', async () => {
       DataFactory.namedNode(dataConsent.iri)
     )
   ];
-  const props: (keyof AccessConsentData)[] = [
-    'registeredBy',
-    'registeredWith',
-    'registeredAgent',
-    'hasAccessNeedGroup'
-  ];
+  const props: (keyof AccessConsentData)[] = ['grantedBy', 'grantedWith', 'grantee', 'hasAccessNeedGroup'];
   for (const prop of props) {
     accessConsentQuads.push(
       DataFactory.quad(

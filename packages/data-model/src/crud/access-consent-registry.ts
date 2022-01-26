@@ -32,7 +32,7 @@ export class CRUDAccessConsentRegistry extends CRUDContainer {
   // eslint-disable-next-line consistent-return
   async findConsent(agentIri: string): Promise<ReadableAccessConsent | undefined> {
     for await (const consent of this.accessConsents) {
-      if (consent.registeredAgent === agentIri) {
+      if (consent.grantee === agentIri) {
         return consent;
       }
     }
@@ -48,7 +48,7 @@ export class CRUDAccessConsentRegistry extends CRUDContainer {
     const predicate = INTEROP.hasAccessConsent;
     const object = DataFactory.namedNode(accessConsent.iri);
     // unlink prevoius access consent for that grantee if exists
-    const priorConsent = await this.findConsent(accessConsent.registeredAgent);
+    const priorConsent = await this.findConsent(accessConsent.grantee);
     if (priorConsent) {
       const priorQuad = this.getQuad(
         DataFactory.namedNode(this.iri),

@@ -55,20 +55,20 @@ test('have access to all the social agent registrations', async () => {
 
 describe('recordAccessConsent', () => {
   const accessConsentData = {
-    registeredBy: webId,
-    registeredWith: agentId,
-    registeredAgent: 'https://acme.example/#corp',
+    grantedBy: webId,
+    grantedWith: agentId,
+    grantee: 'https://acme.example/#corp',
     hasAccessNeedGroup: 'https://projectron.example/#some-access-group'
   };
   const validDataConsetData = {
-    registeredAgent: 'https://acme.example/#corp',
+    grantee: 'https://acme.example/#corp',
     registeredShapeTree: 'https://solidshapes.example/tree/Project',
     dataOwner: 'https://omni.example/#corp',
     accessMode: [ACL.Read.value],
     scopeOfConsent: INTEROP.AllFromAgent.value
   };
   const invalidDataConsentData = {
-    registeredAgent: 'https://acme.example/#corp',
+    grantee: 'https://acme.example/#corp',
     registeredShapeTree: 'https://solidshapes.example/tree/Project',
     dataOwner: 'https://acme.example/#corp',
     accessMode: [ACL.Read.value],
@@ -87,7 +87,7 @@ describe('recordAccessConsent', () => {
 
     const accessConsent = await agent.recordAccessConsent({ dataConsents: dataConsentsData, ...accessConsentData });
     for await (const dataConsent of accessConsent.dataConsents) {
-      expect(dataConsent.registeredAgent).not.toBe(dataConsent.dataOwner);
+      expect(dataConsent.grantee).not.toBe(dataConsent.dataOwner);
     }
   });
 

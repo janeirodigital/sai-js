@@ -3,9 +3,9 @@ import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
 import { AuthorizationAgentFactory, ImmutableResource, ImmutableDataConsent, ReadableAccessConsent } from '..';
 
 type StringData = {
-  registeredBy: string;
-  registeredWith: string;
-  registeredAgent: string;
+  grantedBy: string;
+  grantedWith: string;
+  grantee: string;
   hasAccessNeedGroup: string;
 };
 
@@ -22,7 +22,7 @@ export class ImmutableAccessConsent extends ImmutableResource {
     super(iri, factory, data);
     this.dataConsents = data.dataConsents;
     const thisNode = DataFactory.namedNode(this.iri);
-    const props: (keyof StringData)[] = ['registeredBy', 'registeredWith', 'registeredAgent', 'hasAccessNeedGroup'];
+    const props: (keyof StringData)[] = ['grantedBy', 'grantedWith', 'grantee', 'hasAccessNeedGroup'];
     for (const prop of props) {
       this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
     }
@@ -30,7 +30,7 @@ export class ImmutableAccessConsent extends ImmutableResource {
       this.dataset.add(DataFactory.quad(thisNode, INTEROP.hasDataConsent, DataFactory.namedNode(dataConsent.iri)));
     }
     this.dataset.add(
-      DataFactory.quad(thisNode, INTEROP.registeredAt, DataFactory.literal(new Date().toISOString(), XSD.dateTime))
+      DataFactory.quad(thisNode, INTEROP.grantedAt, DataFactory.literal(new Date().toISOString(), XSD.dateTime))
     );
   }
 

@@ -12,7 +12,7 @@ const agentId = 'https://jarvis.alice.example/#agent';
 const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
 const snippetIri = 'https://some.iri/';
 const commonData = {
-  registeredAgent: 'https://projectron.example/#app',
+  grantee: 'https://projectron.example/#app',
   registeredShapeTree: 'https://solidshapes.example/tree/Project',
   hasDataRegistration: 'https://pro.alice.example/123',
   accessMode: [ACL.Read.value]

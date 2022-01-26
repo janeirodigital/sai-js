@@ -29,8 +29,8 @@ export class ReadableDataConsent extends ReadableResource {
   }
 
   @Memoize()
-  get registeredAgent(): string {
-    return this.getObject('registeredAgent').value;
+  get grantee(): string {
+    return this.getObject('grantee').value;
   }
 
   @Memoize()
@@ -44,8 +44,8 @@ export class ReadableDataConsent extends ReadableResource {
   }
 
   @Memoize()
-  get registeredBy(): string {
-    return this.getObject('registeredBy').value;
+  get grantedBy(): string {
+    return this.getObject('grantedBy').value;
   }
 
   @Memoize()
@@ -113,7 +113,7 @@ export class ReadableDataConsent extends ReadableResource {
         continue;
       }
       // don't create delegated data grants for data owned by the grantee (registeredAgent)
-      if (this.registeredAgent === agentRegistration.registeredAgent) {
+      if (this.grantee === agentRegistration.registeredAgent) {
         // eslint-disable-next-line no-continue
         continue;
       }
@@ -177,7 +177,7 @@ export class ReadableDataConsent extends ReadableResource {
         .find((registry) => registry.find((reg) => reg.iri === registration.iri))
         .find((reg) => reg.registeredShapeTree === childConsent.registeredShapeTree);
       const childData: DataGrantData = {
-        dataOwner: childConsent.registeredBy,
+        dataOwner: childConsent.grantedBy,
         registeredShapeTree: childConsent.registeredShapeTree,
         hasDataRegistration: dataRegistration.iri,
         scopeOfGrant: INTEROP.Inherited.value,
@@ -229,7 +229,7 @@ export class ReadableDataConsent extends ReadableResource {
       let scopeOfGrant = INTEROP.AllFromRegistry.value;
       if (this.scopeOfConsent === INTEROP.SelectedFromRegistry.value) scopeOfGrant = INTEROP.SelectedFromRegistry.value;
       const data: DataGrantData = {
-        dataOwner: this.registeredBy,
+        dataOwner: this.grantedBy,
         registeredShapeTree: this.registeredShapeTree,
         hasDataRegistration: registration.iri,
         scopeOfGrant,
@@ -255,11 +255,11 @@ export class ReadableDataConsent extends ReadableResource {
     /* Source grants are only created if Data Consent is registred by the data owner.
      * This can only happen with scope:
      * - All - there will be no dataOwner set
-     * - AllFromAgent - dataOwner will equal registeredBy
+     * - AllFromAgent - dataOwner will equal grantedBy
      * - lower with same condition as previous
      * Otherwise only delegated data grants are created
      */
-    if (!this.dataOwner || this.dataOwner === this.registeredBy) {
+    if (!this.dataOwner || this.dataOwner === this.grantedBy) {
       dataGrants.push(...(await this.generateSourceDataGrants(dataRegistries, granteeRegistration)));
     }
 
@@ -267,11 +267,11 @@ export class ReadableDataConsent extends ReadableResource {
     /* Delegated grants are only created for data owned by others than agent granting the consent
      * This can only happen with scopes:
      * - All - there will be no dataOwner set
-     * - All From Agent - dataOwner will be different than registeredBy
+     * - All From Agent - dataOwner will be different than grantedBy
      * - lower with same condition as previous
      * Otherwise only source data grants are created
      */
-    if (!this.dataOwner || this.dataOwner !== this.registeredBy) {
+    if (!this.dataOwner || this.dataOwner !== this.grantedBy) {
       dataGrants.push(...(await this.generateDelegatedDataGrants(agentRegistry, granteeRegistration)));
     }
 

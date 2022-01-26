@@ -37,7 +37,7 @@ describe('add', () => {
     registry = await factory.crud.accessConsentRegistry(snippetIri);
     consent = {
       iri: registry.iriForContained(),
-      registeredAgent: 'https://someone.example/#id'
+      grantee: 'https://someone.example/#id'
     } as unknown as ReadableAccessConsent;
   });
 
@@ -57,7 +57,7 @@ describe('add', () => {
   test('should remove link to prior consent for that agent if exists', async () => {
     consent = {
       iri: registry.iriForContained(),
-      registeredAgent: 'https://projectron.example/#app'
+      grantee: 'https://projectron.example/#app'
     } as unknown as ReadableAccessConsent;
     const projectronConsentIri = 'https://auth.alice.example/eac2c39c-c8b3-4880-8b9f-a3e12f7f6372';
     const priorQuads = [
