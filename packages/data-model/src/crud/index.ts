@@ -7,3 +7,4 @@ export { CRUDDataRegistry } from './data-registry';
 export * from './data-registration';
 export { CRUDAccessConsentRegistry } from './access-consent-registry';
 export { CRUDAgentRegistry } from './agent-registry';
+export { CRUDRegistrySet } from './registry-set';

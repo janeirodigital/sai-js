@@ -40,7 +40,7 @@ describe('generateAccessGrant', () => {
   test('generates access grant for application', async () => {
     const accessConsent = await factory.readable.accessConsent(snippetIri);
     const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
-    const registrySet = await factory.readable.registrySet(registrySetIri);
+    const registrySet = await factory.crud.registrySet(registrySetIri);
     const agentRegistration = (await registrySet.hasAgentRegistry.findRegistration(
       accessConsent.grantee
     )) as CRUDApplicationRegistration;
@@ -54,7 +54,7 @@ describe('generateAccessGrant', () => {
   test('uses new data grants if equivalent does not exists', async () => {
     const accessConsent = await factory.readable.accessConsent(snippetIri);
     const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
-    const registrySet = await factory.readable.registrySet(registrySetIri);
+    const registrySet = await factory.crud.registrySet(registrySetIri);
     const agentRegistration = (await registrySet.hasAgentRegistry.findRegistration(
       accessConsent.grantee
     )) as CRUDApplicationRegistration;
@@ -73,7 +73,7 @@ describe('generateAccessGrant', () => {
     const consentForSocialAgentIri = 'https://auth.alice.example/75a2ef88-d4d4-4f05-af1e-c2a63af08cab';
     const accessConsent = await factory.readable.accessConsent(consentForSocialAgentIri);
     const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
-    const registrySet = await factory.readable.registrySet(registrySetIri);
+    const registrySet = await factory.crud.registrySet(registrySetIri);
     const agentRegistration = (await registrySet.hasAgentRegistry.findRegistration(
       accessConsent.grantee
     )) as CRUDSocialAgentRegistration;

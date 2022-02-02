@@ -25,7 +25,7 @@ describe('getters', () => {
 describe('generateSourceDataGrants', () => {
   test('should generate equivalent grants', async () => {
     const dataConsentIri = 'https://auth.alice.example/a691ee69-97d8-45c0-bb03-8e887b2db806';
-    const registrySet = await factory.readable.registrySet(registrySetIri);
+    const registrySet = await factory.crud.registrySet(registrySetIri);
     const granteeRegistration = await factory.crud.socialAgentRegistration(granteeRegistrationIri);
     const dataConsent = await factory.readable.dataConsent(dataConsentIri);
     // @ts-ignore
@@ -49,7 +49,7 @@ describe('generateSourceDataGrants', () => {
 
   test('should throw if called on consent with Inherited scope', async () => {
     const inheritedDataConsentIri = 'https://auth.alice.example/ecdf7b5e-5123-4a93-87bc-86ef6de389ff';
-    const registrySet = await factory.readable.registrySet(registrySetIri);
+    const registrySet = await factory.crud.registrySet(registrySetIri);
     const granteeRegistration = await factory.crud.socialAgentRegistration(granteeRegistrationIri);
     const dataConsent = await factory.readable.dataConsent(inheritedDataConsentIri);
     await expect(
@@ -60,7 +60,7 @@ describe('generateSourceDataGrants', () => {
 
   test('should generate source data grant for specific data registration', async () => {
     const allFromRegistryDataConsentIri = 'https://auth.alice.example/d246d4da-79d9-4232-b5ab-94282cd0a63b';
-    const registrySet = await factory.readable.registrySet(registrySetIri);
+    const registrySet = await factory.crud.registrySet(registrySetIri);
     const granteeRegistration = await factory.crud.socialAgentRegistration(granteeRegistrationIri);
     const dataConsent = await factory.readable.dataConsent(allFromRegistryDataConsentIri);
     // @ts-ignore
@@ -70,7 +70,7 @@ describe('generateSourceDataGrants', () => {
 
   test('should generate source data grant for specific data instances', async () => {
     const selectedFromRegistryDataConsentIri = 'https://auth.alice.example/8307e5b4-4fd6-4e76-99bf-64df6a7d2894';
-    const registrySet = await factory.readable.registrySet(registrySetIri);
+    const registrySet = await factory.crud.registrySet(registrySetIri);
     const granteeRegistration = await factory.crud.socialAgentRegistration(granteeRegistrationIri);
     const dataConsent = await factory.readable.dataConsent(selectedFromRegistryDataConsentIri);
     // @ts-ignore
@@ -89,7 +89,7 @@ describe('generateSourceDataGrants', () => {
 describe('generateDelegatedDataGrants', () => {
   test('should generate equivalent grants', async () => {
     const dataConsentIri = 'https://auth.alice.example/e2765d6c-848a-4fc0-9092-556903730263';
-    const registrySet = await factory.readable.registrySet(registrySetIri);
+    const registrySet = await factory.crud.registrySet(registrySetIri);
     const granteeRegistration = await factory.crud.socialAgentRegistration(granteeRegistrationIri);
     const dataConsent = await factory.readable.dataConsent(dataConsentIri);
     // @ts-ignore
@@ -117,7 +117,7 @@ describe('generateDelegatedDataGrants', () => {
   test('should throw if called on consent with Inherited scope', async () => {
     const inheritedDataConsentIri = 'https://auth.alice.example/6a9feb57-252b-43b2-8470-5a938888b2fa';
     const acmeRegistrationIri = 'https://auth.alice.example/5dc3c14e-7830-475f-b8e3-4748d6c0bccb';
-    const registrySet = await factory.readable.registrySet(registrySetIri);
+    const registrySet = await factory.crud.registrySet(registrySetIri);
     const granteeRegistration = await factory.crud.socialAgentRegistration(acmeRegistrationIri);
     const dataConsent = await factory.readable.dataConsent(inheritedDataConsentIri);
     await expect(
@@ -128,7 +128,7 @@ describe('generateDelegatedDataGrants', () => {
 
   test('should not generate delegated data grant for data owner themselve', async () => {
     const allDataConsentIri = 'https://auth.alice.example/9ac499ce-f1a2-44c2-a5fb-01e3eb9a5bc9';
-    const registrySet = await factory.readable.registrySet(registrySetIri);
+    const registrySet = await factory.crud.registrySet(registrySetIri);
     const granteeRegistration = await factory.crud.socialAgentRegistration(granteeRegistrationIri);
     const dataConsent = await factory.readable.dataConsent(allDataConsentIri);
     // @ts-ignore
@@ -137,7 +137,7 @@ describe('generateDelegatedDataGrants', () => {
   });
   test('should generate source data grant for specific data registration', async () => {
     const allFromRegistryDataConsentIri = 'https://auth.alice.example/dbad38a1-4f99-4cd3-9107-23743a4059a8';
-    const registrySet = await factory.readable.registrySet(registrySetIri);
+    const registrySet = await factory.crud.registrySet(registrySetIri);
     const someAppRegistrationIri = 'https://auth.alice.example/d1c1ad91-406a-4d14-99cf-db770785440c';
     const granteeRegistration = await factory.crud.socialAgentRegistration(someAppRegistrationIri);
     const dataConsent = await factory.readable.dataConsent(allFromRegistryDataConsentIri);

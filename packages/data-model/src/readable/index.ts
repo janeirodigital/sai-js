@@ -17,4 +17,3 @@ export { ReadableShapeTree } from './shape-tree';
 export { ReadableDataRegistration } from './data-registration';
 export { ReadableAccessConsent } from './access-consent';
 export { ReadableDataConsent } from './data-consent';
-export { ReadableRegistrySet } from './registry-set';

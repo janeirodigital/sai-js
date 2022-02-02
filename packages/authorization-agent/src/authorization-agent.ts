@@ -2,7 +2,7 @@ import { DataFactory } from 'n3';
 import { DatasetCore } from '@rdfjs/types';
 import {
   AuthorizationAgentFactory,
-  ReadableRegistrySet,
+  CRUDRegistrySet,
   ReadableAccessConsent,
   ImmutableDataConsent,
   DataConsentData,
@@ -29,7 +29,7 @@ export class AuthorizationAgent {
 
   fetch: RdfFetch;
 
-  registrySet: ReadableRegistrySet;
+  registrySet: CRUDRegistrySet;
 
   constructor(private webId: string, private agentId: string, dependencies: AuthorizationAgentDependencies) {
     this.fetch = fetchWrapper(dependencies.fetch);
@@ -59,7 +59,7 @@ export class AuthorizationAgent {
 
   private async bootstrap(): Promise<void> {
     const registrySetIri = await this.discoverRegistrySet();
-    this.registrySet = await this.factory.readable.registrySet(registrySetIri);
+    this.registrySet = await this.factory.crud.registrySet(registrySetIri);
   }
 
   public static async build(

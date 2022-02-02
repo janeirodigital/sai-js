@@ -4,7 +4,7 @@ import { jest } from '@jest/globals';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { statelessFetch, createStatefulFetch } from '@janeirodigital/interop-test-utils';
 import {
-  ReadableRegistrySet,
+  CRUDRegistrySet,
   ReadableAccessConsent,
   CRUDApplicationRegistration,
   CRUDSocialAgentRegistration
@@ -18,7 +18,7 @@ const agentId = 'https://alice.jarvis.example/#agent';
 test('should build registrySet', async () => {
   const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
   const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
-  expect(agent.registrySet).toBeInstanceOf(ReadableRegistrySet);
+  expect(agent.registrySet).toBeInstanceOf(CRUDRegistrySet);
   expect(agent.registrySet.iri).toBe(registrySetIri);
 });
 

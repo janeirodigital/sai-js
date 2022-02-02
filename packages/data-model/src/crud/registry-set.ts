@@ -1,7 +1,12 @@
-import { ReadableResource } from '.';
-import { AuthorizationAgentFactory, CRUDDataRegistry, CRUDAgentRegistry, CRUDAccessConsentRegistry } from '..';
+import {
+  AuthorizationAgentFactory,
+  CRUDResource,
+  CRUDDataRegistry,
+  CRUDAgentRegistry,
+  CRUDAccessConsentRegistry
+} from '..';
 
-export class ReadableRegistrySet extends ReadableResource {
+export class CRUDRegistrySet extends CRUDResource {
   factory: AuthorizationAgentFactory;
 
   hasAccessConsentRegistry: CRUDAccessConsentRegistry;
@@ -20,8 +25,8 @@ export class ReadableRegistrySet extends ReadableResource {
     this.hasDataRegistry = await Promise.all(dataRegistryIris.map((iri) => this.factory.crud.dataRegistry(iri)));
   }
 
-  public static async build(iri: string, factory: AuthorizationAgentFactory): Promise<ReadableRegistrySet> {
-    const instance = new ReadableRegistrySet(iri, factory);
+  public static async build(iri: string, factory: AuthorizationAgentFactory): Promise<CRUDRegistrySet> {
+    const instance = new CRUDRegistrySet(iri, factory);
     await instance.bootstrap();
     return instance;
   }

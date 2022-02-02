@@ -15,39 +15,53 @@ import {
   CRUDAgentRegistry,
   ReadableDataConsent,
   CRUDDataRegistry,
-  ReadableRegistrySet
+  CRUDRegistrySet
 } from '../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
 
 describe('crud', () => {
+  const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
   test('builds application registration', async () => {
-    const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
     const agentRegistrationUrl = 'https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659';
     const agentRegistration = await factory.crud.applicationRegistration(agentRegistrationUrl);
     expect(agentRegistration).toBeInstanceOf(CRUDApplicationRegistration);
   });
 
   test('builds social agent registration', async () => {
-    const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
     const agentRegistrationUrl = 'https://auth.alice.example/b1f69979-dd47-4709-b2ed-a7119f29b135';
     const agentRegistration = await factory.crud.socialAgentRegistration(agentRegistrationUrl);
     expect(agentRegistration).toBeInstanceOf(CRUDSocialAgentRegistration);
   });
 
   test('accessConsentRegistry', async () => {
-    const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
     const snippetIri = 'https://auth.alice.example/96feb105-063e-4996-ab74-5e504c6ceae5';
     const accessConsentRegistry = await factory.crud.accessConsentRegistry(snippetIri);
     expect(accessConsentRegistry).toBeInstanceOf(CRUDAccessConsentRegistry);
   });
 
   test('dataRegistry', async () => {
-    const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
     const snippetIri = 'https://home.alice.example/2d3d97b4-a26d-434e-afa2-e3bc8e8e2b56';
     const dataRegistry = await factory.crud.dataRegistry(snippetIri);
     expect(dataRegistry).toBeInstanceOf(CRUDDataRegistry);
+  });
+
+  test('agentRegistry', async () => {
+    const snippetIri = 'https://auth.alice.example/1cf3e08b-ffe2-465a-ac5b-94ce165cb8f0';
+    const agentRegistry = await factory.crud.agentRegistry(snippetIri);
+    expect(agentRegistry).toBeInstanceOf(CRUDAgentRegistry);
+  });
+
+  test('socialAgentRegistration', async () => {
+    const snippetIri = 'https://auth.alice.example/5dc3c14e-7830-475f-b8e3-4748d6c0bccb';
+    const socialAgentRegistration = await factory.crud.socialAgentRegistration(snippetIri);
+    expect(socialAgentRegistration).toBeInstanceOf(CRUDSocialAgentRegistration);
+  });
+  test('registrySet', async () => {
+    const snippetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
+    const registrySet = await factory.crud.registrySet(snippetIri);
+    expect(registrySet).toBeInstanceOf(CRUDRegistrySet);
   });
 });
 
@@ -152,22 +166,5 @@ describe('readable', () => {
     const snippetIri = 'https://auth.alice.example/e2765d6c-848a-4fc0-9092-556903730263';
     const dataConsent = await factory.readable.dataConsent(snippetIri);
     expect(dataConsent).toBeInstanceOf(ReadableDataConsent);
-  });
-
-  test('registrySet', async () => {
-    const snippetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
-    const registrySet = await factory.readable.registrySet(snippetIri);
-    expect(registrySet).toBeInstanceOf(ReadableRegistrySet);
-  });
-  test('agentRegistry', async () => {
-    const snippetIri = 'https://auth.alice.example/1cf3e08b-ffe2-465a-ac5b-94ce165cb8f0';
-    const agentRegistry = await factory.crud.agentRegistry(snippetIri);
-    expect(agentRegistry).toBeInstanceOf(CRUDAgentRegistry);
-  });
-
-  test('socialAgentRegistration', async () => {
-    const snippetIri = 'https://auth.alice.example/5dc3c14e-7830-475f-b8e3-4748d6c0bccb';
-    const socialAgentRegistration = await factory.crud.socialAgentRegistration(snippetIri);
-    expect(socialAgentRegistration).toBeInstanceOf(CRUDSocialAgentRegistration);
   });
 });
