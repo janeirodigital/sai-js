@@ -3,7 +3,6 @@ import { INTEROP } from '@janeirodigital/interop-namespaces';
 import {
   ReadableResource,
   ReadableDataConsent,
-  ReadableAgentRegistry,
   DataGrant,
   AllFromRegistryDataGrant,
   SelectedFromRegistryDataGrant
@@ -13,7 +12,8 @@ import {
   ImmutableAccessGrant,
   ImmutableDataGrant,
   CRUDDataRegistry,
-  CRUDAgentRegistration
+  CRUDAgentRegistration,
+  CRUDAgentRegistry
 } from '..';
 
 // reuse equivalent data grants
@@ -90,7 +90,7 @@ export class ReadableAccessConsent extends ReadableResource {
 
   public async generateAccessGrant(
     dataRegistries: CRUDDataRegistry[],
-    agentRegistry: ReadableAgentRegistry,
+    agentRegistry: CRUDAgentRegistry,
     granteeRegistration: CRUDAgentRegistration
   ): Promise<ImmutableAccessGrant> {
     const dataGrants: ImmutableDataGrant[] = [];

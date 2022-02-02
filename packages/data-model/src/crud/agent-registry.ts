@@ -1,16 +1,15 @@
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource } from '.';
-import { AuthorizationAgentFactory, CRUDApplicationRegistration, CRUDSocialAgentRegistration } from '..';
+import { AuthorizationAgentFactory, CRUDApplicationRegistration, CRUDSocialAgentRegistration, CRUDContainer } from '..';
 
-export class ReadableAgentRegistry extends ReadableResource {
+export class CRUDAgentRegistry extends CRUDContainer {
   factory: AuthorizationAgentFactory;
 
   async bootstrap(): Promise<void> {
     await this.fetchData();
   }
 
-  public static async build(iri: string, factory: AuthorizationAgentFactory): Promise<ReadableAgentRegistry> {
-    const instance = new ReadableAgentRegistry(iri, factory);
+  public static async build(iri: string, factory: AuthorizationAgentFactory): Promise<CRUDAgentRegistry> {
+    const instance = new CRUDAgentRegistry(iri, factory);
     await instance.bootstrap();
     return instance;
   }

@@ -12,7 +12,7 @@ import {
   ImmutableDataGrant,
   ReadableAccessConsent,
   CRUDAccessConsentRegistry,
-  ReadableAgentRegistry,
+  CRUDAgentRegistry,
   ReadableDataConsent,
   CRUDDataRegistry,
   ReadableRegistrySet
@@ -161,8 +161,8 @@ describe('readable', () => {
   });
   test('agentRegistry', async () => {
     const snippetIri = 'https://auth.alice.example/1cf3e08b-ffe2-465a-ac5b-94ce165cb8f0';
-    const agentRegistry = await factory.readable.agentRegistry(snippetIri);
-    expect(agentRegistry).toBeInstanceOf(ReadableAgentRegistry);
+    const agentRegistry = await factory.crud.agentRegistry(snippetIri);
+    expect(agentRegistry).toBeInstanceOf(CRUDAgentRegistry);
   });
 
   test('socialAgentRegistration', async () => {

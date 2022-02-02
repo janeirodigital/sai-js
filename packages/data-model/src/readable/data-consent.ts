@@ -4,7 +4,7 @@ import { Memoize } from 'typescript-memoize';
 import {
   ReadableResource,
   AuthorizationAgentFactory,
-  ReadableAgentRegistry,
+  CRUDAgentRegistry,
   ImmutableDataGrant,
   DataGrantData,
   CRUDDataRegistry,
@@ -98,7 +98,7 @@ export class ReadableDataConsent extends ReadableResource {
   }
 
   private async generateDelegatedDataGrants(
-    agentRegistry: ReadableAgentRegistry,
+    agentRegistry: CRUDAgentRegistry,
     granteeRegistration: CRUDAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
     if (this.scopeOfConsent === INTEROP.Inherited.value) {
@@ -250,7 +250,7 @@ export class ReadableDataConsent extends ReadableResource {
 
   public async generateDataGrants(
     dataRegistries: CRUDDataRegistry[],
-    agentRegistry: ReadableAgentRegistry,
+    agentRegistry: CRUDAgentRegistry,
     granteeRegistration: CRUDAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
     const dataGrants: ImmutableDataGrant[] = [];

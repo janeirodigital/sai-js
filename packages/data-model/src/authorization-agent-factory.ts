@@ -5,7 +5,7 @@ import {
   DataGrantData,
   ImmutableDataGrant,
   ReadableRegistrySet,
-  ReadableAgentRegistry,
+  CRUDAgentRegistry,
   ReadableAccessConsent,
   ReadableDataConsent,
   CRUDAccessConsentRegistry,
@@ -27,7 +27,6 @@ interface AuthorizationAgentReadableFactory extends BaseReadableFactory {
   accessConsent(iri: string): Promise<ReadableAccessConsent>;
   dataConsent(iri: string): Promise<ReadableDataConsent>;
   registrySet(iri: string): Promise<ReadableRegistrySet>;
-  agentRegistry(iri: string): Promise<ReadableAgentRegistry>;
 }
 interface CRUDFactory {
   applicationRegistration(iri: string, data?: AgentRegistrationData): Promise<CRUDApplicationRegistration>;
@@ -39,6 +38,7 @@ interface CRUDFactory {
   dataRegistry(iri: string): Promise<CRUDDataRegistry>;
   dataRegistration(iri: string, data?: DataRegistrationData): Promise<CRUDDataRegistration>;
   accessConsentRegistry(iri: string): Promise<CRUDAccessConsentRegistry>;
+  agentRegistry(iri: string): Promise<CRUDAgentRegistry>;
 }
 
 interface ImmutableFactory {
@@ -92,6 +92,9 @@ export class AuthorizationAgentFactory extends BaseFactory {
       },
       accessConsentRegistry: async function accessConsentRegistry(iri: string): Promise<CRUDAccessConsentRegistry> {
         return CRUDAccessConsentRegistry.build(iri, factory);
+      },
+      agentRegistry: async function agentRegistry(iri: string): Promise<CRUDAgentRegistry> {
+        return CRUDAgentRegistry.build(iri, factory);
       }
     };
   }
@@ -129,9 +132,6 @@ export class AuthorizationAgentFactory extends BaseFactory {
       },
       registrySet: async function registrySet(iri: string): Promise<ReadableRegistrySet> {
         return ReadableRegistrySet.build(iri, factory);
-      },
-      agentRegistry: async function agentRegistry(iri: string): Promise<ReadableAgentRegistry> {
-        return ReadableAgentRegistry.build(iri, factory);
       },
       ...super.readableFactory()
     };

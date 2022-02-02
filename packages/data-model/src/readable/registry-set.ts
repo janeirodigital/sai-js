@@ -1,12 +1,12 @@
-import { ReadableResource, ReadableAgentRegistry } from '.';
-import { AuthorizationAgentFactory, CRUDDataRegistry, CRUDAccessConsentRegistry } from '..';
+import { ReadableResource } from '.';
+import { AuthorizationAgentFactory, CRUDDataRegistry, CRUDAgentRegistry, CRUDAccessConsentRegistry } from '..';
 
 export class ReadableRegistrySet extends ReadableResource {
   factory: AuthorizationAgentFactory;
 
   hasAccessConsentRegistry: CRUDAccessConsentRegistry;
 
-  hasAgentRegistry: ReadableAgentRegistry;
+  hasAgentRegistry: CRUDAgentRegistry;
 
   hasDataRegistry: CRUDDataRegistry[];
 
@@ -15,7 +15,7 @@ export class ReadableRegistrySet extends ReadableResource {
     this.hasAccessConsentRegistry = await this.factory.crud.accessConsentRegistry(
       this.getObject('hasAccessConsentRegistry').value
     );
-    this.hasAgentRegistry = await this.factory.readable.agentRegistry(this.getObject('hasAgentRegistry').value);
+    this.hasAgentRegistry = await this.factory.crud.agentRegistry(this.getObject('hasAgentRegistry').value);
     const dataRegistryIris = this.getObjectsArray('hasDataRegistry').map((object) => object.value);
     this.hasDataRegistry = await Promise.all(dataRegistryIris.map((iri) => this.factory.crud.dataRegistry(iri)));
   }

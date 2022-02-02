@@ -18,4 +18,3 @@ export { ReadableDataRegistration } from './data-registration';
 export { ReadableAccessConsent } from './access-consent';
 export { ReadableDataConsent } from './data-consent';
 export { ReadableRegistrySet } from './registry-set';
-export { ReadableAgentRegistry } from './agent-registry';
