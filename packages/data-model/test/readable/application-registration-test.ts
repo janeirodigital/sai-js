@@ -25,11 +25,6 @@ describe('build', () => {
     expect(accessGrant.iri).toBe(accessGrantIri);
   });
 
-  test('should provide registeredAgent getter', async () => {
-    const applicationRegistration = await ReadableApplicationRegistration.build(snippetIri, factory);
-    expect(applicationRegistration.registeredAgent).toBe('https://projectron.example/#app');
-  });
-
   test('should provide iriForContained method', async () => {
     const applicationRegistration = await ReadableApplicationRegistration.build(snippetIri, factory);
     expect(applicationRegistration.iriForContained()).toMatch(applicationRegistration.iri);

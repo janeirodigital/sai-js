@@ -1,4 +1,3 @@
-import { Memoize } from 'typescript-memoize';
 import { ReadableAccessGrant, InteropFactory, ReadableContainer } from '..';
 
 export class ReadableApplicationRegistration extends ReadableContainer {
@@ -12,11 +11,6 @@ export class ReadableApplicationRegistration extends ReadableContainer {
   private async bootstrap(): Promise<void> {
     await this.fetchData();
     await this.buildAccessGrant();
-  }
-
-  @Memoize()
-  get registeredAgent(): string {
-    return this.getObject('registeredAgent').value;
   }
 
   public static async build(iri: string, factory: InteropFactory): Promise<ReadableApplicationRegistration> {

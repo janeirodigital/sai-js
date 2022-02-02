@@ -4,7 +4,6 @@ import {
   AuthorizationAgentFactory,
   ReadableRegistrySet,
   ReadableAccessConsent,
-  ReadableApplicationRegistration,
   ImmutableDataConsent,
   DataConsentData,
   CRUDSocialAgentRegistration,
@@ -50,7 +49,7 @@ export class AuthorizationAgent {
     return this.registrySet.hasAccessConsentRegistry.accessConsents;
   }
 
-  get applicationRegistrations(): AsyncIterable<ReadableApplicationRegistration> {
+  get applicationRegistrations(): AsyncIterable<CRUDApplicationRegistration> {
     return this.registrySet.hasAgentRegistry.applicationRegistrations;
   }
 

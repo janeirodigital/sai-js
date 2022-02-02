@@ -1,5 +1,5 @@
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, ReadableApplicationRegistration } from '.';
+import { ReadableResource } from '.';
 import { AuthorizationAgentFactory, CRUDApplicationRegistration, CRUDSocialAgentRegistration } from '..';
 
 export class ReadableAgentRegistry extends ReadableResource {
@@ -15,13 +15,13 @@ export class ReadableAgentRegistry extends ReadableResource {
     return instance;
   }
 
-  get applicationRegistrations(): AsyncIterable<ReadableApplicationRegistration> {
+  get applicationRegistrations(): AsyncIterable<CRUDApplicationRegistration> {
     const iris = this.getObjectsArray(INTEROP.hasApplicationRegistration).map((object) => object.value);
     const { factory } = this;
     return {
       async *[Symbol.asyncIterator]() {
         for (const iri of iris) {
-          yield factory.readable.applicationRegistration(iri);
+          yield factory.crud.applicationRegistration(iri);
         }
       }
     };
@@ -39,6 +39,7 @@ export class ReadableAgentRegistry extends ReadableResource {
     };
   }
 
+  // eslint-disable-next-line consistent-return
   public async findRegistration(
     iri: string
   ): Promise<CRUDApplicationRegistration | CRUDSocialAgentRegistration | undefined> {

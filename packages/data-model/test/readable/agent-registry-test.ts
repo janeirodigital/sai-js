@@ -1,12 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import {
-  CRUDSocialAgentRegistration,
-  CRUDApplicationRegistration,
-  ReadableApplicationRegistration,
-  AuthorizationAgentFactory
-} from '../../src';
+import { CRUDSocialAgentRegistration, CRUDApplicationRegistration, AuthorizationAgentFactory } from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
@@ -18,7 +13,7 @@ test('should provide applicationRegistrations', async () => {
   let count = 0;
   for await (const consent of registry.applicationRegistrations) {
     count += 1;
-    expect(consent).toBeInstanceOf(ReadableApplicationRegistration);
+    expect(consent).toBeInstanceOf(CRUDApplicationRegistration);
   }
   expect(count).toBe(2);
 });

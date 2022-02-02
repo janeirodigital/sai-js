@@ -6,7 +6,7 @@ import { statelessFetch, createStatefulFetch } from '@janeirodigital/interop-tes
 import {
   ReadableRegistrySet,
   ReadableAccessConsent,
-  ReadableApplicationRegistration,
+  CRUDApplicationRegistration,
   CRUDSocialAgentRegistration
 } from '@janeirodigital/interop-data-model';
 import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
@@ -37,7 +37,7 @@ test('have access to all the application registrations', async () => {
   let count = 0;
   for await (const consent of agent.applicationRegistrations) {
     count += 1;
-    expect(consent).toBeInstanceOf(ReadableApplicationRegistration);
+    expect(consent).toBeInstanceOf(CRUDApplicationRegistration);
   }
   expect(count).toBe(2);
 });
