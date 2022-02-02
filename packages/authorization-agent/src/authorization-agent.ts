@@ -5,7 +5,6 @@ import {
   ReadableRegistrySet,
   ReadableAccessConsent,
   ReadableApplicationRegistration,
-  ReadableSocialAgentRegistration,
   ImmutableDataConsent,
   DataConsentData,
   CRUDSocialAgentRegistration,
@@ -55,7 +54,7 @@ export class AuthorizationAgent {
     return this.registrySet.hasAgentRegistry.applicationRegistrations;
   }
 
-  get socialAgentRegistrations(): AsyncIterable<ReadableSocialAgentRegistration> {
+  get socialAgentRegistrations(): AsyncIterable<CRUDSocialAgentRegistration> {
     return this.registrySet.hasAgentRegistry.socialAgentRegistrations;
   }
 
@@ -119,10 +118,9 @@ export class AuthorizationAgent {
     agentRegistration: CRUDSocialAgentRegistration | CRUDApplicationRegistration
   ): Promise<void> {
     const accessConsent = await this.factory.readable.accessConsent(accessConsentIri);
-    const readableAgentRegistration = await agentRegistration.getReadable();
 
     // check if agentRegistration if for the consent grantee
-    if (accessConsent.grantee !== readableAgentRegistration.registeredAgent) {
+    if (accessConsent.grantee !== agentRegistration.registeredAgent) {
       throw new Error('agent registration has to be for the consent grantee');
     }
 
@@ -130,7 +128,7 @@ export class AuthorizationAgent {
     const accessGrant = await accessConsent.generateAccessGrant(
       this.registrySet.hasDataRegistry,
       this.registrySet.hasAgentRegistry,
-      readableAgentRegistration
+      agentRegistration
     );
 
     // only store new access grant and update registration if any data grant changed
@@ -149,7 +147,7 @@ export class AuthorizationAgent {
    * Replaces all access grants, which have data grant delegating from that owner
    * TODO: explore how to optimize, matching on shape trees can fail if access was removed
    */
-  public async updateDelegatedGrants(dataOwnerRegistration: ReadableSocialAgentRegistration): Promise<void> {
+  public async updateDelegatedGrants(dataOwnerRegistration: CRUDSocialAgentRegistration): Promise<void> {
     const affectedConsents = await this.registrySet.hasAccessConsentRegistry.findConsentsDelegatingGrant(
       dataOwnerRegistration.registeredAgent
     );

@@ -4,8 +4,8 @@ import 'jest-rdf';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory } from 'n3';
-import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
-import { CRUDAgentRegistration, AuthorizationAgentFactory } from '../../src';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { CRUDSocialAgentRegistration, AuthorizationAgentFactory } from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
@@ -15,17 +15,17 @@ const newSnippetIri = 'https://auth.alice.example/afb6a337-40df-4fbe-9b00-5c9c1e
 const accessGrantIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
 const data = {
   registeredAgent: 'https://different.iri/',
-  hasAccessGrant: 'https://auth.alice.example/b949cb45-5915-451c-880b-747b4c424b6a'
+  hasAccessGrant: 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe'
 };
 
 describe('build', () => {
   test('should return instance of Agent Registration', async () => {
-    const agentRegistration = await CRUDAgentRegistration.build(snippetIri, factory);
-    expect(agentRegistration).toBeInstanceOf(CRUDAgentRegistration);
+    const agentRegistration = await CRUDSocialAgentRegistration.build(snippetIri, factory, false);
+    expect(agentRegistration).toBeInstanceOf(CRUDSocialAgentRegistration);
   });
 
   test('should fetch its data if none passed', async () => {
-    const agentRegistration = await CRUDAgentRegistration.build(snippetIri, factory);
+    const agentRegistration = await CRUDSocialAgentRegistration.build(snippetIri, factory, false);
     expect(agentRegistration.dataset.size).toBe(7);
   });
 
@@ -42,13 +42,13 @@ describe('build', () => {
         DataFactory.namedNode(data.hasAccessGrant)
       )
     ];
-    const agentRegistration = await CRUDAgentRegistration.build(newSnippetIri, factory, data);
+    const agentRegistration = await CRUDSocialAgentRegistration.build(newSnippetIri, factory, false, data);
     expect(agentRegistration.dataset.size).toBe(2);
     expect(agentRegistration.dataset).toBeRdfDatasetContaining(...quads);
   });
 
   test('should have updatedAt and registeredAt uset for new before update', async () => {
-    const agentRegistration = await CRUDAgentRegistration.build(newSnippetIri, factory, data);
+    const agentRegistration = await CRUDSocialAgentRegistration.build(newSnippetIri, factory, false, data);
     expect(agentRegistration.registeredAt).toBeUndefined();
     expect(agentRegistration.updatedAt).toBeUndefined();
   });
@@ -56,13 +56,13 @@ describe('build', () => {
 
 describe('hasAccessGrant', () => {
   test('should have getter', async () => {
-    const agentRegistration = await CRUDAgentRegistration.build(snippetIri, factory);
+    const agentRegistration = await CRUDSocialAgentRegistration.build(snippetIri, factory, false);
     expect(agentRegistration.hasAccessGrant).toBe(accessGrantIri);
   });
 
   test('setter should update dataset accordingly', async () => {
     const newIri = 'https://some.iri';
-    const agentRegistration = await CRUDAgentRegistration.build(snippetIri, factory);
+    const agentRegistration = await CRUDSocialAgentRegistration.build(snippetIri, factory, false);
     agentRegistration.hasAccessGrant = newIri;
     expect(agentRegistration.hasAccessGrant).toBe(newIri);
   });

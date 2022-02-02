@@ -47,7 +47,7 @@ describe('generateAccessGrant', () => {
     const accessGrant = await accessConsent.generateAccessGrant(
       registrySet.hasDataRegistry,
       registrySet.hasAgentRegistry,
-      await agentRegistration.getReadable()
+      agentRegistration
     );
     expect(accessGrant).toBeInstanceOf(ImmutableAccessGrant);
   });
@@ -58,14 +58,13 @@ describe('generateAccessGrant', () => {
     const agentRegistration = (await registrySet.hasAgentRegistry.findRegistration(
       accessConsent.grantee
     )) as CRUDApplicationRegistration;
-    const readableAgentRegistration = await agentRegistration.getReadable();
     // remove all of existing data grants
     // TODO improve snippets for this test
-    readableAgentRegistration.hasAccessGrant.hasDataGrant = [];
+    agentRegistration.accessGrant.hasDataGrant = [];
     const accessGrant = await accessConsent.generateAccessGrant(
       registrySet.hasDataRegistry,
       registrySet.hasAgentRegistry,
-      readableAgentRegistration
+      agentRegistration
     );
     expect(accessGrant).toBeInstanceOf(ImmutableAccessGrant);
     expect(accessGrant.dataGrants).toHaveLength(4);
@@ -81,7 +80,7 @@ describe('generateAccessGrant', () => {
     const accessGrant = await accessConsent.generateAccessGrant(
       registrySet.hasDataRegistry,
       registrySet.hasAgentRegistry,
-      await agentRegistration.getReadable()
+      agentRegistration
     );
     expect(accessGrant).toBeInstanceOf(ImmutableAccessGrant);
   });

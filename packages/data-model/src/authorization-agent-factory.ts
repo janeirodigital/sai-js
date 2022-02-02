@@ -9,7 +9,6 @@ import {
   ReadableAccessConsent,
   ReadableDataConsent,
   CRUDAccessConsentRegistry,
-  ReadableSocialAgentRegistration,
   AccessGrantData,
   ImmutableAccessGrant,
   DataConsentData,
@@ -29,11 +28,14 @@ interface AuthorizationAgentReadableFactory extends BaseReadableFactory {
   dataConsent(iri: string): Promise<ReadableDataConsent>;
   registrySet(iri: string): Promise<ReadableRegistrySet>;
   agentRegistry(iri: string): Promise<ReadableAgentRegistry>;
-  socialAgentRegistration(iri: string, reciprocal?: boolean): Promise<ReadableSocialAgentRegistration>;
 }
 interface CRUDFactory {
   applicationRegistration(iri: string, data?: AgentRegistrationData): Promise<CRUDApplicationRegistration>;
-  socialAgentRegistration(iri: string, data?: AgentRegistrationData): Promise<CRUDSocialAgentRegistration>;
+  socialAgentRegistration(
+    iri: string,
+    reciprocal?: boolean,
+    data?: AgentRegistrationData
+  ): Promise<CRUDSocialAgentRegistration>;
   dataRegistry(iri: string): Promise<CRUDDataRegistry>;
   dataRegistration(iri: string, data?: DataRegistrationData): Promise<CRUDDataRegistration>;
   accessConsentRegistry(iri: string): Promise<CRUDAccessConsentRegistry>;
@@ -74,9 +76,10 @@ export class AuthorizationAgentFactory extends BaseFactory {
       },
       socialAgentRegistration: async function socialAgentRegistration(
         iri: string,
+        reciprocal = false,
         data?: AgentRegistrationData
       ): Promise<CRUDSocialAgentRegistration> {
-        return CRUDSocialAgentRegistration.build(iri, factory, data);
+        return CRUDSocialAgentRegistration.build(iri, factory, reciprocal, data);
       },
       dataRegistry: async function dataRegistry(iri: string): Promise<CRUDDataRegistry> {
         return CRUDDataRegistry.build(iri, factory);
@@ -129,12 +132,6 @@ export class AuthorizationAgentFactory extends BaseFactory {
       },
       agentRegistry: async function agentRegistry(iri: string): Promise<ReadableAgentRegistry> {
         return ReadableAgentRegistry.build(iri, factory);
-      },
-      socialAgentRegistration: async function socialAgentRegistration(
-        iri: string,
-        reciprocal?: boolean
-      ): Promise<ReadableSocialAgentRegistration> {
-        return ReadableSocialAgentRegistration.build(iri, factory, reciprocal);
       },
       ...super.readableFactory()
     };

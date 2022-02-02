@@ -1,5 +1,5 @@
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, ReadableApplicationRegistration, ReadableSocialAgentRegistration } from '.';
+import { ReadableResource, ReadableApplicationRegistration } from '.';
 import { AuthorizationAgentFactory, CRUDApplicationRegistration, CRUDSocialAgentRegistration } from '..';
 
 export class ReadableAgentRegistry extends ReadableResource {
@@ -27,13 +27,13 @@ export class ReadableAgentRegistry extends ReadableResource {
     };
   }
 
-  get socialAgentRegistrations(): AsyncIterable<ReadableSocialAgentRegistration> {
+  get socialAgentRegistrations(): AsyncIterable<CRUDSocialAgentRegistration> {
     const iris = this.getObjectsArray(INTEROP.hasSocialAgentRegistration).map((object) => object.value);
     const { factory } = this;
     return {
       async *[Symbol.asyncIterator]() {
         for (const iri of iris) {
-          yield factory.readable.socialAgentRegistration(iri);
+          yield factory.crud.socialAgentRegistration(iri);
         }
       }
     };

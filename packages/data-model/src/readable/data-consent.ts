@@ -10,7 +10,7 @@ import {
   CRUDDataRegistry,
   ReadableDataRegistration,
   InheritableDataGrant,
-  ReadableAgentRegistration
+  CRUDAgentRegistration
 } from '..';
 
 export class ReadableDataConsent extends ReadableResource {
@@ -77,7 +77,7 @@ export class ReadableDataConsent extends ReadableResource {
   private generateChildDelegatedDataGrants(
     parentGrantIri: string,
     sourceGrant: InheritableDataGrant,
-    granteeRegistration: ReadableAgentRegistration
+    granteeRegistration: CRUDAgentRegistration
   ): ImmutableDataGrant[] {
     return this.hasInheritingConsent.map((childConsent) => {
       const childGrantIri = granteeRegistration.iriForContained();
@@ -99,7 +99,7 @@ export class ReadableDataConsent extends ReadableResource {
 
   private async generateDelegatedDataGrants(
     agentRegistry: ReadableAgentRegistry,
-    granteeRegistration: ReadableAgentRegistration
+    granteeRegistration: CRUDAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
     if (this.scopeOfConsent === INTEROP.Inherited.value) {
       throw new Error('this method should not be callend on data consents with Inherited scope');
@@ -117,10 +117,12 @@ export class ReadableDataConsent extends ReadableResource {
         // eslint-disable-next-line no-continue
         continue;
       }
-      const accessGrant = agentRegistration.reciprocalRegistration?.hasAccessGrant;
+      const accessGrantIri = agentRegistration.reciprocalRegistration?.hasAccessGrant;
 
       // eslint-disable-next-line no-continue
-      if (!accessGrant) continue;
+      if (!accessGrantIri) continue;
+
+      const accessGrant = await this.factory.readable.accessGrant(accessGrantIri);
 
       // match shape tree
       let matchingDataGrants = accessGrant.hasDataGrant.filter(
@@ -167,7 +169,7 @@ export class ReadableDataConsent extends ReadableResource {
     parentGrantIri: string,
     registration: ReadableDataRegistration,
     dataRegistries: ReadableDataRegistration[][],
-    granteeRegistration: ReadableAgentRegistration
+    granteeRegistration: CRUDAgentRegistration
   ): ImmutableDataGrant[] {
     return this.hasInheritingConsent.map((childConsent) => {
       const childGrantIri = granteeRegistration.iriForContained();
@@ -190,7 +192,7 @@ export class ReadableDataConsent extends ReadableResource {
 
   private async generateSourceDataGrants(
     dataRegistries: CRUDDataRegistry[],
-    granteeRegistration: ReadableAgentRegistration
+    granteeRegistration: CRUDAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
     if (this.scopeOfConsent === INTEROP.Inherited.value) {
       throw new Error('this method should not be callend on data consents with Inherited scope');
@@ -249,7 +251,7 @@ export class ReadableDataConsent extends ReadableResource {
   public async generateDataGrants(
     dataRegistries: CRUDDataRegistry[],
     agentRegistry: ReadableAgentRegistry,
-    granteeRegistration: ReadableAgentRegistration
+    granteeRegistration: CRUDAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
     const dataGrants: ImmutableDataGrant[] = [];
     /* Source grants are only created if Data Consent is registred by the data owner.

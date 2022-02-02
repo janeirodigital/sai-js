@@ -4,7 +4,7 @@ import { jest } from '@jest/globals';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { statelessFetch } from '@janeirodigital/interop-test-utils';
 import { ReadableApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
-import { RdfResponse, WhatwgFetch } from '@janeirodigital/interop-utils';
+import { RdfResponse } from '@janeirodigital/interop-utils';
 import { Application } from '../src';
 
 const webId = 'https://alice.example/#id';

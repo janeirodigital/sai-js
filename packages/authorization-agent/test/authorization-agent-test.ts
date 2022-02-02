@@ -7,7 +7,6 @@ import {
   ReadableRegistrySet,
   ReadableAccessConsent,
   ReadableApplicationRegistration,
-  ReadableSocialAgentRegistration,
   CRUDSocialAgentRegistration
 } from '@janeirodigital/interop-data-model';
 import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
@@ -48,7 +47,7 @@ test('have access to all the social agent registrations', async () => {
   let count = 0;
   for await (const consent of agent.socialAgentRegistrations) {
     count += 1;
-    expect(consent).toBeInstanceOf(ReadableSocialAgentRegistration);
+    expect(consent).toBeInstanceOf(CRUDSocialAgentRegistration);
   }
   expect(count).toBe(2);
 });
@@ -138,7 +137,7 @@ describe('updateDelegatedGrant', () => {
     const dataOwnerRegistration = (await agent.registrySet.hasAgentRegistry.findRegistration(
       dataOwnerIri
     )) as CRUDSocialAgentRegistration;
-    await agent.updateDelegatedGrants(await dataOwnerRegistration.getReadable());
+    await agent.updateDelegatedGrants(dataOwnerRegistration);
     expect(generateAccessGrantSpy).toBeCalledTimes(2);
   });
 });

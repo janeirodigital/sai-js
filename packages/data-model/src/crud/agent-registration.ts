@@ -1,24 +1,37 @@
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { DataFactory } from 'n3';
-import { AuthorizationAgentFactory } from '..';
-import { CRUDResource } from './resource';
+import { AuthorizationAgentFactory, ReadableAccessGrant } from '..';
+import { CRUDContainer } from './container';
 
 export type AgentRegistrationData = {
   registeredAgent: string;
   hasAccessGrant: string;
 };
 
-export class CRUDAgentRegistration extends CRUDResource {
+export abstract class CRUDAgentRegistration extends CRUDContainer {
   data?: AgentRegistrationData;
 
   factory: AuthorizationAgentFactory;
+
+  accessGrant?: ReadableAccessGrant;
 
   constructor(iri: string, factory: AuthorizationAgentFactory, data?: AgentRegistrationData) {
     super(iri, factory, data);
   }
 
-  get hasAccessGrant(): string {
-    return this.getObject('hasAccessGrant').value;
+  // TODO: change to avoid stale access grant
+  private async buildAccessGrant(): Promise<void> {
+    if (this.hasAccessGrant) {
+      this.accessGrant = await this.factory.readable.accessGrant(this.hasAccessGrant);
+    }
+  }
+
+  get registeredAgent(): string {
+    return this.getObject('registeredAgent').value;
+  }
+
+  get hasAccessGrant(): string | undefined {
+    return this.getObject('hasAccessGrant')?.value;
   }
 
   set hasAccessGrant(iri: string) {
@@ -46,15 +59,6 @@ export class CRUDAgentRegistration extends CRUDResource {
     } else {
       this.datasetFromData();
     }
-  }
-
-  public static async build(
-    iri: string,
-    factory: AuthorizationAgentFactory,
-    data?: AgentRegistrationData
-  ): Promise<CRUDAgentRegistration> {
-    const instance = new CRUDAgentRegistration(iri, factory, data);
-    await instance.bootstrap();
-    return instance;
+    await this.buildAccessGrant();
   }
 }

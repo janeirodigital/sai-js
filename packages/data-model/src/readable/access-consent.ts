@@ -4,12 +4,17 @@ import {
   ReadableResource,
   ReadableDataConsent,
   ReadableAgentRegistry,
-  ReadableAgentRegistration,
   DataGrant,
   AllFromRegistryDataGrant,
   SelectedFromRegistryDataGrant
 } from '.';
-import { AuthorizationAgentFactory, ImmutableAccessGrant, ImmutableDataGrant, CRUDDataRegistry } from '..';
+import {
+  AuthorizationAgentFactory,
+  ImmutableAccessGrant,
+  ImmutableDataGrant,
+  CRUDDataRegistry,
+  CRUDAgentRegistration
+} from '..';
 
 // reuse equivalent data grants
 // reuse all child grants if parent grant was reused
@@ -86,7 +91,7 @@ export class ReadableAccessConsent extends ReadableResource {
   public async generateAccessGrant(
     dataRegistries: CRUDDataRegistry[],
     agentRegistry: ReadableAgentRegistry,
-    granteeRegistration: ReadableAgentRegistration
+    granteeRegistration: CRUDAgentRegistration
   ): Promise<ImmutableAccessGrant> {
     const dataGrants: ImmutableDataGrant[] = [];
 
@@ -102,7 +107,7 @@ export class ReadableAccessConsent extends ReadableResource {
     }
 
     let finalGrants: (ImmutableDataGrant | DataGrant)[];
-    const priorAccessGrant = granteeRegistration.hasAccessGrant;
+    const priorAccessGrant = granteeRegistration.accessGrant;
     if (priorAccessGrant) {
       finalGrants = reuseDataGrants(dataGrants, priorAccessGrant.hasDataGrant);
     } else {

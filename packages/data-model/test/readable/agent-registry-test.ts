@@ -5,7 +5,6 @@ import {
   CRUDSocialAgentRegistration,
   CRUDApplicationRegistration,
   ReadableApplicationRegistration,
-  ReadableSocialAgentRegistration,
   AuthorizationAgentFactory
 } from '../../src';
 
@@ -29,7 +28,7 @@ test('should provide socialAgentRegistrations', async () => {
   let count = 0;
   for await (const consent of registry.socialAgentRegistrations) {
     count += 1;
-    expect(consent).toBeInstanceOf(ReadableSocialAgentRegistration);
+    expect(consent).toBeInstanceOf(CRUDSocialAgentRegistration);
   }
   expect(count).toBe(2);
 });
