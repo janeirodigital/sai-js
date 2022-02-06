@@ -17,7 +17,7 @@ export class CRUDAccessConsentRegistry extends CRUDContainer {
   }
 
   get accessConsents(): AsyncIterable<ReadableAccessConsent> {
-    const accessConsentPattern = [DataFactory.namedNode(this.iri), INTEROP.hasAccessConsent];
+    const accessConsentPattern = [DataFactory.namedNode(this.iri), INTEROP.hasRegistration];
     const accessConsentIris = this.getQuadArray(...accessConsentPattern).map((q) => q.object.value);
     const { factory } = this;
     return {
