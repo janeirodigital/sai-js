@@ -63,13 +63,16 @@ export class CRUDAccessConsentRegistry extends CRUDContainer {
   }
 
   // match dataOwner on data consents - scope All will have no dataOwner but we want it to also match
-  async findConsentsDelegatingGrant(dataOwner: string): Promise<ReadableAccessConsent[]> {
+  async findConsentsDelegatingFromOwner(dataOwner: string): Promise<ReadableAccessConsent[]> {
     const matching: ReadableAccessConsent[] = [];
     for await (const accessConsent of this.accessConsents) {
       let matches = false;
-      for await (const dataConsent of accessConsent.dataConsents) {
-        if (!dataConsent.dataOwner || dataConsent.dataOwner === dataOwner) {
-          matches = true;
+      // exclude consents where dataOwner is also the grantee (it would match when All scope)
+      if (accessConsent.grantee !== dataOwner) {
+        for await (const dataConsent of accessConsent.dataConsents) {
+          if (!dataConsent.dataOwner || dataConsent.dataOwner === dataOwner) {
+            matches = true;
+          }
         }
       }
       if (matches) {

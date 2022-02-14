@@ -36,7 +36,7 @@ export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
   public static async build(
     iri: string,
     factory: AuthorizationAgentFactory,
-    reciprocal = false,
+    reciprocal: boolean,
     data?: AgentRegistrationData
   ): Promise<CRUDSocialAgentRegistration> {
     const instance = new CRUDSocialAgentRegistration(iri, factory, reciprocal, data);

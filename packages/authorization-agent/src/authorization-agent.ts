@@ -147,7 +147,7 @@ export class AuthorizationAgent {
    * TODO: explore how to optimize, matching on shape trees can fail if access was removed
    */
   public async updateDelegatedGrants(dataOwnerRegistration: CRUDSocialAgentRegistration): Promise<void> {
-    const affectedConsents = await this.registrySet.hasAccessConsentRegistry.findConsentsDelegatingGrant(
+    const affectedConsents = await this.registrySet.hasAccessConsentRegistry.findConsentsDelegatingFromOwner(
       dataOwnerRegistration.registeredAgent
     );
     await Promise.all(

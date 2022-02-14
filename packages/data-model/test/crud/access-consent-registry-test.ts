@@ -2,11 +2,11 @@
 import 'jest-rdf';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { getAllMatchingQuads, getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { ReadableAccessConsent, AuthorizationAgentFactory, CRUDAccessConsentRegistry } from '../../src';
 
 const webId = 'https://alice.example/#id';
@@ -99,5 +99,14 @@ describe('findConsent', () => {
     const agentIri = 'https://non-existing.example/#oops';
     const consent = await registry.findConsent(agentIri);
     expect(consent).toBeUndefined();
+  });
+});
+
+describe('findConsentsDelegatingFromOwner', () => {
+  test('should find all consents delegating from given data owner', async () => {
+    const registry = await factory.crud.accessConsentRegistry(snippetIri);
+    const ownerIri = 'https://acme.example/#corp';
+    const consents = await registry.findConsentsDelegatingFromOwner(ownerIri);
+    expect(consents).toHaveLength(1);
   });
 });
