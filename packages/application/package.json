@@ -1,6 +1,6 @@
 {
   "name": "@janeirodigital/interop-application",
-  "version": "1.0.0-rc.3",
+  "version": "1.0.0-rc.4",
   "description": "Top-level module for applications confirming to Solid Application Interoperability specification",
   "contributors": [
     {
@@ -37,13 +37,13 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@janeirodigital/interop-data-model": "^1.0.0-rc.3",
-    "@janeirodigital/interop-namespaces": "^1.0.0-rc.3",
-    "@janeirodigital/interop-utils": "^1.0.0-rc.3",
+    "@janeirodigital/interop-data-model": "^1.0.0-rc.4",
+    "@janeirodigital/interop-namespaces": "^1.0.0-rc.4",
+    "@janeirodigital/interop-utils": "^1.0.0-rc.4",
     "n3": "^1.11.0"
   },
   "devDependencies": {
-    "@janeirodigital/interop-test-utils": "^1.0.0-rc.3",
+    "@janeirodigital/interop-test-utils": "^1.0.0-rc.4",
     "@rdfjs/types": "^1.0.1"
   }
 }
