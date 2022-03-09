@@ -28,6 +28,22 @@ test('should provide socialAgentRegistrations', async () => {
   expect(count).toBe(2);
 });
 
+describe('findApplicationRegistration', () => {
+  test('finds application registration', async () => {
+    const applicationIri = 'https://projectron.example/#app';
+    const registry = await factory.crud.agentRegistry(snippetIri);
+    expect(await registry.findApplicationRegistration(applicationIri)).toBeInstanceOf(CRUDApplicationRegistration);
+  });
+});
+
+describe('findSocialRegistration', () => {
+  test('finds social agent registration', async () => {
+    const socialAgentIri = 'https://acme.example/#corp';
+    const registry = await factory.crud.agentRegistry(snippetIri);
+    expect(await registry.findSocialAgentRegistration(socialAgentIri)).toBeInstanceOf(CRUDSocialAgentRegistration);
+  });
+});
+
 describe('findRegistration', () => {
   test('finds application registration', async () => {
     const applicationIri = 'https://projectron.example/#app';

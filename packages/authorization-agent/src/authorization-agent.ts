@@ -53,8 +53,16 @@ export class AuthorizationAgent {
     return this.registrySet.hasAgentRegistry.applicationRegistrations;
   }
 
+  public async findApplicationRegistration(iri: string): Promise<CRUDApplicationRegistration | undefined> {
+    return this.registrySet.hasAgentRegistry.findApplicationRegistration(iri);
+  }
+
   get socialAgentRegistrations(): AsyncIterable<CRUDSocialAgentRegistration> {
     return this.registrySet.hasAgentRegistry.socialAgentRegistrations;
+  }
+
+  public async findSocialAgentRegistration(iri: string): Promise<CRUDSocialAgentRegistration | undefined> {
+    return this.registrySet.hasAgentRegistry.findSocialAgentRegistration(iri);
   }
 
   private async bootstrap(): Promise<void> {

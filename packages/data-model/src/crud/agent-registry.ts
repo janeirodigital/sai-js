@@ -39,18 +39,27 @@ export class CRUDAgentRegistry extends CRUDContainer {
   }
 
   // eslint-disable-next-line consistent-return
-  public async findRegistration(
-    iri: string
-  ): Promise<CRUDApplicationRegistration | CRUDSocialAgentRegistration | undefined> {
+  public async findApplicationRegistration(iri: string): Promise<CRUDApplicationRegistration | undefined> {
     for await (const registration of this.applicationRegistrations) {
       if (registration.registeredAgent === iri) {
         return this.factory.crud.applicationRegistration(registration.iri);
       }
     }
+  }
+
+  // eslint-disable-next-line consistent-return
+  public async findSocialAgentRegistration(iri: string): Promise<CRUDSocialAgentRegistration | undefined> {
     for await (const registration of this.socialAgentRegistrations) {
       if (registration.registeredAgent === iri) {
         return this.factory.crud.socialAgentRegistration(registration.iri);
       }
     }
+  }
+
+  // eslint-disable-next-line consistent-return
+  public async findRegistration(
+    iri: string
+  ): Promise<CRUDApplicationRegistration | CRUDSocialAgentRegistration | undefined> {
+    return (await this.findApplicationRegistration(iri)) || this.findSocialAgentRegistration(iri);
   }
 }

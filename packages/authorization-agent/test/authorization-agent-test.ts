@@ -42,6 +42,15 @@ test('have access to all the application registrations', async () => {
   expect(count).toBe(2);
 });
 
+test('should provide shortcut to find application registratons', async () => {
+  const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
+  const spy = jest.spyOn(agent.registrySet.hasAgentRegistry, 'findApplicationRegistration');
+  const iri = 'https://projectron.example/#app';
+  await agent.findApplicationRegistration(iri);
+  expect(spy).toHaveBeenCalledTimes(1);
+  expect(spy).toHaveBeenCalledWith(iri);
+});
+
 test('have access to all the social agent registrations', async () => {
   const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
   let count = 0;
@@ -50,6 +59,15 @@ test('have access to all the social agent registrations', async () => {
     expect(consent).toBeInstanceOf(CRUDSocialAgentRegistration);
   }
   expect(count).toBe(2);
+});
+
+test('should provide shortcut to find social agent registratons', async () => {
+  const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
+  const spy = jest.spyOn(agent.registrySet.hasAgentRegistry, 'findSocialAgentRegistration');
+  const iri = 'https://alice.example/#id';
+  await agent.findSocialAgentRegistration(iri);
+  expect(spy).toHaveBeenCalledTimes(1);
+  expect(spy).toHaveBeenCalledWith(iri);
 });
 
 describe('recordAccessConsent', () => {
