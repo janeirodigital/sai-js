@@ -31,7 +31,7 @@ export class AuthorizationAgent {
 
   registrySet: CRUDRegistrySet;
 
-  constructor(private webId: string, private agentId: string, dependencies: AuthorizationAgentDependencies) {
+  constructor(public webId: string, public agentId: string, dependencies: AuthorizationAgentDependencies) {
     this.fetch = fetchWrapper(dependencies.fetch);
     this.factory = new AuthorizationAgentFactory(webId, agentId, {
       fetch: this.fetch,
