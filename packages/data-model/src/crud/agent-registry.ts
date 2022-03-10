@@ -1,5 +1,6 @@
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { AuthorizationAgentFactory, CRUDApplicationRegistration, CRUDSocialAgentRegistration, CRUDContainer } from '..';
+import { AuthorizationAgentFactory, CRUDApplicationRegistration, CRUDSocialAgentRegistration } from '..';
+import { CRUDContainer } from '.';
 
 export class CRUDAgentRegistry extends CRUDContainer {
   factory: AuthorizationAgentFactory;

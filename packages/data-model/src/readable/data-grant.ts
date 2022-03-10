@@ -2,7 +2,8 @@ import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, DataInstance, InteropFactory, DataGrant } from '..';
+import { DataInstance, InteropFactory, DataGrant } from '..';
+import { ReadableResource } from '.';
 
 export abstract class AbstractDataGrant extends ReadableResource {
   dataset: DatasetCore;

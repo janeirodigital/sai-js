@@ -1,7 +1,7 @@
 import { DataFactory } from 'n3';
-import { iterable2array } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { AuthorizationAgentFactory, CRUDContainer, ReadableAccessConsent, ReadableAccessGrant } from '..';
+import { AuthorizationAgentFactory, ReadableAccessConsent } from '..';
+import { CRUDContainer } from '.';
 
 export class CRUDAccessConsentRegistry extends CRUDContainer {
   factory: AuthorizationAgentFactory;

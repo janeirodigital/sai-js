@@ -2,7 +2,6 @@ import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { iterable2array } from '@janeirodigital/interop-utils';
 import { Memoize } from 'typescript-memoize';
 import {
-  ReadableResource,
   AuthorizationAgentFactory,
   CRUDAgentRegistry,
   ImmutableDataGrant,
@@ -12,6 +11,7 @@ import {
   InheritableDataGrant,
   CRUDAgentRegistration
 } from '..';
+import { ReadableResource } from '.';
 
 export class ReadableDataConsent extends ReadableResource {
   factory: AuthorizationAgentFactory;

@@ -1,6 +1,7 @@
 import { DataFactory } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ImmutableResource, AuthorizationAgentFactory } from '..';
+import { AuthorizationAgentFactory } from '..';
+import { ImmutableResource } from '.';
 
 type StringData = {
   grantee: string;

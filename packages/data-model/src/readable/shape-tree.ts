@@ -1,7 +1,8 @@
 import { Memoize } from 'typescript-memoize';
 import { DataFactory } from 'n3';
 import { SHAPETREES } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, InteropFactory } from '..';
+import { InteropFactory } from '..';
+import { ReadableResource } from '.';
 
 export class ReadableShapeTree extends ReadableResource {
   shapeText: string;
