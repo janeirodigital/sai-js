@@ -1,6 +1,7 @@
 import { Memoize } from 'typescript-memoize';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, DataGrant, InteropFactory } from '..';
+import { DataGrant, InteropFactory } from '..';
+import { ReadableResource } from '.';
 
 export class ReadableAccessGrant extends ReadableResource {
   hasDataGrant: DataGrant[] = [];

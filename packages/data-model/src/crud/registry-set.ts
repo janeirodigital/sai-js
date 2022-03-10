@@ -1,10 +1,5 @@
-import {
-  AuthorizationAgentFactory,
-  CRUDResource,
-  CRUDDataRegistry,
-  CRUDAgentRegistry,
-  CRUDAccessConsentRegistry
-} from '..';
+import { AuthorizationAgentFactory } from '..';
+import { CRUDResource, CRUDDataRegistry, CRUDAgentRegistry, CRUDAccessConsentRegistry } from '.';
 
 export class CRUDRegistrySet extends CRUDResource {
   factory: AuthorizationAgentFactory;

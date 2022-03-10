@@ -1,4 +1,5 @@
-import { ReadableAccessGrant, InteropFactory, ReadableContainer } from '..';
+import { InteropFactory } from '..';
+import { ReadableAccessGrant, ReadableContainer } from '.';
 
 export class ReadableApplicationRegistration extends ReadableContainer {
   hasAccessGrant: ReadableAccessGrant;

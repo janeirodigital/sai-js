@@ -1,6 +1,7 @@
 import { DataFactory } from 'n3';
 import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
-import { AuthorizationAgentFactory, ImmutableResource, ImmutableDataConsent, ReadableAccessConsent } from '..';
+import { AuthorizationAgentFactory, ImmutableDataConsent, ReadableAccessConsent } from '..';
+import { ImmutableResource } from '.';
 
 type StringData = {
   grantedBy: string;

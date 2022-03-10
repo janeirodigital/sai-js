@@ -22,17 +22,26 @@
   },
   "license": "MIT",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/mjs/index.js",
   "files": [
     "dist/",
     "src/"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/mjs/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "directories": {
     "lib": "src",
     "test": "test"
   },
   "scripts": {
-    "build": "tsc -b .",
+    "build": "npm run clean && npm run build:cjs && npm run build:mjs && sh fixup.sh",
+    "build:cjs": "tsc -b tsconfig-cjs.json",
+    "build:mjs": "tsc -b tsconfig-mjs.json",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },

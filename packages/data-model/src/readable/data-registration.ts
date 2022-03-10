@@ -1,6 +1,7 @@
 import { Memoize } from 'typescript-memoize';
 import { LDP } from '@janeirodigital/interop-namespaces';
-import { ReadableResource, InteropFactory } from '..';
+import { InteropFactory } from '..';
+import { ReadableResource } from '.';
 
 export class ReadableDataRegistration extends ReadableResource {
   private async bootstrap(): Promise<void> {
