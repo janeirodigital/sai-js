@@ -120,17 +120,12 @@ export class AuthorizationAgent {
     return rAccessConsent;
   }
 
-  public async generateAccessGrant(
-    accessConsentIri: string,
-    agentRegistration: CRUDSocialAgentRegistration | CRUDApplicationRegistration
-  ): Promise<void> {
+  public async generateAccessGrant(accessConsentIri: string): Promise<void> {
     const accessConsent = await this.factory.readable.accessConsent(accessConsentIri);
-
-    // check if agentRegistration if for the consent grantee
-    if (accessConsent.grantee !== agentRegistration.registeredAgent) {
-      throw new Error('agent registration has to be for the consent grantee');
+    const agentRegistration = await this.registrySet.hasAgentRegistry.findRegistration(accessConsent.grantee);
+    if (!agentRegistration) {
+      throw new Error('agent registration for the grantee does not exist');
     }
-
     // generate access grant (with data grants) and store it
     const accessGrant = await accessConsent.generateAccessGrant(
       this.registrySet.hasDataRegistry,
@@ -158,11 +153,6 @@ export class AuthorizationAgent {
     const affectedConsents = await this.registrySet.hasAccessConsentRegistry.findConsentsDelegatingFromOwner(
       dataOwnerRegistration.registeredAgent
     );
-    await Promise.all(
-      affectedConsents.map(async (accessConsent) => {
-        const agentRegistration = await this.registrySet.hasAgentRegistry.findRegistration(accessConsent.grantee);
-        return this.generateAccessGrant(accessConsent.iri, agentRegistration);
-      })
-    );
+    await Promise.all(affectedConsents.map(async (accessConsent) => this.generateAccessGrant(accessConsent.iri)));
   }
 }

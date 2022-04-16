@@ -131,17 +131,15 @@ describe('generateAccessGrant', () => {
     const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statefulFetch, randomUUID });
     const registeredAgentIri = 'https://projectron.example/#app';
     const agentRegistration = await agent.registrySet.hasAgentRegistry.findRegistration(registeredAgentIri);
-    await agent.generateAccessGrant(accessConsentIri, agentRegistration);
+    await agent.generateAccessGrant(accessConsentIri);
     const updatedAgentRegistration = await agent.registrySet.hasAgentRegistry.findRegistration(registeredAgentIri);
     expect(updatedAgentRegistration.hasAccessGrant).toBe(agentRegistration.hasAccessGrant);
   });
-  test('should throw if agent registartion is not for consent grantee', async () => {
-    const accessConsentIri = 'https://auth.alice.example/eac2c39c-c8b3-4880-8b9f-a3e12f7f6372';
+  test('should throw if agent registartion for the grantee does not exist', async () => {
+    const accessConsentIri = 'https://auth.alice.example/0d12477a-a5ce-4b59-ab48-8be505ccd64c';
     const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
-    const otherAgentIri = 'https://performchart.example/#app';
-    const agentRegistration = await agent.registrySet.hasAgentRegistry.findRegistration(otherAgentIri);
-    await expect(() => agent.generateAccessGrant(accessConsentIri, agentRegistration)).rejects.toThrow(
-      'agent registration has to be for the consent grantee'
+    await expect(() => agent.generateAccessGrant(accessConsentIri)).rejects.toThrow(
+      'agent registration for the grantee does not exist'
     );
   });
 });
