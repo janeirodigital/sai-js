@@ -20,10 +20,10 @@ npx lerna run test
 
 ## Intended dependents
 
-|                           | package                                                                                                          |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Solid Applications        | [`@janeirodigital/interop-application`](https://github.com/janeirodigital/sai-js/tree/main/packages/application) |
-| Solid Authorization Agent | TBA                                                                                                              |
+|                           | package                                                                                                                          |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Solid Applications        | [`@janeirodigital/interop-application`](https://github.com/janeirodigital/sai-js/tree/main/packages/application)                 |
+| Solid Authorization Agent | [`@janeirodigital/interop-authorization-agent`](https://github.com/janeirodigital/sai-js/tree/main/packages/authorization-agent) |
 
 ## Current dependencies
 
