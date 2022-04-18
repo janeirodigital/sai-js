@@ -2,7 +2,7 @@
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import {
-  ReadableDataConsent,
+  ReadableDataAuthorization,
   AuthorizationAgentFactory,
   ImmutableAccessGrant,
   CRUDApplicationRegistration,
@@ -15,36 +15,36 @@ const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUI
 const snippetIri = 'https://auth.alice.example/eac2c39c-c8b3-4880-8b9f-a3e12f7f6372';
 
 describe('getters', () => {
-  test('should provide dataConsents', async () => {
-    const accessConsent = await factory.readable.accessConsent(snippetIri);
+  test('should provide dataAuthorizations', async () => {
+    const accessAuthorization = await factory.readable.accessAuthorization(snippetIri);
     let count = 0;
-    for await (const consent of accessConsent.dataConsents) {
+    for await (const authorization of accessAuthorization.dataAuthorizations) {
       count += 1;
-      expect(consent).toBeInstanceOf(ReadableDataConsent);
+      expect(authorization).toBeInstanceOf(ReadableDataAuthorization);
     }
     expect(count).toBe(4);
   });
 
   test('should provide grantedBy', async () => {
-    const accessConsent = await factory.readable.accessConsent(snippetIri);
-    expect(accessConsent.grantedBy).toBe('https://alice.example/#id');
+    const accessAuthorization = await factory.readable.accessAuthorization(snippetIri);
+    expect(accessAuthorization.grantedBy).toBe('https://alice.example/#id');
   });
 
   test('should provide grantee', async () => {
-    const accessConsent = await factory.readable.accessConsent(snippetIri);
-    expect(accessConsent.grantee).toBe('https://projectron.example/#app');
+    const accessAuthorization = await factory.readable.accessAuthorization(snippetIri);
+    expect(accessAuthorization.grantee).toBe('https://projectron.example/#app');
   });
 });
 
 describe('generateAccessGrant', () => {
   test('generates access grant for application', async () => {
-    const accessConsent = await factory.readable.accessConsent(snippetIri);
+    const accessAuthorization = await factory.readable.accessAuthorization(snippetIri);
     const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
     const registrySet = await factory.crud.registrySet(registrySetIri);
     const agentRegistration = (await registrySet.hasAgentRegistry.findRegistration(
-      accessConsent.grantee
+      accessAuthorization.grantee
     )) as CRUDApplicationRegistration;
-    const accessGrant = await accessConsent.generateAccessGrant(
+    const accessGrant = await accessAuthorization.generateAccessGrant(
       registrySet.hasDataRegistry,
       registrySet.hasAgentRegistry,
       agentRegistration
@@ -52,16 +52,16 @@ describe('generateAccessGrant', () => {
     expect(accessGrant).toBeInstanceOf(ImmutableAccessGrant);
   });
   test('uses new data grants if equivalent does not exists', async () => {
-    const accessConsent = await factory.readable.accessConsent(snippetIri);
+    const accessAuthorization = await factory.readable.accessAuthorization(snippetIri);
     const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
     const registrySet = await factory.crud.registrySet(registrySetIri);
     const agentRegistration = (await registrySet.hasAgentRegistry.findRegistration(
-      accessConsent.grantee
+      accessAuthorization.grantee
     )) as CRUDApplicationRegistration;
     // remove all of existing data grants
     // TODO improve snippets for this test
     agentRegistration.accessGrant.hasDataGrant = [];
-    const accessGrant = await accessConsent.generateAccessGrant(
+    const accessGrant = await accessAuthorization.generateAccessGrant(
       registrySet.hasDataRegistry,
       registrySet.hasAgentRegistry,
       agentRegistration
@@ -70,14 +70,14 @@ describe('generateAccessGrant', () => {
     expect(accessGrant.dataGrants).toHaveLength(4);
   });
   test('generates access grant for social agent', async () => {
-    const consentForSocialAgentIri = 'https://auth.alice.example/75a2ef88-d4d4-4f05-af1e-c2a63af08cab';
-    const accessConsent = await factory.readable.accessConsent(consentForSocialAgentIri);
+    const authorizationForSocialAgentIri = 'https://auth.alice.example/75a2ef88-d4d4-4f05-af1e-c2a63af08cab';
+    const accessAuthorization = await factory.readable.accessAuthorization(authorizationForSocialAgentIri);
     const registrySetIri = 'https://auth.alice.example/13e60d32-77a6-4239-864d-cfe2c90807c8';
     const registrySet = await factory.crud.registrySet(registrySetIri);
     const agentRegistration = (await registrySet.hasAgentRegistry.findRegistration(
-      accessConsent.grantee
+      accessAuthorization.grantee
     )) as CRUDSocialAgentRegistration;
-    const accessGrant = await accessConsent.generateAccessGrant(
+    const accessGrant = await accessAuthorization.generateAccessGrant(
       registrySet.hasDataRegistry,
       registrySet.hasAgentRegistry,
       agentRegistration

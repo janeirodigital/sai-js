@@ -5,7 +5,7 @@ import { jest } from '@jest/globals';
 import { statelessFetch, createStatefulFetch } from '@janeirodigital/interop-test-utils';
 import {
   CRUDRegistrySet,
-  ReadableAccessConsent,
+  ReadableAccessAuthorization,
   CRUDApplicationRegistration,
   CRUDSocialAgentRegistration
 } from '@janeirodigital/interop-data-model';
@@ -22,12 +22,12 @@ test('should build registrySet', async () => {
   expect(agent.registrySet.iri).toBe(registrySetIri);
 });
 
-test('have access to all the access consents', async () => {
+test('have access to all the access authorizations', async () => {
   const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
   let count = 0;
-  for await (const consent of agent.accessConsents) {
+  for await (const authorization of agent.accessAuthorizations) {
     count += 1;
-    expect(consent).toBeInstanceOf(ReadableAccessConsent);
+    expect(authorization).toBeInstanceOf(ReadableAccessAuthorization);
   }
   expect(count).toBe(2);
 });
@@ -35,9 +35,9 @@ test('have access to all the access consents', async () => {
 test('have access to all the application registrations', async () => {
   const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
   let count = 0;
-  for await (const consent of agent.applicationRegistrations) {
+  for await (const authorization of agent.applicationRegistrations) {
     count += 1;
-    expect(consent).toBeInstanceOf(CRUDApplicationRegistration);
+    expect(authorization).toBeInstanceOf(CRUDApplicationRegistration);
   }
   expect(count).toBe(2);
 });
@@ -54,9 +54,9 @@ test('should provide shortcut to find application registratons', async () => {
 test('have access to all the social agent registrations', async () => {
   const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
   let count = 0;
-  for await (const consent of agent.socialAgentRegistrations) {
+  for await (const authorization of agent.socialAgentRegistrations) {
     count += 1;
-    expect(consent).toBeInstanceOf(CRUDSocialAgentRegistration);
+    expect(authorization).toBeInstanceOf(CRUDSocialAgentRegistration);
   }
   expect(count).toBe(2);
 });
@@ -70,8 +70,8 @@ test('should provide shortcut to find social agent registratons', async () => {
   expect(spy).toHaveBeenCalledWith(iri);
 });
 
-describe('recordAccessConsent', () => {
-  const accessConsentData = {
+describe('recordAccessAuthorization', () => {
+  const accessAuthorizationData = {
     grantedBy: webId,
     grantedWith: agentId,
     grantee: 'https://acme.example/#corp',
@@ -82,14 +82,14 @@ describe('recordAccessConsent', () => {
     registeredShapeTree: 'https://solidshapes.example/tree/Project',
     dataOwner: 'https://omni.example/#corp',
     accessMode: [ACL.Read.value],
-    scopeOfConsent: INTEROP.AllFromAgent.value
+    scopeOfAuthorization: INTEROP.AllFromAgent.value
   };
-  const invalidDataConsentData = {
+  const invalidDataAuthorizationData = {
     grantee: 'https://acme.example/#corp',
     registeredShapeTree: 'https://solidshapes.example/tree/Project',
     dataOwner: 'https://acme.example/#corp',
     accessMode: [ACL.Read.value],
-    scopeOfConsent: INTEROP.AllFromAgent.value
+    scopeOfAuthorization: INTEROP.AllFromAgent.value
   };
 
   let agent: AuthorizationAgent;
@@ -99,24 +99,27 @@ describe('recordAccessConsent', () => {
     agent = await AuthorizationAgent.build(webId, agentId, { fetch: statefulFetch, randomUUID });
   });
 
-  test('should filter out data consents where grantee is the same as owner', async () => {
-    const dataConsentsData = [validDataConsetData, invalidDataConsentData];
+  test('should filter out data authorizations where grantee is the same as owner', async () => {
+    const dataAuthorizationsData = [validDataConsetData, invalidDataAuthorizationData];
 
-    const accessConsent = await agent.recordAccessConsent({ dataConsents: dataConsentsData, ...accessConsentData });
-    for await (const dataConsent of accessConsent.dataConsents) {
-      expect(dataConsent.grantee).not.toBe(dataConsent.dataOwner);
+    const accessAuthorization = await agent.recordAccessAuthorization({
+      dataAuthorizations: dataAuthorizationsData,
+      ...accessAuthorizationData
+    });
+    for await (const dataAuthorization of accessAuthorization.dataAuthorizations) {
+      expect(dataAuthorization.grantee).not.toBe(dataAuthorization.dataOwner);
     }
   });
 
-  test('should link to new access consent from access consent registry', async () => {
-    const accessConsent = await agent.recordAccessConsent({
-      dataConsents: [validDataConsetData],
-      ...accessConsentData
+  test('should link to new access authorization from access authorization registry', async () => {
+    const accessAuthorization = await agent.recordAccessAuthorization({
+      dataAuthorizations: [validDataConsetData],
+      ...accessAuthorizationData
     });
-    const registry = await agent.factory.crud.accessConsentRegistry(agent.registrySet.hasAccessConsentRegistry.iri);
+    const registry = await agent.factory.crud.authorizationRegistry(agent.registrySet.hasAuthorizationRegistry.iri);
     let matched;
-    for await (const consent of registry.accessConsents) {
-      if (consent.iri === accessConsent.iri) {
+    for await (const authorization of registry.accessAuthorizations) {
+      if (authorization.iri === accessAuthorization.iri) {
         matched = true;
       }
     }
@@ -127,25 +130,25 @@ describe('recordAccessConsent', () => {
 describe('generateAccessGrant', () => {
   test('should call keept the same access grant if nothing changed', async () => {
     const statefulFetch = createStatefulFetch();
-    const accessConsentIri = 'https://auth.alice.example/eac2c39c-c8b3-4880-8b9f-a3e12f7f6372';
+    const accessAuthorizationIri = 'https://auth.alice.example/eac2c39c-c8b3-4880-8b9f-a3e12f7f6372';
     const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statefulFetch, randomUUID });
     const registeredAgentIri = 'https://projectron.example/#app';
     const agentRegistration = await agent.registrySet.hasAgentRegistry.findRegistration(registeredAgentIri);
-    await agent.generateAccessGrant(accessConsentIri);
+    await agent.generateAccessGrant(accessAuthorizationIri);
     const updatedAgentRegistration = await agent.registrySet.hasAgentRegistry.findRegistration(registeredAgentIri);
     expect(updatedAgentRegistration.hasAccessGrant).toBe(agentRegistration.hasAccessGrant);
   });
   test('should throw if agent registartion for the grantee does not exist', async () => {
-    const accessConsentIri = 'https://auth.alice.example/0d12477a-a5ce-4b59-ab48-8be505ccd64c';
+    const accessAuthorizationIri = 'https://auth.alice.example/0d12477a-a5ce-4b59-ab48-8be505ccd64c';
     const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
-    await expect(() => agent.generateAccessGrant(accessConsentIri)).rejects.toThrow(
+    await expect(() => agent.generateAccessGrant(accessAuthorizationIri)).rejects.toThrow(
       'agent registration for the grantee does not exist'
     );
   });
 });
 
 describe('updateDelegatedGrant', () => {
-  test('should generateAccessGrant for each affected access consent', async () => {
+  test('should generateAccessGrant for each affected access authorization', async () => {
     const statefulFetch = createStatefulFetch();
     const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statefulFetch, randomUUID });
     const generateAccessGrantSpy = jest.spyOn(agent, 'generateAccessGrant');

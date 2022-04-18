@@ -11,9 +11,9 @@ const snippetIri = 'https://auth.alice.example/1cf3e08b-ffe2-465a-ac5b-94ce165cb
 test('should provide applicationRegistrations', async () => {
   const registry = await factory.crud.agentRegistry(snippetIri);
   let count = 0;
-  for await (const consent of registry.applicationRegistrations) {
+  for await (const authorization of registry.applicationRegistrations) {
     count += 1;
-    expect(consent).toBeInstanceOf(CRUDApplicationRegistration);
+    expect(authorization).toBeInstanceOf(CRUDApplicationRegistration);
   }
   expect(count).toBe(2);
 });
@@ -21,9 +21,9 @@ test('should provide applicationRegistrations', async () => {
 test('should provide socialAgentRegistrations', async () => {
   const registry = await factory.crud.agentRegistry(snippetIri);
   let count = 0;
-  for await (const consent of registry.socialAgentRegistrations) {
+  for await (const authorization of registry.socialAgentRegistrations) {
     count += 1;
-    expect(consent).toBeInstanceOf(CRUDSocialAgentRegistration);
+    expect(authorization).toBeInstanceOf(CRUDSocialAgentRegistration);
   }
   expect(count).toBe(2);
 });

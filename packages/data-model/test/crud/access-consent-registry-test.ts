@@ -7,106 +7,106 @@ import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { ReadableAccessConsent, AuthorizationAgentFactory, CRUDAccessConsentRegistry } from '../../src';
+import { ReadableAccessAuthorization, AuthorizationAgentFactory, CRUDAuthorizationRegistry } from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
 const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
 const snippetIri = 'https://auth.alice.example/96feb105-063e-4996-ab74-5e504c6ceae5';
 
-test('should provide accessConsents', async () => {
-  const registry = await factory.crud.accessConsentRegistry(snippetIri);
+test('should provide accessAuthorizations', async () => {
+  const registry = await factory.crud.authorizationRegistry(snippetIri);
   let count = 0;
-  for await (const consent of registry.accessConsents) {
+  for await (const authorization of registry.accessAuthorizations) {
     count += 1;
-    expect(consent).toBeInstanceOf(ReadableAccessConsent);
+    expect(authorization).toBeInstanceOf(ReadableAccessAuthorization);
   }
   expect(count).toBe(2);
 });
 
 test('should provide iriForContained method', async () => {
-  const registry = await factory.crud.accessConsentRegistry(snippetIri);
+  const registry = await factory.crud.authorizationRegistry(snippetIri);
   expect(registry.iriForContained()).toMatch(registry.iri);
 });
 
 describe('add', () => {
-  let registry: CRUDAccessConsentRegistry;
-  let consent: ReadableAccessConsent;
+  let registry: CRUDAuthorizationRegistry;
+  let authorization: ReadableAccessAuthorization;
 
   beforeEach(async () => {
-    registry = await factory.crud.accessConsentRegistry(snippetIri);
-    consent = {
+    registry = await factory.crud.authorizationRegistry(snippetIri);
+    authorization = {
       iri: registry.iriForContained(),
       grantee: 'https://someone.example/#id'
-    } as unknown as ReadableAccessConsent;
+    } as unknown as ReadableAccessAuthorization;
   });
 
-  test('should add new quad linking to added consent', async () => {
+  test('should add new quad linking to added authorization', async () => {
     const quads = [
       DataFactory.quad(
         DataFactory.namedNode(registry.iri),
-        INTEROP.hasAccessConsent,
-        DataFactory.namedNode(consent.iri)
+        INTEROP.hasAccessAuthorization,
+        DataFactory.namedNode(authorization.iri)
       )
     ];
     expect(registry.dataset).not.toBeRdfDatasetContaining(...quads);
-    await registry.add(consent);
+    await registry.add(authorization);
     expect(registry.dataset).toBeRdfDatasetContaining(...quads);
   });
 
-  test('should remove link to prior consent for that agent if exists', async () => {
-    consent = {
+  test('should remove link to prior authorization for that agent if exists', async () => {
+    authorization = {
       iri: registry.iriForContained(),
       grantee: 'https://projectron.example/#app'
-    } as unknown as ReadableAccessConsent;
-    const projectronConsentIri = 'https://auth.alice.example/eac2c39c-c8b3-4880-8b9f-a3e12f7f6372';
+    } as unknown as ReadableAccessAuthorization;
+    const projectronAuthorizationIri = 'https://auth.alice.example/eac2c39c-c8b3-4880-8b9f-a3e12f7f6372';
     const priorQuads = [
       registry.getQuad(
         DataFactory.namedNode(registry.iri),
-        INTEROP.hasAccessConsent,
-        DataFactory.namedNode(projectronConsentIri)
+        INTEROP.hasAccessAuthorization,
+        DataFactory.namedNode(projectronAuthorizationIri)
       )
     ];
     expect(registry.dataset).toBeRdfDatasetContaining(...priorQuads);
-    await registry.add(consent);
+    await registry.add(authorization);
     expect(registry.dataset).not.toBeRdfDatasetContaining(...priorQuads);
   });
 
   test('should update itself', async () => {
     const accessRegistrySpy = jest.spyOn(registry, 'update');
-    await registry.add(consent);
+    await registry.add(authorization);
     expect(accessRegistrySpy).toBeCalled();
   });
 
-  test('should not remove consents for other agents', async () => {
-    const numberOfConsentsBefore = registry.getQuadArray(null, INTEROP.hasAccessConsent).length;
-    await registry.add(consent);
-    const numberOfConsentsAfter = registry.getQuadArray(null, INTEROP.hasAccessConsent).length;
-    expect(numberOfConsentsAfter).toBe(numberOfConsentsBefore + 1);
+  test('should not remove authorizations for other agents', async () => {
+    const numberOfAuthorizationsBefore = registry.getQuadArray(null, INTEROP.hasAccessAuthorization).length;
+    await registry.add(authorization);
+    const numberOfAuthorizationsAfter = registry.getQuadArray(null, INTEROP.hasAccessAuthorization).length;
+    expect(numberOfAuthorizationsAfter).toBe(numberOfAuthorizationsBefore + 1);
   });
 });
 
-describe('findConsent', () => {
-  test('should return access consent if exists', async () => {
-    const registry = await factory.crud.accessConsentRegistry(snippetIri);
+describe('findAuthorization', () => {
+  test('should return access authorization if exists', async () => {
+    const registry = await factory.crud.authorizationRegistry(snippetIri);
     const agentIri = 'https://projectron.example/#app';
-    const consent = await registry.findConsent(agentIri);
-    expect(consent).toBeInstanceOf(ReadableAccessConsent);
+    const authorization = await registry.findAuthorization(agentIri);
+    expect(authorization).toBeInstanceOf(ReadableAccessAuthorization);
   });
 
-  test('should return undefined if access consent does not exist', async () => {
-    const registry = await factory.crud.accessConsentRegistry(snippetIri);
+  test('should return undefined if access authorization does not exist', async () => {
+    const registry = await factory.crud.authorizationRegistry(snippetIri);
     const agentIri = 'https://non-existing.example/#oops';
-    const consent = await registry.findConsent(agentIri);
-    expect(consent).toBeUndefined();
+    const authorization = await registry.findAuthorization(agentIri);
+    expect(authorization).toBeUndefined();
   });
 });
 
-describe('findConsentsDelegatingFromOwner', () => {
-  test('should find all consents delegating from given data owner', async () => {
-    const registry = await factory.crud.accessConsentRegistry(snippetIri);
+describe('findAuthorizationsDelegatingFromOwner', () => {
+  test('should find all authorizations delegating from given data owner', async () => {
+    const registry = await factory.crud.authorizationRegistry(snippetIri);
     const ownerIri = 'https://acme.example/#corp';
-    const consents = await registry.findConsentsDelegatingFromOwner(ownerIri);
-    expect(consents).toHaveLength(1);
+    const authorizations = await registry.findAuthorizationsDelegatingFromOwner(ownerIri);
+    expect(authorizations).toHaveLength(1);
   });
 });

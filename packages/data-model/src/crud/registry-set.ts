@@ -1,10 +1,10 @@
 import { AuthorizationAgentFactory } from '..';
-import { CRUDResource, CRUDDataRegistry, CRUDAgentRegistry, CRUDAccessConsentRegistry } from '.';
+import { CRUDResource, CRUDDataRegistry, CRUDAgentRegistry, CRUDAuthorizationRegistry } from '.';
 
 export class CRUDRegistrySet extends CRUDResource {
   factory: AuthorizationAgentFactory;
 
-  hasAccessConsentRegistry: CRUDAccessConsentRegistry;
+  hasAuthorizationRegistry: CRUDAuthorizationRegistry;
 
   hasAgentRegistry: CRUDAgentRegistry;
 
@@ -12,8 +12,8 @@ export class CRUDRegistrySet extends CRUDResource {
 
   private async bootstrap(): Promise<void> {
     await this.fetchData();
-    this.hasAccessConsentRegistry = await this.factory.crud.accessConsentRegistry(
-      this.getObject('hasAccessConsentRegistry').value
+    this.hasAuthorizationRegistry = await this.factory.crud.authorizationRegistry(
+      this.getObject('hasAuthorizationRegistry').value
     );
     this.hasAgentRegistry = await this.factory.crud.agentRegistry(this.getObject('hasAgentRegistry').value);
     const dataRegistryIris = this.getObjectsArray('hasDataRegistry').map((object) => object.value);

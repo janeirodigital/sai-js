@@ -5,6 +5,6 @@ export * from './application-registration';
 export * from './social-agent-registration';
 export { CRUDDataRegistry } from './data-registry';
 export * from './data-registration';
-export { CRUDAccessConsentRegistry } from './access-consent-registry';
+export { CRUDAuthorizationRegistry } from './authorization-registry';
 export { CRUDAgentRegistry } from './agent-registry';
 export { CRUDRegistrySet } from './registry-set';

@@ -3,9 +3,9 @@ import { DatasetCore } from '@rdfjs/types';
 import {
   AuthorizationAgentFactory,
   CRUDRegistrySet,
-  ReadableAccessConsent,
-  ImmutableDataConsent,
-  DataConsentData,
+  ReadableAccessAuthorization,
+  ImmutableDataAuthorization,
+  DataAuthorizationData,
   CRUDSocialAgentRegistration,
   CRUDApplicationRegistration,
   ImmutableDataGrant
@@ -18,10 +18,10 @@ interface AuthorizationAgentDependencies {
   randomUUID(): string;
 }
 
-type AccessConsentStructure = {
+type AccessAuthorizationStructure = {
   grantee: string;
   hasAccessNeedGroup: string;
-  dataConsents: DataConsentData[];
+  dataAuthorizations: DataAuthorizationData[];
 };
 
 export class AuthorizationAgent {
@@ -45,8 +45,8 @@ export class AuthorizationAgent {
     return getOneMatchingQuad(userDataset, ...registrySetPattern).object.value;
   }
 
-  get accessConsents(): AsyncIterable<ReadableAccessConsent> {
-    return this.registrySet.hasAccessConsentRegistry.accessConsents;
+  get accessAuthorizations(): AsyncIterable<ReadableAccessAuthorization> {
+    return this.registrySet.hasAuthorizationRegistry.accessAuthorizations;
   }
 
   get applicationRegistrations(): AsyncIterable<CRUDApplicationRegistration> {
@@ -82,52 +82,54 @@ export class AuthorizationAgent {
 
   /*
    * Sincle solid doesn't provide atomic transactions we should follow this order
-   * 1. Create Access Consent with Data Consents (or reuse existing when possible)
-   *    AccessConsent#store does it
-   * 2. Update Access Consent Registry in single request
-   *   * a) Remove reference to prior Access Consent
-   *   * b) Add reference to new Access Consent
-   * TODO: reuse existing Data Consents wherever possible - see Data Consent tests
+   * 1. Create Access Authorization with Data Authorizations (or reuse existing when possible)
+   *    AccessAuthorization#store does it
+   * 2. Update Access Authorization Registry in single request
+   *   * a) Remove reference to prior Access Authorization
+   *   * b) Add reference to new Access Authorization
+   * TODO: reuse existing Data Authorizations wherever possible - see Data Authorization tests
    */
-  public async recordAccessConsent(consent: AccessConsentStructure): Promise<ReadableAccessConsent> {
-    // create data consents
+  public async recordAccessAuthorization(
+    authorization: AccessAuthorizationStructure
+  ): Promise<ReadableAccessAuthorization> {
+    // create data authorizations
 
-    // don't create data consent where grantee == dataowner
-    const validDataConsents = consent.dataConsents.filter(
-      (dataConsent) => dataConsent.dataOwner !== dataConsent.grantee
+    // don't create data authorization where grantee == dataowner
+    const validDataAuthorizations = authorization.dataAuthorizations.filter(
+      (dataAuthorization) => dataAuthorization.dataOwner !== dataAuthorization.grantee
     );
 
-    const dataConsents: ImmutableDataConsent[] = await Promise.all(
-      validDataConsents.map((dataConsent) => {
-        const dataConsentIri = this.registrySet.hasAccessConsentRegistry.iriForContained();
-        return this.factory.immutable.dataConsent(dataConsentIri, dataConsent);
+    const dataAuthorizations: ImmutableDataAuthorization[] = await Promise.all(
+      validDataAuthorizations.map((dataAuthorization) => {
+        const dataAuthorizationIri = this.registrySet.hasAuthorizationRegistry.iriForContained();
+        return this.factory.immutable.dataAuthorization(dataAuthorizationIri, dataAuthorization);
       })
     );
 
-    const consentIri = this.registrySet.hasAccessConsentRegistry.iriForContained();
+    const authorizationIri = this.registrySet.hasAuthorizationRegistry.iriForContained();
     const data = {
       grantedWith: this.agentId,
       grantedBy: this.webId,
-      grantee: consent.grantee,
-      hasAccessNeedGroup: consent.hasAccessNeedGroup,
-      dataConsents
+      grantee: authorization.grantee,
+      hasAccessNeedGroup: authorization.hasAccessNeedGroup,
+      dataAuthorizations
     };
-    const accessConsent = this.factory.immutable.accessConsent(consentIri, data);
-    const rAccessConsent = await accessConsent.store();
+    const accessAuthorization = this.factory.immutable.accessAuthorization(authorizationIri, data);
+    const rAccessAuthorization = await accessAuthorization.store();
 
-    // link to new access consent from access consent registry
-    await this.registrySet.hasAccessConsentRegistry.add(rAccessConsent);
-    return rAccessConsent;
+    // link to new access authorization from access authorization registry
+    await this.registrySet.hasAuthorizationRegistry.add(rAccessAuthorization);
+    return rAccessAuthorization;
   }
 
-  public async generateAccessGrant(accessConsentIri: string): Promise<void> {
-    const accessConsent = await this.factory.readable.accessConsent(accessConsentIri);
-    const agentRegistration = await this.registrySet.hasAgentRegistry.findRegistration(accessConsent.grantee);
+  public async generateAccessGrant(accessAuthorizationIri: string): Promise<void> {
+    const accessAuthorization = await this.factory.readable.accessAuthorization(accessAuthorizationIri);
+    const agentRegistration = await this.registrySet.hasAgentRegistry.findRegistration(accessAuthorization.grantee);
     if (!agentRegistration) {
       throw new Error('agent registration for the grantee does not exist');
     }
     // generate access grant (with data grants) and store it
-    const accessGrant = await accessConsent.generateAccessGrant(
+    const accessGrant = await accessAuthorization.generateAccessGrant(
       this.registrySet.hasDataRegistry,
       this.registrySet.hasAgentRegistry,
       agentRegistration
@@ -150,9 +152,12 @@ export class AuthorizationAgent {
    * TODO: explore how to optimize, matching on shape trees can fail if access was removed
    */
   public async updateDelegatedGrants(dataOwnerRegistration: CRUDSocialAgentRegistration): Promise<void> {
-    const affectedConsents = await this.registrySet.hasAccessConsentRegistry.findConsentsDelegatingFromOwner(
-      dataOwnerRegistration.registeredAgent
+    const affectedAuthorizations =
+      await this.registrySet.hasAuthorizationRegistry.findAuthorizationsDelegatingFromOwner(
+        dataOwnerRegistration.registeredAgent
+      );
+    await Promise.all(
+      affectedAuthorizations.map(async (accessAuthorization) => this.generateAccessGrant(accessAuthorization.iri))
     );
-    await Promise.all(affectedConsents.map(async (accessConsent) => this.generateAccessGrant(accessConsent.iri)));
   }
 }

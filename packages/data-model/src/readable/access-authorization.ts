@@ -2,7 +2,7 @@ import { Memoize } from 'typescript-memoize';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import {
   ReadableResource,
-  ReadableDataConsent,
+  ReadableDataAuthorization,
   DataGrant,
   AllFromRegistryDataGrant,
   SelectedFromRegistryDataGrant
@@ -44,26 +44,26 @@ function reuseDataGrants(
 
   return finalGrants;
 }
-export class ReadableAccessConsent extends ReadableResource {
+export class ReadableAccessAuthorization extends ReadableResource {
   factory: AuthorizationAgentFactory;
 
   async bootstrap(): Promise<void> {
     await this.fetchData();
   }
 
-  public static async build(iri: string, factory: AuthorizationAgentFactory): Promise<ReadableAccessConsent> {
-    const instance = new ReadableAccessConsent(iri, factory);
+  public static async build(iri: string, factory: AuthorizationAgentFactory): Promise<ReadableAccessAuthorization> {
+    const instance = new ReadableAccessAuthorization(iri, factory);
     await instance.bootstrap();
     return instance;
   }
 
-  get dataConsents(): AsyncIterable<ReadableDataConsent> {
-    const dataConsentIris = this.getObjectsArray(INTEROP.hasDataConsent).map((object) => object.value);
+  get dataAuthorizations(): AsyncIterable<ReadableDataAuthorization> {
+    const dataAuthorizationIris = this.getObjectsArray(INTEROP.hasDataAuthorization).map((object) => object.value);
     const { factory } = this;
     return {
       async *[Symbol.asyncIterator]() {
-        for (const iri of dataConsentIris) {
-          yield factory.readable.dataConsent(iri);
+        for (const iri of dataAuthorizationIris) {
+          yield factory.readable.dataAuthorization(iri);
         }
       }
     };
@@ -95,15 +95,17 @@ export class ReadableAccessConsent extends ReadableResource {
   ): Promise<ImmutableAccessGrant> {
     const dataGrants: ImmutableDataGrant[] = [];
 
-    const regularConsents: ReadableDataConsent[] = [];
-    for await (const dataConsent of this.dataConsents) {
-      if (dataConsent.scopeOfConsent !== INTEROP.Inherited.value) {
-        regularConsents.push(dataConsent);
+    const regularAuthorizations: ReadableDataAuthorization[] = [];
+    for await (const dataAuthorization of this.dataAuthorizations) {
+      if (dataAuthorization.scopeOfAuthorization !== INTEROP.Inherited.value) {
+        regularAuthorizations.push(dataAuthorization);
       }
     }
-    for (const dataConsent of regularConsents) {
-      // eslint-disable-next-line no-await-in-loop
-      dataGrants.push(...(await dataConsent.generateDataGrants(dataRegistries, agentRegistry, granteeRegistration)));
+    for (const dataAuthorization of regularAuthorizations) {
+      dataGrants.push(
+        // eslint-disable-next-line no-await-in-loop
+        ...(await dataAuthorization.generateDataGrants(dataRegistries, agentRegistry, granteeRegistration))
+      );
     }
 
     let finalGrants: (ImmutableDataGrant | DataGrant)[];

@@ -6,10 +6,10 @@ import { ImmutableResource } from '.';
 type StringData = {
   grantee: string;
   registeredShapeTree: string;
-  scopeOfConsent: string;
+  scopeOfAuthorization: string;
   dataOwner?: string;
   hasDataRegistration?: string;
-  inheritsFromConsent?: string;
+  inheritsFromAuthorization?: string;
 };
 
 type ArrayData = {
@@ -18,10 +18,10 @@ type ArrayData = {
   hasDataInstance?: string[];
 };
 
-export type DataConsentData = StringData & ArrayData;
+export type DataAuthorizationData = StringData & ArrayData;
 
-export class ImmutableDataConsent extends ImmutableResource {
-  public constructor(iri: string, factory: AuthorizationAgentFactory, data: DataConsentData) {
+export class ImmutableDataAuthorization extends ImmutableResource {
+  public constructor(iri: string, factory: AuthorizationAgentFactory, data: DataAuthorizationData) {
     super(iri, factory, data);
     const thisNode = DataFactory.namedNode(this.iri);
     const props: (keyof StringData)[] = [
@@ -29,8 +29,8 @@ export class ImmutableDataConsent extends ImmutableResource {
       'dataOwner',
       'registeredShapeTree',
       'hasDataRegistration',
-      'scopeOfConsent',
-      'inheritsFromConsent'
+      'scopeOfAuthorization',
+      'inheritsFromAuthorization'
     ];
     for (const prop of props) {
       if (data[prop]) {

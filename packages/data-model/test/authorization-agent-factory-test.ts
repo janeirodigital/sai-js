@@ -6,14 +6,14 @@ import {
   AuthorizationAgentFactory,
   CRUDApplicationRegistration,
   CRUDSocialAgentRegistration,
-  ImmutableAccessConsent,
+  ImmutableAccessAuthorization,
   ImmutableAccessGrant,
-  ImmutableDataConsent,
+  ImmutableDataAuthorization,
   ImmutableDataGrant,
-  ReadableAccessConsent,
-  CRUDAccessConsentRegistry,
+  ReadableAccessAuthorization,
+  CRUDAuthorizationRegistry,
   CRUDAgentRegistry,
-  ReadableDataConsent,
+  ReadableDataAuthorization,
   CRUDDataRegistry,
   CRUDRegistrySet
 } from '../src';
@@ -35,10 +35,10 @@ describe('crud', () => {
     expect(agentRegistration).toBeInstanceOf(CRUDSocialAgentRegistration);
   });
 
-  test('accessConsentRegistry', async () => {
+  test('authorizationRegistry', async () => {
     const snippetIri = 'https://auth.alice.example/96feb105-063e-4996-ab74-5e504c6ceae5';
-    const accessConsentRegistry = await factory.crud.accessConsentRegistry(snippetIri);
-    expect(accessConsentRegistry).toBeInstanceOf(CRUDAccessConsentRegistry);
+    const authorizationRegistry = await factory.crud.authorizationRegistry(snippetIri);
+    expect(authorizationRegistry).toBeInstanceOf(CRUDAuthorizationRegistry);
   });
 
   test('dataRegistry', async () => {
@@ -131,40 +131,40 @@ describe('immutable', () => {
     expect(accessGrant).toBeInstanceOf(ImmutableAccessGrant);
   });
 
-  test('builds Access Consent with Data Consent', async () => {
+  test('builds Access Authorization with Data Authorization', async () => {
     const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
-    const dataConsentIri = 'https://auth.alice.example/25b18e05-7f75-4e13-94f6-9950a67a89dd';
-    const dataConsent = factory.immutable.dataConsent(dataConsentIri, {
+    const dataAuthorizationIri = 'https://auth.alice.example/25b18e05-7f75-4e13-94f6-9950a67a89dd';
+    const dataAuthorization = factory.immutable.dataAuthorization(dataAuthorizationIri, {
       grantee: 'https://projectron.example/#app',
       registeredShapeTree: 'https://solidshapes.example/trees/Project',
       accessMode: [ACL.Read.value, ACL.Write.value],
-      scopeOfConsent: INTEROP.All.value
+      scopeOfAuthorization: INTEROP.All.value
     });
-    expect(dataConsent).toBeInstanceOf(ImmutableDataConsent);
-    const accessConsentData = {
+    expect(dataAuthorization).toBeInstanceOf(ImmutableDataAuthorization);
+    const accessAuthorizationData = {
       grantedBy: webId,
       grantedWith: agentId,
       grantee: 'https://projectron.example/#app',
       hasAccessNeedGroup: 'https://projectron.example/#some-access-group',
-      dataConsents: [dataConsent]
+      dataAuthorizations: [dataAuthorization]
     };
-    const accessConsentIri = 'https://auth.alice.example/5e8d3d6f-9e61-4e5c-acff-adee83b68ad1';
-    const accessConsent = factory.immutable.accessConsent(accessConsentIri, accessConsentData);
-    expect(accessConsent).toBeInstanceOf(ImmutableAccessConsent);
+    const accessAuthorizationIri = 'https://auth.alice.example/5e8d3d6f-9e61-4e5c-acff-adee83b68ad1';
+    const accessAuthorization = factory.immutable.accessAuthorization(accessAuthorizationIri, accessAuthorizationData);
+    expect(accessAuthorization).toBeInstanceOf(ImmutableAccessAuthorization);
   });
 });
 
 describe('readable', () => {
   const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
-  test('accessConsent', async () => {
+  test('accessAuthorization', async () => {
     const snippetIri = 'https://auth.alice.example/eac2c39c-c8b3-4880-8b9f-a3e12f7f6372';
-    const accessConsent = await factory.readable.accessConsent(snippetIri);
-    expect(accessConsent).toBeInstanceOf(ReadableAccessConsent);
+    const accessAuthorization = await factory.readable.accessAuthorization(snippetIri);
+    expect(accessAuthorization).toBeInstanceOf(ReadableAccessAuthorization);
   });
 
-  test('dataConsent', async () => {
+  test('dataAuthorization', async () => {
     const snippetIri = 'https://auth.alice.example/e2765d6c-848a-4fc0-9092-556903730263';
-    const dataConsent = await factory.readable.dataConsent(snippetIri);
-    expect(dataConsent).toBeInstanceOf(ReadableDataConsent);
+    const dataAuthorization = await factory.readable.dataAuthorization(snippetIri);
+    expect(dataAuthorization).toBeInstanceOf(ReadableDataAuthorization);
   });
 });

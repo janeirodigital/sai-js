@@ -33,9 +33,9 @@ describe('build', () => {
     expect(registrySet.hasAgentRegistry.iri).toEqual(agentRegistryIri);
   });
 
-  test('should set hasAccessConsentRegistry', async () => {
-    const accessConsentRegistryIri = 'https://auth.alice.example/96feb105-063e-4996-ab74-5e504c6ceae5';
+  test('should set hasAuthorizationRegistry', async () => {
+    const authorizationRegistryIri = 'https://auth.alice.example/96feb105-063e-4996-ab74-5e504c6ceae5';
     const registrySet = await factory.crud.registrySet(snippetIri);
-    expect(registrySet.hasAccessConsentRegistry.iri).toEqual(accessConsentRegistryIri);
+    expect(registrySet.hasAuthorizationRegistry.iri).toEqual(authorizationRegistryIri);
   });
 });

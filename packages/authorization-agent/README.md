@@ -94,31 +94,31 @@ const webId = 'https://alice.example/#id';
 const registration = await agent.findSocialAgentRegistration(webId);
 ```
 
-## Access Consent
+## Access Authorization
 
-Creating Access Consents is the primary responsibility of an Authorization Agent.
+Creating Access Authorizations is the primary responsibility of an Authorization Agent.
 
-`async recordAccessConsent(consent: AccessConsentStructure): Promise<ReadableAccessConsent>`
+`async recordAccessAuthorization(authorization: AccessAuthorizationStructure): Promise<ReadableAccessAuthorization>`
 
-Since access consent is immutable, it is required to create a new one to replace the old one.
+Since access authorization is immutable, it is required to create a new one to replace the old one.
 
 ```ts
-type AccessConsentStructure = {
+type AccessAuthorizationStructure = {
   grantee: string; // webid or clientid
   hasAccessNeedGroup: string; // iri
-  dataConsents: DataConsentData[];
+  dataAuthorizations: DataAuthorizationData[];
 };
 ```
 
 ```ts
-type DataConsentData = {
+type DataAuthorizationData = {
   grantee: string; // webid or clientid
   registeredShapeTree: string;
-  scopeOfConsent: string;
+  scopeOfAuthorization: string;
   accessMode: string[];
   dataOwner?: string; // webid
   hasDataRegistration?: string;
-  inheritsFromConsent?: string;
+  inheritsFromAuthorization?: string;
   creatorAccessMode?: string[];
   hasDataInstance?: string[];
 };
@@ -126,16 +126,16 @@ type DataConsentData = {
 
 ## Access Grant
 
-Based on existing Access Consent an Access Grant can be created
+Based on existing Access Authorization an Access Grant can be created
 
-`async generateAccessGrant(accessConsentIri: string): Promise<void>`
+`async generateAccessGrant(accessAuthorizationIri: string): Promise<void>`
 
 This method updates the appropriate agent registration to reference the newly created access grant.
 
 ```ts
-const consentData: AccessConsentStructure = {
+const authorizationData: AccessAuthorizationStructure = {
   /* all the data */
 };
-const consent = await agent.recordAccessConsent(consentData);
-await agent.generateAccessGrant(consent.iri);
+const authorization = await agent.recordAccessAuthorization(authorizationData);
+await agent.generateAccessGrant(authorization.iri);
 ```

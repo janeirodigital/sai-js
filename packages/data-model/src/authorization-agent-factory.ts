@@ -6,15 +6,15 @@ import {
   ImmutableDataGrant,
   CRUDRegistrySet,
   CRUDAgentRegistry,
-  ReadableAccessConsent,
-  ReadableDataConsent,
-  CRUDAccessConsentRegistry,
+  ReadableAccessAuthorization,
+  ReadableDataAuthorization,
+  CRUDAuthorizationRegistry,
   AccessGrantData,
   ImmutableAccessGrant,
-  DataConsentData,
-  AccessConsentData,
-  ImmutableAccessConsent,
-  ImmutableDataConsent,
+  DataAuthorizationData,
+  AccessAuthorizationData,
+  ImmutableAccessAuthorization,
+  ImmutableDataAuthorization,
   CRUDDataRegistry,
   FactoryDependencies,
   CRUDSocialAgentRegistration,
@@ -24,8 +24,8 @@ import {
 } from '.';
 
 interface AuthorizationAgentReadableFactory extends BaseReadableFactory {
-  accessConsent(iri: string): Promise<ReadableAccessConsent>;
-  dataConsent(iri: string): Promise<ReadableDataConsent>;
+  accessAuthorization(iri: string): Promise<ReadableAccessAuthorization>;
+  dataAuthorization(iri: string): Promise<ReadableDataAuthorization>;
 }
 interface CRUDFactory {
   applicationRegistration(iri: string, data?: AgentRegistrationData): Promise<CRUDApplicationRegistration>;
@@ -36,7 +36,7 @@ interface CRUDFactory {
   ): Promise<CRUDSocialAgentRegistration>;
   dataRegistry(iri: string): Promise<CRUDDataRegistry>;
   dataRegistration(iri: string, data?: DataRegistrationData): Promise<CRUDDataRegistration>;
-  accessConsentRegistry(iri: string): Promise<CRUDAccessConsentRegistry>;
+  authorizationRegistry(iri: string): Promise<CRUDAuthorizationRegistry>;
   agentRegistry(iri: string): Promise<CRUDAgentRegistry>;
   registrySet(iri: string): Promise<CRUDRegistrySet>;
 }
@@ -44,8 +44,8 @@ interface CRUDFactory {
 interface ImmutableFactory {
   dataGrant(iri: string, data: DataGrantData): ImmutableDataGrant;
   accessGrant(iri: string, data: AccessGrantData): ImmutableAccessGrant;
-  dataConsent(iri: string, data: DataConsentData): ImmutableDataConsent;
-  accessConsent(iri: string, data: AccessConsentData): ImmutableAccessConsent;
+  dataAuthorization(iri: string, data: DataAuthorizationData): ImmutableDataAuthorization;
+  accessAuthorization(iri: string, data: AccessAuthorizationData): ImmutableAccessAuthorization;
 }
 
 export class AuthorizationAgentFactory extends BaseFactory {
@@ -90,8 +90,8 @@ export class AuthorizationAgentFactory extends BaseFactory {
       ): Promise<CRUDDataRegistration> {
         return CRUDDataRegistration.build(iri, factory, data);
       },
-      accessConsentRegistry: async function accessConsentRegistry(iri: string): Promise<CRUDAccessConsentRegistry> {
-        return CRUDAccessConsentRegistry.build(iri, factory);
+      authorizationRegistry: async function authorizationRegistry(iri: string): Promise<CRUDAuthorizationRegistry> {
+        return CRUDAuthorizationRegistry.build(iri, factory);
       },
       agentRegistry: async function agentRegistry(iri: string): Promise<CRUDAgentRegistry> {
         return CRUDAgentRegistry.build(iri, factory);
@@ -113,11 +113,17 @@ export class AuthorizationAgentFactory extends BaseFactory {
       accessGrant: function accessGrant(iri: string, data: AccessGrantData): ImmutableAccessGrant {
         return new ImmutableAccessGrant(iri, factory, data);
       },
-      dataConsent: function dataConsent(iri: string, data: DataConsentData): ImmutableDataConsent {
-        return new ImmutableDataConsent(iri, factory, data);
+      dataAuthorization: function dataAuthorization(
+        iri: string,
+        data: DataAuthorizationData
+      ): ImmutableDataAuthorization {
+        return new ImmutableDataAuthorization(iri, factory, data);
       },
-      accessConsent: function accessConsent(iri: string, data: AccessConsentData): ImmutableAccessConsent {
-        return new ImmutableAccessConsent(iri, factory, data);
+      accessAuthorization: function accessAuthorization(
+        iri: string,
+        data: AccessAuthorizationData
+      ): ImmutableAccessAuthorization {
+        return new ImmutableAccessAuthorization(iri, factory, data);
       }
     };
   }
@@ -127,11 +133,11 @@ export class AuthorizationAgentFactory extends BaseFactory {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;
     return {
-      accessConsent: async function accessConsent(iri: string): Promise<ReadableAccessConsent> {
-        return ReadableAccessConsent.build(iri, factory);
+      accessAuthorization: async function accessAuthorization(iri: string): Promise<ReadableAccessAuthorization> {
+        return ReadableAccessAuthorization.build(iri, factory);
       },
-      dataConsent: async function dataConsent(iri: string): Promise<ReadableDataConsent> {
-        return ReadableDataConsent.build(iri, factory);
+      dataAuthorization: async function dataAuthorization(iri: string): Promise<ReadableDataAuthorization> {
+        return ReadableDataAuthorization.build(iri, factory);
       },
       ...super.readableFactory()
     };

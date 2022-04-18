@@ -13,19 +13,19 @@ import {
 } from '..';
 import { ReadableResource } from '.';
 
-export class ReadableDataConsent extends ReadableResource {
+export class ReadableDataAuthorization extends ReadableResource {
   factory: AuthorizationAgentFactory;
 
-  hasInheritingConsent: ReadableDataConsent[];
+  hasInheritingAuthorization: ReadableDataAuthorization[];
 
-  async inheritingConsents(): Promise<ReadableDataConsent[]> {
-    const childIris = this.getSubjectsArray(INTEROP.inheritsFromConsent).map((subject) => subject.value);
-    return Promise.all(childIris.map((iri) => this.factory.readable.dataConsent(iri)));
+  async inheritingAuthorizations(): Promise<ReadableDataAuthorization[]> {
+    const childIris = this.getSubjectsArray(INTEROP.inheritsFromAuthorization).map((subject) => subject.value);
+    return Promise.all(childIris.map((iri) => this.factory.readable.dataAuthorization(iri)));
   }
 
   async bootstrap(): Promise<void> {
     await this.fetchData();
-    this.hasInheritingConsent = await this.inheritingConsents();
+    this.hasInheritingAuthorization = await this.inheritingAuthorizations();
   }
 
   @Memoize()
@@ -39,8 +39,8 @@ export class ReadableDataConsent extends ReadableResource {
   }
 
   @Memoize()
-  get scopeOfConsent(): string {
-    return this.getObject('scopeOfConsent').value;
+  get scopeOfAuthorization(): string {
+    return this.getObject('scopeOfAuthorization').value;
   }
 
   @Memoize()
@@ -68,8 +68,8 @@ export class ReadableDataConsent extends ReadableResource {
     return this.getObjectsArray('hasDataInstance').map((obj) => obj.value);
   }
 
-  public static async build(iri: string, factory: AuthorizationAgentFactory): Promise<ReadableDataConsent> {
-    const instance = new ReadableDataConsent(iri, factory);
+  public static async build(iri: string, factory: AuthorizationAgentFactory): Promise<ReadableDataAuthorization> {
+    const instance = new ReadableDataAuthorization(iri, factory);
     await instance.bootstrap();
     return instance;
   }
@@ -79,17 +79,17 @@ export class ReadableDataConsent extends ReadableResource {
     sourceGrant: InheritableDataGrant,
     granteeRegistration: CRUDAgentRegistration
   ): ImmutableDataGrant[] {
-    return this.hasInheritingConsent.map((childConsent) => {
+    return this.hasInheritingAuthorization.map((childAuthorization) => {
       const childGrantIri = granteeRegistration.iriForContained();
       const childSourceGrant = [...sourceGrant.hasInheritingGrant].find(
-        (grant) => grant.registeredShapeTree === childConsent.registeredShapeTree
+        (grant) => grant.registeredShapeTree === childAuthorization.registeredShapeTree
       );
       const childData: DataGrantData = {
         dataOwner: childSourceGrant.dataOwner,
-        registeredShapeTree: childConsent.registeredShapeTree,
+        registeredShapeTree: childAuthorization.registeredShapeTree,
         hasDataRegistration: childSourceGrant.hasDataRegistration,
         scopeOfGrant: INTEROP.Inherited.value,
-        accessMode: childConsent.accessMode.filter((mode) => childSourceGrant.accessMode.includes(mode)),
+        accessMode: childAuthorization.accessMode.filter((mode) => childSourceGrant.accessMode.includes(mode)),
         inheritsFromGrant: parentGrantIri,
         delegationOfGrant: childSourceGrant.iri
       };
@@ -101,8 +101,8 @@ export class ReadableDataConsent extends ReadableResource {
     agentRegistry: CRUDAgentRegistry,
     granteeRegistration: CRUDAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
-    if (this.scopeOfConsent === INTEROP.Inherited.value) {
-      throw new Error('this method should not be callend on data consents with Inherited scope');
+    if (this.scopeOfAuthorization === INTEROP.Inherited.value) {
+      throw new Error('this method should not be callend on data authorizations with Inherited scope');
     }
     let result: ImmutableDataGrant[] = [];
 
@@ -171,19 +171,19 @@ export class ReadableDataConsent extends ReadableResource {
     dataRegistries: ReadableDataRegistration[][],
     granteeRegistration: CRUDAgentRegistration
   ): ImmutableDataGrant[] {
-    return this.hasInheritingConsent.map((childConsent) => {
+    return this.hasInheritingAuthorization.map((childAuthorization) => {
       const childGrantIri = granteeRegistration.iriForContained();
       // child data registration must be in the same data registry as parent one
       // each data registry has only one data registration for any given shape tree
       const dataRegistration = dataRegistries
         .find((registry) => registry.find((reg) => reg.iri === registration.iri))
-        .find((reg) => reg.registeredShapeTree === childConsent.registeredShapeTree);
+        .find((reg) => reg.registeredShapeTree === childAuthorization.registeredShapeTree);
       const childData: DataGrantData = {
-        dataOwner: childConsent.grantedBy,
-        registeredShapeTree: childConsent.registeredShapeTree,
+        dataOwner: childAuthorization.grantedBy,
+        registeredShapeTree: childAuthorization.registeredShapeTree,
         hasDataRegistration: dataRegistration.iri,
         scopeOfGrant: INTEROP.Inherited.value,
-        accessMode: childConsent.accessMode,
+        accessMode: childAuthorization.accessMode,
         inheritsFromGrant: parentGrantIri
       };
       return this.factory.immutable.dataGrant(childGrantIri, childData);
@@ -194,8 +194,8 @@ export class ReadableDataConsent extends ReadableResource {
     dataRegistries: CRUDDataRegistry[],
     granteeRegistration: CRUDAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
-    if (this.scopeOfConsent === INTEROP.Inherited.value) {
-      throw new Error('this method should not be callend on data consents with Inherited scope');
+    if (this.scopeOfAuthorization === INTEROP.Inherited.value) {
+      throw new Error('this method should not be callend on data authorizations with Inherited scope');
     }
 
     // get data registrations from all data registries
@@ -229,7 +229,8 @@ export class ReadableDataConsent extends ReadableResource {
       );
 
       let scopeOfGrant = INTEROP.AllFromRegistry.value;
-      if (this.scopeOfConsent === INTEROP.SelectedFromRegistry.value) scopeOfGrant = INTEROP.SelectedFromRegistry.value;
+      if (this.scopeOfAuthorization === INTEROP.SelectedFromRegistry.value)
+        scopeOfGrant = INTEROP.SelectedFromRegistry.value;
       const data: DataGrantData = {
         dataOwner: this.grantedBy,
         registeredShapeTree: this.registeredShapeTree,
@@ -254,7 +255,7 @@ export class ReadableDataConsent extends ReadableResource {
     granteeRegistration: CRUDAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
     const dataGrants: ImmutableDataGrant[] = [];
-    /* Source grants are only created if Data Consent is registred by the data owner.
+    /* Source grants are only created if Data Authorization is registred by the data owner.
      * This can only happen with scope:
      * - All - there will be no dataOwner set
      * - AllFromAgent - dataOwner will equal grantedBy
@@ -266,7 +267,7 @@ export class ReadableDataConsent extends ReadableResource {
     }
 
     // do not create delegated data grants if granted by data owner, source grants will be created instead
-    /* Delegated grants are only created for data owned by others than agent granting the consent
+    /* Delegated grants are only created for data owned by others than agent granting the authorization
      * This can only happen with scopes:
      * - All - there will be no dataOwner set
      * - All From Agent - dataOwner will be different than grantedBy

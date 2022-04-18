@@ -15,5 +15,5 @@ export { ReadableApplicationRegistration } from './application-registration';
 export { ReadableAccessGrant } from './access-grant';
 export { ReadableShapeTree } from './shape-tree';
 export { ReadableDataRegistration } from './data-registration';
-export { ReadableAccessConsent } from './access-consent';
-export { ReadableDataConsent } from './data-consent';
+export { ReadableAccessAuthorization } from './access-authorization';
+export { ReadableDataAuthorization } from './data-authorization';
