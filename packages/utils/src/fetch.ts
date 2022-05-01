@@ -40,7 +40,8 @@ async function unwrappedRdfFetch(
     }
     return parseTurtle(await response.text(), response.url);
   };
-  return { ...rdfResponse, text: response.text };
+  rdfResponse.text = response.text;
+  return rdfResponse;
 }
 
 export function fetchWrapper(whatwgFetch: WhatwgFetch): RdfFetch {
