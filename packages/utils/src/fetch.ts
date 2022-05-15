@@ -7,6 +7,7 @@ export interface RdfRequestInit extends RequestInit {
 
 export interface RdfResponse extends Response {
   dataset(): Promise<DatasetCore>;
+  text(): Promise<string>;
 }
 
 export type WhatwgFetch = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
@@ -39,6 +40,7 @@ async function unwrappedRdfFetch(
     }
     return parseTurtle(await response.text(), response.url);
   };
+  rdfResponse.text = response.text;
   return rdfResponse;
 }
 
