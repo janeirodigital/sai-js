@@ -1,3 +1,4 @@
+import { DataFactory, Store } from 'n3';
 import { parseTurtle, serializeTurtle } from '../src';
 
 const snippet = `<https://acme.example/4d594c61-7cff-484a-a1d2-1f353ee4e1e7> a <http://www.w3.org/ns/solid/interop#DataRegistration>;
@@ -7,10 +8,42 @@ const snippet = `<https://acme.example/4d594c61-7cff-484a-a1d2-1f353ee4e1e7> a <
     <http://www.w3.org/ns/solid/interop#registeredShapeTree> <https://solidshapes.example/trees/Project>.
 `;
 
-test('should serialize dataset', async () => {
-  const dataset = await parseTurtle(snippet);
-  const text = await serializeTurtle(dataset);
-  expect(text).toMatch(snippet);
+describe('serializer', () => {
+  test('should serialize dataset', async () => {
+    const dataset = await parseTurtle(snippet);
+    const text = await serializeTurtle(dataset);
+    expect(text).toMatch(snippet);
+  });
+
+  test('should serialize dataset with stripped named graph as ttl', async () => {
+    const q = DataFactory.quad(
+      DataFactory.namedNode('s'),
+      DataFactory.namedNode('p'),
+      DataFactory.namedNode('o'),
+      DataFactory.namedNode('g')
+    );
+    const dataset = new Store([q]);
+
+    const text = await serializeTurtle(dataset, true);
+
+    expect(text).toMatch('<s> <p> <o>.');
+  });
+
+  test('should serialize dataset named graph as trig', async () => {
+    const q = DataFactory.quad(
+      DataFactory.namedNode('s'),
+      DataFactory.namedNode('p'),
+      DataFactory.namedNode('o'),
+      DataFactory.namedNode('g')
+    );
+    const dataset = new Store([q]);
+
+    const text = await serializeTurtle(dataset);
+
+    expect(text).toMatch(`<g> {
+<s> <p> <o>.
+}`);
+  });
 });
 
 test.todo('should reject for invalid dataset');
