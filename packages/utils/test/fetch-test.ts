@@ -11,7 +11,11 @@ const snippet = `<https://acme.example/4d594c61-7cff-484a-a1d2-1f353ee4e1e7> a <
 
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 async function fetchMock(input: RequestInfo, init?: RequestInit): Promise<Response> {
-  return {} as Response;
+  return {
+    clone() {
+      return {};
+    }
+  } as Response;
 }
 
 describe('fetchWrapper', () => {
@@ -28,9 +32,12 @@ describe('fetchWrapper', () => {
 
   test('should set dataset on response', async () => {
     const mock = jest.fn(fetchMock);
-    mock.mockReturnValueOnce(
-      Promise.resolve({ text: async () => snippet, headers: { get: (_) => 'text/turtle' } } as Response)
-    );
+    const responseMock = {
+      text: async () => snippet,
+      headers: { get: (_) => 'text/turtle' }
+    } as Response;
+    responseMock.clone = () => ({ ...responseMock });
+    mock.mockReturnValueOnce(Promise.resolve(responseMock));
     const rdfFetch = fetchWrapper(mock);
     const response = await rdfFetch('https://some.iri');
 
@@ -55,9 +62,12 @@ describe('fetchWrapper', () => {
 
   test('should throw if dataset called when different Content-Type', async () => {
     const mock = jest.fn(fetchMock);
-    mock.mockReturnValueOnce(
-      Promise.resolve({ text: async () => snippet, headers: { get: (_) => 'text/shex' } } as Response)
-    );
+    const responseMock = {
+      text: async () => snippet,
+      headers: { get: (_) => 'text/shex' }
+    } as Response;
+    responseMock.clone = () => ({ ...responseMock });
+    mock.mockReturnValueOnce(Promise.resolve(responseMock));
     const rdfFetch = fetchWrapper(mock);
     const response = await rdfFetch('https://some.iri');
     expect(response.dataset()).rejects.toThrow('Content-Type was text/shex');
@@ -65,9 +75,12 @@ describe('fetchWrapper', () => {
 
   test('should handle Content-Type header with paramter', async () => {
     const mock = jest.fn(fetchMock);
-    mock.mockReturnValueOnce(
-      Promise.resolve({ text: async () => snippet, headers: { get: (_) => 'text/turtle; charset=UTF-8' } } as Response)
-    );
+    const responseMock = {
+      text: async () => snippet,
+      headers: { get: (_) => 'text/turtle; charset=UTF-8' }
+    } as Response;
+    responseMock.clone = () => ({ ...responseMock });
+    mock.mockReturnValueOnce(Promise.resolve(responseMock));
     const rdfFetch = fetchWrapper(mock);
     const response = await rdfFetch('https://some.iri');
 
@@ -79,9 +92,13 @@ describe('fetchWrapper', () => {
   test('should set response.url as graph when parsing turtle', async () => {
     const iri = 'https://some.iri';
     const mock = jest.fn(fetchMock);
-    mock.mockReturnValueOnce(
-      Promise.resolve({ url: iri, text: async () => snippet, headers: { get: (_) => 'text/turtle' } } as Response)
-    );
+    const responseMock = {
+      url: iri,
+      text: async () => snippet,
+      headers: { get: (_) => 'text/turtle' }
+    } as Response;
+    responseMock.clone = () => ({ ...responseMock });
+    mock.mockReturnValueOnce(Promise.resolve(responseMock));
     const rdfFetch = fetchWrapper(mock);
     const response = await rdfFetch(iri);
     const actualDataset = await response.dataset();

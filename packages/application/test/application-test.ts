@@ -11,31 +11,31 @@ const webId = 'https://alice.example/#id';
 const linkString = `
   <https://projectron.example/#app>;
   anchor="https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659";
-  rel="http://www.w3.org/ns/solid/interop#registeredApplication"
+  rel="http://www.w3.org/ns/solid/interop#registeredAgent"
 `;
 
 test('should build application registration', async () => {
   const mocked = jest.fn(statelessFetch);
-  mocked
-    .mockResolvedValueOnce(await statelessFetch(webId))
-    .mockResolvedValueOnce({ ok: true, headers: { get: () => linkString } } as unknown as RdfResponse);
+  const responseMock = { ok: true, headers: { get: () => linkString } } as unknown as RdfResponse;
+  responseMock.clone = () => ({ ...responseMock });
+  mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
   const app = await Application.build(webId, { fetch: mocked, randomUUID });
   expect(app.hasApplicationRegistration).toBeInstanceOf(ReadableApplicationRegistration);
 });
 
 test('should throw if no appliction registration', async () => {
   const mocked = jest.fn(statelessFetch);
-  mocked
-    .mockResolvedValueOnce(await statelessFetch(webId))
-    .mockResolvedValueOnce({ ok: true, headers: { get: () => '' } } as unknown as RdfResponse);
+  const responseMock = { ok: true, headers: { get: () => '' } } as unknown as RdfResponse;
+  responseMock.clone = () => ({ ...responseMock });
+  mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
   expect(Application.build(webId, { fetch: mocked, randomUUID })).rejects.toThrow('support planned');
 });
 
 test('should have dataOwners getter', async () => {
   const mocked = jest.fn(statelessFetch);
-  mocked
-    .mockResolvedValueOnce(await statelessFetch(webId))
-    .mockResolvedValueOnce({ ok: true, headers: { get: () => linkString } } as unknown as RdfResponse);
+  const responseMock = { ok: true, headers: { get: () => linkString } } as unknown as RdfResponse;
+  responseMock.clone = () => ({ ...responseMock });
+  mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
   const app = await Application.build(webId, { fetch: mocked, randomUUID });
   expect(app.dataOwners).toHaveLength(3);
   for (const owner of app.dataOwners) {
