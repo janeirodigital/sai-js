@@ -1,7 +1,7 @@
 import { WhatwgFetch, RdfFetch, fetchWrapper } from '@janeirodigital/interop-utils';
 import data from 'data-interoperability-panel';
 
-async function common(url: string, options?: RequestInit, state?: {[key: string]: string}): Promise<Response> {
+async function common(url: string, options?: RequestInit, state?: { [key: string]: string }): Promise<Response> {
   // strip fragment
   const strippedUrl = url.replace(/#.*$/, '');
   const text = async function text() {
@@ -20,18 +20,19 @@ async function common(url: string, options?: RequestInit, state?: {[key: string]
       }
     } as Headers
   };
+  response.clone = () => ({ ...response });
   // @ts-ignore
   if (!options?.headers?.Accept || options.headers.Accept.match('text/turtle')) {
     response.text = async function responseText() {
-      let turtle: string
+      let turtle: string;
       if (state) {
-        turtle = state[strippedUrl]
+        turtle = state[strippedUrl];
       }
-      turtle = turtle || data[strippedUrl]
+      turtle = turtle || data[strippedUrl];
       if (!turtle) {
-        throw new Error(`missing snippet: ${strippedUrl}`)
+        throw new Error(`missing snippet: ${strippedUrl}`);
       }
-      return turtle
+      return turtle;
     };
   }
   return response;
@@ -39,34 +40,36 @@ async function common(url: string, options?: RequestInit, state?: {[key: string]
 
 function addState(state: { [key: string]: string }): WhatwgFetch {
   return async function statefulFetch(url: string, options?: RequestInit): Promise<Response> {
-  if (options?.method === 'PUT') {
-    // eslint-disable-next-line no-param-reassign
-    state[url] = options.body as string
-    // @ts-ignore
-    return { ok: true };
-  }
+    if (options?.method === 'PUT') {
+      // eslint-disable-next-line no-param-reassign
+      state[url] = options.body as string;
+      const response = { ok: true } as Response;
+      response.clone = () => ({ ...response });
+      return response;
+    }
 
-  return common(url, options, state);
-} as WhatwgFetch;
+    return common(url, options, state);
+  } as WhatwgFetch;
 }
 
 export function createFetch(): RdfFetch {
   const state: { [key: string]: string } = {};
-  return fetchWrapper(addState(state))
+  return fetchWrapper(addState(state));
 }
 
 export function createStatefulFetch(): WhatwgFetch {
   const state: { [key: string]: string } = {};
-  return addState(state)
+  return addState(state);
 }
 
 export const statelessFetch = async function statelessFetch(url: string, options?: RequestInit): Promise<Response> {
   // just ok PUT
   if (options?.method === 'PUT') {
-    // @ts-ignore
-    return { ok: true };
+    const response = { ok: true } as Response;
+    response.clone = () => ({ ...response });
+    return response;
   }
   return common(url, options);
 } as WhatwgFetch;
 
-export const fetch = fetchWrapper(statelessFetch)
+export const fetch = fetchWrapper(statelessFetch);

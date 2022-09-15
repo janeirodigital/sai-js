@@ -41,7 +41,7 @@ describe('serializer', () => {
     const text = await serializeTurtle(dataset);
 
     expect(text).toMatch(`<g> {
-<s> <p> <o>.
+<s> <p> <o>
 }`);
   });
 });
