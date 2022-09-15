@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
 import { DatasetCore } from '@rdfjs/types';
-import { findChildReferences, getPredicate, targetDataRegistrationLink } from '@janeirodigital/interop-utils';
+import { targetDataRegistrationLink } from '@janeirodigital/interop-utils';
 import { ReadableResource, ApplicationFactory, DataGrant, InheritedDataGrant, ReadableShapeTree } from '.';
 
 export class DataInstance extends ReadableResource {
@@ -79,8 +79,8 @@ export class DataInstance extends ReadableResource {
   }
 
   async getChildReferencesForShapeTree(shapeTree: string): Promise<string[]> {
-    const shapePath = this.shapeTree.getShapePathForReferenced(shapeTree);
-    return findChildReferences(this.iri, this.dataset, this.shapeTree.shape, this.shapeTree.shapeText, shapePath);
+    const predicate = this.shapeTree.getPredicateForReferenced(shapeTree);
+    return this.getObjectsArray(predicate).map((object) => object.value);
   }
 
   findChildGrant(shapeTree: string): InheritedDataGrant {
@@ -115,12 +115,11 @@ export class DataInstance extends ReadableResource {
   }
 
   public async updateAddingChildReference(child: DataInstance): Promise<void> {
-    const shapePath = this.shapeTree.getShapePathForReferenced(child.dataGrant.registeredShapeTree);
-    const predicate = getPredicate(shapePath, this.shapeTree.shapeText);
+    const predicate = this.shapeTree.getPredicateForReferenced(child.dataGrant.registeredShapeTree);
 
     const referenceQuad = DataFactory.quad(
       DataFactory.namedNode(this.iri),
-      DataFactory.namedNode(predicate),
+      predicate,
       DataFactory.namedNode(child.iri),
       [...this.dataset][0].graph
     );
@@ -129,12 +128,11 @@ export class DataInstance extends ReadableResource {
   }
 
   public async updateRemovingChildReference(child: DataInstance): Promise<void> {
-    const shapePath = this.shapeTree.getShapePathForReferenced(child.dataGrant.registeredShapeTree);
-    const predicate = getPredicate(shapePath, this.shapeTree.shapeText);
+    const predicate = this.shapeTree.getPredicateForReferenced(child.dataGrant.registeredShapeTree);
 
     const referenceQuad = DataFactory.quad(
       DataFactory.namedNode(this.iri),
-      DataFactory.namedNode(predicate),
+      predicate,
       DataFactory.namedNode(child.iri),
       [...this.dataset][0].graph
     );

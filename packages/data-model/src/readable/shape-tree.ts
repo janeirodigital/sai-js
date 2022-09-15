@@ -1,5 +1,6 @@
 import { Memoize } from 'typescript-memoize';
 import { DataFactory } from 'n3';
+import { NamedNode } from '@rdfjs/types';
 import { SHAPETREES } from '@janeirodigital/interop-namespaces';
 import { InteropFactory } from '..';
 import { ReadableResource } from '.';
@@ -18,9 +19,9 @@ export class ReadableShapeTree extends ReadableResource {
     return instance;
   }
 
-  getShapePathForReferenced(shapeTree: string): string {
+  getPredicateForReferenced(shapeTree: string): NamedNode {
     const referencedNode = this.getQuad(null, SHAPETREES.hasShapeTree, DataFactory.namedNode(shapeTree)).subject;
-    return this.getQuad(referencedNode, SHAPETREES.viaShapePath).object.value;
+    return this.getQuad(referencedNode, SHAPETREES.viaPredicate).object as NamedNode;
   }
 
   @Memoize()

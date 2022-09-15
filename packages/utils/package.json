@@ -46,17 +46,12 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@shexjs/parser": "^1.0.0-alpha.15",
-    "@shexjs/shape-path-query": "^1.0.0-alpha.18",
-    "@shexjs/util": "^1.0.0-alpha.15",
     "http-link-header": "^1.0.3",
-    "n3": "^1.11.1",
-    "shape-path-core": "^0.0.3"
+    "n3": "^1.11.1"
   },
   "devDependencies": {
     "@rdfjs/types": "^1.0.1",
     "@types/http-link-header": "^1.0.3",
-    "@types/n3": "^1.10.0",
-    "@types/shexj": "^2.1.1"
+    "@types/n3": "^1.10.0"
   }
 }

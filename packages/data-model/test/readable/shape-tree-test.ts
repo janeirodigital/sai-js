@@ -17,11 +17,10 @@ test('factory should always use the same instance for the same shape tree', asyn
   expect(shapeTreeA).toBe(shapeTreeB);
 });
 
-test('should allow to get shape path for a referenced tree', async () => {
+test('should allow to get Predicate for a referenced tree', async () => {
   const shapeTree = await factory.readable.shapeTree(snippetIri);
   const taskTreeIri = 'https://solidshapes.example/trees/Task';
-  const expectedShapePath =
-    '@<https://solidshapes.example/shapes/Project>~<https://vocab.example/project-management/hasTask>';
-  const shapePathToTask = shapeTree.getShapePathForReferenced(taskTreeIri);
-  expect(shapePathToTask).toBe(expectedShapePath);
+  const expectedPredicate = 'https://vocab.example/project-management/hasTask';
+  const predicateToTask = shapeTree.getPredicateForReferenced(taskTreeIri);
+  expect(predicateToTask.value).toBe(expectedPredicate);
 });
