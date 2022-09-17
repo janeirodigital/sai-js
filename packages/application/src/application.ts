@@ -6,7 +6,8 @@ import {
   RdfFetch,
   fetchWrapper,
   getOneMatchingQuad,
-  getApplicationRegistrationIri
+  getApplicationRegistrationIri,
+  parseJsonld
 } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 
@@ -20,14 +21,13 @@ export class Application {
 
   fetch: RdfFetch;
 
-  webId: string;
-
   hasAuthorizationAgent: string;
 
-  hasApplicationRegistration: ReadableApplicationRegistration;
+  authorizationRedirectUriBase: string;
 
-  constructor(webId: string, dependencies: ApplicationDependencies) {
-    this.webId = webId;
+  hasApplicationRegistration?: ReadableApplicationRegistration;
+
+  constructor(public webId: string, public applicationId: string, dependencies: ApplicationDependencies) {
     this.fetch = fetchWrapper(dependencies.fetch);
     this.factory = new ApplicationFactory({ fetch: this.fetch, randomUUID: dependencies.randomUUID });
   }
@@ -38,10 +38,7 @@ export class Application {
     if (applicationRegistrationIri) {
       this.hasApplicationRegistration = await this.factory.readable.applicationRegistration(applicationRegistrationIri);
     } else {
-      throw new Error('support planned in the future');
-      // TODO (elf-pavlik) implement flow with Authorization Agent
-      // https://github.com/janeirodigital/sai-js/issues/15
-      // this.initiateRegistration(this.hasAuthorizationAgent)
+      this.authorizationRedirectUriBase = await this.discoverAuthorizationRedirectUri();
     }
   }
 
@@ -51,6 +48,21 @@ export class Application {
     return getOneMatchingQuad(userDataset, ...authorizationAgentPattern).object.value;
   }
 
+  async discoverAuthorizationRedirectUri(): Promise<string> {
+    const authzAgentDocumentResponse = await this.fetch(this.hasAuthorizationAgent, {
+      headers: { Accept: 'application/ld+json' }
+    });
+    const document = await parseJsonld(await authzAgentDocumentResponse.text(), authzAgentDocumentResponse.url);
+    return getOneMatchingQuad(document, null, INTEROP.authorizationRedirectUri)?.object.value;
+  }
+
+  // eslint-disable-next-line consistent-return
+  get authorizationRedirectUri(): string | undefined {
+    if (this.authorizationRedirectUriBase) {
+      return `${this.authorizationRedirectUriBase}?client_id=${this.applicationId}`;
+    }
+  }
+
   async discoverRegistration(): Promise<string | null> {
     const response = await this.fetch(this.hasAuthorizationAgent, { method: 'HEAD' });
     const linkHeader = response.headers.get('Link');
@@ -58,8 +70,12 @@ export class Application {
     return getApplicationRegistrationIri(linkHeader);
   }
 
-  static async build(webId: string, dependencies: ApplicationDependencies): Promise<Application> {
-    const application = new Application(webId, dependencies);
+  static async build(
+    webId: string,
+    applicationId: string,
+    dependencies: ApplicationDependencies
+  ): Promise<Application> {
+    const application = new Application(webId, applicationId, dependencies);
     await application.bootstrap();
     return application;
   }
@@ -69,6 +85,7 @@ export class Application {
    * @public
    */
   get dataOwners(): DataOwner[] {
+    if (!this.hasApplicationRegistration) return [];
     return this.hasApplicationRegistration.hasAccessGrant.hasDataGrant.reduce((acc, grant) => {
       let owner: DataOwner = acc.find((agent) => agent.iri === grant.dataOwner);
       if (!owner) {

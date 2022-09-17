@@ -69,9 +69,17 @@ class Task extends Custom {
   // For simplicity we ommit handing redirect to user's Solid-OIDC Provider
   // Following lines assume session.info.isLoggedIn === true
 
+  // IRI used as client_id of the application, see: https://solidproject.org/TR/oidc#clientids-document
+  const applicationID = 'https://projectron.example/';
+
   // create new application
-  // fetch need to take care of authentication
-  const application = await Application.build(session.info.webId, { fetch: session.fetch, randomUUID });
+  // fetch needs to take care of authentication
+  const application = await Application.build(session.info.webId, applicationId, { fetch: session.fetch, randomUUID });
+
+  // if application wasn't authorized it needs to be redirected to user's authorization agent
+  if (!application.hasApplicationRegistration) {
+    window.location.href = application.authorizationRedirectUri;
+  }
 
   // application provides list of all data owners
   // we can find one matching currently logged in user

@@ -8,43 +8,76 @@ import { RdfResponse } from '@janeirodigital/interop-utils';
 import { Application } from '../src';
 
 const webId = 'https://alice.example/#id';
+const applicationId = 'https://projectron.example/';
+
 const linkString = `
   <https://projectron.example/#app>;
   anchor="https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659";
   rel="http://www.w3.org/ns/solid/interop#registeredAgent"
 `;
 
-test('should build application registration', async () => {
+describe('applicatrion registration exists', () => {
   const mocked = jest.fn(statelessFetch);
   const responseMock = {
     ok: true,
     headers: { get: (name: string): string | null => (name === 'Link' ? linkString : null) }
   } as unknown as RdfResponse;
   responseMock.clone = () => ({ ...responseMock });
-  mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
-  const app = await Application.build(webId, { fetch: mocked, randomUUID });
-  expect(app.hasApplicationRegistration).toBeInstanceOf(ReadableApplicationRegistration);
-});
 
-test('should throw if no appliction registration', async () => {
+  test('should build application registration if discovered', async () => {
+    mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
+    const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
+    expect(app.hasApplicationRegistration).toBeInstanceOf(ReadableApplicationRegistration);
+  });
+
+  test('should have authorizationRedirectUriBase undefined', async () => {
+    mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
+    const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
+    expect(app.authorizationRedirectUriBase).toBeUndefined();
+  });
+
+  test('should have authorizationRedirectUri undefined', async () => {
+    mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
+    const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
+    expect(app.authorizationRedirectUri).toBeUndefined();
+  });
+
+  test('should have dataOwners getter', async () => {
+    mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
+    const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
+    expect(app.dataOwners).toHaveLength(3);
+    for (const owner of app.dataOwners) {
+      expect(owner).toBeInstanceOf(DataOwner);
+    }
+  });
+});
+describe('applicatrion registration does not exist', () => {
+  const expectedRedirectUriBase = 'https://auth.example/authorize';
   const mocked = jest.fn(statelessFetch);
   const responseMock = { ok: true, headers: { get: (): null => null } } as unknown as RdfResponse;
   responseMock.clone = () => ({ ...responseMock });
-  mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
-  expect(Application.build(webId, { fetch: mocked, randomUUID })).rejects.toThrow('support planned');
-});
 
-test('should have dataOwners getter', async () => {
-  const mocked = jest.fn(statelessFetch);
-  const responseMock = {
-    ok: true,
-    headers: { get: (name: string): string | null => (name === 'Link' ? linkString : null) }
-  } as unknown as RdfResponse;
-  responseMock.clone = () => ({ ...responseMock });
-  mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
-  const app = await Application.build(webId, { fetch: mocked, randomUUID });
-  expect(app.dataOwners).toHaveLength(3);
-  for (const owner of app.dataOwners) {
-    expect(owner).toBeInstanceOf(DataOwner);
-  }
+  test('should not build appliction registration if not discovered', async () => {
+    mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
+    const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
+    expect(app.hasApplicationRegistration).toBeUndefined();
+  });
+
+  test('should have authorizationRedirectUriBase discovered', async () => {
+    mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
+    const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
+    expect(app.authorizationRedirectUriBase).toBe(expectedRedirectUriBase);
+  });
+
+  test('should have correct authorizationRedirectUri', async () => {
+    mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
+    const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
+    expect(app.authorizationRedirectUri).toBe(`${expectedRedirectUriBase}?client_id=${applicationId}`);
+  });
+
+  test('should have dataOwners getter returning an empty array', async () => {
+    mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
+    const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
+    expect(app.dataOwners).toHaveLength(0);
+  });
 });
