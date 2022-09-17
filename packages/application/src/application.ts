@@ -51,9 +51,11 @@ export class Application {
     return getOneMatchingQuad(userDataset, ...authorizationAgentPattern).object.value;
   }
 
-  async discoverRegistration(): Promise<string> {
+  async discoverRegistration(): Promise<string | null> {
     const response = await this.fetch(this.hasAuthorizationAgent, { method: 'HEAD' });
-    return getApplicationRegistrationIri(response.headers.get('Link'));
+    const linkHeader = response.headers.get('Link');
+    if (!linkHeader) return null;
+    return getApplicationRegistrationIri(linkHeader);
   }
 
   static async build(webId: string, dependencies: ApplicationDependencies): Promise<Application> {

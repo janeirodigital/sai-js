@@ -16,7 +16,10 @@ const linkString = `
 
 test('should build application registration', async () => {
   const mocked = jest.fn(statelessFetch);
-  const responseMock = { ok: true, headers: { get: () => linkString } } as unknown as RdfResponse;
+  const responseMock = {
+    ok: true,
+    headers: { get: (name: string): string | null => (name === 'Link' ? linkString : null) }
+  } as unknown as RdfResponse;
   responseMock.clone = () => ({ ...responseMock });
   mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
   const app = await Application.build(webId, { fetch: mocked, randomUUID });
@@ -25,7 +28,7 @@ test('should build application registration', async () => {
 
 test('should throw if no appliction registration', async () => {
   const mocked = jest.fn(statelessFetch);
-  const responseMock = { ok: true, headers: { get: () => '' } } as unknown as RdfResponse;
+  const responseMock = { ok: true, headers: { get: (): null => null } } as unknown as RdfResponse;
   responseMock.clone = () => ({ ...responseMock });
   mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
   expect(Application.build(webId, { fetch: mocked, randomUUID })).rejects.toThrow('support planned');
@@ -33,7 +36,10 @@ test('should throw if no appliction registration', async () => {
 
 test('should have dataOwners getter', async () => {
   const mocked = jest.fn(statelessFetch);
-  const responseMock = { ok: true, headers: { get: () => linkString } } as unknown as RdfResponse;
+  const responseMock = {
+    ok: true,
+    headers: { get: (name: string): string | null => (name === 'Link' ? linkString : null) }
+  } as unknown as RdfResponse;
   responseMock.clone = () => ({ ...responseMock });
   mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
   const app = await Application.build(webId, { fetch: mocked, randomUUID });
