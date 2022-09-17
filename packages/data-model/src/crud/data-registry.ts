@@ -7,8 +7,8 @@ import { CRUDContainer, CRUDDataRegistration } from '.';
 export class CRUDDataRegistry extends CRUDContainer {
   factory: AuthorizationAgentFactory;
 
-  get hasRegistration(): string[] {
-    return this.getObjectsArray('hasRegistration').map((obj) => obj.value);
+  get hasDataRegistration(): string[] {
+    return this.getObjectsArray('hasDataRegistration').map((obj) => obj.value);
   }
 
   get registrations(): AsyncIterable<ReadableDataRegistration> {
@@ -17,7 +17,7 @@ export class CRUDDataRegistry extends CRUDContainer {
     const dataRegistry = this;
     return {
       async *[Symbol.asyncIterator]() {
-        for (const registrationIri of dataRegistry.hasRegistration) {
+        for (const registrationIri of dataRegistry.hasDataRegistration) {
           yield factory.readable.dataRegistration(registrationIri);
         }
       }
@@ -36,7 +36,7 @@ export class CRUDDataRegistry extends CRUDContainer {
     this.dataset.add(
       DataFactory.quad(
         DataFactory.namedNode(this.iri),
-        INTEROP.hasRegistration,
+        INTEROP.hasDataRegistration,
         DataFactory.namedNode(dataRegistration.iri)
       )
     );
