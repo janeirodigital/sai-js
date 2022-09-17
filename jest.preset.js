@@ -7,7 +7,7 @@ module.exports = {
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
   transform: {
-    '^.+\\.ts$': 'ts-jest'
+    '^.+\\.ts$': ['ts-jest', { useESM: true }]
   },
   setupFilesAfterEnv: ['../../setup-jest.js']
 };
