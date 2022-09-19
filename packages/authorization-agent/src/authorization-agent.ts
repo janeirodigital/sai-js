@@ -27,20 +27,23 @@ type AccessAuthorizationStructure = {
 export class AuthorizationAgent {
   factory: AuthorizationAgentFactory;
 
-  fetch: RdfFetch;
+  fetch: WhatwgFetch;
+
+  rdfFetch: RdfFetch;
 
   registrySet: CRUDRegistrySet;
 
   constructor(public webId: string, public agentId: string, dependencies: AuthorizationAgentDependencies) {
-    this.fetch = fetchWrapper(dependencies.fetch);
+    this.fetch = fetch;
+    this.rdfFetch = fetchWrapper(dependencies.fetch);
     this.factory = new AuthorizationAgentFactory(webId, agentId, {
-      fetch: this.fetch,
+      fetch: this.rdfFetch,
       randomUUID: dependencies.randomUUID
     });
   }
 
   private async discoverRegistrySet(): Promise<string> {
-    const userDataset: DatasetCore = await (await this.fetch(this.webId)).dataset();
+    const userDataset: DatasetCore = await (await this.rdfFetch(this.webId)).dataset();
     const registrySetPattern = [DataFactory.namedNode(this.webId), INTEROP.hasRegistrySet, null];
     return getOneMatchingQuad(userDataset, ...registrySetPattern).object.value;
   }
