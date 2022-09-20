@@ -1,9 +1,19 @@
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { SKOS, INTEROP } from '@janeirodigital/interop-namespaces';
 import { discoverAuthorizationAgent, discoverAgentRegistration, WhatwgFetch } from '@janeirodigital/interop-utils';
+import { DataFactory } from 'n3';
 import { AgentRegistrationData, CRUDAgentRegistration } from '.';
 import { AuthorizationAgentFactory } from '..';
 
+type ClassData = {
+  prefLabel: string;
+  note?: string;
+};
+
+export type SocialAgentRegistrationData = AgentRegistrationData & ClassData;
+
 export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
+  data?: SocialAgentRegistrationData;
+
   reciprocalRegistration?: CRUDSocialAgentRegistration;
 
   reciprocal: boolean;
@@ -12,7 +22,7 @@ export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
     iri: string,
     factory: AuthorizationAgentFactory,
     reciprocal: boolean,
-    data?: AgentRegistrationData
+    data?: SocialAgentRegistrationData
   ) {
     super(iri, factory, data);
     this.reciprocal = reciprocal;
@@ -33,8 +43,25 @@ export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
     return discoverAgentRegistration(authrizationAgentIri, fetch);
   }
 
+  protected datasetFromData(): void {
+    super.datasetFromData();
+    const props: (keyof ClassData)[] = ['prefLabel', 'note'];
+    for (const prop of props) {
+      if (this.data[prop]) {
+        this.dataset.add(
+          DataFactory.quad(DataFactory.namedNode(this.iri), SKOS[prop], DataFactory.literal(this.data[prop]))
+        );
+      }
+    }
+  }
+
   protected async bootstrap(): Promise<void> {
-    await super.bootstrap();
+    if (!this.data) {
+      await this.fetchData();
+    } else {
+      this.datasetFromData();
+    }
+    await this.buildAccessGrant();
     if (!this.reciprocal) {
       await this.buildReciprocalRegistration();
     }
@@ -44,7 +71,7 @@ export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
     iri: string,
     factory: AuthorizationAgentFactory,
     reciprocal: boolean,
-    data?: AgentRegistrationData
+    data?: SocialAgentRegistrationData
   ): Promise<CRUDSocialAgentRegistration> {
     const instance = new CRUDSocialAgentRegistration(iri, factory, reciprocal, data);
     await instance.bootstrap();

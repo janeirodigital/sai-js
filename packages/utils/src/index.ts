@@ -1,6 +1,7 @@
 export * from './turtle-parser';
 export * from './jsonld-parser';
 export * from './turtle-serializer';
+export * from './sparql-update';
 export * from './match';
 export * from './fetch';
 export * from './link-header';

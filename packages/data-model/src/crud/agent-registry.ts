@@ -1,3 +1,4 @@
+import { Store, DataFactory } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { AuthorizationAgentFactory, CRUDApplicationRegistration, CRUDSocialAgentRegistration } from '..';
 import { CRUDContainer } from '.';
@@ -62,5 +63,43 @@ export class CRUDAgentRegistry extends CRUDContainer {
     iri: string
   ): Promise<CRUDApplicationRegistration | CRUDSocialAgentRegistration | undefined> {
     return (await this.findApplicationRegistration(iri)) || this.findSocialAgentRegistration(iri);
+  }
+
+  public async addApplicationRegistration(registeredAgent: string): Promise<CRUDApplicationRegistration> {
+    const registration = await this.factory.crud.applicationRegistration(this.iriForContained(true), {
+      registeredAgent
+    });
+    await registration.create();
+    // link to created application registration
+    const quad = DataFactory.quad(
+      DataFactory.namedNode(this.iri),
+      INTEROP.hasApplicationRegistration,
+      DataFactory.namedNode(registration.iri)
+    );
+    // update itself to store changes
+    await this.addPatch(new Store([quad]));
+    return registration;
+  }
+
+  public async addSocialAgentRegistration(
+    registeredAgent: string,
+    prefLabel: string,
+    note?: string
+  ): Promise<CRUDSocialAgentRegistration> {
+    const registration = await this.factory.crud.socialAgentRegistration(this.iriForContained(true), false, {
+      registeredAgent,
+      prefLabel,
+      note
+    });
+    await registration.create();
+    // link to created social agent registration
+    const quad = DataFactory.quad(
+      DataFactory.namedNode(this.iri),
+      INTEROP.hasSocialAgentRegistration,
+      DataFactory.namedNode(registration.iri)
+    );
+    // update itself to store changes
+    await this.addPatch(new Store([quad]));
+    return registration;
   }
 }

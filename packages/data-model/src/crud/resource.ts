@@ -39,7 +39,7 @@ export class CRUDResource extends ReadableResource {
     }
   }
 
-  private setTimestampsAndAgents(): void {
+  protected setTimestampsAndAgents(): void {
     if (this.data) {
       this.registeredBy = this.factory.webId;
       this.registeredWith = this.factory.agentId;

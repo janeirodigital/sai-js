@@ -57,3 +57,21 @@ describe('findRegistration', () => {
     expect(await registry.findRegistration(socialAgentIri)).toBeInstanceOf(CRUDSocialAgentRegistration);
   });
 });
+
+describe('addSocialAgentRegistration', () => {
+  test.skip('returns added registration', async () => {
+    const jane = 'https://jane.example';
+    const registry = await factory.crud.agentRegistry(snippetIri);
+    const registration = await registry.addSocialAgentRegistration(jane, 'Jane');
+    expect(registration.registeredAgent).toBe(jane);
+  });
+});
+
+describe('addApplicationRegistration', () => {
+  test.skip('returns added registration', async () => {
+    const gigaApp = 'https://gigaApp.example';
+    const registry = await factory.crud.agentRegistry(snippetIri);
+    const registration = await registry.addApplicationRegistration(gigaApp);
+    expect(registration.registeredAgent).toBe(gigaApp);
+  });
+});

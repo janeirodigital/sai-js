@@ -4,7 +4,7 @@ import 'jest-rdf';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory } from 'n3';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { SKOS, INTEROP } from '@janeirodigital/interop-namespaces';
 import { CRUDSocialAgentRegistration, AuthorizationAgentFactory } from '../../src';
 
 const webId = 'https://alice.example/#id';
@@ -15,7 +15,8 @@ const newSnippetIri = 'https://auth.alice.example/afb6a337-40df-4fbe-9b00-5c9c1e
 const accessGrantIri = 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe';
 const data = {
   registeredAgent: 'https://different.iri/',
-  hasAccessGrant: 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe'
+  hasAccessGrant: 'https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe',
+  prefLabel: 'Someone'
 };
 
 describe('build', () => {
@@ -40,10 +41,11 @@ describe('build', () => {
         DataFactory.namedNode(newSnippetIri),
         INTEROP.hasAccessGrant,
         DataFactory.namedNode(data.hasAccessGrant)
-      )
+      ),
+      DataFactory.quad(DataFactory.namedNode(newSnippetIri), SKOS.prefLabel, DataFactory.literal(data.prefLabel))
     ];
     const agentRegistration = await CRUDSocialAgentRegistration.build(newSnippetIri, factory, false, data);
-    expect(agentRegistration.dataset.size).toBe(2);
+    expect(agentRegistration.dataset.size).toBe(3);
     expect(agentRegistration.dataset).toBeRdfDatasetContaining(...quads);
   });
 

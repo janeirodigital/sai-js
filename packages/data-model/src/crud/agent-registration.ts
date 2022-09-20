@@ -5,7 +5,7 @@ import { CRUDContainer } from './container';
 
 export type AgentRegistrationData = {
   registeredAgent: string;
-  hasAccessGrant: string;
+  hasAccessGrant?: string;
 };
 
 export abstract class CRUDAgentRegistration extends CRUDContainer {
@@ -20,7 +20,7 @@ export abstract class CRUDAgentRegistration extends CRUDContainer {
   }
 
   // TODO: change to avoid stale access grant
-  private async buildAccessGrant(): Promise<void> {
+  protected async buildAccessGrant(): Promise<void> {
     if (this.hasAccessGrant) {
       this.accessGrant = await this.factory.readable.accessGrant(this.hasAccessGrant);
     }
@@ -44,21 +44,14 @@ export abstract class CRUDAgentRegistration extends CRUDContainer {
     this.dataset.add(DataFactory.quad(subject, predicate, object));
   }
 
-  private datasetFromData(): void {
+  protected datasetFromData(): void {
     const props: (keyof AgentRegistrationData)[] = ['registeredAgent', 'hasAccessGrant'];
     for (const prop of props) {
-      this.dataset.add(
-        DataFactory.quad(DataFactory.namedNode(this.iri), INTEROP[prop], DataFactory.namedNode(this.data[prop]))
-      );
+      if (this.data[prop]) {
+        this.dataset.add(
+          DataFactory.quad(DataFactory.namedNode(this.iri), INTEROP[prop], DataFactory.namedNode(this.data[prop]))
+        );
+      }
     }
-  }
-
-  protected async bootstrap(): Promise<void> {
-    if (!this.data) {
-      await this.fetchData();
-    } else {
-      this.datasetFromData();
-    }
-    await this.buildAccessGrant();
   }
 }

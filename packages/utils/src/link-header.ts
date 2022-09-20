@@ -5,6 +5,11 @@ export function getAgentRegistrationIri(linkHeaderText: string): string {
   return links.find((link) => link.rel === 'http://www.w3.org/ns/solid/interop#registeredAgent')?.anchor;
 }
 
+export function getDescriptionResource(linkHeaderText: string): string {
+  const links = LinkHeader.parse(linkHeaderText).refs;
+  return links.find((link) => link.rel === 'describedby')?.uri;
+}
+
 export function targetDataRegistrationLink(dataRegistrationIri: string): string {
   const link = new LinkHeader();
   link.set({
