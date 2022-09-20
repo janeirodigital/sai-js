@@ -1,6 +1,6 @@
-import { getApplicationRegistrationIri, targetDataRegistrationLink } from '../src';
+import { getAgentRegistrationIri, targetDataRegistrationLink } from '../src';
 
-describe('getApplicationRegistrationIri', () => {
+describe('getAgentRegistrationIri', () => {
   const linkHeaderText = `
     <https://projectron.example/#app>;
     anchor="https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659";
@@ -8,7 +8,7 @@ describe('getApplicationRegistrationIri', () => {
   `;
 
   test('should match correct application registration iri', () => {
-    expect(getApplicationRegistrationIri(linkHeaderText)).toBe(
+    expect(getAgentRegistrationIri(linkHeaderText)).toBe(
       'https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659'
     );
   });
