@@ -1,5 +1,5 @@
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { Memoize } from 'typescript-memoize';
+import { discoverAuthorizationAgent, discoverAgentRegistration, WhatwgFetch } from '@janeirodigital/interop-utils';
 import { AgentRegistrationData, CRUDAgentRegistration } from '.';
 import { AuthorizationAgentFactory } from '..';
 
@@ -24,6 +24,13 @@ export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
     if (reciprocalRegistrationIri) {
       this.reciprocalRegistration = await this.factory.crud.socialAgentRegistration(reciprocalRegistrationIri, true);
     }
+  }
+
+  // TODO: adjust factory to also expose WhatwgFetch
+  public async discoverReciprocal(fetch: WhatwgFetch): Promise<string | null> {
+    const authrizationAgentIri = await discoverAuthorizationAgent(this.registeredAgent, this.factory.fetch);
+    if (!authrizationAgentIri) return null;
+    return discoverAgentRegistration(authrizationAgentIri, fetch);
   }
 
   protected async bootstrap(): Promise<void> {
