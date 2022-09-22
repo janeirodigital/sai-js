@@ -18,6 +18,7 @@ import {
   CRUDDataRegistry,
   FactoryDependencies,
   CRUDSocialAgentRegistration,
+  SocialAgentRegistrationData,
   CRUDApplicationRegistration,
   CRUDDataRegistration,
   DataRegistrationData
@@ -32,7 +33,7 @@ interface CRUDFactory {
   socialAgentRegistration(
     iri: string,
     reciprocal?: boolean,
-    data?: AgentRegistrationData
+    data?: SocialAgentRegistrationData
   ): Promise<CRUDSocialAgentRegistration>;
   dataRegistry(iri: string): Promise<CRUDDataRegistry>;
   dataRegistration(iri: string, data?: DataRegistrationData): Promise<CRUDDataRegistration>;
@@ -77,7 +78,7 @@ export class AuthorizationAgentFactory extends BaseFactory {
       socialAgentRegistration: async function socialAgentRegistration(
         iri: string,
         reciprocal = false,
-        data?: AgentRegistrationData
+        data?: SocialAgentRegistrationData
       ): Promise<CRUDSocialAgentRegistration> {
         return CRUDSocialAgentRegistration.build(iri, factory, reciprocal, data);
       },

@@ -1,15 +1,12 @@
-import { DataFactory } from 'n3';
-import { DatasetCore } from '@rdfjs/types';
 import { ApplicationFactory, ReadableApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
 import {
   WhatwgFetch,
   RdfFetch,
   fetchWrapper,
-  getOneMatchingQuad,
-  getApplicationRegistrationIri,
-  parseJsonld
+  discoverAuthorizationAgent,
+  discoverAgentRegistration,
+  discoverAuthorizationRedirectUri
 } from '@janeirodigital/interop-utils';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
 
 interface ApplicationDependencies {
   fetch: WhatwgFetch;
@@ -19,41 +16,33 @@ interface ApplicationDependencies {
 export class Application {
   factory: ApplicationFactory;
 
+  rawFetch: WhatwgFetch;
+
   fetch: RdfFetch;
 
-  hasAuthorizationAgent: string;
+  authorizationAgentIri: string;
 
   authorizationRedirectUriBase: string;
 
   hasApplicationRegistration?: ReadableApplicationRegistration;
 
   constructor(public webId: string, public applicationId: string, dependencies: ApplicationDependencies) {
-    this.fetch = fetchWrapper(dependencies.fetch);
+    this.rawFetch = dependencies.fetch;
+    this.fetch = fetchWrapper(this.rawFetch);
     this.factory = new ApplicationFactory({ fetch: this.fetch, randomUUID: dependencies.randomUUID });
   }
 
   private async bootstrap(): Promise<void> {
-    this.hasAuthorizationAgent = await this.discoverAuthorizationAgent();
-    const applicationRegistrationIri = await this.discoverRegistration();
+    this.authorizationAgentIri = await discoverAuthorizationAgent(this.webId, this.fetch);
+    const applicationRegistrationIri = await discoverAgentRegistration(this.authorizationAgentIri, this.rawFetch);
     if (applicationRegistrationIri) {
       this.hasApplicationRegistration = await this.factory.readable.applicationRegistration(applicationRegistrationIri);
     } else {
-      this.authorizationRedirectUriBase = await this.discoverAuthorizationRedirectUri();
+      this.authorizationRedirectUriBase = await discoverAuthorizationRedirectUri(
+        this.authorizationAgentIri,
+        this.rawFetch
+      );
     }
-  }
-
-  async discoverAuthorizationAgent(): Promise<string> {
-    const userDataset: DatasetCore = await (await this.fetch(this.webId)).dataset();
-    const authorizationAgentPattern = [DataFactory.namedNode(this.webId), INTEROP.hasAuthorizationAgent, null];
-    return getOneMatchingQuad(userDataset, ...authorizationAgentPattern).object.value;
-  }
-
-  async discoverAuthorizationRedirectUri(): Promise<string> {
-    const authzAgentDocumentResponse = await this.fetch(this.hasAuthorizationAgent, {
-      headers: { Accept: 'application/ld+json' }
-    });
-    const document = await parseJsonld(await authzAgentDocumentResponse.text(), authzAgentDocumentResponse.url);
-    return getOneMatchingQuad(document, null, INTEROP.authorizationRedirectUri)?.object.value;
   }
 
   // eslint-disable-next-line consistent-return
@@ -61,13 +50,6 @@ export class Application {
     if (this.authorizationRedirectUriBase) {
       return `${this.authorizationRedirectUriBase}?client_id=${this.applicationId}`;
     }
-  }
-
-  async discoverRegistration(): Promise<string | null> {
-    const response = await this.fetch(this.hasAuthorizationAgent, { method: 'HEAD' });
-    const linkHeader = response.headers.get('Link');
-    if (!linkHeader) return null;
-    return getApplicationRegistrationIri(linkHeader);
   }
 
   static async build(

@@ -27,12 +27,15 @@ type AccessAuthorizationStructure = {
 export class AuthorizationAgent {
   factory: AuthorizationAgentFactory;
 
+  rawFetch: WhatwgFetch;
+
   fetch: RdfFetch;
 
   registrySet: CRUDRegistrySet;
 
   constructor(public webId: string, public agentId: string, dependencies: AuthorizationAgentDependencies) {
-    this.fetch = fetchWrapper(dependencies.fetch);
+    this.rawFetch = dependencies.fetch;
+    this.fetch = fetchWrapper(this.rawFetch);
     this.factory = new AuthorizationAgentFactory(webId, agentId, {
       fetch: this.fetch,
       randomUUID: dependencies.randomUUID
