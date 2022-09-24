@@ -65,6 +65,7 @@ describe('addSocialAgentRegistration', () => {
     const registration = await registry.addSocialAgentRegistration(jane, 'Jane');
     expect(registration.registeredAgent).toBe(jane);
   });
+  test.todo('local datasets updates with hasSocialAgentRegistration statement');
 });
 
 describe('addApplicationRegistration', () => {
@@ -74,4 +75,5 @@ describe('addApplicationRegistration', () => {
     const registration = await registry.addApplicationRegistration(gigaApp);
     expect(registration.registeredAgent).toBe(gigaApp);
   });
+  test.todo('local datasets updates with hasApplicationRegistration statement');
 });
