@@ -44,9 +44,11 @@ export class CRUDAuthorizationRegistry extends CRUDContainer {
    * Updates itself
    */
   async add(accessAuthorization: ReadableAccessAuthorization): Promise<void> {
-    const subject = DataFactory.namedNode(this.iri);
-    const predicate = INTEROP.hasAccessAuthorization;
-    const object = DataFactory.namedNode(accessAuthorization.iri);
+    const quad = DataFactory.quad(
+      DataFactory.namedNode(this.iri),
+      INTEROP.hasAccessAuthorization,
+      DataFactory.namedNode(accessAuthorization.iri)
+    );
     // unlink prevoius access authorization for that grantee if exists
     const priorAuthorization = await this.findAuthorization(accessAuthorization.grantee);
     if (priorAuthorization) {
@@ -55,11 +57,10 @@ export class CRUDAuthorizationRegistry extends CRUDContainer {
         INTEROP.hasAccessAuthorization,
         DataFactory.namedNode(priorAuthorization.iri)
       );
-      this.dataset.delete(priorQuad);
+      await this.replaceStatement(priorQuad, quad);
+    } else {
+      await this.addStatement(quad);
     }
-    // add quad
-    this.dataset.add(DataFactory.quad(subject, predicate, object));
-    await this.update();
   }
 
   // match dataOwner on data authorizations - scope All will have no dataOwner but we want it to also match

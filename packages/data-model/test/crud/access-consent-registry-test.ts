@@ -54,6 +54,17 @@ describe('add', () => {
     expect(registry.dataset).toBeRdfDatasetContaining(...quads);
   });
 
+  test('should update statement if prior existed', async () => {
+    authorization = {
+      iri: registry.iriForContained(),
+      grantee: 'https://projectron.example/#app'
+    } as unknown as ReadableAccessAuthorization;
+    const accessRegistrySpy = jest.spyOn(registry, 'replaceStatement');
+    await registry.add(authorization);
+    expect(accessRegistrySpy).toBeCalled();
+  });
+
+  // TODO: move to container test
   test('should remove link to prior authorization for that agent if exists', async () => {
     authorization = {
       iri: registry.iriForContained(),
@@ -72,8 +83,8 @@ describe('add', () => {
     expect(registry.dataset).not.toBeRdfDatasetContaining(...priorQuads);
   });
 
-  test('should update itself', async () => {
-    const accessRegistrySpy = jest.spyOn(registry, 'update');
+  test('should add statement if no prior existed', async () => {
+    const accessRegistrySpy = jest.spyOn(registry, 'addStatement');
     await registry.add(authorization);
     expect(accessRegistrySpy).toBeCalled();
   });

@@ -1,5 +1,6 @@
+import { Quad } from '@rdfjs/types';
+import { Store } from 'n3';
 import { getDescriptionResource, insertPatch } from '@janeirodigital/interop-utils';
-import { DatasetCore } from '@rdfjs/types';
 import { CRUDResource } from '.';
 
 // TODO combine with ReadableContainer as mixin
@@ -12,12 +13,12 @@ export class CRUDContainer extends CRUDResource {
     return containedIri;
   }
 
-  public async addPatch(dataset: DatasetCore): Promise<void> {
+  public async applyPatch(sparqlUpdate: string): Promise<void> {
     await this.discoverDescriptionResource();
     // update the Description Resource
     const { ok } = await this.fetch(this.descriptionResourceIri, {
       method: 'PATCH',
-      body: await insertPatch(dataset),
+      body: sparqlUpdate,
       headers: {
         'Content-Type': 'application/sparql-update'
       }
@@ -25,6 +26,21 @@ export class CRUDContainer extends CRUDResource {
     if (!ok) {
       throw new Error(`failed to patch ${this.descriptionResourceIri}`);
     }
+  }
+
+  public async addStatement(quad: Quad): Promise<void> {
+    const sparqlUpdate = await insertPatch(new Store([quad]));
+    await this.applyPatch(sparqlUpdate);
+    this.dataset.add(quad);
+  }
+
+  public async replaceStatement(whichQuad: Quad, withQuad: Quad): Promise<void> {
+    const sparqlUpdate = [await insertPatch(new Store([whichQuad])), await insertPatch(new Store([withQuad]))].join(
+      ';'
+    );
+    await this.applyPatch(sparqlUpdate);
+    this.dataset.delete(whichQuad);
+    this.dataset.add(withQuad);
   }
 
   private async discoverDescriptionResource(): Promise<string> {
@@ -52,6 +68,7 @@ export class CRUDContainer extends CRUDResource {
     }
 
     await this.discoverDescriptionResource();
-    await this.addPatch(this.dataset);
+    const sparqlUpdate = await insertPatch(this.dataset);
+    await this.applyPatch(sparqlUpdate);
   }
 }

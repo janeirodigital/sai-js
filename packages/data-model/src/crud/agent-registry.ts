@@ -1,4 +1,4 @@
-import { Store, DataFactory } from 'n3';
+import { DataFactory } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { AuthorizationAgentFactory, CRUDApplicationRegistration, CRUDSocialAgentRegistration } from '..';
 import { CRUDContainer } from '.';
@@ -77,8 +77,7 @@ export class CRUDAgentRegistry extends CRUDContainer {
       DataFactory.namedNode(registration.iri)
     );
     // update itself to store changes
-    await this.addPatch(new Store([quad]));
-    this.dataset.add(quad);
+    await this.addStatement(quad);
     return registration;
   }
 
@@ -100,8 +99,7 @@ export class CRUDAgentRegistry extends CRUDContainer {
       DataFactory.namedNode(registration.iri)
     );
     // update itself to store changes
-    await this.addPatch(new Store([quad]));
-    this.dataset.add(quad);
+    await this.addStatement(quad);
     return registration;
   }
 }
