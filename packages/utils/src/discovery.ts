@@ -16,7 +16,7 @@ export async function discoverAgentRegistration(
   authorizationAgentIri: string,
   fetch: WhatwgFetch
 ): Promise<string | null> {
-  const response = await fetch(authorizationAgentIri, { method: 'GET' }); // TODO: change to HEAD
+  const response = await fetch(authorizationAgentIri, { method: 'HEAD' });
   const linkHeader = response.headers.get('Link');
   if (!linkHeader) return null;
   return getAgentRegistrationIri(linkHeader);
