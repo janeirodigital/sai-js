@@ -8,7 +8,7 @@ describe('common', () => {
   test('should strip fragment', async () => {
     const url = 'https://alice.example/#id';
     const response = await statelessFetch(url);
-    expect(response.ok).toBeTruthy()
+    expect(response.ok).toBeTruthy();
   });
 
   test('should set text on response', async () => {
@@ -22,6 +22,12 @@ describe('common', () => {
     const url = 'https://solidshapes.example/shapes/Project';
     const response = await statelessFetch(url);
     expect(response.headers.get('Content-Type')).toBe('text/turtle');
+  });
+
+  test('should provide fake Link header', async () => {
+    const url = 'https://solidshapes.example/shapes/Project';
+    const response = await statelessFetch(url);
+    expect(response.headers.get('Link')).toBeTruthy();
   });
 
   test('should throw when getting header other than Content-Type', async () => {
@@ -42,9 +48,15 @@ describe('common', () => {
 });
 
 describe('statelessFetch', () => {
-  test('should respond with ok for other HTTP methods', async () => {
+  test('should respond with ok for other HTTP PUT', async () => {
     const url = 'https://pro.alice.example/bcbd16fb-23d9-4d9b-867c-e2e69cd94a77';
     const response = await statelessFetch(url, { method: 'PUT' });
+    expect(response.ok).toBeTruthy();
+  });
+
+  test('should respond with ok for other HTTP methods', async () => {
+    const url = 'https://pro.alice.example/bcbd16fb-23d9-4d9b-867c-e2e69cd94a77';
+    const response = await statelessFetch(url, { method: 'PATCH' });
     expect(response.ok).toBeTruthy();
   });
 });
@@ -69,6 +81,6 @@ describe('createFetch', () => {
     expect(putResponse.ok).toBeTruthy();
 
     const getResponse = await statefulFetch(newUrl);
-    expect(await getResponse.text()).toMatch('some.example')
+    expect(await getResponse.text()).toMatch('some.example');
   });
 });
