@@ -18,7 +18,7 @@ interface AuthorizationAgentDependencies {
   randomUUID(): string;
 }
 
-type AccessAuthorizationStructure = {
+export type AccessAuthorizationStructure = {
   grantee: string;
   hasAccessNeedGroup: string;
   dataAuthorizations: DataAuthorizationData[];
