@@ -8,3 +8,11 @@ export async function insertPatch(dataset: DatasetCore): Promise<string> {
     }
   `;
 }
+
+export async function deletePatch(dataset: DatasetCore): Promise<string> {
+  return `
+    DELETE DATA {
+      ${await serializeTurtle(dataset)}
+    }
+  `;
+}
