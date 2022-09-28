@@ -1,6 +1,8 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
+import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
+import { DataFactory } from 'n3';
 import { CRUDSocialAgentRegistration, CRUDApplicationRegistration, AuthorizationAgentFactory } from '../../src';
 
 const webId = 'https://alice.example/#id';
@@ -59,19 +61,44 @@ describe('findRegistration', () => {
 });
 
 describe('addSocialAgentRegistration', () => {
-  test.skip('returns added registration', async () => {
-    const jane = 'https://jane.example';
+  const jane = 'https://jane.example';
+
+  test('returns added registration', async () => {
     const registry = await factory.crud.agentRegistry(snippetIri);
     const registration = await registry.addSocialAgentRegistration(jane, 'Jane');
     expect(registration.registeredAgent).toBe(jane);
   });
+
+  test('local datasets updates with hasSocialAgentRegistration statement', async () => {
+    const registry = await factory.crud.agentRegistry(snippetIri);
+    const registration = await registry.addSocialAgentRegistration(jane, 'Jane');
+    expect(
+      registry.dataset.match(
+        DataFactory.namedNode(registry.iri),
+        INTEROP.hasApplicationRegistration,
+        DataFactory.namedNode(registration.iri)
+      )
+    ).toBeTruthy();
+  });
 });
 
 describe('addApplicationRegistration', () => {
-  test.skip('returns added registration', async () => {
-    const gigaApp = 'https://gigaApp.example';
+  const gigaApp = 'https://gigaApp.example';
+  test('returns added registration', async () => {
     const registry = await factory.crud.agentRegistry(snippetIri);
     const registration = await registry.addApplicationRegistration(gigaApp);
     expect(registration.registeredAgent).toBe(gigaApp);
+  });
+
+  test('local datasets updates with hasApplicationRegistration statement', async () => {
+    const registry = await factory.crud.agentRegistry(snippetIri);
+    const registration = await registry.addApplicationRegistration(gigaApp);
+    expect(
+      registry.dataset.match(
+        DataFactory.namedNode(registry.iri),
+        INTEROP.hasApplicationRegistration,
+        DataFactory.namedNode(registration.iri)
+      )
+    ).toBeTruthy();
   });
 });

@@ -78,6 +78,7 @@ export class CRUDAgentRegistry extends CRUDContainer {
     );
     // update itself to store changes
     await this.addPatch(new Store([quad]));
+    this.dataset.add(quad);
     return registration;
   }
 
@@ -100,6 +101,7 @@ export class CRUDAgentRegistry extends CRUDContainer {
     );
     // update itself to store changes
     await this.addPatch(new Store([quad]));
+    this.dataset.add(quad);
     return registration;
   }
 }

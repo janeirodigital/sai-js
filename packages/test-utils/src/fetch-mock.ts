@@ -16,6 +16,9 @@ async function common(url: string, options?: RequestInit, state?: { [key: string
         if (name === 'Content-Type') {
           return 'text/turtle';
         }
+        if (name === 'Link') {
+          return '<http://just.en.example/description-resource>; rel="describedby"';
+        }
         throw Error(`${name} not supported`);
       }
     } as Headers
@@ -63,8 +66,8 @@ export function createStatefulFetch(): WhatwgFetch {
 }
 
 export const statelessFetch = async function statelessFetch(url: string, options?: RequestInit): Promise<Response> {
-  // just ok PUT
-  if (options?.method === 'PUT') {
+  // just ok PUT or PATCH
+  if (options?.method === 'PUT' || options?.method === 'PATCH') {
     const response = { ok: true } as Response;
     response.clone = () => ({ ...response });
     return response;
