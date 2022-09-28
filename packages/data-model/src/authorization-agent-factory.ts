@@ -11,7 +11,7 @@ import {
   CRUDAuthorizationRegistry,
   AccessGrantData,
   ImmutableAccessGrant,
-  DataAuthorizationData,
+  ExpandedDataAuthorizationData,
   AccessAuthorizationData,
   ImmutableAccessAuthorization,
   ImmutableDataAuthorization,
@@ -45,7 +45,7 @@ interface CRUDFactory {
 interface ImmutableFactory {
   dataGrant(iri: string, data: DataGrantData): ImmutableDataGrant;
   accessGrant(iri: string, data: AccessGrantData): ImmutableAccessGrant;
-  dataAuthorization(iri: string, data: DataAuthorizationData): ImmutableDataAuthorization;
+  dataAuthorization(iri: string, data: ExpandedDataAuthorizationData): ImmutableDataAuthorization;
   accessAuthorization(iri: string, data: AccessAuthorizationData): ImmutableAccessAuthorization;
 }
 
@@ -116,7 +116,7 @@ export class AuthorizationAgentFactory extends BaseFactory {
       },
       dataAuthorization: function dataAuthorization(
         iri: string,
-        data: DataAuthorizationData
+        data: ExpandedDataAuthorizationData
       ): ImmutableDataAuthorization {
         return new ImmutableDataAuthorization(iri, factory, data);
       },

@@ -17,6 +17,7 @@ test('should set data and store', async () => {
   const dataAuthorizationIri = 'https://auth.alice.example/25b18e05-7f75-4e13-94f6-9950a67a89dd';
   const dataAuthorization = factory.immutable.dataAuthorization(dataAuthorizationIri, {
     grantee: 'https://projectron.example/#app',
+    grantedBy: webId,
     registeredShapeTree: 'https://solidshapes.example/trees/Project',
     accessMode: [ACL.Read.value, ACL.Write.value],
     scopeOfAuthorization: INTEROP.All.value

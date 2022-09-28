@@ -20,12 +20,18 @@ type ArrayData = {
 
 export type DataAuthorizationData = StringData & ArrayData;
 
+// used internally to pass props already available elsewhere
+export type ExpandedDataAuthorizationData = DataAuthorizationData & {
+  grantedBy: string;
+};
+
 export class ImmutableDataAuthorization extends ImmutableResource {
-  public constructor(iri: string, factory: AuthorizationAgentFactory, data: DataAuthorizationData) {
+  public constructor(iri: string, factory: AuthorizationAgentFactory, data: ExpandedDataAuthorizationData) {
     super(iri, factory, data);
     const thisNode = DataFactory.namedNode(this.iri);
-    const props: (keyof StringData)[] = [
+    const props: (keyof (StringData & { grantedBy: string }))[] = [
       'grantee',
+      'grantedBy',
       'dataOwner',
       'registeredShapeTree',
       'hasDataRegistration',

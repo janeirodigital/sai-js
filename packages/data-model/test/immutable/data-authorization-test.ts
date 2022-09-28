@@ -13,6 +13,7 @@ const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUI
 const snippetIri = 'https://some.iri/';
 const commonData = {
   grantee: 'https://projectron.example/#app',
+  grantedBy: webId,
   registeredShapeTree: 'https://solidshapes.example/tree/Project',
   hasDataRegistration: 'https://pro.alice.example/123',
   accessMode: [ACL.Read.value]

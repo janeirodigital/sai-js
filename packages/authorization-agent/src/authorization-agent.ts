@@ -102,10 +102,14 @@ export class AuthorizationAgent {
       (dataAuthorization) => dataAuthorization.dataOwner !== dataAuthorization.grantee
     );
 
+    // TODO explore moving into AccessAuthorization
     const dataAuthorizations: ImmutableDataAuthorization[] = await Promise.all(
       validDataAuthorizations.map((dataAuthorization) => {
         const dataAuthorizationIri = this.registrySet.hasAuthorizationRegistry.iriForContained();
-        return this.factory.immutable.dataAuthorization(dataAuthorizationIri, dataAuthorization);
+        return this.factory.immutable.dataAuthorization(dataAuthorizationIri, {
+          ...dataAuthorization,
+          grantedBy: this.webId
+        });
       })
     );
 
