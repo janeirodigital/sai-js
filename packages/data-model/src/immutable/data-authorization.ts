@@ -4,12 +4,13 @@ import { AuthorizationAgentFactory } from '..';
 import { ImmutableResource } from '.';
 
 type StringData = {
-  grantee: string;
+  grantee: string; // TODO: move to expanded
   registeredShapeTree: string;
   scopeOfAuthorization: string;
   dataOwner?: string;
   hasDataRegistration?: string;
   inheritsFromAuthorization?: string;
+  satisfiesAccessNeed?: string; // TODO: make required
 };
 
 type ArrayData = {
@@ -36,7 +37,8 @@ export class ImmutableDataAuthorization extends ImmutableResource {
       'registeredShapeTree',
       'hasDataRegistration',
       'scopeOfAuthorization',
-      'inheritsFromAuthorization'
+      'inheritsFromAuthorization',
+      'satisfiesAccessNeed'
     ];
     for (const prop of props) {
       if (data[prop]) {
