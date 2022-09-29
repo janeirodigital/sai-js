@@ -4,25 +4,18 @@ import {
   AuthorizationAgentFactory,
   CRUDRegistrySet,
   ReadableAccessAuthorization,
-  ImmutableDataAuthorization,
-  DataAuthorizationData,
   CRUDSocialAgentRegistration,
   CRUDApplicationRegistration,
   ImmutableDataGrant
 } from '@janeirodigital/interop-data-model';
 import { WhatwgFetch, RdfFetch, fetchWrapper, getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { AccessAuthorizationStructure, generateAuthorization } from './authorization';
 
 interface AuthorizationAgentDependencies {
   fetch: WhatwgFetch;
   randomUUID(): string;
 }
-
-export type AccessAuthorizationStructure = {
-  grantee: string;
-  hasAccessNeedGroup: string;
-  dataAuthorizations: DataAuthorizationData[];
-};
 
 export class AuthorizationAgent {
   factory: AuthorizationAgentFactory;
@@ -97,36 +90,14 @@ export class AuthorizationAgent {
   ): Promise<ReadableAccessAuthorization> {
     // create data authorizations
 
-    // don't create data authorization where grantee == dataowner
-    const validDataAuthorizations = authorization.dataAuthorizations.filter(
-      (dataAuthorization) => dataAuthorization.dataOwner !== dataAuthorization.grantee
-    );
-
     // TODO explore moving into AccessAuthorization
-    const dataAuthorizations: ImmutableDataAuthorization[] = await Promise.all(
-      validDataAuthorizations.map((dataAuthorization) => {
-        const dataAuthorizationIri = this.registrySet.hasAuthorizationRegistry.iriForContained();
-        return this.factory.immutable.dataAuthorization(dataAuthorizationIri, {
-          ...dataAuthorization,
-          grantedBy: this.webId
-        });
-      })
+    return generateAuthorization(
+      authorization,
+      this.webId,
+      this.registrySet.hasAuthorizationRegistry,
+      this.agentId,
+      this.factory
     );
-
-    const authorizationIri = this.registrySet.hasAuthorizationRegistry.iriForContained();
-    const data = {
-      grantedWith: this.agentId,
-      grantedBy: this.webId,
-      grantee: authorization.grantee,
-      hasAccessNeedGroup: authorization.hasAccessNeedGroup,
-      dataAuthorizations
-    };
-    const accessAuthorization = this.factory.immutable.accessAuthorization(authorizationIri, data);
-    const rAccessAuthorization = await accessAuthorization.store();
-
-    // link to new access authorization from access authorization registry
-    await this.registrySet.hasAuthorizationRegistry.add(rAccessAuthorization);
-    return rAccessAuthorization;
   }
 
   public async generateAccessGrant(accessAuthorizationIri: string): Promise<void> {
