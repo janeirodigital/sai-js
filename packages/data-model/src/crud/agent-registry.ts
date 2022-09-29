@@ -66,6 +66,10 @@ export class CRUDAgentRegistry extends CRUDContainer {
   }
 
   public async addApplicationRegistration(registeredAgent: string): Promise<CRUDApplicationRegistration> {
+    const existing = await this.findApplicationRegistration(registeredAgent);
+    if (existing) {
+      throw new Error(`Application Registration for ${registeredAgent} already exists`);
+    }
     const registration = await this.factory.crud.applicationRegistration(this.iriForContained(true), {
       registeredAgent
     });
@@ -86,6 +90,10 @@ export class CRUDAgentRegistry extends CRUDContainer {
     prefLabel: string,
     note?: string
   ): Promise<CRUDSocialAgentRegistration> {
+    const existing = await this.findSocialAgentRegistration(registeredAgent);
+    if (existing) {
+      throw new Error(`Social Agent Registration for ${registeredAgent} already exists`);
+    }
     const registration = await this.factory.crud.socialAgentRegistration(this.iriForContained(true), false, {
       registeredAgent,
       prefLabel,

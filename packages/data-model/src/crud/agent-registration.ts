@@ -26,22 +26,31 @@ export abstract class CRUDAgentRegistration extends CRUDContainer {
     }
   }
 
+  async setAccessGrant(accessGrantIri: string): Promise<void> {
+    const quad = DataFactory.quad(
+      DataFactory.namedNode(this.iri),
+      INTEROP.hasAccessGrant,
+      DataFactory.namedNode(accessGrantIri)
+    );
+    // unlink prevoius access grant if exists
+    if (this.hasAccessGrant) {
+      const priorQuad = this.getQuad(
+        DataFactory.namedNode(this.iri),
+        INTEROP.hasAccessGrant,
+        DataFactory.namedNode(this.hasAccessGrant)
+      );
+      await this.replaceStatement(priorQuad, quad);
+    } else {
+      await this.addStatement(quad);
+    }
+  }
+
   get registeredAgent(): string {
     return this.getObject('registeredAgent').value;
   }
 
   get hasAccessGrant(): string | undefined {
     return this.getObject('hasAccessGrant')?.value;
-  }
-
-  set hasAccessGrant(iri: string) {
-    const subject = DataFactory.namedNode(this.iri);
-    const predicate = INTEROP.hasAccessGrant;
-    const object = DataFactory.namedNode(iri);
-    // delete existing quad
-    this.deleteQuad('hasAccessGrant');
-    // add new quad
-    this.dataset.add(DataFactory.quad(subject, predicate, object));
   }
 
   protected datasetFromData(): void {

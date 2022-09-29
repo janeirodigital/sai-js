@@ -149,8 +149,7 @@ export class AuthorizationAgent {
 
       // link to new access grant and update agent registration
       // eslint-disable-next-line no-param-reassign
-      agentRegistration.hasAccessGrant = rAccessGrant.iri;
-      await agentRegistration.update();
+      await agentRegistration.setAccessGrant(rAccessGrant.iri);
     }
   }
 

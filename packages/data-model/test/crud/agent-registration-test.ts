@@ -61,11 +61,4 @@ describe('hasAccessGrant', () => {
     const agentRegistration = await CRUDSocialAgentRegistration.build(snippetIri, factory, false);
     expect(agentRegistration.hasAccessGrant).toBe(accessGrantIri);
   });
-
-  test('setter should update dataset accordingly', async () => {
-    const newIri = 'https://some.iri';
-    const agentRegistration = await CRUDSocialAgentRegistration.build(snippetIri, factory, false);
-    agentRegistration.hasAccessGrant = newIri;
-    expect(agentRegistration.hasAccessGrant).toBe(newIri);
-  });
 });
