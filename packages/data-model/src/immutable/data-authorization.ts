@@ -9,7 +9,7 @@ type StringData = {
   scopeOfAuthorization: string;
   dataOwner?: string;
   hasDataRegistration?: string;
-  inheritsFromAuthorization?: string;
+  inheritsFromAuthorization?: string; // TODO: define as separate interface which requires it
   satisfiesAccessNeed?: string; // TODO: make required
 };
 
@@ -17,11 +17,11 @@ type ArrayData = {
   accessMode: string[];
   creatorAccessMode?: string[];
   hasDataInstance?: string[];
+  hasInheritingAuthorization?: string[];
 };
 
 export type DataAuthorizationData = StringData & ArrayData;
 
-// used internally to pass props already available elsewhere
 export type ExpandedDataAuthorizationData = DataAuthorizationData & {
   grantedBy: string;
 };
@@ -51,6 +51,12 @@ export class ImmutableDataAuthorization extends ImmutableResource {
         for (const element of data[prop]) {
           this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(element)));
         }
+      }
+    }
+    // link back to children
+    if (data.hasInheritingAuthorization) {
+      for (const child of data.hasInheritingAuthorization) {
+        this.dataset.add(DataFactory.quad(DataFactory.namedNode(child), INTEROP.inheritsFromAuthorization, thisNode));
       }
     }
   }

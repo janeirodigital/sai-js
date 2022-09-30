@@ -6,6 +6,11 @@ import {
   ReadableAccessAuthorization
 } from '@janeirodigital/interop-data-model';
 
+// Nesting is being used to capture inheritance before IRIs are available
+export type NestedDataAuthorizationData = DataAuthorizationData & {
+  children?: DataAuthorizationData[];
+};
+
 export type AccessAuthorizationStructure = {
   grantee: string;
   hasAccessNeedGroup: string;
@@ -13,7 +18,7 @@ export type AccessAuthorizationStructure = {
 };
 
 export async function generateDataAuthorizations(
-  dataAuthorizations: DataAuthorizationData[],
+  dataAuthorizations: NestedDataAuthorizationData[],
   grantedBy: string,
   authorizationRegistry: CRUDAuthorizationRegistry,
   factory: AuthorizationAgentFactory
@@ -22,15 +27,27 @@ export async function generateDataAuthorizations(
   const validDataAuthorizations = dataAuthorizations.filter(
     (dataAuthorization) => dataAuthorization.dataOwner !== dataAuthorization.grantee
   );
-  return Promise.all(
-    validDataAuthorizations.map((dataAuthorization) => {
-      const dataAuthorizationIri = authorizationRegistry.iriForContained();
-      return factory.immutable.dataAuthorization(dataAuthorizationIri, {
-        ...dataAuthorization,
-        grantedBy
+
+  return validDataAuthorizations.reduce((all, dataAuthorization) => {
+    const dataAuthorizationIri = authorizationRegistry.iriForContained();
+    let childInstances: ImmutableDataAuthorization[] = [];
+    if (dataAuthorization.children) {
+      childInstances = dataAuthorization.children.map((childDataAuthorization) => {
+        const childDataAuthorizationIri = authorizationRegistry.iriForContained();
+        return factory.immutable.dataAuthorization(childDataAuthorizationIri, {
+          ...childDataAuthorization,
+          inheritsFromAuthorization: dataAuthorizationIri,
+          grantedBy
+        });
       });
-    })
-  );
+    }
+    const parentInstance = factory.immutable.dataAuthorization(dataAuthorizationIri, {
+      ...dataAuthorization,
+      hasInheritingAuthorization: childInstances.map((childInstance) => childInstance.iri),
+      grantedBy
+    });
+    return [...all, parentInstance, ...childInstances];
+  }, []);
 }
 
 export async function generateAuthorization(
