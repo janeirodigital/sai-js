@@ -1,7 +1,8 @@
 import { DataFactory } from 'n3';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP, OIDC } from '@janeirodigital/interop-namespaces';
 import { AuthorizationAgentFactory, CRUDApplicationRegistration, CRUDSocialAgentRegistration } from '..';
 import { CRUDContainer } from '.';
+import { parseJsonld, getOneMatchingQuad } from '@janeirodigital/interop-utils';
 
 export class CRUDAgentRegistry extends CRUDContainer {
   factory: AuthorizationAgentFactory;
@@ -73,6 +74,21 @@ export class CRUDAgentRegistry extends CRUDContainer {
     const registration = await this.factory.crud.applicationRegistration(this.iriForContained(true), {
       registeredAgent
     });
+    // get data from ClientID document
+    try {
+      const authzAgentDocumentResponse = await fetch(registeredAgent, {
+        headers: { Accept: 'application/ld+json' }
+      });
+      const document = await parseJsonld(await authzAgentDocumentResponse.text(), authzAgentDocumentResponse.url);
+      const agentNode = DataFactory.namedNode(registeredAgent);
+      const props = [OIDC.client_name, OIDC.logo_uri, INTEROP.hasAccessNeedGroup];
+      for (const prop of props) {
+        const quad = getOneMatchingQuad(document, agentNode, prop);
+        if (quad) registration.dataset.add(quad);
+      }
+    } catch (error) {
+      console.error('failed to get data from Client ID document', error);
+    }
     await registration.create();
     // link to created application registration
     const quad = DataFactory.quad(
