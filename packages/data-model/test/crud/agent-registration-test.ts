@@ -5,7 +5,7 @@ import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory } from 'n3';
 import { SKOS, INTEROP } from '@janeirodigital/interop-namespaces';
-import { CRUDSocialAgentRegistration, AuthorizationAgentFactory } from '../../src';
+import { CRUDSocialAgentRegistration, AuthorizationAgentFactory, SocialAgentRegistrationData } from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
@@ -60,5 +60,28 @@ describe('hasAccessGrant', () => {
   test('should have getter', async () => {
     const agentRegistration = await CRUDSocialAgentRegistration.build(snippetIri, factory, false);
     expect(agentRegistration.hasAccessGrant).toBe(accessGrantIri);
+  });
+});
+
+describe('setAccessGrant', () => {
+  test('updates dataset when previous existed', async () => {
+    const agentRegistration = await CRUDSocialAgentRegistration.build(snippetIri, factory, false);
+    const newAccessGrantIri = 'https://auth.alice.example/812a837d-6774-448e-b4c0-f05763deda3d';
+    expect(agentRegistration.hasAccessGrant).toBe('https://auth.alice.example/dd442d1b-bcc7-40e2-bbb9-4abfa7309fbe');
+    await agentRegistration.setAccessGrant(newAccessGrantIri);
+    expect(agentRegistration.hasAccessGrant).toBe(newAccessGrantIri);
+  });
+
+  test('updates dataset if existed', async () => {
+    const noAgData = {
+      ...data,
+      hasAccessGrant: undefined as undefined,
+      prefLabel: 'Jane'
+    } as SocialAgentRegistrationData;
+    const agentRegistration = await CRUDSocialAgentRegistration.build(newSnippetIri, factory, false, noAgData);
+    const newAccessGrantIri = 'https://auth.alice.example/812a837d-6774-448e-b4c0-f05763deda3d';
+    expect(agentRegistration.hasAccessGrant).toBeUndefined();
+    await agentRegistration.setAccessGrant(newAccessGrantIri);
+    expect(agentRegistration.hasAccessGrant).toBe(newAccessGrantIri);
   });
 });
