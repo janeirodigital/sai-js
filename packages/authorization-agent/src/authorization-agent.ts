@@ -1,15 +1,13 @@
-import { DataFactory } from 'n3';
-import { DatasetCore } from '@rdfjs/types';
 import {
   AuthorizationAgentFactory,
   CRUDRegistrySet,
   ReadableAccessAuthorization,
   CRUDSocialAgentRegistration,
   CRUDApplicationRegistration,
-  ImmutableDataGrant
+  ImmutableDataGrant,
+  ReadableWebIdProfile
 } from '@janeirodigital/interop-data-model';
-import { WhatwgFetch, RdfFetch, fetchWrapper, getOneMatchingQuad } from '@janeirodigital/interop-utils';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { WhatwgFetch, RdfFetch, fetchWrapper } from '@janeirodigital/interop-utils';
 import { AccessAuthorizationStructure, generateAuthorization } from './authorization';
 
 interface AuthorizationAgentDependencies {
@@ -24,6 +22,8 @@ export class AuthorizationAgent {
 
   fetch: RdfFetch;
 
+  webIdProfile: ReadableWebIdProfile;
+
   registrySet: CRUDRegistrySet;
 
   constructor(public webId: string, public agentId: string, dependencies: AuthorizationAgentDependencies) {
@@ -33,12 +33,6 @@ export class AuthorizationAgent {
       fetch: this.fetch,
       randomUUID: dependencies.randomUUID
     });
-  }
-
-  private async discoverRegistrySet(): Promise<string> {
-    const userDataset: DatasetCore = await (await this.fetch(this.webId)).dataset();
-    const registrySetPattern = [DataFactory.namedNode(this.webId), INTEROP.hasRegistrySet, null];
-    return getOneMatchingQuad(userDataset, ...registrySetPattern).object.value;
   }
 
   get accessAuthorizations(): AsyncIterable<ReadableAccessAuthorization> {
@@ -62,8 +56,8 @@ export class AuthorizationAgent {
   }
 
   private async bootstrap(): Promise<void> {
-    const registrySetIri = await this.discoverRegistrySet();
-    this.registrySet = await this.factory.crud.registrySet(registrySetIri);
+    this.webIdProfile = await this.factory.readable.webIdProfile(this.webId);
+    this.registrySet = await this.factory.crud.registrySet(this.webIdProfile.hasRegistrySet);
   }
 
   public static async build(

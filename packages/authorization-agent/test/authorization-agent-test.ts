@@ -7,13 +7,20 @@ import {
   CRUDRegistrySet,
   ReadableAccessAuthorization,
   CRUDApplicationRegistration,
-  CRUDSocialAgentRegistration
+  CRUDSocialAgentRegistration,
+  ReadableWebIdProfile
 } from '@janeirodigital/interop-data-model';
 import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
 import { AuthorizationAgent } from '../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://alice.jarvis.example/#agent';
+
+test('should build webIdProfile', async () => {
+  const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
+  expect(agent.webIdProfile).toBeInstanceOf(ReadableWebIdProfile);
+  expect(agent.webIdProfile.iri).toBe(webId);
+});
 
 test('should build registrySet', async () => {
   const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
