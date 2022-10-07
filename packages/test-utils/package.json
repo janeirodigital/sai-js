@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@janeirodigital/interop-utils": "^1.0.0-rc.11",
-    "data-interoperability-panel": "elf-pavlik/data-interoperability-panel#5ed1c668"
+    "data-interoperability-panel": "elf-pavlik/data-interoperability-panel#f4ab8fff"
   },
   "devDependencies": {
     "@types/n3": "^1.8.0",

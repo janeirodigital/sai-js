@@ -17,3 +17,4 @@ export { ReadableShapeTree } from './shape-tree';
 export { ReadableDataRegistration } from './data-registration';
 export { ReadableAccessAuthorization } from './access-authorization';
 export { ReadableDataAuthorization } from './data-authorization';
+export { ReadableWebIdProfile } from './webid-profile';

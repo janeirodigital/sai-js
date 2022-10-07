@@ -11,6 +11,7 @@ import {
   SelectedFromRegistryDataGrant,
   DataGrant,
   ReadableShapeTree,
+  ReadableWebIdProfile,
   FactoryDependencies
 } from '.';
 
@@ -33,6 +34,7 @@ export interface BaseReadableFactory {
   dataRegistration(iri: string): Promise<ReadableDataRegistration>;
   shapeTree(iri: string): Promise<ReadableShapeTree>;
   dataGrant(iri: string): Promise<DataGrant>;
+  webIdProfile(iri: string): Promise<ReadableWebIdProfile>;
 }
 
 export class BaseFactory {
@@ -81,6 +83,9 @@ export class BaseFactory {
         // store in cache for future access
         factory.cache.shapeTree[iri] = instance;
         return instance;
+      },
+      webIdProfile: async function webIdProfile(iri: string): Promise<ReadableWebIdProfile> {
+        return ReadableWebIdProfile.build(iri, factory);
       },
 
       dataGrant: async function dataGrant(iri: string): Promise<DataGrant> {
