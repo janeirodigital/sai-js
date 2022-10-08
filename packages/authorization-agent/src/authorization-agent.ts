@@ -122,11 +122,9 @@ export class AuthorizationAgent {
    * Replaces all access grants, which have data grant delegating from that owner
    * TODO: explore how to optimize, matching on shape trees can fail if access was removed
    */
-  public async updateDelegatedGrants(dataOwnerRegistration: CRUDSocialAgentRegistration): Promise<void> {
+  public async updateDelegatedGrants(dataOwner: string): Promise<void> {
     const affectedAuthorizations =
-      await this.registrySet.hasAuthorizationRegistry.findAuthorizationsDelegatingFromOwner(
-        dataOwnerRegistration.registeredAgent
-      );
+      await this.registrySet.hasAuthorizationRegistry.findAuthorizationsDelegatingFromOwner(dataOwner);
     await Promise.all(
       affectedAuthorizations.map(async (accessAuthorization) => this.generateAccessGrant(accessAuthorization.iri))
     );

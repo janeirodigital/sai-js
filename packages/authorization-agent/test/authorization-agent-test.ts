@@ -163,10 +163,7 @@ describe('updateDelegatedGrant', () => {
     const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statefulFetch, randomUUID });
     const generateAccessGrantSpy = jest.spyOn(agent, 'generateAccessGrant');
     const dataOwnerIri = 'https://omni.example/#corp';
-    const dataOwnerRegistration = (await agent.registrySet.hasAgentRegistry.findRegistration(
-      dataOwnerIri
-    )) as CRUDSocialAgentRegistration;
-    await agent.updateDelegatedGrants(dataOwnerRegistration);
+    await agent.updateDelegatedGrants(dataOwnerIri);
     expect(generateAccessGrantSpy).toBeCalledTimes(2);
   });
 });
