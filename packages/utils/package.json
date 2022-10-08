@@ -1,6 +1,6 @@
 {
   "name": "@janeirodigital/interop-utils",
-  "version": "1.0.0-rc.12",
+  "version": "1.0.0-rc.13",
   "description": "Internal utilities intended to be used by other modules implementing Solid Application Interoperability specification",
   "contributors": [
     {
@@ -46,7 +46,7 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@janeirodigital/interop-namespaces": "^1.0.0-rc.12",
+    "@janeirodigital/interop-namespaces": "^1.0.0-rc.13",
     "http-link-header": "^1.0.3",
     "jsonld-streaming-parser": "^3.0.0",
     "n3": "^1.11.1"
