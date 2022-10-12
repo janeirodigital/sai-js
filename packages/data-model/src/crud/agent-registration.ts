@@ -1,14 +1,16 @@
+import { Mixin } from 'ts-mixer';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { DataFactory } from 'n3';
 import { AuthorizationAgentFactory, ReadableAccessGrant } from '..';
 import { CRUDContainer } from './container';
+import { AgentRegistrationGetters } from '../mixins/agent-registration-getters';
 
 export type AgentRegistrationData = {
   registeredAgent: string;
   hasAccessGrant?: string;
 };
 
-export abstract class CRUDAgentRegistration extends CRUDContainer {
+export abstract class CRUDAgentRegistration extends Mixin(CRUDContainer, AgentRegistrationGetters) {
   data?: AgentRegistrationData;
 
   factory: AuthorizationAgentFactory;

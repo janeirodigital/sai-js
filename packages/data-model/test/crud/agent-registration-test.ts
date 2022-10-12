@@ -63,6 +63,13 @@ describe('hasAccessGrant', () => {
   });
 });
 
+describe('registeredAgent', () => {
+  test('should have getter', async () => {
+    const agentRegistration = await CRUDSocialAgentRegistration.build(snippetIri, factory, false);
+    expect(agentRegistration.registeredAgent).toBe('https://projectron.example/#app');
+  });
+});
+
 describe('setAccessGrant', () => {
   test('updates dataset when previous existed', async () => {
     const agentRegistration = await CRUDSocialAgentRegistration.build(snippetIri, factory, false);
