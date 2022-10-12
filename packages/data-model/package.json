@@ -49,12 +49,13 @@
     "@janeirodigital/interop-namespaces": "^1.0.0-rc.13",
     "@janeirodigital/interop-utils": "^1.0.0-rc.13",
     "n3": "^1.11.0",
+    "ts-mixer": "^6.0.1",
     "typescript-memoize": "^1.0.1"
   },
   "devDependencies": {
+    "@janeirodigital/interop-test-utils": "^1.0.0-rc.13",
     "@rdfjs/types": "^1.0.1",
     "@types/n3": "^1.10.0",
-    "@types/node": "^16.4.12",
-    "@janeirodigital/interop-test-utils": "^1.0.0-rc.13"
+    "@types/node": "^16.4.12"
   }
 }

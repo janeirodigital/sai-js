@@ -1,7 +1,9 @@
+import { Mixin } from 'ts-mixer';
 import { InteropFactory } from '..';
 import { ReadableAccessGrant, ReadableContainer } from '.';
+import { AgentRegistrationGetters } from '../mixins/agent-registration-getters';
 
-export class ReadableApplicationRegistration extends ReadableContainer {
+export class ReadableApplicationRegistration extends Mixin(ReadableContainer, AgentRegistrationGetters) {
   hasAccessGrant: ReadableAccessGrant;
 
   private async buildAccessGrant(): Promise<void> {
