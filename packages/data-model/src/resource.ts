@@ -19,10 +19,13 @@ export class Resource {
 
   iri: string;
 
+  node: NamedNode;
+
   dataset: DatasetCore = new Store();
 
   constructor(iri: string, factory: BaseFactory) {
     this.iri = iri;
+    this.node = DataFactory.namedNode(this.iri);
     this.factory = factory;
     this.fetch = factory.fetch;
   }

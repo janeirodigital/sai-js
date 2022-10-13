@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { INTEROP } from '@janeirodigital/interop-namespaces';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory } from 'n3';
@@ -12,6 +13,12 @@ describe('constructor', () => {
   test('should set the iri', () => {
     const resource = new Resource(snippetIri, factory);
     expect(resource.iri).toBe(snippetIri);
+  });
+
+  test('should set the node', () => {
+    const resource = new Resource(snippetIri, factory);
+    expect(resource.node.termType).toBe('NamedNode');
+    expect(resource.node.value).toBe(snippetIri);
   });
 
   test('should set the factory', () => {
