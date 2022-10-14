@@ -1,6 +1,6 @@
+import { DataFactory } from 'n3';
 import { SKOS, INTEROP } from '@janeirodigital/interop-namespaces';
 import { discoverAuthorizationAgent, discoverAgentRegistration, WhatwgFetch } from '@janeirodigital/interop-utils';
-import { DataFactory } from 'n3';
 import { AgentRegistrationData, CRUDAgentRegistration } from '.';
 import { AuthorizationAgentFactory } from '..';
 
@@ -41,6 +41,28 @@ export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
     const authrizationAgentIri = await discoverAuthorizationAgent(this.registeredAgent, this.factory.fetch);
     if (!authrizationAgentIri) return null;
     return discoverAgentRegistration(authrizationAgentIri, fetch);
+  }
+
+  private async updateReciprocal(reciprocalRegistrationIri: string): Promise<void> {
+    const quad = DataFactory.quad(
+      this.node,
+      INTEROP.reciprocalRegistration,
+      DataFactory.namedNode(reciprocalRegistrationIri)
+    );
+    if (this.reciprocalRegistration) {
+      const priorQuad = this.getQuad(this.node, INTEROP.reciprocalRegistration);
+      await this.replaceStatement(priorQuad, quad);
+    } else {
+      await this.addStatement(quad);
+    }
+    await this.buildReciprocalRegistration();
+  }
+
+  public async discoverAndUpdateReciprocal(fetch: WhatwgFetch): Promise<void> {
+    const reciprocalRegistrationIri = await this.discoverReciprocal(fetch);
+    if (reciprocalRegistrationIri) {
+      await this.updateReciprocal(reciprocalRegistrationIri);
+    }
   }
 
   protected datasetFromData(): void {
