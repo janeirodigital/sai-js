@@ -47,10 +47,6 @@ export abstract class CRUDAgentRegistration extends Mixin(CRUDContainer, AgentRe
     }
   }
 
-  get registeredAgent(): string {
-    return this.getObject('registeredAgent').value;
-  }
-
   get hasAccessGrant(): string | undefined {
     return this.getObject('hasAccessGrant')?.value;
   }

@@ -151,4 +151,33 @@ describe('constructor', () => {
     const dataAuthorization = new ImmutableDataAuthorization(snippetIri, factory, allFromRegistryData);
     expect(dataAuthorization.dataset).toBeRdfDatasetContaining(...allFromRegistryQuads);
   });
+
+  test('links back to children', async () => {
+    const childIri = 'https://some.iri/child';
+
+    const inheritedData = {
+      dataOwner: 'https://alice.example/#id',
+      scopeOfAuthorization: INTEROP.Inherited.value,
+      inheritsFromAuthorization: snippetIri,
+      ...commonData
+    };
+
+    const childDataAuthorization = new ImmutableDataAuthorization(childIri, factory, inheritedData);
+
+    const allFromRegistryData = {
+      dataOwner: 'https://alice.example/#id',
+      scopeOfAuthorization: INTEROP.AllFromRegistry.value,
+      hasInheritingAuthorization: [childDataAuthorization.iri],
+      ...commonData
+    };
+
+    const dataAuthorization = new ImmutableDataAuthorization(snippetIri, factory, allFromRegistryData);
+
+    const linkBackQuad = DataFactory.quad(
+      DataFactory.namedNode(childIri),
+      INTEROP.inheritsFromAuthorization,
+      DataFactory.namedNode(snippetIri)
+    );
+    expect(dataAuthorization.dataset).toBeRdfDatasetContaining(linkBackQuad);
+  });
 });

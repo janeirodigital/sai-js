@@ -63,6 +63,12 @@ describe('findRegistration', () => {
 describe('addSocialAgentRegistration', () => {
   const jane = 'https://jane.example';
 
+  test('throws if registration already exists', async () => {
+    const socialAgentIri = 'https://acme.example/#corp';
+    const registry = await factory.crud.agentRegistry(snippetIri);
+    expect(registry.addSocialAgentRegistration(socialAgentIri, 'Someone')).rejects.toThrow('already exists');
+  });
+
   test('returns added registration', async () => {
     const registry = await factory.crud.agentRegistry(snippetIri);
     const registration = await registry.addSocialAgentRegistration(jane, 'Jane');
@@ -84,6 +90,13 @@ describe('addSocialAgentRegistration', () => {
 
 describe('addApplicationRegistration', () => {
   const gigaApp = 'https://gigaApp.example';
+
+  test('throws if registration already exists', async () => {
+    const applicationIri = 'https://projectron.example/#app';
+    const registry = await factory.crud.agentRegistry(snippetIri);
+    expect(registry.addApplicationRegistration(applicationIri)).rejects.toThrow('already exists');
+  });
+
   test('returns added registration', async () => {
     const registry = await factory.crud.agentRegistry(snippetIri);
     const registration = await registry.addApplicationRegistration(gigaApp);
