@@ -1,6 +1,6 @@
 import { Quad } from '@rdfjs/types';
 import { Store } from 'n3';
-import { getDescriptionResource, insertPatch } from '@janeirodigital/interop-utils';
+import { getDescriptionResource, insertPatch, deletePatch } from '@janeirodigital/interop-utils';
 import { CRUDResource } from '.';
 
 // TODO combine with ReadableContainer as mixin
@@ -35,7 +35,7 @@ export class CRUDContainer extends CRUDResource {
   }
 
   public async replaceStatement(whichQuad: Quad, withQuad: Quad): Promise<void> {
-    const sparqlUpdate = [await insertPatch(new Store([whichQuad])), await insertPatch(new Store([withQuad]))].join(
+    const sparqlUpdate = [await deletePatch(new Store([whichQuad])), await insertPatch(new Store([withQuad]))].join(
       ';'
     );
     await this.applyPatch(sparqlUpdate);
