@@ -27,9 +27,11 @@ describe('build', () => {
     expect(socialAgentRegistration.reciprocalRegistration).toBeUndefined();
   });
 
-  test('should provide registeredAgent getter', async () => {
+  test('should have expected getters', async () => {
     const socialAgentRegistration = await factory.crud.socialAgentRegistration(snippetIri);
     expect(socialAgentRegistration.registeredAgent).toBe('https://acme.example/#corp');
+    expect(socialAgentRegistration.label).toBe('ACME');
+    expect(socialAgentRegistration.note).toBe('A company making well known gadgets');
   });
 
   test('should provide iriForContained method', async () => {

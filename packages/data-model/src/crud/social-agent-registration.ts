@@ -28,6 +28,14 @@ export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
     this.reciprocal = reciprocal;
   }
 
+  get label(): string {
+    return this.getObject(SKOS.prefLabel)!.value;
+  }
+
+  get note(): string | undefined {
+    return this.getObject(SKOS.note)?.value;
+  }
+
   // TODO (elf-pavlik) recover if reciprocal can't be fetched
   private async buildReciprocalRegistration(): Promise<void> {
     const reciprocalRegistrationIri = this.getObject(INTEROP.reciprocalRegistration)?.value;

@@ -1,3 +1,5 @@
+import { INTEROP, OIDC } from '@janeirodigital/interop-namespaces';
+import { NamedNode } from '@rdfjs/types';
 import { AgentRegistrationData, CRUDAgentRegistration } from '.';
 import { AuthorizationAgentFactory } from '..';
 
@@ -9,6 +11,22 @@ export class CRUDApplicationRegistration extends CRUDAgentRegistration {
       this.datasetFromData();
     }
     await this.buildAccessGrant();
+  }
+
+  get applicationNode(): NamedNode | undefined {
+    return this.getObject('registeredAgent');
+  }
+
+  get accessNeedGroup(): string | undefined {
+    return this.getQuad(this.applicationNode, INTEROP.hasAccessNeedGroup)?.object.value;
+  }
+
+  get name(): string | undefined {
+    return this.getQuad(this.applicationNode, OIDC.client_name)?.object.value;
+  }
+
+  get logo(): string | undefined {
+    return this.getQuad(this.applicationNode, OIDC.logo_uri)?.object.value;
   }
 
   public static async build(

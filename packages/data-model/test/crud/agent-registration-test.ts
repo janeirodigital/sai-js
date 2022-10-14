@@ -27,7 +27,7 @@ describe('build', () => {
 
   test('should fetch its data if none passed', async () => {
     const agentRegistration = await CRUDSocialAgentRegistration.build(snippetIri, factory, false);
-    expect(agentRegistration.dataset.size).toBe(7);
+    expect(agentRegistration.dataset.size).toBe(10);
   });
 
   test('should set dataset if data passed', async () => {
