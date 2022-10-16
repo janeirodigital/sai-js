@@ -33,7 +33,7 @@ export interface BaseReadableFactory {
   accessGrant(iri: string): Promise<ReadableAccessGrant>;
   applicationRegistration(iri: string): Promise<ReadableApplicationRegistration>;
   dataRegistration(iri: string): Promise<ReadableDataRegistration>;
-  shapeTree(iri: string): Promise<ReadableShapeTree>;
+  shapeTree(iri: string, descriptionLang?: string): Promise<ReadableShapeTree>;
   dataGrant(iri: string): Promise<DataGrant>;
   webIdProfile(iri: string): Promise<ReadableWebIdProfile>;
   clientIdDocument(iri: string): Promise<ReadableClientIdDocument>;
@@ -75,12 +75,13 @@ export class BaseFactory {
       dataRegistration: async function dataRegistration(iri: string): Promise<ReadableDataRegistration> {
         return ReadableDataRegistration.build(iri, factory);
       },
-      shapeTree: async function shapeTree(iri: string): Promise<ReadableShapeTree> {
+      shapeTree: async function shapeTree(iri: string, descriptionLang?: string): Promise<ReadableShapeTree> {
         // return cached if exists
+        // TODO check descriptionLang if provided
         const cached = factory.cache.shapeTree[iri];
         if (cached) return cached;
 
-        const instance = await ReadableShapeTree.build(iri, factory);
+        const instance = await ReadableShapeTree.build(iri, factory, descriptionLang);
 
         // store in cache for future access
         factory.cache.shapeTree[iri] = instance;

@@ -1,0 +1,23 @@
+import { SKOS } from '@janeirodigital/interop-namespaces';
+import { InteropFactory } from '..';
+import { ReadableResource } from './resource';
+
+export class ReadableShapeTreeDescription extends ReadableResource {
+  public get label(): string | undefined {
+    return this.getObject(SKOS.prefLabel)?.value;
+  }
+
+  public get definition(): string | undefined {
+    return this.getObject(SKOS.definition)?.value;
+  }
+
+  protected async bootstrap(): Promise<void> {
+    await this.fetchData();
+  }
+
+  public static async build(iri: string, factory: InteropFactory): Promise<ReadableShapeTreeDescription> {
+    const instance = new ReadableShapeTreeDescription(iri, factory);
+    await instance.bootstrap();
+    return instance;
+  }
+}

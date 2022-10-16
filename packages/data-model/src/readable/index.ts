@@ -14,6 +14,7 @@ export { InheritedDataGrant } from './inherited-data-grant';
 export { ReadableApplicationRegistration } from './application-registration';
 export { ReadableAccessGrant } from './access-grant';
 export { ReadableShapeTree } from './shape-tree';
+export { ReadableShapeTreeDescription } from './shape-tree-description';
 export { ReadableDataRegistration } from './data-registration';
 export { ReadableAccessAuthorization } from './access-authorization';
 export { ReadableDataAuthorization } from './data-authorization';
