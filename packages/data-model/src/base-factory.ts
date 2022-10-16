@@ -12,6 +12,7 @@ import {
   DataGrant,
   ReadableShapeTree,
   ReadableWebIdProfile,
+  ReadableClientIdDocument,
   FactoryDependencies
 } from '.';
 
@@ -35,6 +36,7 @@ export interface BaseReadableFactory {
   shapeTree(iri: string): Promise<ReadableShapeTree>;
   dataGrant(iri: string): Promise<DataGrant>;
   webIdProfile(iri: string): Promise<ReadableWebIdProfile>;
+  clientIdDocument(iri: string): Promise<ReadableClientIdDocument>;
 }
 
 export class BaseFactory {
@@ -87,7 +89,9 @@ export class BaseFactory {
       webIdProfile: async function webIdProfile(iri: string): Promise<ReadableWebIdProfile> {
         return ReadableWebIdProfile.build(iri, factory);
       },
-
+      clientIdDocument: async function clientIdDocument(iri: string): Promise<ReadableClientIdDocument> {
+        return ReadableClientIdDocument.build(iri, factory);
+      },
       dataGrant: async function dataGrant(iri: string): Promise<DataGrant> {
         // return cached if exists
         const cached = factory.cache.dataGrant[iri];
