@@ -20,3 +20,7 @@ export { ReadableAccessAuthorization } from './access-authorization';
 export { ReadableDataAuthorization } from './data-authorization';
 export { ReadableWebIdProfile } from './webid-profile';
 export { ReadableClientIdDocument } from './client-id-document';
+export { ReadableAccessDescription } from './access-description';
+export { ReadableAccessNeedDescription } from './access-need-description';
+export { ReadableAccessNeedGroupDescription } from './access-need-group-description';
+export { ReadableAccessDescriptionSet } from './access-description-set';
