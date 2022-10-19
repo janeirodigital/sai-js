@@ -24,7 +24,9 @@ import {
   DataRegistrationData,
   ReadableAccessNeedDescription,
   ReadableAccessNeedGroupDescription,
-  ReadableAccessDescriptionSet
+  ReadableAccessDescriptionSet,
+  ReadableAccessNeed,
+  ReadableAccessNeedGroup
 } from '.';
 
 interface AuthorizationAgentReadableFactory extends BaseReadableFactory {
@@ -33,6 +35,8 @@ interface AuthorizationAgentReadableFactory extends BaseReadableFactory {
   accessNeedDescription(iri: string): Promise<ReadableAccessNeedDescription>;
   accessNeedGroupDescription(iri: string): Promise<ReadableAccessNeedGroupDescription>;
   accessDescriptionSet(iri: string): Promise<ReadableAccessDescriptionSet>;
+  accessNeed(iri: string, descriptionLang?: string): Promise<ReadableAccessNeed>;
+  accessNeedGroup(iri: string, descriptionLang?: string): Promise<ReadableAccessNeedGroup>;
 }
 interface CRUDFactory {
   applicationRegistration(iri: string, data?: AgentRegistrationData): Promise<CRUDApplicationRegistration>;
@@ -156,6 +160,15 @@ export class AuthorizationAgentFactory extends BaseFactory {
       },
       accessDescriptionSet: async function accessDescription(iri: string): Promise<ReadableAccessDescriptionSet> {
         return ReadableAccessDescriptionSet.build(iri, factory);
+      },
+      accessNeed: async function accessNeed(iri: string, descriptionLang?: string): Promise<ReadableAccessNeed> {
+        return ReadableAccessNeed.build(iri, factory, descriptionLang);
+      },
+      accessNeedGroup: async function accessNeedGroup(
+        iri: string,
+        descriptionLang?: string
+      ): Promise<ReadableAccessNeedGroup> {
+        return ReadableAccessNeedGroup.build(iri, factory, descriptionLang);
       },
       ...super.readableFactory()
     };

@@ -42,7 +42,7 @@ export class ReadableShapeTree extends ReadableResource {
       DataFactory.literal(lang, XSD.language)
     ).subject;
     if (!descriptionSetNode) return null;
-    const descriptionNodes = this.getQuadArray(null, SHAPETREES.describes, this.node).map((q) => q.subject);
+    const descriptionNodes = this.getSubjectsArray(SHAPETREES.describes);
     // get description from the set for the language (in specific description set)
     const descriptionIri = descriptionNodes
       .filter((node) => this.dataset.match(node, SHAPETREES.inDescriptionSet, descriptionSetNode))

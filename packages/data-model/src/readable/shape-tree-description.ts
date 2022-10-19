@@ -3,8 +3,8 @@ import { InteropFactory } from '..';
 import { ReadableResource } from './resource';
 
 export class ReadableShapeTreeDescription extends ReadableResource {
-  public get label(): string | undefined {
-    return this.getObject(SKOS.prefLabel)?.value;
+  public get label(): string {
+    return this.getObject(SKOS.prefLabel)!.value;
   }
 
   public get definition(): string | undefined {
