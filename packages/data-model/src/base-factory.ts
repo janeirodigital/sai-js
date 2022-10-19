@@ -20,13 +20,8 @@ interface CachedDataGrants {
   [key: string]: DataGrant;
 }
 
-interface CachedShapeTrees {
-  [key: string]: ReadableShapeTree;
-}
-
 interface Cache {
   dataGrant: CachedDataGrants;
-  shapeTree: CachedShapeTrees;
 }
 
 export interface BaseReadableFactory {
@@ -52,8 +47,7 @@ export class BaseFactory {
     this.fetch = dependencies.fetch;
     this.randomUUID = dependencies.randomUUID;
     this.cache = {
-      dataGrant: {},
-      shapeTree: {}
+      dataGrant: {}
     };
 
     this.readable = this.readableFactory();
@@ -76,16 +70,7 @@ export class BaseFactory {
         return ReadableDataRegistration.build(iri, factory);
       },
       shapeTree: async function shapeTree(iri: string, descriptionLang?: string): Promise<ReadableShapeTree> {
-        // return cached if exists
-        // TODO check descriptionLang if provided
-        const cached = factory.cache.shapeTree[iri];
-        if (cached) return cached;
-
-        const instance = await ReadableShapeTree.build(iri, factory, descriptionLang);
-
-        // store in cache for future access
-        factory.cache.shapeTree[iri] = instance;
-        return instance;
+        return ReadableShapeTree.build(iri, factory, descriptionLang);
       },
       webIdProfile: async function webIdProfile(iri: string): Promise<ReadableWebIdProfile> {
         return ReadableWebIdProfile.build(iri, factory);

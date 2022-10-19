@@ -35,18 +35,18 @@ export class ReadableShapeTree extends ReadableResource {
     return instance;
   }
 
-  private async getDescription(lang: string): Promise<ReadableShapeTreeDescription | null> {
+  public async getDescription(lang: string): Promise<ReadableShapeTreeDescription | null> {
     const descriptionSetNode = this.getQuad(
       null,
       SHAPETREES.usesLanguage,
       DataFactory.literal(lang, XSD.language)
-    ).subject;
+    )?.subject;
     if (!descriptionSetNode) return null;
     const descriptionNodes = this.getSubjectsArray(SHAPETREES.describes);
     // get description from the set for the language (in specific description set)
-    const descriptionIri = descriptionNodes
-      .filter((node) => this.dataset.match(node, SHAPETREES.inDescriptionSet, descriptionSetNode))
-      .shift()?.value;
+    const descriptionIri = descriptionNodes.find((node) =>
+      this.getQuad(node, SHAPETREES.inDescriptionSet, descriptionSetNode)
+    )?.value;
     return descriptionIri ? ReadableShapeTreeDescription.build(descriptionIri, this.factory) : null;
   }
 
