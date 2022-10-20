@@ -11,6 +11,6 @@ const snippetIri = 'https://projectron.example/#app';
 describe('getters', () => {
   test('hasAccessNeedGroup', async () => {
     const clientIdDocument = await factory.readable.clientIdDocument(snippetIri);
-    expect(clientIdDocument.hasAccessNeedGroup).toBe('https://projectron.example/#need-group-pm');
+    expect(clientIdDocument.hasAccessNeedGroup).toBe('https://projectron.example/access-needs#need-group-pm');
   });
 });
