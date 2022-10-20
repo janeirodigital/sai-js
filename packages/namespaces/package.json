@@ -1,6 +1,6 @@
 {
   "name": "@janeirodigital/interop-namespaces",
-  "version": "1.0.0-rc.13",
+  "version": "1.0.0-rc.14",
   "description": "Internal namespace helpers intended to be used by other modules implementing Solid Application Interoperability specification",
   "contributors": [
     {

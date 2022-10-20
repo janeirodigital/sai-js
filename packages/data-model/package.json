@@ -1,6 +1,6 @@
 {
   "name": "@janeirodigital/interop-data-model",
-  "version": "1.0.0-rc.13",
+  "version": "1.0.0-rc.14",
   "description": "Internal data model intended to be used by other modules implementing Solid Application Interoperability specification",
   "contributors": [
     {
@@ -46,14 +46,14 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@janeirodigital/interop-namespaces": "^1.0.0-rc.13",
-    "@janeirodigital/interop-utils": "^1.0.0-rc.13",
+    "@janeirodigital/interop-namespaces": "^1.0.0-rc.14",
+    "@janeirodigital/interop-utils": "^1.0.0-rc.14",
     "n3": "^1.11.0",
     "ts-mixer": "^6.0.1",
     "typescript-memoize": "^1.0.1"
   },
   "devDependencies": {
-    "@janeirodigital/interop-test-utils": "^1.0.0-rc.13",
+    "@janeirodigital/interop-test-utils": "^1.0.0-rc.14",
     "@rdfjs/types": "^1.0.1",
     "@types/n3": "^1.10.0",
     "@types/node": "^16.4.12"
