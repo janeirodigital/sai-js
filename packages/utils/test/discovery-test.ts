@@ -6,7 +6,7 @@ import {
   RdfResponse,
   discoverAuthorizationAgent,
   discoverAgentRegistration,
-  discoverAuthorizationRedirectUri
+  discoverAuthorizationRedirectEndpoint
 } from '../src';
 
 const webId = 'https://alice.example/#id';
@@ -51,10 +51,10 @@ describe('discoverAgentRegistration', () => {
   });
 });
 
-describe('discoverAuthorizationRedirectUri', () => {
+describe('discoverAuthorizationRedirectEndpoint', () => {
   test('should discover authorization uri from Client ID document', async () => {
     const authorizationRedirectUri = 'https://auth.example/authorize';
-    const iri = await discoverAuthorizationRedirectUri(authorizationAgentIri, statelessFetch);
+    const iri = await discoverAuthorizationRedirectEndpoint(authorizationAgentIri, statelessFetch);
     expect(iri).toBe(authorizationRedirectUri);
   });
 });

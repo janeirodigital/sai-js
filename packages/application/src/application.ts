@@ -5,7 +5,7 @@ import {
   fetchWrapper,
   discoverAuthorizationAgent,
   discoverAgentRegistration,
-  discoverAuthorizationRedirectUri
+  discoverAuthorizationRedirectEndpoint
 } from '@janeirodigital/interop-utils';
 
 interface ApplicationDependencies {
@@ -22,7 +22,7 @@ export class Application {
 
   authorizationAgentIri: string;
 
-  authorizationRedirectUriBase: string;
+  authorizationRedirectEndpoint: string;
 
   hasApplicationRegistration?: ReadableApplicationRegistration;
 
@@ -38,7 +38,7 @@ export class Application {
     if (applicationRegistrationIri) {
       this.hasApplicationRegistration = await this.factory.readable.applicationRegistration(applicationRegistrationIri);
     } else {
-      this.authorizationRedirectUriBase = await discoverAuthorizationRedirectUri(
+      this.authorizationRedirectEndpoint = await discoverAuthorizationRedirectEndpoint(
         this.authorizationAgentIri,
         this.rawFetch
       );
@@ -47,8 +47,8 @@ export class Application {
 
   // eslint-disable-next-line consistent-return
   get authorizationRedirectUri(): string | undefined {
-    if (this.authorizationRedirectUriBase) {
-      return `${this.authorizationRedirectUriBase}?client_id=${this.applicationId}`;
+    if (this.authorizationRedirectEndpoint) {
+      return `${this.authorizationRedirectEndpoint}?client_id=${this.applicationId}`;
     }
   }
 

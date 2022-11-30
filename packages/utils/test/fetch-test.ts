@@ -89,7 +89,7 @@ describe('fetchWrapper', () => {
     expect(actualDataset.size).toBe(expectedDataset.size);
   });
 
-  test('should set response.url as graph when parsing turtle', async () => {
+  test('should set default graph as graph name when parsing turtle', async () => {
     const iri = 'https://some.iri';
     const mock = jest.fn(fetchMock);
     const responseMock = {
@@ -103,7 +103,7 @@ describe('fetchWrapper', () => {
     const response = await rdfFetch(iri);
     const actualDataset = await response.dataset();
     for (const quad of [...actualDataset]) {
-      expect(quad.graph.value).toBe(iri);
+      expect(quad.graph.termType).toBe('DefaultGraph');
     }
   });
 

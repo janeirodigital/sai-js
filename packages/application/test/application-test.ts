@@ -30,10 +30,10 @@ describe('applicatrion registration exists', () => {
     expect(app.hasApplicationRegistration).toBeInstanceOf(ReadableApplicationRegistration);
   });
 
-  test('should have authorizationRedirectUriBase undefined', async () => {
+  test('should have authorizationRedirectEndpoint undefined', async () => {
     mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
     const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
-    expect(app.authorizationRedirectUriBase).toBeUndefined();
+    expect(app.authorizationRedirectEndpoint).toBeUndefined();
   });
 
   test('should have authorizationRedirectUri undefined', async () => {
@@ -63,10 +63,10 @@ describe('applicatrion registration does not exist', () => {
     expect(app.hasApplicationRegistration).toBeUndefined();
   });
 
-  test('should have authorizationRedirectUriBase discovered', async () => {
+  test('should have authorizationRedirectEndpoint discovered', async () => {
     mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
     const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
-    expect(app.authorizationRedirectUriBase).toBe(expectedRedirectUriBase);
+    expect(app.authorizationRedirectEndpoint).toBe(expectedRedirectUriBase);
   });
 
   test('should have correct authorizationRedirectUri', async () => {

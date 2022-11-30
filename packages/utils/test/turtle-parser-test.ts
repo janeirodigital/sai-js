@@ -27,12 +27,12 @@ describe('Turtle parser', () => {
     }
   });
 
-  test('uses source as graph IRI if one given', async () => {
+  test('uses default graph as graph IRI even if source was given', async () => {
     const source = 'https://acme.example/4d594c61-7cff-484a-a1d2-1f353ee4e1e7';
     const dataset = await parseTurtle(snippet, source);
     expect(dataset.size).toBeGreaterThan(1);
     for (const quad of dataset) {
-      expect(quad.graph.value).toEqual(source);
+      expect(quad.graph.termType).toBe('DefaultGraph');
     }
   });
 
