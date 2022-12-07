@@ -22,13 +22,13 @@ export async function discoverAgentRegistration(
   return getAgentRegistrationIri(linkHeader);
 }
 
-export async function discoverAuthorizationRedirectUri(
+export async function discoverAuthorizationRedirectEndpoint(
   authorizationAgentIri: string,
   fetch: WhatwgFetch
 ): Promise<string> {
   const authzAgentDocumentResponse = await fetch(authorizationAgentIri, {
     headers: { Accept: 'application/ld+json' }
   });
-  const document = await parseJsonld(await authzAgentDocumentResponse.text(), authzAgentDocumentResponse.url);
-  return getOneMatchingQuad(document, null, INTEROP.authorizationRedirectUri)?.object.value;
+  const doc = await parseJsonld(await authzAgentDocumentResponse.text(), authzAgentDocumentResponse.url);
+  return getOneMatchingQuad(doc, null, INTEROP.hasAuthorizationRedirectEndpoint)?.object.value;
 }

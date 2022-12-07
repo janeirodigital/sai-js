@@ -20,7 +20,7 @@ export const parseTurtle = async (text: string, source = ''): Promise<DatasetCor
         reject(error);
       }
       if (quad) {
-        store.add(DataFactory.quad(quad.subject, quad.predicate, quad.object, DataFactory.namedNode(source)));
+        store.add(DataFactory.quad(quad.subject, quad.predicate, quad.object, DataFactory.defaultGraph()));
       } else {
         resolve(store);
       }

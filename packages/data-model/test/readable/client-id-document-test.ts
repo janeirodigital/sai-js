@@ -13,4 +13,8 @@ describe('getters', () => {
     const clientIdDocument = await factory.readable.clientIdDocument(snippetIri);
     expect(clientIdDocument.hasAccessNeedGroup).toBe('https://projectron.example/access-needs#need-group-pm');
   });
+  test('callbackEndpoint', async () => {
+    const clientIdDocument = await factory.readable.clientIdDocument(snippetIri);
+    expect(clientIdDocument.callbackEndpoint).toBe('https://projectron.example/');
+  });
 });

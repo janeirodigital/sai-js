@@ -2,6 +2,10 @@ import { InteropFactory } from '..';
 import { ReadableResource } from './resource';
 
 export class ReadableClientIdDocument extends ReadableResource {
+  get callbackEndpoint(): string | undefined {
+    return this.getObject('hasAuthorizationCallbackEndpoint')?.value;
+  }
+
   get hasAccessNeedGroup(): string | undefined {
     return this.getObject('hasAccessNeedGroup')?.value;
   }
