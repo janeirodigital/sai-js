@@ -1,4 +1,4 @@
-import { DataFactory } from 'n3';
+import { DataFactory, NamedNode } from 'n3';
 import { DatasetCore } from '@rdfjs/types';
 import { targetDataRegistrationLink } from '@janeirodigital/interop-utils';
 import { ReadableResource, ApplicationFactory, DataGrant, InheritedDataGrant, ReadableShapeTree } from '.';
@@ -39,6 +39,13 @@ export class DataInstance extends ReadableResource {
     const instance = new DataInstance(iri, dataGrant, factory, parent);
     await instance.bootstrap();
     return instance;
+  }
+
+  public replaceValue(predicate: NamedNode, value: string) {
+    const oldQuad = this.getQuad(this.node, predicate);
+    oldQuad && this.dataset.delete(oldQuad);
+    const newQuad = DataFactory.quad(this.node, predicate, DataFactory.literal(value));
+    this.dataset.add(newQuad);
   }
 
   /*
