@@ -26,7 +26,9 @@ export class DataInstance extends ReadableResource {
   }
 
   private async bootstrap(): Promise<void> {
-    await this.fetchData();
+    if (!this.draft) {
+      await this.fetchData();
+    }
     this.shapeTree = await this.factory.readable.shapeTree(this.dataGrant.registeredShapeTree);
   }
 
@@ -34,9 +36,10 @@ export class DataInstance extends ReadableResource {
     iri: string,
     dataGrant: DataGrant,
     factory: ApplicationFactory,
-    parent?: DataInstance
+    parent?: DataInstance,
+    draft = false
   ): Promise<DataInstance> {
-    const instance = new DataInstance(iri, dataGrant, factory, parent);
+    const instance = new DataInstance(iri, dataGrant, factory, parent, draft);
     await instance.bootstrap();
     return instance;
   }
@@ -112,7 +115,7 @@ export class DataInstance extends ReadableResource {
     };
   }
 
-  newChildDataInstance(shapeTree: string): DataInstance {
+  async newChildDataInstance(shapeTree: string): Promise<DataInstance> {
     const childGrant = this.findChildGrant(shapeTree);
     return childGrant.newDataInstance(this);
   }

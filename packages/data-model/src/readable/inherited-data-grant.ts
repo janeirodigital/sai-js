@@ -19,7 +19,10 @@ export class InheritedDataGrant extends AbstractDataGrant {
     };
   }
 
-  public newDataInstance(parent: DataInstance): DataInstance {
+  public async newDataInstance(parent: DataInstance): Promise<DataInstance> {
+    if (!parent) {
+      throw new Error('cannot create instances based on Inherited data grant without parent');
+    }
     return AbstractDataGrant.newDataInstance(this, parent);
   }
 

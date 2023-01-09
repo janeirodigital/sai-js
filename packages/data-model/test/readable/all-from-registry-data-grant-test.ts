@@ -49,7 +49,7 @@ test('should provide data instance iterator', async () => {
 describe('newDataInstance', () => {
   test('should create data instance', async () => {
     const dataGrant = (await factory.readable.dataGrant(snippetIri)) as AllFromRegistryDataGrant;
-    const newDataInstance = dataGrant.newDataInstance();
-    expect(newDataInstance.iri).toMatch(dataGrant.iriPrefix);
+    const newDataInstance = await dataGrant.newDataInstance();
+    expect(newDataInstance.iri).toMatch(dataGrant.hasDataRegistration);
   });
 });

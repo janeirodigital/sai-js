@@ -81,7 +81,7 @@ describe('newDataInstance', () => {
     const parentInstanceIri = 'https://pro.alice.example/ccbd77ae-f769-4e07-b41f-5136501e13e7#project';
     const dataGrant = (await factory.readable.dataGrant(inheritsFromSelectedFromRegistryIri)) as InheritedDataGrant;
     const parentInstance = await factory.dataInstance(parentInstanceIri, dataGrant.inheritsFromGrant);
-    const newDataInstance = dataGrant.newDataInstance(parentInstance);
-    expect(newDataInstance.iri).toMatch(dataGrant.iriPrefix);
+    const newDataInstance = await dataGrant.newDataInstance(parentInstance);
+    expect(newDataInstance.iri).toMatch(dataGrant.hasDataRegistration);
   });
 });

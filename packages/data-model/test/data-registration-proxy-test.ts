@@ -30,7 +30,7 @@ test('should delegate newDataInstance to grant', async () => {
   const grant = (await factory.readable.dataGrant(grantIri)) as AllFromRegistryDataGrant;
   const dataRegistrationProxy = new ReadableDataRegistrationProxy(grant);
   const spy = jest.spyOn(grant, 'newDataInstance');
-  dataRegistrationProxy.newDataInstance();
+  await dataRegistrationProxy.newDataInstance();
   expect(spy).toHaveBeenCalledTimes(1);
 });
 
@@ -38,16 +38,16 @@ test('should throw error if SelectedFromRegistry grant', async () => {
   const selectedFromRegistryGrantIri = 'https://auth.alice.example/cd247a67-0879-4301-abd0-828f63abb252';
   const grant = (await factory.readable.dataGrant(selectedFromRegistryGrantIri)) as SelectedFromRegistryDataGrant;
   const dataRegistrationProxy = new ReadableDataRegistrationProxy(grant);
-  expect(() => {
-    dataRegistrationProxy.newDataInstance();
-  }).toThrow('cannot create instances based on SelectedFromRegistry data grant');
+  expect(() => dataRegistrationProxy.newDataInstance()).rejects.toThrow(
+    'cannot create instances based on SelectedFromRegistry data grant'
+  );
 });
 
 test('should throw error if InheritedInstances grant and no parent', async () => {
   const selectedFromRegistryGrantIri = 'https://auth.alice.example/9827ae00-2778-4655-9f22-08bb9daaee26';
   const grant = (await factory.readable.dataGrant(selectedFromRegistryGrantIri)) as InheritedDataGrant;
   const dataRegistrationProxy = new ReadableDataRegistrationProxy(grant);
-  expect(() => {
-    dataRegistrationProxy.newDataInstance();
-  }).toThrow('cannot create instances based on Inherited data grant');
+  expect(dataRegistrationProxy.newDataInstance()).rejects.toThrow(
+    'cannot create instances based on Inherited data grant'
+  );
 });

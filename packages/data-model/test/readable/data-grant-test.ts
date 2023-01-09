@@ -41,12 +41,12 @@ describe('newDataInstance', () => {
   const allFromRegistryIri = 'https://auth.alice.example/7b2bc4ff-b4b8-47b8-96f6-06695f4c5126';
   test('sets dataGrant on created data instance', async () => {
     const dataGrant = (await factory.readable.dataGrant(allFromRegistryIri)) as AllFromRegistryDataGrant;
-    const newInstance = dataGrant.newDataInstance();
+    const newInstance = await dataGrant.newDataInstance();
     expect(newInstance.dataGrant.iri).toBe(dataGrant.iri);
   });
   test('sets draft to true', async () => {
     const dataGrant = (await factory.readable.dataGrant(allFromRegistryIri)) as AllFromRegistryDataGrant;
-    const newInstance = dataGrant.newDataInstance();
+    const newInstance = await dataGrant.newDataInstance();
     expect(newInstance.draft).toBe(true);
   });
 });
