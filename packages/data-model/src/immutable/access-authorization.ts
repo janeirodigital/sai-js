@@ -12,10 +12,12 @@ type StringData = {
 
 export type AccessAuthorizationData = StringData & {
   dataAuthorizations: ImmutableDataAuthorization[];
+  granted: boolean;
 };
 
 export class ImmutableAccessAuthorization extends ImmutableResource {
   dataAuthorizations: ImmutableDataAuthorization[];
+  data: AccessAuthorizationData;
 
   factory: AuthorizationAgentFactory;
 
@@ -34,6 +36,9 @@ export class ImmutableAccessAuthorization extends ImmutableResource {
     }
     this.dataset.add(
       DataFactory.quad(thisNode, INTEROP.grantedAt, DataFactory.literal(new Date().toISOString(), XSD.dateTime))
+    );
+    this.dataset.add(
+      DataFactory.quad(thisNode, INTEROP.granted, DataFactory.literal(data.granted.toString(), XSD.boolean))
     );
   }
 

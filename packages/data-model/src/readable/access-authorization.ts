@@ -70,6 +70,11 @@ export class ReadableAccessAuthorization extends ReadableResource {
   }
 
   @Memoize()
+  get granted(): boolean {
+    return this.getObject('granted').value === 'true';
+  }
+
+  @Memoize()
   get grantedBy(): string {
     return this.getObject('grantedBy').value;
   }
@@ -94,26 +99,28 @@ export class ReadableAccessAuthorization extends ReadableResource {
     granteeRegistration: CRUDAgentRegistration
   ): Promise<ImmutableAccessGrant> {
     const dataGrants: ImmutableDataGrant[] = [];
-
-    const regularAuthorizations: ReadableDataAuthorization[] = [];
-    for await (const dataAuthorization of this.dataAuthorizations) {
-      if (dataAuthorization.scopeOfAuthorization !== INTEROP.Inherited.value) {
-        regularAuthorizations.push(dataAuthorization);
-      }
-    }
-    for (const dataAuthorization of regularAuthorizations) {
-      dataGrants.push(
-        // eslint-disable-next-line no-await-in-loop
-        ...(await dataAuthorization.generateDataGrants(dataRegistries, agentRegistry, granteeRegistration))
-      );
-    }
-
     let finalGrants: (ImmutableDataGrant | DataGrant)[];
-    const priorAccessGrant = granteeRegistration.accessGrant;
-    if (priorAccessGrant) {
-      finalGrants = reuseDataGrants(dataGrants, priorAccessGrant.hasDataGrant);
-    } else {
-      finalGrants = dataGrants;
+
+    if (this.granted) {
+      const regularAuthorizations: ReadableDataAuthorization[] = [];
+      for await (const dataAuthorization of this.dataAuthorizations) {
+        if (dataAuthorization.scopeOfAuthorization !== INTEROP.Inherited.value) {
+          regularAuthorizations.push(dataAuthorization);
+        }
+      }
+      for (const dataAuthorization of regularAuthorizations) {
+        dataGrants.push(
+          // eslint-disable-next-line no-await-in-loop
+          ...(await dataAuthorization.generateDataGrants(dataRegistries, agentRegistry, granteeRegistration))
+        );
+      }
+
+      const priorAccessGrant = granteeRegistration.accessGrant;
+      if (priorAccessGrant) {
+        finalGrants = reuseDataGrants(dataGrants, priorAccessGrant.hasDataGrant);
+      } else {
+        finalGrants = dataGrants;
+      }
     }
 
     const accessGrantIri = granteeRegistration.iriForContained();
@@ -122,7 +129,8 @@ export class ReadableAccessAuthorization extends ReadableResource {
       grantedWith: this.factory.agentId,
       grantee: this.grantee,
       hasAccessNeedGroup: this.hasAccessNeedGroup,
-      dataGrants: finalGrants
+      dataGrants: finalGrants,
+      granted: this.granted
     });
   }
 }

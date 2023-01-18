@@ -25,6 +25,11 @@ export class ReadableAccessGrant extends ReadableResource {
     return this.getObject('fromAgent').value;
   }
 
+  @Memoize()
+  get granted(): boolean {
+    return this.getObject('granted').value === 'true';
+  }
+
   public static async build(iri: string, factory: InteropFactory): Promise<ReadableAccessGrant> {
     const instance = new ReadableAccessGrant(iri, factory);
     await instance.bootstrap();

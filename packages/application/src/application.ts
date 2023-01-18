@@ -37,7 +37,8 @@ export class Application {
     const applicationRegistrationIri = await discoverAgentRegistration(this.authorizationAgentIri, this.rawFetch);
     if (applicationRegistrationIri) {
       this.hasApplicationRegistration = await this.factory.readable.applicationRegistration(applicationRegistrationIri);
-    } else {
+    }
+    if (!applicationRegistrationIri || !this.hasApplicationRegistration?.hasAccessGrant.granted) {
       this.authorizationRedirectEndpoint = await discoverAuthorizationRedirectEndpoint(
         this.authorizationAgentIri,
         this.rawFetch
