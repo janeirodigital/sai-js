@@ -10,6 +10,14 @@ export class ReadableClientIdDocument extends ReadableResource {
     return this.getObject('hasAccessNeedGroup')?.value;
   }
 
+  get clientName(): string | undefined {
+    return this.getObject('client_name', 'https://www.w3.org/ns/solid/oidc-context.jsonld').value;
+  }
+
+  get logoUri(): string | undefined {
+    return this.getObject('logo_uri', 'https://www.w3.org/ns/solid/oidc-context.jsonld').value;
+  }
+
   protected async bootstrap(): Promise<void> {
     await this.fetchData();
   }
