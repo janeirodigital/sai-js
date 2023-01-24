@@ -17,4 +17,14 @@ describe('getters', () => {
     const clientIdDocument = await factory.readable.clientIdDocument(snippetIri);
     expect(clientIdDocument.callbackEndpoint).toBe('https://projectron.example/');
   });
+
+  test('clientName', async () => {
+    const clientIdDocument = await factory.readable.clientIdDocument(snippetIri);
+    expect(clientIdDocument.clientName).toEqual('Projectron');
+  });
+
+  test('logoUri', async () => {
+    const clientIdDocument = await factory.readable.clientIdDocument(snippetIri);
+    expect(clientIdDocument.logoUri).toEqual('https://projectron.example/thumb.svg');
+  });
 });
