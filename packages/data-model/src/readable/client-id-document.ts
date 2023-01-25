@@ -1,3 +1,4 @@
+import { OIDC } from '@janeirodigital/interop-namespaces';
 import { InteropFactory } from '..';
 import { ReadableResource } from './resource';
 
@@ -11,11 +12,11 @@ export class ReadableClientIdDocument extends ReadableResource {
   }
 
   get clientName(): string | undefined {
-    return this.getObject('client_name', 'https://www.w3.org/ns/solid/oidc-context.jsonld').value;
+    return this.getObject(OIDC.client_name).value;
   }
 
   get logoUri(): string | undefined {
-    return this.getObject('logo_uri', 'https://www.w3.org/ns/solid/oidc-context.jsonld').value;
+    return this.getObject(OIDC.logo_uri).value;
   }
 
   protected async bootstrap(): Promise<void> {

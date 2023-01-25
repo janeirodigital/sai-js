@@ -25,6 +25,6 @@ describe('getters', () => {
 
   test('logoUri', async () => {
     const clientIdDocument = await factory.readable.clientIdDocument(snippetIri);
-    expect(clientIdDocument.logoUri).toEqual('https://projectron.example/thumb.svg');
+    expect(clientIdDocument.logoUri).toEqual('https://robohash.org/https://projectron.example/?set=set3');
   });
 });
