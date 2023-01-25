@@ -16,6 +16,14 @@ const factory = new ApplicationFactory({ fetch, randomUUID });
 
 const grantIri = 'https://auth.alice.example/7b2bc4ff-b4b8-47b8-96f6-06695f4c5126';
 
+describe('getters', () => {
+  test('iri', async () => {
+    const grant = await factory.readable.dataGrant(grantIri);
+    const dataRegistrationProxy = new ReadableDataRegistrationProxy(grant);
+    expect(dataRegistrationProxy.iri).toBe('https://home.alice.example/f6ccd3a4-45ea-4f98-8a36-98eac92a6720');
+  });
+});
+
 test('should delegate dataInstances to grant', async () => {
   const grant = await factory.readable.dataGrant(grantIri);
   const spy = jest.spyOn(grant, 'getDataInstanceIterator');

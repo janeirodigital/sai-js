@@ -15,12 +15,12 @@ interface BaseAuthorization {
   grantee: string;
   hasAccessNeedGroup: string;
 }
-interface GrantedAuthorization extends BaseAuthorization {
+export interface GrantedAuthorization extends BaseAuthorization {
   dataAuthorizations: DataAuthorizationData[];
   granted: true;
 }
 
-interface DeniedAuthorization extends BaseAuthorization {
+export interface DeniedAuthorization extends BaseAuthorization {
   dataAuthorizations?: never;
   granted: false;
 }

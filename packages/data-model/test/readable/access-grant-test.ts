@@ -24,8 +24,16 @@ describe('build', () => {
       expect(grant).toBeInstanceOf(AbstractDataGrant);
     }
   });
-  test('should provide fromAgent getter', async () => {
-    const accessGrant = await ReadableAccessGrant.build(snippetIri, factory);
-    expect(accessGrant.fromAgent).toBeTruthy();
+
+  describe('getters', () => {
+    test('granted', async () => {
+      const accessGrant = await ReadableAccessGrant.build(snippetIri, factory);
+      expect(accessGrant.granted).toBe(true);
+    });
+
+    test('grantedBy', async () => {
+      const accessGrant = await ReadableAccessGrant.build(snippetIri, factory);
+      expect(accessGrant.grantedBy).toBeTruthy();
+    });
   });
 });

@@ -19,10 +19,9 @@ export class ReadableAccessGrant extends ReadableResource {
     await this.buildDataGrants();
   }
 
-  // TODO: update to grantedBy
   @Memoize()
-  get fromAgent(): string {
-    return this.getObject('fromAgent').value;
+  get grantedBy(): string {
+    return this.getObject('grantedBy').value;
   }
 
   @Memoize()

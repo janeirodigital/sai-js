@@ -6,6 +6,7 @@ import { randomUUID } from 'crypto';
 import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { DataGrant, DataInstance, ApplicationFactory } from '../src';
+import { RDFS } from '@janeirodigital/interop-namespaces';
 
 const factory = new ApplicationFactory({ fetch, randomUUID });
 const snippetIri = 'https://pro.alice.example/7a130c38-668a-4775-821a-08b38f2306fb#project';
@@ -188,4 +189,19 @@ test('updateRemovingChildReference', async () => {
   expect(dataInstance.dataset.has(quad)).toBeTruthy();
   await dataInstance.updateRemovingChildReference(taskToDelete);
   expect(dataInstance.dataset.has(quad)).toBeFalsy();
+});
+
+describe('replaceValue', () => {
+  test('replace existing value', async () => {
+    const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
+    expect(dataInstance.getObject(RDFS.label)?.value).toBe('P-Ap-2');
+    dataInstance.replaceValue(RDFS.label, 'New label');
+    expect(dataInstance.getObject(RDFS.label)?.value).toBe('New label');
+  });
+  test('replace non-existing value', async () => {
+    const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
+    expect(dataInstance.getObject(RDFS.fake)?.value).toBeUndefined();
+    dataInstance.replaceValue(RDFS.fake, 'something');
+    expect(dataInstance.getObject(RDFS.fake)?.value).toBe('something');
+  });
 });

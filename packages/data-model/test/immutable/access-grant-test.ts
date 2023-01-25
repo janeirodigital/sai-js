@@ -26,6 +26,7 @@ test('should set data and store', async () => {
   const readableDataGrant = await factory.readable.dataGrant(readableDataGrantIri);
 
   const accessGrantData: AccessGrantData = {
+    granted: true,
     grantedBy: webId,
     grantedWith: agentId,
     grantee: 'https://projectron.example/#app',
