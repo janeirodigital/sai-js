@@ -1,3 +1,4 @@
+import { OIDC } from '@janeirodigital/interop-namespaces';
 import { InteropFactory } from '..';
 import { ReadableResource } from './resource';
 
@@ -8,6 +9,14 @@ export class ReadableClientIdDocument extends ReadableResource {
 
   get hasAccessNeedGroup(): string | undefined {
     return this.getObject('hasAccessNeedGroup')?.value;
+  }
+
+  get clientName(): string | undefined {
+    return this.getObject(OIDC.client_name).value;
+  }
+
+  get logoUri(): string | undefined {
+    return this.getObject(OIDC.logo_uri).value;
   }
 
   protected async bootstrap(): Promise<void> {

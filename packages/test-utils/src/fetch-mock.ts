@@ -1,5 +1,7 @@
 import { WhatwgFetch, RdfFetch, fetchWrapper } from '@janeirodigital/interop-utils';
-import data from 'data-interoperability-panel';
+import { readFileSync } from 'fs';
+
+const data = JSON.parse(readFileSync('../../node_modules/data-interoperability-panel/dist/index.json', 'utf-8'));
 
 async function common(url: string, options?: RequestInit, state?: { [key: string]: string }): Promise<Response> {
   // strip fragment
