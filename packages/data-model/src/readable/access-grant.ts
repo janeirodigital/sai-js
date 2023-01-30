@@ -19,10 +19,14 @@ export class ReadableAccessGrant extends ReadableResource {
     await this.buildDataGrants();
   }
 
-  // TODO: update to grantedBy
   @Memoize()
-  get fromAgent(): string {
-    return this.getObject('fromAgent').value;
+  get grantedBy(): string {
+    return this.getObject('grantedBy').value;
+  }
+
+  @Memoize()
+  get granted(): boolean {
+    return this.getObject('granted').value === 'true';
   }
 
   public static async build(iri: string, factory: InteropFactory): Promise<ReadableAccessGrant> {

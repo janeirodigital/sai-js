@@ -23,6 +23,7 @@ test('should set data and store', async () => {
     scopeOfAuthorization: INTEROP.All.value
   });
   const accessAuthorizationData = {
+    granted: true,
     grantedBy: webId,
     grantedWith: agentId,
     grantee: 'https://projectron.example/#app',

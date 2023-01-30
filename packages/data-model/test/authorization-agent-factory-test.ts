@@ -120,6 +120,7 @@ describe('immutable', () => {
     });
     expect(dataGrant).toBeInstanceOf(ImmutableDataGrant);
     const accessGrantData = {
+      granted: true,
       grantedBy: webId,
       grantedWith: agentId,
       grantee: 'https://projectron.example/#app',
@@ -143,6 +144,7 @@ describe('immutable', () => {
     });
     expect(dataAuthorization).toBeInstanceOf(ImmutableDataAuthorization);
     const accessAuthorizationData = {
+      granted: true,
       grantedBy: webId,
       grantedWith: agentId,
       grantee: 'https://projectron.example/#app',

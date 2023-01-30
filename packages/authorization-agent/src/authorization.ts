@@ -11,11 +11,21 @@ export type NestedDataAuthorizationData = DataAuthorizationData & {
   children?: DataAuthorizationData[];
 };
 
-export type AccessAuthorizationStructure = {
+interface BaseAuthorization {
   grantee: string;
   hasAccessNeedGroup: string;
+}
+export interface GrantedAuthorization extends BaseAuthorization {
   dataAuthorizations: DataAuthorizationData[];
-};
+  granted: true;
+}
+
+export interface DeniedAuthorization extends BaseAuthorization {
+  dataAuthorizations?: never;
+  granted: false;
+}
+
+export type AccessAuthorizationStructure = GrantedAuthorization | DeniedAuthorization;
 
 export async function generateDataAuthorizations(
   dataAuthorizations: NestedDataAuthorizationData[],
@@ -57,19 +67,24 @@ export async function generateAuthorization(
   agentId: string,
   factory: AuthorizationAgentFactory
 ): Promise<ReadableAccessAuthorization> {
-  const dataAuthorizations = await generateDataAuthorizations(
-    authorization.dataAuthorizations,
-    grantedBy,
-    authorizationRegistry,
-    factory
-  );
+  let dataAuthorizations: ImmutableDataAuthorization[] = [];
+  if (authorization.granted) {
+    dataAuthorizations = await generateDataAuthorizations(
+      authorization.dataAuthorizations,
+      grantedBy,
+      authorizationRegistry,
+      factory
+    );
+  }
+
   const authorizationIri = authorizationRegistry.iriForContained();
   const data = {
     grantedWith: agentId,
     grantedBy,
     grantee: authorization.grantee,
     hasAccessNeedGroup: authorization.hasAccessNeedGroup,
-    dataAuthorizations
+    dataAuthorizations,
+    granted: authorization.granted
   };
   const accessAuthorization = factory.immutable.accessAuthorization(authorizationIri, data);
   const rAccessAuthorization = await accessAuthorization.store();

@@ -29,7 +29,7 @@ export class AllFromRegistryDataGrant extends InheritableDataGrant {
     };
   }
 
-  public newDataInstance(): DataInstance {
+  public async newDataInstance(): Promise<DataInstance> {
     return AbstractDataGrant.newDataInstance(this);
   }
 

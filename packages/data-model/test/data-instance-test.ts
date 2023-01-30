@@ -6,6 +6,7 @@ import { randomUUID } from 'crypto';
 import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { DataGrant, DataInstance, ApplicationFactory } from '../src';
+import { RDFS } from '@janeirodigital/interop-namespaces';
 
 const factory = new ApplicationFactory({ fetch, randomUUID });
 const snippetIri = 'https://pro.alice.example/7a130c38-668a-4775-821a-08b38f2306fb#project';
@@ -54,7 +55,7 @@ describe('newChildDataInstance', () => {
     const accessGrant = await factory.readable.accessGrant(accessGrantIri);
     const dataGrant = accessGrant.hasDataGrant.find((grant) => grant.iri === dataGrantIri);
     const dataInstance = await DataInstance.build(snippetIri, dataGrant, factory);
-    expect(dataInstance.newChildDataInstance(taskShapeTree)).toBeInstanceOf(DataInstance);
+    expect(await dataInstance.newChildDataInstance(taskShapeTree)).toBeInstanceOf(DataInstance);
   });
 
   test('should throw if called on child data instance', async () => {
@@ -62,7 +63,7 @@ describe('newChildDataInstance', () => {
     const inheritingDataGrantIri = 'https://auth.alice.example/54b1a123-23ca-4733-9371-700b52b9c567';
     const inheritingDataGrant = await factory.readable.dataGrant(inheritingDataGrantIri);
     const dataInstance = await DataInstance.build(dataInstanceIri, inheritingDataGrant, factory);
-    expect(() => dataInstance.newChildDataInstance(taskShapeTree)).toThrow('can not have child instance');
+    expect(dataInstance.newChildDataInstance(taskShapeTree)).rejects.toThrow('can not have child instance');
   });
 });
 
@@ -106,7 +107,7 @@ describe('delete', () => {
 
   test('should not try to remove reference from parent if child is a draft', async () => {
     const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
-    const taskToDelete = dataInstance.newChildDataInstance(taskShapeTree);
+    const taskToDelete = await dataInstance.newChildDataInstance(taskShapeTree);
     const spy = jest.spyOn(dataInstance, 'updateRemovingChildReference');
     await taskToDelete.delete();
     expect(spy).toHaveBeenCalledTimes(0);
@@ -151,7 +152,7 @@ describe('update', () => {
 
   test('should add reference to parent if a draft child', async () => {
     const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
-    const taskToCreate = dataInstance.newChildDataInstance(taskShapeTree);
+    const taskToCreate = await dataInstance.newChildDataInstance(taskShapeTree);
     const spy = jest.spyOn(dataInstance, 'updateAddingChildReference');
     await taskToCreate.update(taskToCreate.dataset);
     expect(spy).toHaveBeenCalledTimes(1);
@@ -160,7 +161,7 @@ describe('update', () => {
 
 test('updateAddingChildReference', async () => {
   const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
-  const taskToCreate = dataInstance.newChildDataInstance(taskShapeTree);
+  const taskToCreate = await dataInstance.newChildDataInstance(taskShapeTree);
   const quad = DataFactory.quad(
     DataFactory.namedNode(dataInstance.iri),
     DataFactory.namedNode('https://vocab.example/project-management/hasTask'),
@@ -188,4 +189,19 @@ test('updateRemovingChildReference', async () => {
   expect(dataInstance.dataset.has(quad)).toBeTruthy();
   await dataInstance.updateRemovingChildReference(taskToDelete);
   expect(dataInstance.dataset.has(quad)).toBeFalsy();
+});
+
+describe('replaceValue', () => {
+  test('replace existing value', async () => {
+    const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
+    expect(dataInstance.getObject(RDFS.label)?.value).toBe('P-Ap-2');
+    dataInstance.replaceValue(RDFS.label, 'New label');
+    expect(dataInstance.getObject(RDFS.label)?.value).toBe('New label');
+  });
+  test('replace non-existing value', async () => {
+    const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
+    expect(dataInstance.getObject(RDFS.fake)?.value).toBeUndefined();
+    dataInstance.replaceValue(RDFS.fake, 'something');
+    expect(dataInstance.getObject(RDFS.fake)?.value).toBe('something');
+  });
 });

@@ -11,7 +11,7 @@ import {
   ReadableWebIdProfile
 } from '@janeirodigital/interop-data-model';
 import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
-import { AuthorizationAgent } from '../src';
+import { AuthorizationAgent, GrantedAuthorization } from '../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://alice.jarvis.example/#agent';
@@ -79,6 +79,7 @@ test('should provide shortcut to find social agent registratons', async () => {
 
 describe('recordAccessAuthorization', () => {
   const accessAuthorizationData = {
+    granted: true as true,
     grantedBy: webId,
     grantedWith: agentId,
     grantee: 'https://acme.example/#corp',
@@ -90,7 +91,17 @@ describe('recordAccessAuthorization', () => {
     registeredShapeTree: 'https://solidshapes.example/tree/Project',
     dataOwner: 'https://omni.example/#corp',
     accessMode: [ACL.Read.value],
-    scopeOfAuthorization: INTEROP.AllFromAgent.value
+    scopeOfAuthorization: INTEROP.AllFromAgent.value,
+    children: [
+      {
+        grantee: 'https://acme.example/#corp',
+        grantedBy: webId,
+        registeredShapeTree: 'https://solidshapes.example/tree/Task',
+        dataOwner: 'https://omni.example/#corp',
+        accessMode: [ACL.Read.value],
+        scopeOfAuthorization: INTEROP.Inherited.value
+      }
+    ]
   };
   const invalidDataAuthorizationData = {
     grantee: 'https://acme.example/#corp',

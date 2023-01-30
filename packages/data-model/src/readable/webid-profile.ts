@@ -1,4 +1,4 @@
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP, RDFS } from '@janeirodigital/interop-namespaces';
 import { InteropFactory } from '..';
 import { ReadableResource } from './resource';
 
@@ -9,6 +9,10 @@ export class ReadableWebIdProfile extends ReadableResource {
 
   get hasRegistrySet(): string | undefined {
     return this.getObject(INTEROP.hasRegistrySet)?.value;
+  }
+
+  get label(): string | undefined {
+    return this.getObject(RDFS.label)?.value;
   }
 
   private async bootstrap(): Promise<void> {

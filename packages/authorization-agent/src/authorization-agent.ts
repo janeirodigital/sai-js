@@ -108,8 +108,9 @@ export class AuthorizationAgent {
     );
 
     // only store new access grant and update registration if any data grant changed
+    // always store if access not granted
     // TODO: verify if a data grant was removed - previos had more data grants
-    if (accessGrant.dataGrants.some((grant) => grant instanceof ImmutableDataGrant)) {
+    if (!accessGrant.data.granted || accessGrant.dataGrants.some((grant) => grant instanceof ImmutableDataGrant)) {
       const rAccessGrant = await accessGrant.store();
 
       // link to new access grant and update agent registration
