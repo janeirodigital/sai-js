@@ -2,7 +2,7 @@ import { DataGrant, DataInstance, SelectedFromRegistryDataGrant } from '.';
 import { InheritedDataGrant } from './readable';
 
 export class ReadableDataRegistrationProxy {
-  constructor(private grant: DataGrant) {}
+  constructor(public grant: DataGrant) {}
 
   public get iri(): string {
     return this.grant.hasDataRegistration;

@@ -1,11 +1,13 @@
 import { Memoize } from 'typescript-memoize';
 import { LDP } from '@janeirodigital/interop-namespaces';
 import { InteropFactory } from '..';
-import { ReadableResource } from '.';
+import { ReadableResource, ReadableShapeTree } from '.';
 
 export class ReadableDataRegistration extends ReadableResource {
+  shapeTree?: ReadableShapeTree;
   private async bootstrap(): Promise<void> {
     await this.fetchData();
+    this.shapeTree = await this.factory.readable.shapeTree(this.registeredShapeTree);
   }
 
   public static async build(iri: string, factory: InteropFactory): Promise<ReadableDataRegistration> {
