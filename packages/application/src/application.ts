@@ -38,18 +38,24 @@ export class Application {
     if (applicationRegistrationIri) {
       this.hasApplicationRegistration = await this.factory.readable.applicationRegistration(applicationRegistrationIri);
     }
-    if (!applicationRegistrationIri || !this.hasApplicationRegistration?.hasAccessGrant.granted) {
-      this.authorizationRedirectEndpoint = await discoverAuthorizationRedirectEndpoint(
-        this.authorizationAgentIri,
-        this.rawFetch
-      );
-    }
+    this.authorizationRedirectEndpoint = await discoverAuthorizationRedirectEndpoint(
+      this.authorizationAgentIri,
+      this.rawFetch
+    );
   }
 
   // eslint-disable-next-line consistent-return
   get authorizationRedirectUri(): string | undefined {
     if (this.authorizationRedirectEndpoint) {
-      return `${this.authorizationRedirectEndpoint}?client_id=${this.applicationId}`;
+      return `${this.authorizationRedirectEndpoint}?client_id=${encodeURIComponent(this.applicationId)}`;
+    }
+  }
+
+  getShareUri(resourceIri: string): string | undefined {
+    if (this.authorizationRedirectEndpoint) {
+      return `${this.authorizationRedirectEndpoint}?resource=${encodeURIComponent(
+        resourceIri
+      )}&client_id=${encodeURIComponent(this.applicationId)}`;
     }
   }
 
