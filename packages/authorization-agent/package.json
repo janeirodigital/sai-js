@@ -39,7 +39,7 @@
     "test": "test"
   },
   "scripts": {
-    "build": "npm run clean && npm run build:cjs && npm run build:mjs && sh fixup.sh",
+    "build": "npm run build:cjs && npm run build:mjs && sh fixup.sh",
     "build:cjs": "tsc -b tsconfig-cjs.json",
     "build:mjs": "tsc -b tsconfig-mjs.json",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",

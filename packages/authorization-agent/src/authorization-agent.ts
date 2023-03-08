@@ -5,14 +5,22 @@ import {
   CRUDSocialAgentRegistration,
   CRUDApplicationRegistration,
   ImmutableDataGrant,
-  ReadableWebIdProfile
+  ReadableWebIdProfile,
+  ReadableDataAuthorization
 } from '@janeirodigital/interop-data-model';
-import { WhatwgFetch, RdfFetch, fetchWrapper } from '@janeirodigital/interop-utils';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { WhatwgFetch, RdfFetch, fetchWrapper, iterable2array } from '@janeirodigital/interop-utils';
 import { AccessAuthorizationStructure, generateAuthorization } from './authorization';
 
 interface AuthorizationAgentDependencies {
   fetch: WhatwgFetch;
   randomUUID(): string;
+}
+
+interface AgentWithAccess {
+  agent: string;
+  dataAuthorization: string;
+  accessMode: string[];
 }
 
 export class AuthorizationAgent {
@@ -129,5 +137,62 @@ export class AuthorizationAgent {
     await Promise.all(
       affectedAuthorizations.map(async (accessAuthorization) => this.generateAccessGrant(accessAuthorization.iri))
     );
+  }
+
+  private formatAgentWithAccess(dataAuthorization: ReadableDataAuthorization): AgentWithAccess {
+    return {
+      agent: dataAuthorization.grantee,
+      dataAuthorization: dataAuthorization.iri,
+      accessMode: dataAuthorization.accessMode
+    };
+  }
+
+  public async findSocialAgentsWithAccess(dataInstanceIri: string): Promise<AgentWithAccess[]> {
+    const dataInstance = await this.factory.readable.dataInstance(dataInstanceIri);
+    const shapeTree = dataInstance.dataRegistration.shapeTree;
+    const agentsWithAccess: AgentWithAccess[] = [];
+    for await (const accessAuthorization of this.accessAuthorizations) {
+      const dataAuthorization = (
+        await iterable2array<ReadableDataAuthorization>(accessAuthorization.dataAuthorizations)
+      ).find((autorization) => autorization.registeredShapeTree === shapeTree.iri);
+      if (!dataAuthorization) continue;
+
+      switch (dataAuthorization.scopeOfAuthorization) {
+        case INTEROP.All.value:
+          agentsWithAccess.push(this.formatAgentWithAccess(dataAuthorization));
+          break;
+        case INTEROP.AllFromAgent.value:
+          // TODO: rethink for delegated sharing, e.g. Alice shares project owned by ACME
+          if (dataAuthorization.dataOwner === this.webId) {
+            agentsWithAccess.push(this.formatAgentWithAccess(dataAuthorization));
+          }
+          break;
+        case INTEROP.AllFromRegistry.value:
+          if (dataAuthorization.hasDataRegistration === dataInstance.dataRegistration.iri) {
+            agentsWithAccess.push(this.formatAgentWithAccess(dataAuthorization));
+          }
+          break;
+        case INTEROP.SelectedInstances.value:
+          if (
+            dataAuthorization.hasDataRegistration === dataInstance.dataRegistration.iri &&
+            dataAuthorization.hasDataInstance.includes(dataInstanceIri)
+          ) {
+            agentsWithAccess.push(this.formatAgentWithAccess(dataAuthorization));
+          }
+          break;
+        default:
+          throw new Error(
+            `encountered incorect Data Authorization with scope:${dataAuthorization.scopeOfAuthorization}`
+          );
+      }
+    }
+    const socialAgentsWithAccess: AgentWithAccess[] = [];
+    for await (const registration of this.socialAgentRegistrations) {
+      const socialAgentWithAccess = agentsWithAccess.find(({ agent }) => agent === registration.registeredAgent);
+      if (socialAgentWithAccess) {
+        socialAgentsWithAccess.push(socialAgentWithAccess);
+      }
+    }
+    return socialAgentsWithAccess;
   }
 }

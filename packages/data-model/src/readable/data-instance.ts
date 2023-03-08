@@ -2,7 +2,7 @@ import { InteropFactory, ReadableDataRegistration } from '..';
 import { ReadableResource } from './resource';
 
 export class ReadableDataInstance extends ReadableResource {
-  dataRegistration?: ReadableDataRegistration;
+  dataRegistration: ReadableDataRegistration;
 
   constructor(public iri: string, public factory: InteropFactory, public descriptionLang?: string) {
     super(iri, factory);
