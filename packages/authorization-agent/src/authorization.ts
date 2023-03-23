@@ -1,10 +1,12 @@
 import {
+  AccessAuthorizationData,
   AuthorizationAgentFactory,
   CRUDAuthorizationRegistry,
   DataAuthorizationData,
   ImmutableDataAuthorization,
   ReadableAccessAuthorization
 } from '@janeirodigital/interop-data-model';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
 
 // Nesting is being used to capture inheritance before IRIs are available
 export type NestedDataAuthorizationData = DataAuthorizationData & {
@@ -13,8 +15,10 @@ export type NestedDataAuthorizationData = DataAuthorizationData & {
 
 interface BaseAuthorization {
   grantee: string;
-  hasAccessNeedGroup: string;
+  hasAccessNeedGroup?: string;
 }
+
+// TODO: de-duplicate with AccessAuthorizationData (in immutable/access-authorization)
 export interface GrantedAuthorization extends BaseAuthorization {
   dataAuthorizations: DataAuthorizationData[];
   granted: true;
@@ -65,8 +69,50 @@ export async function generateAuthorization(
   grantedBy: string,
   authorizationRegistry: CRUDAuthorizationRegistry,
   agentId: string,
-  factory: AuthorizationAgentFactory
+  factory: AuthorizationAgentFactory,
+  extendIfExists: boolean
 ): Promise<ReadableAccessAuthorization> {
+  if (extendIfExists && !authorization.granted) {
+    throw new Error('if authorization denied should not use extendIfexists!');
+  }
+
+  let dataAuthorizationsToReuse: string[] = [];
+
+  // TODO: agent has and access authorization, with data authorization (SelectedInstances) which does not include this data instance
+  // do we need to check access modes? (if same extend data authorization, if different create a new one)
+  if (extendIfExists && authorization.granted) {
+    const existingAccessAuthorization = await authorizationRegistry.findAuthorization(authorization.grantee);
+    if (existingAccessAuthorization) {
+      // start with reusing all existing data authorizations
+      dataAuthorizationsToReuse = [...existingAccessAuthorization.hasDataAuthorization];
+
+      // check if some of existing data authorizations overlap for a registry
+      for await (const existingDataAuthorization of existingAccessAuthorization.dataAuthorizations) {
+        const matchingDataAuthorization = authorization.dataAuthorizations.find(
+          (da) => existingDataAuthorization.hasDataRegistration === da.hasDataRegistration
+        );
+        if (matchingDataAuthorization) {
+          // TODO: should we handle it differently
+          if (matchingDataAuthorization.scopeOfAuthorization !== INTEROP.SelectedInstances.value)
+            throw new Error(`unexpected scope: ${matchingDataAuthorization.scopeOfAuthorization}`);
+
+          // copy over selected instances from existing data authorization
+          // TODO: check for duplicates (make it a set?)
+          matchingDataAuthorization.hasDataInstance.push(...existingDataAuthorization.hasDataInstance);
+
+          // exclude from data authorization to reuse
+          dataAuthorizationsToReuse = dataAuthorizationsToReuse.filter(
+            (iri) =>
+              ![
+                existingDataAuthorization.iri,
+                ...existingDataAuthorization.hasInheritingAuthorization.map((cda) => cda.iri)
+              ].includes(iri)
+          );
+        }
+      }
+    }
+  }
+
   let dataAuthorizations: ImmutableDataAuthorization[] = [];
   if (authorization.granted) {
     dataAuthorizations = await generateDataAuthorizations(
@@ -78,14 +124,16 @@ export async function generateAuthorization(
   }
 
   const authorizationIri = authorizationRegistry.iriForContained();
-  const data = {
+  const data: AccessAuthorizationData = {
     grantedWith: agentId,
     grantedBy,
     grantee: authorization.grantee,
     hasAccessNeedGroup: authorization.hasAccessNeedGroup,
     dataAuthorizations,
+    dataAuthorizationsToReuse,
     granted: authorization.granted
   };
+
   const accessAuthorization = factory.immutable.accessAuthorization(authorizationIri, data);
   const rAccessAuthorization = await accessAuthorization.store();
 

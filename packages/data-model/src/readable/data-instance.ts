@@ -17,7 +17,7 @@ export class ReadableDataInstance extends ReadableResource {
   }
 
   private async buildDataRegistration() {
-    const dataRegistrationIri = this.iri.slice(0, this.iri.lastIndexOf('/') + 1);
+    const dataRegistrationIri = this.iri.split('/').slice(0, -1).join('/') + '/';
     this.dataRegistration = await this.factory.readable.dataRegistration(dataRegistrationIri);
   }
 

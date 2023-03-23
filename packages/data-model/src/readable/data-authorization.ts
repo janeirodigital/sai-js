@@ -167,17 +167,15 @@ export class ReadableDataAuthorization extends ReadableResource {
 
   private generateChildSourceDataGrants(
     parentGrantIri: string,
-    registration: ReadableDataRegistration,
-    dataRegistries: ReadableDataRegistration[][],
+    dataRegistrations: ReadableDataRegistration[],
     granteeRegistration: CRUDAgentRegistration
   ): ImmutableDataGrant[] {
     return this.hasInheritingAuthorization.map((childAuthorization) => {
       const childGrantIri = granteeRegistration.iriForContained();
-      // child data registration must be in the same data registry as parent one
       // each data registry has only one data registration for any given shape tree
-      const dataRegistration = dataRegistries
-        .find((registry) => registry.find((reg) => reg.iri === registration.iri))
-        .find((reg) => reg.registeredShapeTree === childAuthorization.registeredShapeTree);
+      const dataRegistration = dataRegistrations.find(
+        (registration) => registration.registeredShapeTree === childAuthorization.registeredShapeTree
+      );
       const childData: DataGrantData = {
         dataOwner: childAuthorization.grantedBy,
         registeredShapeTree: childAuthorization.registeredShapeTree,
@@ -198,33 +196,33 @@ export class ReadableDataAuthorization extends ReadableResource {
       throw new Error('this method should not be callend on data authorizations with Inherited scope');
     }
 
-    // get data registrations from all data registries
-    const dataRegistriesArr = await Promise.all(
-      dataRegistries.map((registry) => iterable2array(registry.registrations))
-    );
-    const dataRegistrations = dataRegistriesArr.flat();
+    const generatedDataGrants: ImmutableDataGrant[] = [];
 
-    // match shape tree
-    let matchingRegistrations = dataRegistrations.filter(
-      (registration) => registration.registeredShapeTree === this.registeredShapeTree
-    );
+    // FIXME handle each data registry independently
+    for (const dataRegistry of dataRegistries) {
+      // const dataRegistrations = dataRegistriesArr.flat();
+      const dataRegistrations = await iterable2array(dataRegistry.registrations);
 
-    // match registration if restricted
-    if (this.hasDataRegistration) {
-      matchingRegistrations = matchingRegistrations.filter(
-        (registration) => registration.iri === this.hasDataRegistration
-      );
-    }
+      let matchingRegistration: ReadableDataRegistration;
 
-    // create source grants
-    return matchingRegistrations.flatMap((registration) => {
+      if (this.hasDataRegistration) {
+        // match registration if specified
+        matchingRegistration = dataRegistrations.find((registration) => registration.iri === this.hasDataRegistration);
+      } else {
+        // match shape tree
+        matchingRegistration = dataRegistrations.find(
+          (registration) => registration.registeredShapeTree === this.registeredShapeTree
+        );
+      }
+      if (!matchingRegistration) continue;
+
+      // create source grant
       const regularGrantIri = granteeRegistration.iriForContained();
 
       // create children if needed
       const childDataGrants: ImmutableDataGrant[] = this.generateChildSourceDataGrants(
         regularGrantIri,
-        registration,
-        dataRegistriesArr,
+        dataRegistrations,
         granteeRegistration
       );
 
@@ -234,7 +232,7 @@ export class ReadableDataAuthorization extends ReadableResource {
       const data: DataGrantData = {
         dataOwner: this.grantedBy,
         registeredShapeTree: this.registeredShapeTree,
-        hasDataRegistration: registration.iri,
+        hasDataRegistration: matchingRegistration.iri,
         scopeOfGrant,
         accessMode: this.accessMode
       };
@@ -245,8 +243,12 @@ export class ReadableDataAuthorization extends ReadableResource {
         data.hasInheritingGrant = childDataGrants;
       }
       const regularGrant = this.factory.immutable.dataGrant(regularGrantIri, data);
-      return [regularGrant, ...childDataGrants];
-    });
+
+      generatedDataGrants.push(regularGrant, ...childDataGrants);
+    }
+
+    if (!generatedDataGrants.length) throw new Error('no data grants were generated!');
+    return generatedDataGrants;
   }
 
   public async generateDataGrants(

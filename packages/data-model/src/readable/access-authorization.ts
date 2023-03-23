@@ -58,11 +58,10 @@ export class ReadableAccessAuthorization extends ReadableResource {
   }
 
   get dataAuthorizations(): AsyncIterable<ReadableDataAuthorization> {
-    const dataAuthorizationIris = this.getObjectsArray(INTEROP.hasDataAuthorization).map((object) => object.value);
-    const { factory } = this;
+    const { factory, hasDataAuthorization } = this;
     return {
       async *[Symbol.asyncIterator]() {
-        for (const iri of dataAuthorizationIris) {
+        for (const iri of hasDataAuthorization) {
           yield factory.readable.dataAuthorization(iri);
         }
       }
@@ -85,8 +84,13 @@ export class ReadableAccessAuthorization extends ReadableResource {
   }
 
   @Memoize()
-  get hasAccessNeedGroup(): string {
-    return this.getObject('hasAccessNeedGroup').value;
+  get hasAccessNeedGroup(): string | undefined {
+    return this.getObject('hasAccessNeedGroup')?.value;
+  }
+
+  @Memoize()
+  get hasDataAuthorization(): string[] {
+    return this.getObjectsArray(INTEROP.hasDataAuthorization).map((object) => object.value);
   }
 
   /*

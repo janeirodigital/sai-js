@@ -6,11 +6,17 @@ import {
   CRUDApplicationRegistration,
   ImmutableDataGrant,
   ReadableWebIdProfile,
-  ReadableDataAuthorization
+  ReadableDataAuthorization,
+  ReadableDataRegistration
 } from '@janeirodigital/interop-data-model';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
 import { WhatwgFetch, RdfFetch, fetchWrapper, iterable2array } from '@janeirodigital/interop-utils';
-import { AccessAuthorizationStructure, generateAuthorization } from './authorization';
+import {
+  AccessAuthorizationStructure,
+  generateAuthorization,
+  GrantedAuthorization,
+  NestedDataAuthorizationData
+} from './authorization';
 
 interface AuthorizationAgentDependencies {
   fetch: WhatwgFetch;
@@ -63,6 +69,23 @@ export class AuthorizationAgent {
     return this.registrySet.hasAgentRegistry.findSocialAgentRegistration(iri);
   }
 
+  // TODO: adjust if registrations are not / nested in the registry
+  private registryOfRegistration(dataRegistrationIri: string): string {
+    return dataRegistrationIri.split('/').slice(0, -2).join('/') + '/';
+  }
+
+  public async findDataRegistration(dataRegistryIri: string, shapeTree: string): Promise<ReadableDataRegistration> {
+    const dataRegistry = this.registrySet.hasDataRegistry.find((registry) => registry.iri === dataRegistryIri);
+    let dataRegistration: ReadableDataRegistration;
+    for await (const registration of dataRegistry.registrations) {
+      if (registration.registeredShapeTree === shapeTree) {
+        dataRegistration = registration;
+        break;
+      }
+    }
+    return dataRegistration;
+  }
+
   private async bootstrap(): Promise<void> {
     this.webIdProfile = await this.factory.readable.webIdProfile(this.webId);
     this.registrySet = await this.factory.crud.registrySet(this.webIdProfile.hasRegistrySet);
@@ -88,7 +111,8 @@ export class AuthorizationAgent {
    * TODO: reuse existing Data Authorizations wherever possible - see Data Authorization tests
    */
   public async recordAccessAuthorization(
-    authorization: AccessAuthorizationStructure
+    authorization: AccessAuthorizationStructure,
+    extendIfExists = false
   ): Promise<ReadableAccessAuthorization> {
     // create data authorizations
 
@@ -98,7 +122,8 @@ export class AuthorizationAgent {
       this.webId,
       this.registrySet.hasAuthorizationRegistry,
       this.agentId,
-      this.factory
+      this.factory,
+      extendIfExists
     );
   }
 
@@ -195,4 +220,73 @@ export class AuthorizationAgent {
     }
     return socialAgentsWithAccess;
   }
+
+  /*
+   * Authorizes access to a specific Data Instance to multiple agents
+   * TODO: support delegated authorization
+   */
+  public async shareDataInstance(details: ShareDataInstanceStructure): Promise<void> {
+    // ensure owner doesn't grant acces for oneself
+    // TODO: reconsider for TrustedGrants grantees, compare with data instance owner instead
+    const requestedAgents = details.agents.filter((agent) => agent !== this.webId);
+    // filter out agents who already have access
+    // TODO: do we need to adjust once we handle access modes? or require separate operation for such change
+    const agentsWithAccess = (await this.findSocialAgentsWithAccess(details.resource)).map((obj) => obj.agent);
+    const agents = requestedAgents.filter((agent) => !agentsWithAccess.includes(agent));
+
+    // TODO: ensure all agents have social agent registrations, throw error
+
+    const dataInstance = await this.factory.readable.dataInstance(details.resource);
+    await Promise.all(
+      agents.map(async (agent) => {
+        let accessAuthorization: ReadableAccessAuthorization;
+
+        const dataAuthorization: NestedDataAuthorizationData = {
+          grantee: agent,
+          registeredShapeTree: dataInstance.dataRegistration.registeredShapeTree,
+          scopeOfAuthorization: INTEROP.SelectedInstances.value,
+          dataOwner: this.webId, // TODO: delegated authorizations and trusted agents
+          hasDataRegistration: dataInstance.dataRegistration.iri,
+          accessMode: details.accessMode,
+          hasDataInstance: [dataInstance.iri],
+          children: await Promise.all(
+            details.children.map(async (child) => ({
+              grantee: agent,
+              registeredShapeTree: child.shapeTree,
+              scopeOfAuthorization: INTEROP.Inherited.value,
+              dataOwner: this.webId, // TODO: delegated authorizations and trusted agents
+              hasDataRegistration: (
+                await this.findDataRegistration(
+                  this.registryOfRegistration(dataInstance.dataRegistration.iri),
+                  child.shapeTree
+                )
+              ).iri,
+              accessMode: child.accessMode
+            }))
+          )
+        };
+        const authorization: GrantedAuthorization = {
+          grantee: agent,
+          granted: true,
+          dataAuthorizations: [dataAuthorization]
+        };
+        accessAuthorization = await this.recordAccessAuthorization(authorization, true);
+
+        // TODO: does it belong here?
+        await this.generateAccessGrant(accessAuthorization.iri);
+      })
+    );
+  }
 }
+
+// TODO: duplicats ShareAuthorization from api-messages (sai-impl-service)
+export type ShareDataInstanceStructure = {
+  applicationId: string;
+  resource: string;
+  accessMode: string[];
+  children: {
+    shapeTree: string;
+    accessMode: string[];
+  }[];
+  agents: string[];
+};
