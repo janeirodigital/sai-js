@@ -174,12 +174,12 @@ export class AuthorizationAgent {
 
   public async findSocialAgentsWithAccess(dataInstanceIri: string): Promise<AgentWithAccess[]> {
     const dataInstance = await this.factory.readable.dataInstance(dataInstanceIri);
-    const shapeTree = dataInstance.dataRegistration.shapeTree;
+    const shapeTree = dataInstance.dataRegistration.registeredShapeTree;
     const agentsWithAccess: AgentWithAccess[] = [];
     for await (const accessAuthorization of this.accessAuthorizations) {
       const dataAuthorization = (
         await iterable2array<ReadableDataAuthorization>(accessAuthorization.dataAuthorizations)
-      ).find((autorization) => autorization.registeredShapeTree === shapeTree.iri);
+      ).find((autorization) => autorization.registeredShapeTree === shapeTree);
       if (!dataAuthorization) continue;
 
       switch (dataAuthorization.scopeOfAuthorization) {

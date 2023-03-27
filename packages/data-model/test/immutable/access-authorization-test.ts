@@ -8,6 +8,7 @@ import { fetch } from '@janeirodigital/interop-test-utils';
 import { INTEROP, ACL } from '@janeirodigital/interop-namespaces';
 import { randomUUID } from 'crypto';
 import { AuthorizationAgentFactory, AccessAuthorizationData } from '../../src';
+import { access } from 'fs';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
@@ -28,7 +29,11 @@ test('should set data and store', async () => {
     grantedWith: agentId,
     grantee: 'https://projectron.example/#app',
     hasAccessNeedGroup: 'https://projectron.example/#some-access-group',
-    dataAuthorizations: [dataAuthorization]
+    dataAuthorizations: [dataAuthorization],
+    dataAuthorizationsToReuse: [
+      'https://auth.alice.example/5ea3346e-d8f2-46da-b7ae-2966330fba17',
+      'https://auth.alice.example/e20a6ff2-ac57-4b1f-a4e5-615ebfc34685'
+    ]
   };
   const accessAuthorizationIri = 'https://auth.alice.example/e791fa95-9363-4852-a9ed-e266aa62c193';
   const accessAuthorizationQuads = [
@@ -45,6 +50,15 @@ test('should set data and store', async () => {
         DataFactory.namedNode(accessAuthorizationIri),
         INTEROP[prop],
         DataFactory.namedNode(accessAuthorizationData[prop] as string)
+      )
+    );
+  }
+  for (const iri of accessAuthorizationData.dataAuthorizationsToReuse) {
+    accessAuthorizationQuads.push(
+      DataFactory.quad(
+        DataFactory.namedNode(accessAuthorizationIri),
+        INTEROP.hasDataAuthorization,
+        DataFactory.namedNode(iri)
       )
     );
   }

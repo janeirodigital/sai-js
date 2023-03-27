@@ -57,6 +57,7 @@ export class ReadableAccessAuthorization extends ReadableResource {
     return instance;
   }
 
+  // TODO change to a regular array, populate in bootstrap
   get dataAuthorizations(): AsyncIterable<ReadableDataAuthorization> {
     const { factory, hasDataAuthorization } = this;
     return {

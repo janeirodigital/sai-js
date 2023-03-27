@@ -86,6 +86,7 @@ export async function generateAuthorization(
       // start with reusing all existing data authorizations
       dataAuthorizationsToReuse = [...existingAccessAuthorization.hasDataAuthorization];
 
+      // TODO: case when new doesn't have inheriting but matching had inheriting data grant, create additional data authorization instead of replacing
       // check if some of existing data authorizations overlap for a registry
       for await (const existingDataAuthorization of existingAccessAuthorization.dataAuthorizations) {
         const matchingDataAuthorization = authorization.dataAuthorizations.find(

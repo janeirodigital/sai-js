@@ -114,4 +114,5 @@ describe('addApplicationRegistration', () => {
       )
     ).toBeTruthy();
   });
+  test.todo('gets data from ClientID Document');
 });

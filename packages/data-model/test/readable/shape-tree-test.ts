@@ -2,18 +2,33 @@
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { ReadableShapeTree, ApplicationFactory } from '../../src';
+import type { ShapeTreeReference } from '../../src/readable/shape-tree';
 
 const factory = new ApplicationFactory({ fetch, randomUUID });
 const snippetIri = 'https://solidshapes.example/trees/Project';
+const taskTreeIri = 'https://solidshapes.example/trees/Task';
 
 test('factory should build a shape tree', async () => {
   const shapeTree = await factory.readable.shapeTree(snippetIri);
   expect(shapeTree).toBeInstanceOf(ReadableShapeTree);
 });
 
+test.todo('provides describesInstance predicate');
+
+test('provides references', async () => {
+  const shapeTree = await factory.readable.shapeTree(snippetIri);
+  expect(shapeTree.references).toStrictEqual(
+    expect.arrayContaining([
+      {
+        shapeTree: taskTreeIri,
+        viaPredicate: expect.objectContaining({ value: 'https://vocab.example/project-management/hasTask' })
+      } as ShapeTreeReference
+    ])
+  );
+});
+
 test('should allow to get Predicate for a referenced tree', async () => {
   const shapeTree = await factory.readable.shapeTree(snippetIri);
-  const taskTreeIri = 'https://solidshapes.example/trees/Task';
   const expectedPredicate = 'https://vocab.example/project-management/hasTask';
   const predicateToTask = shapeTree.getPredicateForReferenced(taskTreeIri);
   expect(predicateToTask.value).toBe(expectedPredicate);
