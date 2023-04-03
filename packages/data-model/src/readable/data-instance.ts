@@ -1,8 +1,17 @@
 import { InteropFactory, ReadableDataRegistration } from '..';
 import { ReadableResource } from './resource';
 
+interface ChildInfo {
+  shapeTree: {
+    iri: string;
+    label: string;
+  };
+  count: number;
+}
+
 export class ReadableDataInstance extends ReadableResource {
   dataRegistration: ReadableDataRegistration;
+  children: ChildInfo[];
 
   constructor(public iri: string, public factory: InteropFactory, public descriptionLang?: string) {
     super(iri, factory);
@@ -13,6 +22,7 @@ export class ReadableDataInstance extends ReadableResource {
     await this.buildDataRegistration();
     if (this.descriptionLang) {
       await this.dataRegistration?.shapeTree?.getDescription(this.descriptionLang);
+      this.children = await this.buildChildrenInfo();
     }
   }
 
@@ -36,5 +46,27 @@ export class ReadableDataInstance extends ReadableResource {
     if (predicate) {
       return this.getObject(predicate).value;
     }
+  }
+
+  get shapeTree(): { iri: string; label: string } {
+    return {
+      iri: this.dataRegistration!.shapeTree!.iri,
+      label: this.dataRegistration!.shapeTree!.descriptions[this.descriptionLang]!.label
+    };
+  }
+
+  async buildChildrenInfo(): Promise<ChildInfo[]> {
+    return Promise.all(
+      this.dataRegistration!.shapeTree!.references.map(async (reference) => {
+        const childTree = await this.factory.readable.shapeTree(reference.shapeTree, this.descriptionLang);
+        return {
+          count: this.getObjectsArray(reference.viaPredicate).length,
+          shapeTree: {
+            iri: reference.shapeTree,
+            label: childTree.descriptions[this.descriptionLang]!.label
+          }
+        };
+      })
+    );
   }
 }

@@ -23,7 +23,7 @@ interface AuthorizationAgentDependencies {
   randomUUID(): string;
 }
 
-interface AgentWithAccess {
+export interface AgentWithAccess {
   agent: string;
   dataAuthorization: string;
   accessMode: string[];
