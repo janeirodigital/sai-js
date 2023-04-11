@@ -11,6 +11,7 @@ interface ChildInfo {
 
 export class ReadableDataInstance extends ReadableResource {
   dataRegistration: ReadableDataRegistration;
+
   children: ChildInfo[];
 
   constructor(public iri: string, public factory: InteropFactory, public descriptionLang?: string) {
@@ -27,7 +28,7 @@ export class ReadableDataInstance extends ReadableResource {
   }
 
   private async buildDataRegistration() {
-    const dataRegistrationIri = this.iri.split('/').slice(0, -1).join('/') + '/';
+    const dataRegistrationIri = `${this.iri.split('/').slice(0, -1).join('/')}/`;
     this.dataRegistration = await this.factory.readable.dataRegistration(dataRegistrationIri);
   }
 
@@ -46,6 +47,7 @@ export class ReadableDataInstance extends ReadableResource {
     if (predicate) {
       return this.getObject(predicate).value;
     }
+    return undefined;
   }
 
   get shapeTree(): { iri: string; label: string } {

@@ -9,7 +9,7 @@ import {
   ReadableDataAuthorization,
   ReadableDataRegistration
 } from '@janeirodigital/interop-data-model';
-import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-namespaces';
 import { WhatwgFetch, RdfFetch, fetchWrapper, iterable2array } from '@janeirodigital/interop-utils';
 import {
   AccessAuthorizationStructure,
@@ -27,6 +27,31 @@ export interface AgentWithAccess {
   agent: string;
   dataAuthorization: string;
   accessMode: string[];
+}
+
+// TODO: duplicats ShareAuthorization from api-messages (sai-impl-service)
+export type ShareDataInstanceStructure = {
+  applicationId: string;
+  resource: string;
+  accessMode: string[];
+  children: {
+    shapeTree: string;
+    accessMode: string[];
+  }[];
+  agents: string[];
+};
+
+// TODO: adjust if registrations are not / nested in the registry
+function registryOfRegistration(dataRegistrationIri: string): string {
+  return `${dataRegistrationIri.split('/').slice(0, -2).join('/')}/`;
+}
+
+function formatAgentWithAccess(dataAuthorization: ReadableDataAuthorization): AgentWithAccess {
+  return {
+    agent: dataAuthorization.grantee,
+    dataAuthorization: dataAuthorization.iri,
+    accessMode: dataAuthorization.accessMode
+  };
 }
 
 export class AuthorizationAgent {
@@ -67,11 +92,6 @@ export class AuthorizationAgent {
 
   public async findSocialAgentRegistration(iri: string): Promise<CRUDSocialAgentRegistration | undefined> {
     return this.registrySet.hasAgentRegistry.findSocialAgentRegistration(iri);
-  }
-
-  // TODO: adjust if registrations are not / nested in the registry
-  private registryOfRegistration(dataRegistrationIri: string): string {
-    return dataRegistrationIri.split('/').slice(0, -2).join('/') + '/';
   }
 
   public async findDataRegistration(dataRegistryIri: string, shapeTree: string): Promise<ReadableDataRegistration> {
@@ -164,14 +184,6 @@ export class AuthorizationAgent {
     );
   }
 
-  private formatAgentWithAccess(dataAuthorization: ReadableDataAuthorization): AgentWithAccess {
-    return {
-      agent: dataAuthorization.grantee,
-      dataAuthorization: dataAuthorization.iri,
-      accessMode: dataAuthorization.accessMode
-    };
-  }
-
   public async findSocialAgentsWithAccess(dataInstanceIri: string): Promise<AgentWithAccess[]> {
     const dataInstance = await this.factory.readable.dataInstance(dataInstanceIri);
     const shapeTree = dataInstance.dataRegistration.registeredShapeTree;
@@ -180,21 +192,22 @@ export class AuthorizationAgent {
       const dataAuthorization = (
         await iterable2array<ReadableDataAuthorization>(accessAuthorization.dataAuthorizations)
       ).find((autorization) => autorization.registeredShapeTree === shapeTree);
+      // eslint-disable-next-line no-continue
       if (!dataAuthorization) continue;
 
       switch (dataAuthorization.scopeOfAuthorization) {
         case INTEROP.All.value:
-          agentsWithAccess.push(this.formatAgentWithAccess(dataAuthorization));
+          agentsWithAccess.push(formatAgentWithAccess(dataAuthorization));
           break;
         case INTEROP.AllFromAgent.value:
           // TODO: rethink for delegated sharing, e.g. Alice shares project owned by ACME
           if (dataAuthorization.dataOwner === this.webId) {
-            agentsWithAccess.push(this.formatAgentWithAccess(dataAuthorization));
+            agentsWithAccess.push(formatAgentWithAccess(dataAuthorization));
           }
           break;
         case INTEROP.AllFromRegistry.value:
           if (dataAuthorization.hasDataRegistration === dataInstance.dataRegistration.iri) {
-            agentsWithAccess.push(this.formatAgentWithAccess(dataAuthorization));
+            agentsWithAccess.push(formatAgentWithAccess(dataAuthorization));
           }
           break;
         case INTEROP.SelectedInstances.value:
@@ -202,7 +215,7 @@ export class AuthorizationAgent {
             dataAuthorization.hasDataRegistration === dataInstance.dataRegistration.iri &&
             dataAuthorization.hasDataInstance.includes(dataInstanceIri)
           ) {
-            agentsWithAccess.push(this.formatAgentWithAccess(dataAuthorization));
+            agentsWithAccess.push(formatAgentWithAccess(dataAuthorization));
           }
           break;
         default:
@@ -239,8 +252,6 @@ export class AuthorizationAgent {
     const dataInstance = await this.factory.readable.dataInstance(details.resource);
     await Promise.all(
       agents.map(async (agent) => {
-        let accessAuthorization: ReadableAccessAuthorization;
-
         const dataAuthorization: NestedDataAuthorizationData = {
           grantee: agent,
           registeredShapeTree: dataInstance.dataRegistration.registeredShapeTree,
@@ -257,7 +268,7 @@ export class AuthorizationAgent {
               dataOwner: this.webId, // TODO: delegated authorizations and trusted agents
               hasDataRegistration: (
                 await this.findDataRegistration(
-                  this.registryOfRegistration(dataInstance.dataRegistration.iri),
+                  registryOfRegistration(dataInstance.dataRegistration.iri),
                   child.shapeTree
                 )
               ).iri,
@@ -270,7 +281,7 @@ export class AuthorizationAgent {
           granted: true,
           dataAuthorizations: [dataAuthorization]
         };
-        accessAuthorization = await this.recordAccessAuthorization(authorization, true);
+        const accessAuthorization = await this.recordAccessAuthorization(authorization, true);
 
         // TODO: does it belong here?
         await this.generateAccessGrant(accessAuthorization.iri);
@@ -278,15 +289,3 @@ export class AuthorizationAgent {
     );
   }
 }
-
-// TODO: duplicats ShareAuthorization from api-messages (sai-impl-service)
-export type ShareDataInstanceStructure = {
-  applicationId: string;
-  resource: string;
-  accessMode: string[];
-  children: {
-    shapeTree: string;
-    accessMode: string[];
-  }[];
-  agents: string[];
-};

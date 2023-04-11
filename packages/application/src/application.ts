@@ -57,6 +57,7 @@ export class Application {
         resourceIri
       )}&client_id=${encodeURIComponent(this.applicationId)}`;
     }
+    return undefined;
   }
 
   static async build(

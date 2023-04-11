@@ -6,6 +6,7 @@ import { ReadableResource, ApplicationFactory, DataGrant, InheritedDataGrant, Re
 export class DataInstance extends ReadableResource {
   dataGrant: DataGrant;
 
+  // eslint-disable-next-line no-use-before-define
   parent: DataInstance;
 
   draft: boolean;
@@ -46,7 +47,7 @@ export class DataInstance extends ReadableResource {
 
   public replaceValue(predicate: NamedNode, value: string) {
     const oldQuad = this.getQuad(this.node, predicate);
-    oldQuad && this.dataset.delete(oldQuad);
+    if (oldQuad) this.dataset.delete(oldQuad);
     const newQuad = DataFactory.quad(this.node, predicate, DataFactory.literal(value));
     this.dataset.add(newQuad);
   }

@@ -16,6 +16,7 @@ import { ReadableResource } from '.';
 export class ReadableDataAuthorization extends ReadableResource {
   factory: AuthorizationAgentFactory;
 
+  // eslint-disable-next-line no-use-before-define
   hasInheritingAuthorization: ReadableDataAuthorization[];
 
   async inheritingAuthorizations(): Promise<ReadableDataAuthorization[]> {
@@ -201,6 +202,7 @@ export class ReadableDataAuthorization extends ReadableResource {
     // FIXME handle each data registry independently
     for (const dataRegistry of dataRegistries) {
       // const dataRegistrations = dataRegistriesArr.flat();
+      // eslint-disable-next-line no-await-in-loop
       const dataRegistrations = await iterable2array(dataRegistry.registrations);
 
       let matchingRegistration: ReadableDataRegistration;
@@ -214,6 +216,7 @@ export class ReadableDataAuthorization extends ReadableResource {
           (registration) => registration.registeredShapeTree === this.registeredShapeTree
         );
       }
+      // eslint-disable-next-line no-continue
       if (!matchingRegistration) continue;
 
       // create source grant

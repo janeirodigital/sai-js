@@ -5,6 +5,7 @@ import { ReadableResource, ReadableShapeTree } from '.';
 
 export class ReadableDataRegistration extends ReadableResource {
   shapeTree?: ReadableShapeTree;
+
   private async bootstrap(): Promise<void> {
     await this.fetchData();
     this.shapeTree = await this.factory.readable.shapeTree(this.registeredShapeTree);

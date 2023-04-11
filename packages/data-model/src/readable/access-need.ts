@@ -8,6 +8,7 @@ import { ReadableShapeTree } from './shape-tree';
 export class ReadableAccessNeed extends ReadableResource {
   shapeTree: ReadableShapeTree;
 
+  // eslint-disable-next-line no-use-before-define
   children: ReadableAccessNeed[] = [];
 
   public descriptions: { [key: string]: ReadableAccessNeedDescription } = {};
@@ -16,6 +17,7 @@ export class ReadableAccessNeed extends ReadableResource {
     super(iri, factory);
   }
 
+  // TODO handle missing value
   get registeredShapeTree(): string {
     return this.getObject(INTEROP.registeredShapeTree)!.value;
   }

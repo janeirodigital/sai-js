@@ -17,6 +17,7 @@ export type AccessGrantData = StringData & {
 
 export class ImmutableAccessGrant extends ImmutableResource {
   dataGrants: (ImmutableDataGrant | DataGrant)[];
+
   data: AccessGrantData;
 
   public constructor(iri: string, factory: AuthorizationAgentFactory, data: AccessGrantData) {
