@@ -49,10 +49,10 @@
     "@janeirodigital/interop-data-model": "^1.0.0-rc.17",
     "@janeirodigital/interop-namespaces": "^1.0.0-rc.17",
     "@janeirodigital/interop-utils": "^1.0.0-rc.17",
-    "n3": "^1.11.0"
+    "n3": "^1.16.4"
   },
   "devDependencies": {
     "@janeirodigital/interop-test-utils": "^1.0.0-rc.17",
-    "@rdfjs/types": "^1.0.1"
+    "@rdfjs/types": "^1.1.0"
   }
 }

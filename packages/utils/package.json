@@ -47,13 +47,13 @@
   },
   "dependencies": {
     "@janeirodigital/interop-namespaces": "^1.0.0-rc.17",
-    "http-link-header": "^1.0.3",
-    "jsonld-streaming-parser": "^3.0.0",
-    "n3": "^1.11.1"
+    "http-link-header": "^1.1.0",
+    "jsonld-streaming-parser": "^3.2.0",
+    "n3": "^1.16.4"
   },
   "devDependencies": {
-    "@rdfjs/types": "^1.0.1",
+    "@rdfjs/types": "^1.1.0",
     "@types/http-link-header": "^1.0.3",
-    "@types/n3": "^1.10.0"
+    "@types/n3": "^1.10.4"
   }
 }

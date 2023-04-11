@@ -46,10 +46,10 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "n3": "^1.11.0"
+    "n3": "^1.16.4"
   },
   "devDependencies": {
-    "@rdfjs/types": "^1.0.1",
-    "@types/n3": "^1.10.0"
+    "@rdfjs/types": "^1.1.0",
+    "@types/n3": "^1.10.4"
   }
 }
