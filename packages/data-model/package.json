@@ -43,7 +43,8 @@
     "build:cjs": "tsc -b tsconfig-cjs.json",
     "build:mjs": "tsc -b tsconfig-mjs.json",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "clean": "rimraf dist tsconfig.tsbuildinfo"
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "publish": "npm run clean && npm run build"
   },
   "dependencies": {
     "@janeirodigital/interop-namespaces": "^1.0.0-rc.17",
