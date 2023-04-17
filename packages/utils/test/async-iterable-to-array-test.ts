@@ -1,4 +1,4 @@
-import { iterable2array } from '../src';
+import { asyncIterableToArray } from '../src';
 
 test('it produces array with all elements', async () => {
   const asyncIterable = {
@@ -9,6 +9,6 @@ test('it produces array with all elements', async () => {
     }
   };
 
-  const arr = await iterable2array(asyncIterable);
+  const arr = await asyncIterableToArray(asyncIterable);
   expect(arr.length).toBe(4);
 });

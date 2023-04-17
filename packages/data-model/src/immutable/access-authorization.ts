@@ -7,16 +7,18 @@ type StringData = {
   grantedBy: string;
   grantedWith: string;
   grantee: string;
-  hasAccessNeedGroup: string;
+  hasAccessNeedGroup?: string;
 };
 
 export type AccessAuthorizationData = StringData & {
   dataAuthorizations: ImmutableDataAuthorization[];
+  dataAuthorizationsToReuse?: string[];
   granted: boolean;
 };
 
 export class ImmutableAccessAuthorization extends ImmutableResource {
   dataAuthorizations: ImmutableDataAuthorization[];
+
   data: AccessAuthorizationData;
 
   factory: AuthorizationAgentFactory;
@@ -27,12 +29,21 @@ export class ImmutableAccessAuthorization extends ImmutableResource {
     const thisNode = DataFactory.namedNode(this.iri);
     const props: (keyof StringData)[] = ['grantedBy', 'grantedWith', 'grantee', 'hasAccessNeedGroup'];
     for (const prop of props) {
-      this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
+      if (data[prop]) {
+        this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
+      }
     }
     for (const dataAuthorization of data.dataAuthorizations) {
       this.dataset.add(
         DataFactory.quad(thisNode, INTEROP.hasDataAuthorization, DataFactory.namedNode(dataAuthorization.iri))
       );
+    }
+    if (data.dataAuthorizationsToReuse) {
+      for (const dataAuthorizationToReuse of data.dataAuthorizationsToReuse) {
+        this.dataset.add(
+          DataFactory.quad(thisNode, INTEROP.hasDataAuthorization, DataFactory.namedNode(dataAuthorizationToReuse))
+        );
+      }
     }
     this.dataset.add(
       DataFactory.quad(thisNode, INTEROP.grantedAt, DataFactory.literal(new Date().toISOString(), XSD.dateTime))

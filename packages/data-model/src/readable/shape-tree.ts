@@ -5,6 +5,10 @@ import { SHAPETREES, XSD } from '@janeirodigital/interop-namespaces';
 import { InteropFactory } from '..';
 import { ReadableResource, ReadableShapeTreeDescription } from '.';
 
+export interface ShapeTreeReference {
+  shapeTree: string;
+  viaPredicate: NamedNode;
+}
 export class ReadableShapeTree extends ReadableResource {
   shapeText: string;
 
@@ -18,10 +22,7 @@ export class ReadableShapeTree extends ReadableResource {
     await this.fetchData();
     this.shapeText = await (await this.fetch(this.shape, { headers: { Accept: 'text/shex' } })).text();
     if (this.descriptionLang) {
-      const description = await this.getDescription(this.descriptionLang);
-      if (description) {
-        this.descriptions[this.descriptionLang] = description;
-      }
+      await this.getDescription(this.descriptionLang);
     }
   }
 
@@ -35,7 +36,7 @@ export class ReadableShapeTree extends ReadableResource {
     return instance;
   }
 
-  public async getDescription(lang: string): Promise<ReadableShapeTreeDescription | null> {
+  public async getDescription(lang: string): Promise<ReadableShapeTreeDescription> {
     const descriptionSetNode = this.getQuad(
       null,
       SHAPETREES.usesLanguage,
@@ -47,7 +48,11 @@ export class ReadableShapeTree extends ReadableResource {
     const descriptionIri = descriptionNodes.find((node) =>
       this.getQuad(node, SHAPETREES.inDescriptionSet, descriptionSetNode)
     )?.value;
-    return descriptionIri ? ReadableShapeTreeDescription.build(descriptionIri, this.factory) : null;
+    const description = descriptionIri ? await ReadableShapeTreeDescription.build(descriptionIri, this.factory) : null;
+    if (description) {
+      this.descriptions[lang] = description;
+    }
+    return description;
   }
 
   getPredicateForReferenced(shapeTree: string): NamedNode {
@@ -58,5 +63,19 @@ export class ReadableShapeTree extends ReadableResource {
   @Memoize()
   get shape(): string {
     return this.getObject('shape', SHAPETREES).value;
+  }
+
+  @Memoize()
+  get describesInstance(): NamedNode {
+    return this.getObject('describesInstance', SHAPETREES);
+  }
+
+  @Memoize()
+  get references(): ShapeTreeReference[] {
+    const nodes = this.getObjectsArray('references', SHAPETREES);
+    return nodes.map((node) => ({
+      shapeTree: this.getQuad(node, SHAPETREES.hasShapeTree).object.value, // TODO: update to st:referencesShapeTree
+      viaPredicate: this.getQuad(node, SHAPETREES.viaPredicate).object as NamedNode
+    }));
   }
 }

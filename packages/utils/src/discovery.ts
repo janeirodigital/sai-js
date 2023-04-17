@@ -30,5 +30,5 @@ export async function discoverAuthorizationRedirectEndpoint(
     headers: { Accept: 'application/ld+json' }
   });
   const doc = await parseJsonld(await authzAgentDocumentResponse.text(), authzAgentDocumentResponse.url);
-  return getOneMatchingQuad(doc, null, INTEROP.hasAuthorizationRedirectEndpoint)?.object.value;
+  return getOneMatchingQuad(doc, null, INTEROP.hasAuthorizationRedirectEndpoint)!.object.value;
 }

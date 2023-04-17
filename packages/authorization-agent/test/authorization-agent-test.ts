@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { jest } from '@jest/globals';
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { statelessFetch, createStatefulFetch } from '@janeirodigital/interop-test-utils';
 import {
@@ -8,10 +8,15 @@ import {
   ReadableAccessAuthorization,
   CRUDApplicationRegistration,
   CRUDSocialAgentRegistration,
-  ReadableWebIdProfile
+  ReadableWebIdProfile,
+  ReadableDataAuthorization,
+  ReadableDataInstance,
+  ReadableDataRegistration,
+  CRUDDataRegistry
 } from '@janeirodigital/interop-data-model';
+import { asyncIterableToArray } from '@janeirodigital/interop-utils';
 import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
-import { AuthorizationAgent, GrantedAuthorization } from '../src';
+import { AccessAuthorizationStructure, AuthorizationAgent, ShareDataInstanceStructure } from '../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://alice.jarvis.example/#agent';
@@ -77,14 +82,15 @@ test('should provide shortcut to find social agent registratons', async () => {
   expect(spy).toHaveBeenCalledWith(iri);
 });
 
+// TODO move tests to authorization-test and only test re-mapping here
 describe('recordAccessAuthorization', () => {
   const accessAuthorizationData = {
-    granted: true as true,
+    granted: true,
     grantedBy: webId,
     grantedWith: agentId,
     grantee: 'https://acme.example/#corp',
     hasAccessNeedGroup: 'https://projectron.example/#some-access-group'
-  };
+  } as const;
   const validDataAuthorizationData = {
     grantee: 'https://acme.example/#corp',
     grantedBy: webId,
@@ -131,6 +137,137 @@ describe('recordAccessAuthorization', () => {
     }
   });
 
+  test('should extend existing access authorization', async () => {
+    const existingDataAuthorizations = [
+      'https://auth.alice.example/5ae2442a-75f7-4d5a-ba81-df0f5033e219',
+      'https://auth.alice.example/99c56d7c-6ac3-4758-b234-5e33d3984d0b'
+    ];
+    agent.registrySet.hasAuthorizationRegistry.findAuthorization = jest.fn(
+      async () =>
+        ({
+          hasDataAuthorization: existingDataAuthorizations,
+          dataAuthorizations: [] as unknown as AsyncIterable<ReadableDataAuthorization>
+        } as ReadableAccessAuthorization)
+    );
+
+    const accessAuthorization = await agent.recordAccessAuthorization(
+      {
+        dataAuthorizations: [validDataAuthorizationData],
+        ...accessAuthorizationData
+      },
+      true
+    );
+
+    expect(accessAuthorization.hasDataAuthorization).toStrictEqual(expect.arrayContaining(existingDataAuthorizations));
+  });
+
+  test('should extend existing access authorization when overlaping registry', async () => {
+    const dataAuthorization = {
+      grantee: 'https://acme.example/#corp',
+      grantedBy: webId,
+      registeredShapeTree: 'https://solidshapes.example/tree/Project',
+      dataOwner: 'https://omni.example/#corp',
+      accessMode: [ACL.Read.value],
+      scopeOfAuthorization: INTEROP.SelectedInstances.value,
+      hasDataRegistration: 'https://home.alice.example/some-registration/',
+      hasDataInstance: ['https://home.alice.example/06c7ac17-2825-411b-ad55-31bb46aa75cd']
+    };
+    const matchingDataAuthorization = {
+      iri: 'https://auth.alice.example/99c56d7c-6ac3-4758-b234-5e33d3984d0b',
+      hasDataRegistration: dataAuthorization.hasDataRegistration,
+      hasDataInstance: [
+        'https://home.alice.example/edd03503-93cf-4a85-81cf-ef30874af3bf',
+        'https://home.alice.example/a12cbc68-622a-4f9c-8bfa-66107a4c5f3a'
+      ],
+      hasInheritingAuthorization: [
+        {
+          iri: 'https://home.alice.example/da6be870-64b0-4b91-8ad3-8005ebb1444c'
+        }
+      ]
+    } as ReadableDataAuthorization;
+
+    // we use existing one from snippets, just so it can be instantiated
+    const otherExistingDataAuthorization = {
+      iri: 'https://auth.alice.example/a691ee69-97d8-45c0-bb03-8e887b2db806'
+    };
+
+    const existingDataAuthorizations = [
+      otherExistingDataAuthorization.iri,
+      matchingDataAuthorization.iri,
+      matchingDataAuthorization.hasInheritingAuthorization[0].iri
+    ];
+
+    agent.registrySet.hasAuthorizationRegistry.findAuthorization = jest.fn(
+      async () =>
+        ({
+          hasDataAuthorization: existingDataAuthorizations,
+          dataAuthorizations: [matchingDataAuthorization] as unknown as AsyncIterable<ReadableDataAuthorization>
+        } as ReadableAccessAuthorization)
+    );
+
+    const accessAuthorization = await agent.recordAccessAuthorization(
+      {
+        dataAuthorizations: [dataAuthorization],
+        ...accessAuthorizationData
+      },
+      true
+    );
+    expect(accessAuthorization.hasDataAuthorization).not.toContain(matchingDataAuthorization.iri);
+    expect(accessAuthorization.hasDataAuthorization).not.toContain(
+      matchingDataAuthorization.hasInheritingAuthorization[0].iri
+    );
+    expect(accessAuthorization.hasDataAuthorization).toContain(otherExistingDataAuthorization.iri);
+    const combinedDataAuthorization = (await asyncIterableToArray(accessAuthorization.dataAuthorizations))[0];
+    expect(combinedDataAuthorization.hasDataInstance).toEqual(
+      expect.arrayContaining([...dataAuthorization.hasDataInstance, ...matchingDataAuthorization.hasDataInstance])
+    );
+  });
+
+  test('should throw if overlaping data authorization has unexpected scope', async () => {
+    const dataAuthorization = {
+      grantee: 'https://acme.example/#corp',
+      grantedBy: webId,
+      registeredShapeTree: 'https://solidshapes.example/tree/Project',
+      dataOwner: 'https://omni.example/#corp',
+      accessMode: [ACL.Read.value],
+      scopeOfAuthorization: INTEROP.AllFromRegistry.value,
+      hasDataRegistration: 'https://home.alice.example/some-registration/'
+    };
+    const matchingDataAuthorization = {
+      iri: 'https://auth.alice.example/99c56d7c-6ac3-4758-b234-5e33d3984d0b',
+      hasDataRegistration: dataAuthorization.hasDataRegistration,
+      hasDataInstance: [
+        'https://home.alice.example/edd03503-93cf-4a85-81cf-ef30874af3bf',
+        'https://home.alice.example/a12cbc68-622a-4f9c-8bfa-66107a4c5f3a'
+      ]
+    } as ReadableDataAuthorization;
+
+    const existingDataAuthorizations = [matchingDataAuthorization.iri];
+
+    agent.registrySet.hasAuthorizationRegistry.findAuthorization = jest.fn(
+      async () =>
+        ({
+          hasDataAuthorization: existingDataAuthorizations,
+          dataAuthorizations: [matchingDataAuthorization] as unknown as AsyncIterable<ReadableDataAuthorization>
+        } as ReadableAccessAuthorization)
+    );
+
+    const authorization = {
+      dataAuthorizations: [dataAuthorization],
+      ...accessAuthorizationData
+    };
+    await expect(agent.recordAccessAuthorization(authorization, true)).rejects.toThrow('unexpected scope');
+  });
+
+  test('should throw if denied and tries to extend existing', async () => {
+    const authorization = {
+      granted: false
+    } as AccessAuthorizationStructure;
+    await expect(agent.recordAccessAuthorization(authorization, true)).rejects.toThrow(
+      'Previous denied authorizations can not be extended'
+    );
+  });
+
   // TODO add PATCH support to the stateful fetch first
   test.skip('should link to new access authorization from access authorization registry', async () => {
     const accessAuthorization = await agent.recordAccessAuthorization({
@@ -157,7 +294,7 @@ describe('generateAccessGrant', () => {
     const agentRegistration = await agent.registrySet.hasAgentRegistry.findRegistration(registeredAgentIri);
     await agent.generateAccessGrant(accessAuthorizationIri);
     const updatedAgentRegistration = await agent.registrySet.hasAgentRegistry.findRegistration(registeredAgentIri);
-    expect(updatedAgentRegistration.hasAccessGrant).toBe(agentRegistration.hasAccessGrant);
+    expect(updatedAgentRegistration!.hasAccessGrant).toBe(agentRegistration!.hasAccessGrant);
   });
   test('should throw if agent registartion for the grantee does not exist', async () => {
     const accessAuthorizationIri = 'https://auth.alice.example/0d12477a-a5ce-4b59-ab48-8be505ccd64c';
@@ -176,5 +313,235 @@ describe('updateDelegatedGrant', () => {
     const dataOwnerIri = 'https://omni.example/#corp';
     await agent.updateDelegatedGrants(dataOwnerIri);
     expect(generateAccessGrantSpy).toBeCalledTimes(2);
+  });
+});
+
+// TODO: test with more data to ensure doesn't include agents without access
+describe('findSocialAgentsWithAccess', () => {
+  const authorization = {
+    grantee: 'https://omni.example/#corp',
+    registeredShapeTree: 'https://shapetrees.example/tree/Project',
+    accessMode: [ACL.Read.value]
+  };
+  const dataInstance = {
+    iri: 'https://home.alice.example/some-registration/some-resource',
+    dataRegistration: {
+      iri: 'https://home.alice.example/some-registration/',
+      registeredShapeTree: authorization.registeredShapeTree
+    }
+  } as ReadableDataInstance;
+  let agent: AuthorizationAgent;
+
+  beforeEach(async () => {
+    const statefulFetch = createStatefulFetch();
+    agent = await AuthorizationAgent.build(webId, agentId, { fetch: statefulFetch, randomUUID });
+    agent.factory.readable.dataInstance = jest.fn(async () => dataInstance);
+  });
+
+  test('with scope All', async () => {
+    const allAuthorization = {
+      iri: 'mocked-all',
+      scopeOfAuthorization: INTEROP.All.value,
+      ...authorization
+    };
+    jest
+      .spyOn(agent, 'accessAuthorizations', 'get')
+      .mockReturnValue([
+        { dataAuthorizations: [allAuthorization] }
+      ] as unknown as AsyncIterable<ReadableAccessAuthorization>);
+
+    const result = await agent.findSocialAgentsWithAccess(dataInstance.iri);
+    expect(result).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          agent: allAuthorization.grantee,
+          dataAuthorization: allAuthorization.iri,
+          accessMode: allAuthorization.accessMode
+        })
+      ])
+    );
+  });
+
+  test('with scope AllFromAgent', async () => {
+    const allAuthorization = {
+      iri: 'mocked-all-from-agent',
+      scopeOfAuthorization: INTEROP.AllFromAgent.value,
+      dataOwner: webId,
+      ...authorization
+    };
+    jest.spyOn(agent, 'accessAuthorizations', 'get').mockReturnValue([
+      { dataAuthorizations: [] }, // to catch the case with no matching data authorization
+      { dataAuthorizations: [allAuthorization] }
+    ] as unknown as AsyncIterable<ReadableAccessAuthorization>);
+
+    const result = await agent.findSocialAgentsWithAccess(dataInstance.iri);
+    expect(result).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          agent: allAuthorization.grantee,
+          dataAuthorization: allAuthorization.iri,
+          accessMode: allAuthorization.accessMode
+        })
+      ])
+    );
+  });
+
+  test('with scope AllFromRegistry', async () => {
+    const allAuthorization = {
+      iri: 'mocked-all-from-registry',
+      scopeOfAuthorization: INTEROP.AllFromRegistry.value,
+      dataOwner: webId,
+      hasDataRegistration: 'https://home.alice.example/some-registration/',
+      ...authorization
+    };
+    jest
+      .spyOn(agent, 'accessAuthorizations', 'get')
+      .mockReturnValue([
+        { dataAuthorizations: [allAuthorization] }
+      ] as unknown as AsyncIterable<ReadableAccessAuthorization>);
+
+    const result = await agent.findSocialAgentsWithAccess(dataInstance.iri);
+    expect(result).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          agent: allAuthorization.grantee,
+          dataAuthorization: allAuthorization.iri,
+          accessMode: allAuthorization.accessMode
+        })
+      ])
+    );
+  });
+
+  test('with scope SelectedInstances', async () => {
+    const allAuthorization = {
+      iri: 'mocked-selected-instances',
+      scopeOfAuthorization: INTEROP.SelectedInstances.value,
+      dataOwner: webId,
+      hasDataRegistration: 'https://home.alice.example/some-registration/',
+      hasDataInstance: [dataInstance.iri],
+      ...authorization
+    };
+    jest
+      .spyOn(agent, 'accessAuthorizations', 'get')
+      .mockReturnValue([
+        { dataAuthorizations: [allAuthorization] }
+      ] as unknown as AsyncIterable<ReadableAccessAuthorization>);
+
+    const result = await agent.findSocialAgentsWithAccess(dataInstance.iri);
+    expect(result).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          agent: allAuthorization.grantee,
+          dataAuthorization: allAuthorization.iri,
+          accessMode: allAuthorization.accessMode
+        })
+      ])
+    );
+  });
+
+  test('throws if invalid scope', async () => {
+    const allAuthorization = {
+      iri: 'mocked-invalid-scope',
+      scopeOfAuthorization: 'Invalid',
+      ...authorization
+    };
+    jest
+      .spyOn(agent, 'accessAuthorizations', 'get')
+      .mockReturnValue([
+        { dataAuthorizations: [allAuthorization] }
+      ] as unknown as AsyncIterable<ReadableAccessAuthorization>);
+
+    await expect(agent.findSocialAgentsWithAccess(dataInstance.iri)).rejects.toThrow(
+      'encountered incorect Data Authorization with scope:'
+    );
+  });
+});
+
+describe('findDataRegistration', () => {
+  const dataRegistration = {
+    iri: 'https://home.alice.example/projects/',
+    registeredShapeTree: 'https://shapetrees.example/tree/Project'
+  };
+  const dataRegistry = {
+    iri: 'https://home.alice.example/',
+    registrations: [dataRegistration]
+  } as unknown as CRUDDataRegistry;
+
+  test('should share data instance', async () => {
+    const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
+    agent.registrySet.hasDataRegistry = [dataRegistry];
+
+    const registration = await agent.findDataRegistration(dataRegistry.iri, dataRegistration.registeredShapeTree);
+    expect(registration).toBe(dataRegistration);
+  });
+});
+
+describe('shareDataInstance', () => {
+  // TODO: test with multiple agents and multiple child shape trees
+  test('should share data instance', async () => {
+    const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
+    const shapeTree = 'https://shapetrees.example/tree/Project';
+    const details: ShareDataInstanceStructure = {
+      applicationId: 'https://projectron.example/',
+      resource: 'https://home.alice.example/some-registration/some-resource',
+      accessMode: [INTEROP.Read.value],
+      children: [
+        {
+          shapeTree: 'https://shapetrees.example/tree/Task',
+          accessMode: [INTEROP.Read.value]
+        }
+      ],
+      agents: ['https://bob.example/#id']
+    };
+    agent.findSocialAgentsWithAccess = jest.fn(async () => []);
+
+    const dataInstance = {
+      iri: details.resource,
+      dataRegistration: {
+        iri: 'https://home.alice.example/some-registration/',
+        registeredShapeTree: shapeTree
+      }
+    } as ReadableDataInstance;
+    agent.factory.readable.dataInstance = jest.fn(async () => dataInstance);
+    const childDataRegistration = { iri: 'mocked' } as ReadableDataRegistration;
+    agent.findDataRegistration = jest.fn(async () => childDataRegistration);
+
+    const mockedAuthorization = { iri: 'also-mocked' } as ReadableAccessAuthorization;
+    const recordMock = jest.fn(async () => mockedAuthorization);
+
+    agent.recordAccessAuthorization = recordMock;
+
+    const authorizationIris = await agent.shareDataInstance(details);
+
+    expect(authorizationIris.length).toBe(1);
+
+    expect(recordMock).toBeCalledWith(
+      {
+        grantee: details.agents[0],
+        granted: true,
+        dataAuthorizations: [
+          {
+            grantee: details.agents[0],
+            registeredShapeTree: shapeTree,
+            scopeOfAuthorization: INTEROP.SelectedInstances.value,
+            dataOwner: webId,
+            hasDataRegistration: dataInstance.dataRegistration.iri,
+            accessMode: details.accessMode,
+            hasDataInstance: [dataInstance.iri],
+            children: [
+              {
+                grantee: details.agents[0],
+                registeredShapeTree: details.children[0].shapeTree,
+                scopeOfAuthorization: INTEROP.Inherited.value,
+                dataOwner: webId,
+                hasDataRegistration: childDataRegistration.iri,
+                accessMode: details.children[0].accessMode
+              }
+            ]
+          }
+        ]
+      },
+      true
+    );
   });
 });

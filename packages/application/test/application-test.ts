@@ -30,18 +30,6 @@ describe('applicatrion registration exists', () => {
     expect(app.hasApplicationRegistration).toBeInstanceOf(ReadableApplicationRegistration);
   });
 
-  test('should have authorizationRedirectEndpoint undefined', async () => {
-    mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
-    const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
-    expect(app.authorizationRedirectEndpoint).toBeUndefined();
-  });
-
-  test('should have authorizationRedirectUri undefined', async () => {
-    mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
-    const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
-    expect(app.authorizationRedirectUri).toBeUndefined();
-  });
-
   test('should have dataOwners getter', async () => {
     mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
     const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
@@ -51,7 +39,7 @@ describe('applicatrion registration exists', () => {
     }
   });
 });
-describe('applicatrion registration does not exist', () => {
+describe('discovery helpers', () => {
   const expectedRedirectUriBase = 'https://auth.example/authorize';
   const mocked = jest.fn(statelessFetch);
   const responseMock = { ok: true, headers: { get: (): null => null } } as unknown as RdfResponse;
@@ -72,12 +60,27 @@ describe('applicatrion registration does not exist', () => {
   test('should have correct authorizationRedirectUri', async () => {
     mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
     const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
-    expect(app.authorizationRedirectUri).toBe(`${expectedRedirectUriBase}?client_id=${applicationId}`);
+    expect(app.authorizationRedirectUri).toBe(
+      `${expectedRedirectUriBase}?client_id=${encodeURIComponent(applicationId)}`
+    );
   });
 
   test('should have dataOwners getter returning an empty array', async () => {
     mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
     const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
     expect(app.dataOwners).toHaveLength(0);
+  });
+
+  // TODO: refactor to be independent from order of query parameters
+  test('should provide shareUri', async () => {
+    mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
+    const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
+    const resourceUri = 'some-resource-uri';
+    const shareUri = app.getShareUri(resourceUri);
+    expect(shareUri).toBe(
+      `${expectedRedirectUriBase}?resource=${encodeURIComponent(resourceUri)}&client_id=${encodeURIComponent(
+        applicationId
+      )}`
+    );
   });
 });

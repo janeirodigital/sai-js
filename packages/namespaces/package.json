@@ -39,17 +39,18 @@
     "test": "test"
   },
   "scripts": {
-    "build": "npm run clean && npm run build:cjs && npm run build:mjs && sh fixup.sh",
+    "build": "npm run build:cjs && npm run build:mjs && sh fixup.sh",
     "build:cjs": "tsc -b tsconfig-cjs.json",
     "build:mjs": "tsc -b tsconfig-mjs.json",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "clean": "rimraf dist tsconfig.tsbuildinfo"
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "publish": "npm run clean && npm run build"
   },
   "dependencies": {
-    "n3": "^1.11.0"
+    "n3": "^1.16.4"
   },
   "devDependencies": {
-    "@rdfjs/types": "^1.0.1",
-    "@types/n3": "^1.10.0"
+    "@rdfjs/types": "^1.1.0",
+    "@types/n3": "^1.10.4"
   }
 }

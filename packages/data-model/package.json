@@ -39,23 +39,24 @@
     "test": "test"
   },
   "scripts": {
-    "build": "npm run clean && npm run build:cjs && npm run build:mjs && sh fixup.sh",
+    "build": "npm run build:cjs && npm run build:mjs && sh fixup.sh",
     "build:cjs": "tsc -b tsconfig-cjs.json",
     "build:mjs": "tsc -b tsconfig-mjs.json",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "clean": "rimraf dist tsconfig.tsbuildinfo"
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "publish": "npm run clean && npm run build"
   },
   "dependencies": {
     "@janeirodigital/interop-namespaces": "^1.0.0-rc.17",
     "@janeirodigital/interop-utils": "^1.0.0-rc.17",
-    "n3": "^1.11.0",
-    "ts-mixer": "^6.0.1",
-    "typescript-memoize": "^1.0.1"
+    "n3": "^1.16.4",
+    "ts-mixer": "^6.0.3",
+    "typescript-memoize": "^1.1.1"
   },
   "devDependencies": {
     "@janeirodigital/interop-test-utils": "^1.0.0-rc.17",
-    "@rdfjs/types": "^1.0.1",
-    "@types/n3": "^1.10.0",
-    "@types/node": "^16.4.12"
+    "@rdfjs/types": "^1.1.0",
+    "@types/n3": "^1.10.4",
+    "@types/node": "^18.15.11"
   }
 }

@@ -26,3 +26,4 @@ export { ReadableAccessNeedGroupDescription } from './access-need-group-descript
 export { ReadableAccessDescriptionSet } from './access-description-set';
 export { ReadableAccessNeed } from './access-need';
 export { ReadableAccessNeedGroup } from './access-need-group';
+export { ReadableDataInstance } from './data-instance';

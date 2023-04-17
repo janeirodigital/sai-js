@@ -22,6 +22,12 @@ describe('getters', () => {
     const dataRegistrationProxy = new ReadableDataRegistrationProxy(grant);
     expect(dataRegistrationProxy.iri).toBe('https://home.alice.example/f6ccd3a4-45ea-4f98-8a36-98eac92a6720');
   });
+
+  test('grant', async () => {
+    const grant = await factory.readable.dataGrant(grantIri);
+    const dataRegistrationProxy = new ReadableDataRegistrationProxy(grant);
+    expect(dataRegistrationProxy.grant).toBe(grant);
+  });
 });
 
 test('should delegate dataInstances to grant', async () => {

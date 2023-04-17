@@ -13,7 +13,8 @@ import {
   ReadableShapeTree,
   ReadableWebIdProfile,
   ReadableClientIdDocument,
-  FactoryDependencies
+  FactoryDependencies,
+  ReadableDataInstance
 } from '.';
 
 interface CachedDataGrants {
@@ -25,6 +26,7 @@ interface Cache {
 }
 
 export interface BaseReadableFactory {
+  dataInstance(iri: string, descriptionLang?: string): Promise<ReadableDataInstance>;
   accessGrant(iri: string): Promise<ReadableAccessGrant>;
   applicationRegistration(iri: string): Promise<ReadableApplicationRegistration>;
   dataRegistration(iri: string): Promise<ReadableDataRegistration>;
@@ -58,6 +60,9 @@ export class BaseFactory {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;
     return {
+      dataInstance: async function dataInstance(iri: string, descriptionLang?: string): Promise<ReadableDataInstance> {
+        return ReadableDataInstance.build(iri, factory, descriptionLang);
+      },
       accessGrant: async function accessGrant(iri: string): Promise<ReadableAccessGrant> {
         return ReadableAccessGrant.build(iri, factory);
       },

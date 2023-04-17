@@ -3,6 +3,7 @@ import { InteropFactory } from '..';
 import { ReadableResource } from './resource';
 
 export class ReadableShapeTreeDescription extends ReadableResource {
+  // TODO: handle missing labels
   public get label(): string {
     return this.getObject(SKOS.prefLabel)!.value;
   }

@@ -7,7 +7,7 @@ type StringData = {
   grantedBy: string;
   grantedWith: string;
   grantee: string;
-  hasAccessNeedGroup: string;
+  hasAccessNeedGroup?: string;
 };
 
 export type AccessGrantData = StringData & {
@@ -17,6 +17,7 @@ export type AccessGrantData = StringData & {
 
 export class ImmutableAccessGrant extends ImmutableResource {
   dataGrants: (ImmutableDataGrant | DataGrant)[];
+
   data: AccessGrantData;
 
   public constructor(iri: string, factory: AuthorizationAgentFactory, data: AccessGrantData) {
@@ -25,7 +26,9 @@ export class ImmutableAccessGrant extends ImmutableResource {
     const thisNode = DataFactory.namedNode(this.iri);
     const props: (keyof StringData)[] = ['grantedBy', 'grantedWith', 'grantee', 'hasAccessNeedGroup'];
     for (const prop of props) {
-      this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
+      if (data[prop]) {
+        this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
+      }
     }
     for (const dataGrant of this.dataGrants) {
       this.dataset.add(DataFactory.quad(thisNode, INTEROP.hasDataGrant, DataFactory.namedNode(dataGrant.iri)));

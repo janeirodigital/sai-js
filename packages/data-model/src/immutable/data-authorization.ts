@@ -13,6 +13,7 @@ type StringData = {
   satisfiesAccessNeed?: string; // TODO: make required
 };
 
+// TODO consider changing to Set<string>
 type ArrayData = {
   accessMode: string[];
   creatorAccessMode?: string[];

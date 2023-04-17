@@ -87,6 +87,7 @@ export class AuthorizationAgentFactory extends BaseFactory {
       },
       socialAgentRegistration: async function socialAgentRegistration(
         iri: string,
+        // eslint-disable-next-line default-param-last
         reciprocal = false,
         data?: SocialAgentRegistrationData
       ): Promise<CRUDSocialAgentRegistration> {

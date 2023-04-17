@@ -39,21 +39,22 @@
     "test": "test"
   },
   "scripts": {
-    "build": "npm run clean && npm run build:cjs && npm run build:mjs && sh fixup.sh",
+    "build": "npm run build:cjs && npm run build:mjs && sh fixup.sh",
     "build:cjs": "tsc -b tsconfig-cjs.json",
     "build:mjs": "tsc -b tsconfig-mjs.json",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "clean": "rimraf dist tsconfig.tsbuildinfo"
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "publish": "npm run clean && npm run build"
   },
   "dependencies": {
     "@janeirodigital/interop-namespaces": "^1.0.0-rc.17",
-    "http-link-header": "^1.0.3",
-    "jsonld-streaming-parser": "^3.0.0",
-    "n3": "^1.11.1"
+    "http-link-header": "^1.1.1",
+    "jsonld-streaming-parser": "^3.2.0",
+    "n3": "^1.16.4"
   },
   "devDependencies": {
-    "@rdfjs/types": "^1.0.1",
+    "@rdfjs/types": "^1.1.0",
     "@types/http-link-header": "^1.0.3",
-    "@types/n3": "^1.10.0"
+    "@types/n3": "^1.10.4"
   }
 }

@@ -14,6 +14,7 @@ export type SocialAgentRegistrationData = AgentRegistrationData & ClassData;
 export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
   data?: SocialAgentRegistrationData;
 
+  // eslint-disable-next-line no-use-before-define
   reciprocalRegistration?: CRUDSocialAgentRegistration;
 
   reciprocal: boolean;
@@ -28,6 +29,7 @@ export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
     this.reciprocal = reciprocal;
   }
 
+  // TODO: handle missing labels
   get label(): string {
     return this.getObject(SKOS.prefLabel)!.value;
   }
@@ -36,7 +38,7 @@ export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
     return this.getObject(SKOS.note)?.value;
   }
 
-  // TODO (elf-pavlik) recover if reciprocal can't be fetched
+  // TODO: (elf-pavlik) recover if reciprocal can't be fetched
   private async buildReciprocalRegistration(): Promise<void> {
     const reciprocalRegistrationIri = this.getObject(INTEROP.reciprocalRegistration)?.value;
     if (reciprocalRegistrationIri) {

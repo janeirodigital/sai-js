@@ -3,6 +3,7 @@ import { InteropFactory } from '..';
 import { ReadableAccessDescription } from './access-description';
 
 export class ReadableAccessNeedGroupDescription extends ReadableAccessDescription {
+  // TODO handle missing value
   public get hasAccessNeedGroup(): string {
     return this.getObject(INTEROP.hasAccessNeedGroup)!.value;
   }
