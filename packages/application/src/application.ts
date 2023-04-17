@@ -44,20 +44,14 @@ export class Application {
     );
   }
 
-  // eslint-disable-next-line consistent-return
-  get authorizationRedirectUri(): string | undefined {
-    if (this.authorizationRedirectEndpoint) {
-      return `${this.authorizationRedirectEndpoint}?client_id=${encodeURIComponent(this.applicationId)}`;
-    }
+  get authorizationRedirectUri(): string {
+    return `${this.authorizationRedirectEndpoint}?client_id=${encodeURIComponent(this.applicationId)}`;
   }
 
-  getShareUri(resourceIri: string): string | undefined {
-    if (this.authorizationRedirectEndpoint) {
-      return `${this.authorizationRedirectEndpoint}?resource=${encodeURIComponent(
-        resourceIri
-      )}&client_id=${encodeURIComponent(this.applicationId)}`;
-    }
-    return undefined;
+  getShareUri(resourceIri: string): string {
+    return `${this.authorizationRedirectEndpoint}?resource=${encodeURIComponent(
+      resourceIri
+    )}&client_id=${encodeURIComponent(this.applicationId)}`;
   }
 
   static async build(

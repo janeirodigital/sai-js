@@ -73,7 +73,7 @@ export async function generateAuthorization(
   extendIfExists: boolean
 ): Promise<ReadableAccessAuthorization> {
   if (extendIfExists && !authorization.granted) {
-    throw new Error('if authorization denied should not use extendIfexists!');
+    throw new Error('Previous denied authorizations can not be extended');
   }
 
   let dataAuthorizationsToReuse: string[] = [];

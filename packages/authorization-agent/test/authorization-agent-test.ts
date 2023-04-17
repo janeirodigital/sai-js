@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { jest } from '@jest/globals';
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { statelessFetch, createStatefulFetch } from '@janeirodigital/interop-test-utils';
 import {
@@ -85,12 +85,12 @@ test('should provide shortcut to find social agent registratons', async () => {
 // TODO move tests to authorization-test and only test re-mapping here
 describe('recordAccessAuthorization', () => {
   const accessAuthorizationData = {
-    granted: true as true,
+    granted: true,
     grantedBy: webId,
     grantedWith: agentId,
     grantee: 'https://acme.example/#corp',
     hasAccessNeedGroup: 'https://projectron.example/#some-access-group'
-  };
+  } as const;
   const validDataAuthorizationData = {
     grantee: 'https://acme.example/#corp',
     grantedBy: webId,
@@ -264,7 +264,7 @@ describe('recordAccessAuthorization', () => {
       granted: false
     } as AccessAuthorizationStructure;
     await expect(agent.recordAccessAuthorization(authorization, true)).rejects.toThrow(
-      'if authorization denied should not use extendIfexists!'
+      'Previous denied authorizations can not be extended'
     );
   });
 
@@ -294,7 +294,7 @@ describe('generateAccessGrant', () => {
     const agentRegistration = await agent.registrySet.hasAgentRegistry.findRegistration(registeredAgentIri);
     await agent.generateAccessGrant(accessAuthorizationIri);
     const updatedAgentRegistration = await agent.registrySet.hasAgentRegistry.findRegistration(registeredAgentIri);
-    expect(updatedAgentRegistration.hasAccessGrant).toBe(agentRegistration.hasAccessGrant);
+    expect(updatedAgentRegistration!.hasAccessGrant).toBe(agentRegistration!.hasAccessGrant);
   });
   test('should throw if agent registartion for the grantee does not exist', async () => {
     const accessAuthorizationIri = 'https://auth.alice.example/0d12477a-a5ce-4b59-ab48-8be505ccd64c';
@@ -508,12 +508,12 @@ describe('shareDataInstance', () => {
 
     const mockedAuthorization = { iri: 'also-mocked' } as ReadableAccessAuthorization;
     const recordMock = jest.fn(async () => mockedAuthorization);
-    const generateMock = jest.fn(async () => {});
 
     agent.recordAccessAuthorization = recordMock;
-    agent.generateAccessGrant = generateMock;
 
-    await agent.shareDataInstance(details);
+    const authorizationIris = await agent.shareDataInstance(details);
+
+    expect(authorizationIris.length).toBe(1);
 
     expect(recordMock).toBeCalledWith(
       {
@@ -543,6 +543,5 @@ describe('shareDataInstance', () => {
       },
       true
     );
-    expect(generateMock).toBeCalledWith(mockedAuthorization.iri);
   });
 });
