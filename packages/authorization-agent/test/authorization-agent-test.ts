@@ -14,7 +14,7 @@ import {
   ReadableDataRegistration,
   CRUDDataRegistry
 } from '@janeirodigital/interop-data-model';
-import { iterable2array } from '@janeirodigital/interop-utils';
+import { asyncIterableToArray } from '@janeirodigital/interop-utils';
 import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
 import { AccessAuthorizationStructure, AuthorizationAgent, ShareDataInstanceStructure } from '../src';
 
@@ -217,7 +217,7 @@ describe('recordAccessAuthorization', () => {
       matchingDataAuthorization.hasInheritingAuthorization[0].iri
     );
     expect(accessAuthorization.hasDataAuthorization).toContain(otherExistingDataAuthorization.iri);
-    const combinedDataAuthorization = (await iterable2array(accessAuthorization.dataAuthorizations))[0];
+    const combinedDataAuthorization = (await asyncIterableToArray(accessAuthorization.dataAuthorizations))[0];
     expect(combinedDataAuthorization.hasDataInstance).toEqual(
       expect.arrayContaining([...dataAuthorization.hasDataInstance, ...matchingDataAuthorization.hasDataInstance])
     );

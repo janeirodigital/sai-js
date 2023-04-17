@@ -11,7 +11,7 @@ import {
   ReadableDataInstance
 } from '@janeirodigital/interop-data-model';
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { WhatwgFetch, RdfFetch, fetchWrapper, iterable2array } from '@janeirodigital/interop-utils';
+import { WhatwgFetch, RdfFetch, fetchWrapper, asyncIterableToArray } from '@janeirodigital/interop-utils';
 import {
   AccessAuthorizationStructure,
   generateAuthorization,
@@ -203,7 +203,7 @@ export class AuthorizationAgent {
     const agentsWithAccess: AgentWithAccess[] = [];
     for await (const accessAuthorization of this.accessAuthorizations) {
       const dataAuthorization = (
-        await iterable2array<ReadableDataAuthorization>(accessAuthorization.dataAuthorizations)
+        await asyncIterableToArray<ReadableDataAuthorization>(accessAuthorization.dataAuthorizations)
       ).find((autorization) => autorization.registeredShapeTree === shapeTree);
       // eslint-disable-next-line no-continue
       if (!dataAuthorization) continue;

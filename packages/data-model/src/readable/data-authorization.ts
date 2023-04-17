@@ -1,5 +1,5 @@
 import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { iterable2array } from '@janeirodigital/interop-utils';
+import { asyncIterableToArray } from '@janeirodigital/interop-utils';
 import { Memoize } from 'typescript-memoize';
 import {
   AuthorizationAgentFactory,
@@ -203,7 +203,7 @@ export class ReadableDataAuthorization extends ReadableResource {
     for (const dataRegistry of dataRegistries) {
       // const dataRegistrations = dataRegistriesArr.flat();
       // eslint-disable-next-line no-await-in-loop
-      const dataRegistrations = await iterable2array(dataRegistry.registrations);
+      const dataRegistrations = await asyncIterableToArray(dataRegistry.registrations);
 
       let matchingRegistration: ReadableDataRegistration;
 
