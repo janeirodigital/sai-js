@@ -48,6 +48,7 @@ export abstract class AbstractDataGrant extends ReadableResource {
    * @returns new DataInstance with IRI based on prefix from ReadableDataRegistration
    */
   public static async newDataInstance(sourceGrant: DataGrant, parent?: DataInstance): Promise<DataInstance> {
+    // TODO find a way to replace with Container#iri
     const iri = `${sourceGrant.hasDataRegistration}${sourceGrant.factory.randomUUID()}`;
     return DataInstance.build(iri, sourceGrant, sourceGrant.factory, parent, true);
   }

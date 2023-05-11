@@ -1,6 +1,7 @@
 import { DataFactory, NamedNode } from 'n3';
 import { DatasetCore } from '@rdfjs/types';
-import { targetDataRegistrationLink } from '@janeirodigital/interop-utils';
+import { getDescriptionResource, insertPatch, targetDataRegistrationLink } from '@janeirodigital/interop-utils';
+import { SHAPETREES } from '@janeirodigital/interop-namespaces';
 import { ReadableResource, ApplicationFactory, DataGrant, InheritedDataGrant, ReadableShapeTree } from '.';
 
 export class DataInstance extends ReadableResource {
@@ -27,10 +28,27 @@ export class DataInstance extends ReadableResource {
   }
 
   private async bootstrap(): Promise<void> {
-    if (!this.draft) {
-      await this.fetchData();
-    }
     this.shapeTree = await this.factory.readable.shapeTree(this.dataGrant.registeredShapeTree);
+    if (!this.draft) {
+      if (!this.isBlob) {
+        await this.fetchData();
+      } else {
+        const descriptionIri = await this.discoverDescriptionResource();
+        const response = await this.fetch(descriptionIri);
+        this.dataset = await response.dataset();
+      }
+    }
+  }
+
+  // TODO: extract as mixin from container
+  async discoverDescriptionResource(): Promise<string> {
+    // @ts-ignore
+    const response = await this.fetch.raw(this.iri, {
+      method: 'HEAD'
+    });
+
+    // get value of describedby Link
+    return getDescriptionResource(response.headers.get('Link'));
   }
 
   public static async build(
@@ -72,19 +90,56 @@ export class DataInstance extends ReadableResource {
    * @param dataset - dataset to replace current one with
    * @throws Error if fails
    */
-  public async update(dataset: DatasetCore): Promise<void> {
+  public async update(dataset: DatasetCore, file?: File): Promise<void> {
     // must be done before creating
     if (this.parent && this.draft) {
       await this.parent.updateAddingChildReference(this);
     }
-    const { ok } = await this.fetch(this.iri, {
-      method: 'PUT',
-      dataset,
-      headers: { Link: targetDataRegistrationLink(this.dataGrant.hasDataRegistration) }
-    });
-    if (!ok) {
-      throw new Error('failed to update');
+
+    if (this.isBlob) {
+      if (this.draft && !file) {
+        throw new Error('new non RDF resource needs the blob');
+      }
+
+      if (file) {
+        // TODO: refactor RdfFetch
+        // @ts-ignore
+        const { ok } = await this.fetch.raw(this.iri, {
+          method: 'PUT',
+          headers: { 'Content-Type': file.type },
+          body: file
+        });
+
+        if (!ok) {
+          throw new Error('failed to upload file');
+        }
+      }
+
+      const descriptionIri = await this.discoverDescriptionResource();
+
+      // TODO support update, now only create will work
+      // TODO reuse from CRUD Container
+      const { ok } = await this.fetch(descriptionIri, {
+        method: 'PATCH',
+        body: await insertPatch(this.dataset),
+        headers: {
+          'Content-Type': 'application/sparql-update'
+        }
+      });
+      if (!ok) {
+        throw new Error(`failed to patch ${descriptionIri}`);
+      }
+    } else {
+      const { ok } = await this.fetch(this.iri, {
+        method: 'PUT',
+        dataset,
+        headers: { Link: targetDataRegistrationLink(this.dataGrant.hasDataRegistration) }
+      });
+      if (!ok) {
+        throw new Error('failed to update');
+      }
     }
+
     this.draft = false;
     this.dataset = dataset;
   }
@@ -149,5 +204,18 @@ export class DataInstance extends ReadableResource {
     );
     this.dataset.delete(referenceQuad);
     await this.update(this.dataset);
+  }
+
+  addNode(predicate: string, object: string) {
+    this.dataset.add(DataFactory.quad(this.node, DataFactory.namedNode(predicate), DataFactory.namedNode(object)));
+  }
+
+  get isBlob(): boolean {
+    return this.shapeTree.expectsType.value === SHAPETREES.NonRDFResource.value;
+  }
+
+  async fetchBlob(): Promise<Blob> {
+    // @ts-ignore
+    return (await this.fetch.raw(this.iri)).blob();
   }
 }

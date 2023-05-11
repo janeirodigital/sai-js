@@ -80,22 +80,27 @@ export class ReadableDataAuthorization extends ReadableResource {
     sourceGrant: InheritableDataGrant,
     granteeRegistration: CRUDAgentRegistration
   ): ImmutableDataGrant[] {
-    return this.hasInheritingAuthorization.map((childAuthorization) => {
-      const childGrantIri = granteeRegistration.iriForContained();
-      const childSourceGrant = [...sourceGrant.hasInheritingGrant].find(
-        (grant) => grant.registeredShapeTree === childAuthorization.registeredShapeTree
-      );
-      const childData: DataGrantData = {
-        dataOwner: childSourceGrant.dataOwner,
-        registeredShapeTree: childAuthorization.registeredShapeTree,
-        hasDataRegistration: childSourceGrant.hasDataRegistration,
-        scopeOfGrant: INTEROP.Inherited.value,
-        accessMode: childAuthorization.accessMode.filter((mode) => childSourceGrant.accessMode.includes(mode)),
-        inheritsFromGrant: parentGrantIri,
-        delegationOfGrant: childSourceGrant.iri
-      };
-      return this.factory.immutable.dataGrant(childGrantIri, childData);
-    });
+    return this.hasInheritingAuthorization
+      .map((childAuthorization) => {
+        const childGrantIri = granteeRegistration.iriForContained();
+        const childSourceGrant = [...sourceGrant.hasInheritingGrant].find(
+          (grant) => grant.registeredShapeTree === childAuthorization.registeredShapeTree
+        );
+        if (!childSourceGrant) {
+          return null;
+        }
+        const childData: DataGrantData = {
+          dataOwner: childSourceGrant.dataOwner,
+          registeredShapeTree: childAuthorization.registeredShapeTree,
+          hasDataRegistration: childSourceGrant.hasDataRegistration,
+          scopeOfGrant: INTEROP.Inherited.value,
+          accessMode: childAuthorization.accessMode.filter((mode) => childSourceGrant.accessMode.includes(mode)),
+          inheritsFromGrant: parentGrantIri,
+          delegationOfGrant: childSourceGrant.iri
+        };
+        return this.factory.immutable.dataGrant(childGrantIri, childData);
+      })
+      .filter(Boolean);
   }
 
   private async generateDelegatedDataGrants(
@@ -171,22 +176,27 @@ export class ReadableDataAuthorization extends ReadableResource {
     dataRegistrations: ReadableDataRegistration[],
     granteeRegistration: CRUDAgentRegistration
   ): ImmutableDataGrant[] {
-    return this.hasInheritingAuthorization.map((childAuthorization) => {
-      const childGrantIri = granteeRegistration.iriForContained();
-      // each data registry has only one data registration for any given shape tree
-      const dataRegistration = dataRegistrations.find(
-        (registration) => registration.registeredShapeTree === childAuthorization.registeredShapeTree
-      );
-      const childData: DataGrantData = {
-        dataOwner: childAuthorization.grantedBy,
-        registeredShapeTree: childAuthorization.registeredShapeTree,
-        hasDataRegistration: dataRegistration.iri,
-        scopeOfGrant: INTEROP.Inherited.value,
-        accessMode: childAuthorization.accessMode,
-        inheritsFromGrant: parentGrantIri
-      };
-      return this.factory.immutable.dataGrant(childGrantIri, childData);
-    });
+    return this.hasInheritingAuthorization
+      .map((childAuthorization) => {
+        const childGrantIri = granteeRegistration.iriForContained();
+        // each data registry has only one data registration for any given shape tree
+        const dataRegistration = dataRegistrations.find(
+          (registration) => registration.registeredShapeTree === childAuthorization.registeredShapeTree
+        );
+        if (!dataRegistration) {
+          return null;
+        }
+        const childData: DataGrantData = {
+          dataOwner: childAuthorization.grantedBy,
+          registeredShapeTree: childAuthorization.registeredShapeTree,
+          hasDataRegistration: dataRegistration.iri,
+          scopeOfGrant: INTEROP.Inherited.value,
+          accessMode: childAuthorization.accessMode,
+          inheritsFromGrant: parentGrantIri
+        };
+        return this.factory.immutable.dataGrant(childGrantIri, childData);
+      })
+      .filter(Boolean);
   }
 
   private async generateSourceDataGrants(

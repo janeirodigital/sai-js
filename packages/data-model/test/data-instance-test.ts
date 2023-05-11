@@ -7,6 +7,7 @@ import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { DataGrant, DataInstance, ApplicationFactory } from '../src';
 import { RDFS } from '@janeirodigital/interop-namespaces';
+import { describe } from 'node:test';
 
 const factory = new ApplicationFactory({ fetch, randomUUID });
 const snippetIri = 'https://pro.alice.example/7a130c38-668a-4775-821a-08b38f2306fb#project';
@@ -19,9 +20,15 @@ beforeAll(async () => {
 });
 
 describe('build', () => {
-  test('should fetch its data', async () => {
-    const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
-    expect(dataInstance.dataset.size).toBeGreaterThan(0);
+  describe('rdf', () => {
+    test('should fetch its data', async () => {
+      const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
+      expect(dataInstance.dataset.size).toBeGreaterThan(0);
+    });
+  });
+
+  describe('blob', () => {
+    test.todo('should fetch data from description resource');
   });
 });
 
@@ -157,6 +164,12 @@ describe('update', () => {
     await taskToCreate.update(taskToCreate.dataset);
     expect(spy).toHaveBeenCalledTimes(1);
   });
+
+  describe('blob', () => {
+    test.todo('draft should throw if no blob was provided');
+    test.todo('should upload file');
+    test.todo('should update description resource');
+  });
 });
 
 test('updateAddingChildReference', async () => {
@@ -203,5 +216,29 @@ describe('replaceValue', () => {
     expect(dataInstance.getObject(RDFS.fake)?.value).toBeUndefined();
     dataInstance.replaceValue(RDFS.fake, 'something');
     expect(dataInstance.getObject(RDFS.fake)?.value).toBe('something');
+  });
+});
+
+describe('addNode', () => {
+  test('adds triple to dataset', async () => {
+    const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
+    expect(dataInstance.getObject(RDFS.fake)?.value).toBeUndefined();
+    dataInstance.addNode(RDFS.fake.value, 'https://iri.example');
+    const node = dataInstance.getObject(RDFS.fake)!;
+    expect(node.value).toBe('https://iri.example');
+    expect(node.termType).toBe('NamedNode');
+  });
+});
+
+describe('fetchBlob', () => {
+  test('', async () => {
+    const mockedResponse = { blob: jest.fn() };
+    // @ts-ignore
+    factory.fetch.raw = jest.fn().mockResolvedValueOnce(mockedResponse);
+    const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
+    await dataInstance.fetchBlob();
+    // @ts-ignore
+    expect(factory.fetch.raw).toHaveBeenCalledWith(snippetIri);
+    expect(mockedResponse.blob).toHaveBeenCalledTimes(1);
   });
 });
