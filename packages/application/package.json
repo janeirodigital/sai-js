@@ -1,6 +1,6 @@
 {
   "name": "@janeirodigital/interop-application",
-  "version": "1.0.0-rc.18",
+  "version": "1.0.0-rc.19",
   "description": "Top-level module for applications confirming to Solid Application Interoperability specification",
   "contributors": [
     {
@@ -47,13 +47,13 @@
     "publish": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@janeirodigital/interop-data-model": "^1.0.0-rc.18",
-    "@janeirodigital/interop-namespaces": "^1.0.0-rc.18",
-    "@janeirodigital/interop-utils": "^1.0.0-rc.18",
+    "@janeirodigital/interop-data-model": "^1.0.0-rc.19",
+    "@janeirodigital/interop-namespaces": "^1.0.0-rc.19",
+    "@janeirodigital/interop-utils": "^1.0.0-rc.19",
     "n3": "^1.16.4"
   },
   "devDependencies": {
-    "@janeirodigital/interop-test-utils": "^1.0.0-rc.18",
+    "@janeirodigital/interop-test-utils": "^1.0.0-rc.19",
     "@rdfjs/types": "^1.1.0"
   }
 }
