@@ -45,7 +45,9 @@ async function unwrappedRdfFetch(
 }
 
 export function fetchWrapper(whatwgFetch: WhatwgFetch): RdfFetch {
-  return function wrappedRdfFetch(iri: string, options?: RdfRequestInit) {
+  const wrappedRdfFetch = function wrappedRdfFetch(iri: string, options?: RdfRequestInit) {
     return unwrappedRdfFetch(whatwgFetch, iri, options);
   };
+  wrappedRdfFetch.raw = whatwgFetch;
+  return wrappedRdfFetch;
 }

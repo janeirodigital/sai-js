@@ -10,7 +10,7 @@ export interface ShapeTreeReference {
   viaPredicate: NamedNode;
 }
 export class ReadableShapeTree extends ReadableResource {
-  shapeText: string;
+  shapeText?: string;
 
   public descriptions: { [key: string]: ReadableShapeTreeDescription } = {};
 
@@ -20,7 +20,9 @@ export class ReadableShapeTree extends ReadableResource {
 
   private async bootstrap(): Promise<void> {
     await this.fetchData();
-    this.shapeText = await (await this.fetch(this.shape, { headers: { Accept: 'text/shex' } })).text();
+    if (this.shape) {
+      this.shapeText = await (await this.fetch(this.shape, { headers: { Accept: 'text/shex' } })).text();
+    }
     if (this.descriptionLang) {
       await this.getDescription(this.descriptionLang);
     }
@@ -61,8 +63,8 @@ export class ReadableShapeTree extends ReadableResource {
   }
 
   @Memoize()
-  get shape(): string {
-    return this.getObject('shape', SHAPETREES).value;
+  get shape(): string | undefined {
+    return this.getObject('shape', SHAPETREES)?.value;
   }
 
   @Memoize()
@@ -77,5 +79,10 @@ export class ReadableShapeTree extends ReadableResource {
       shapeTree: this.getQuad(node, SHAPETREES.hasShapeTree).object.value, // TODO: update to st:referencesShapeTree
       viaPredicate: this.getQuad(node, SHAPETREES.viaPredicate).object as NamedNode
     }));
+  }
+
+  @Memoize()
+  get expectsType(): NamedNode {
+    return this.getObject('expectsType', SHAPETREES)!;
   }
 }
