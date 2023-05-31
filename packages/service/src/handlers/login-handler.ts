@@ -24,7 +24,7 @@ export class LoginHandler extends HttpHandler {
       throw new BadRequestHttpError('No Identity or Identity Provider sent with the request');
     }
 
-    const webId = context.authn.webId;
+    const { webId } = context.authn;
 
     const oidcSession = await this.sessionManager.getOidcSession(webId);
 

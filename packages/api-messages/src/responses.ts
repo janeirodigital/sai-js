@@ -1,3 +1,5 @@
+/* eslint-disable max-classes-per-file */
+
 import {
   AccessAuthorization,
   Application,
@@ -83,6 +85,7 @@ function validateType(messageType: VResponseMessages, requiredType: VResponseMes
 
 export class ApplicationsResponse {
   public type = ResponseMessageTypes.APPLICATIONS_RESPONSE;
+
   public payload: Application[];
 
   constructor(message: ApplicationsResponseMessage) {
@@ -93,7 +96,9 @@ export class ApplicationsResponse {
 
 export class UnregisteredApplicationProfileResponse {
   public type = ResponseMessageTypes.UNREGISTERED_APPLICATION_PROFILE;
+
   public payload: Partial<Application>;
+
   constructor(message: UnregisteredApplicationResponseMessage) {
     validateType(message.type, this.type);
     this.payload = message.payload;
@@ -102,6 +107,7 @@ export class UnregisteredApplicationProfileResponse {
 
 export class SocialAgentsResponse {
   public type = ResponseMessageTypes.SOCIAL_AGENTS_RESPONSE;
+
   public payload: SocialAgent[];
 
   constructor(message: SocialAgentsResponseMessage) {
@@ -112,6 +118,7 @@ export class SocialAgentsResponse {
 
 export class SocialAgentResponse {
   public type = ResponseMessageTypes.SOCIAL_AGENT_RESPONSE;
+
   public payload: SocialAgent;
 
   constructor(message: SocialAgentResponseMessage) {
@@ -122,6 +129,7 @@ export class SocialAgentResponse {
 
 export class DataRegistriesResponse {
   public type = ResponseMessageTypes.DATA_REGISTRIES_RESPONSE;
+
   public payload: DataRegistry[];
 
   constructor(message: DataRegistriesResponseMessage) {
@@ -132,6 +140,7 @@ export class DataRegistriesResponse {
 
 export class DescriptionsResponse {
   public type = ResponseMessageTypes.DESCRIPTIONS_RESPONSE;
+
   public payload: AuthorizationData;
 
   constructor(message: DescriptionsResponseMessage) {
@@ -142,6 +151,7 @@ export class DescriptionsResponse {
 
 export class ApplicationAuthorizationResponse {
   public type = ResponseMessageTypes.APPLICATION_AUTHORIZATION_REGISTERED;
+
   public payload: AccessAuthorization;
 
   constructor(message: ApplicationAuthorizationResponseMessage) {
@@ -152,6 +162,7 @@ export class ApplicationAuthorizationResponse {
 
 export class ResourceResponse {
   public type = ResponseMessageTypes.RESOURCE_RESPONSE;
+
   public payload: Resource;
 
   constructor(message: ResourceResponseMessage) {
@@ -162,6 +173,7 @@ export class ResourceResponse {
 
 export class ShareAuthorizationResponse {
   public type = ResponseMessageTypes.SHARE_AUTHORIZATION_CONFIRMATION;
+
   public payload: ShareAuthorizationConfirmation;
 
   constructor(message: ShareAuthorizationResponseMessage) {

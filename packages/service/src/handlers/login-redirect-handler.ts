@@ -12,6 +12,7 @@ export class LoginRedirectHandler extends HttpHandler {
     super();
     this.logger.info('LoginRedirectHandler::constructor');
   }
+
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
     this.logger.info('LoginRedirectHandler::handle');
     return from(this.handleAsync(context));

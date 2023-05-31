@@ -2,18 +2,16 @@ import type { CRUDApplicationRegistration } from '@janeirodigital/interop-data-m
 import type { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import type { Application, IRI } from '@janeirodigital/sai-api-messages';
 
-const buildApplicationProfile = (registration: CRUDApplicationRegistration): Application => {
+const buildApplicationProfile = (registration: CRUDApplicationRegistration): Application =>
   // TODO (angel) data validation and how to handle when the applications profile is missing some components?
-  return {
+  ({
     id: registration.registeredAgent,
     name: registration.name!,
     logo: registration.logo,
     authorizationDate: registration.registeredAt!.toISOString(),
     lastUpdateDate: registration.updatedAt?.toISOString(),
     accessNeedGroup: registration.accessNeedGroup!
-  };
-};
-
+  });
 /**
  * Returns all the registered applications for the currently authenticated agent
  * @param saiSession

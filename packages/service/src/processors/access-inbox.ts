@@ -16,6 +16,6 @@ export class AccessInboxProcessor implements IProcessor {
     const subsciption = await subscribe(saiSession.webIdProfile.hasAccessInbox, webhookTargetUrl(webId, webId), {
       fetch: saiSession.rawFetch
     });
-    return this.sessionManager.setWebhookSubscription(webId, webId, subsciption);
+    await this.sessionManager.setWebhookSubscription(webId, webId, subsciption);
   }
 }

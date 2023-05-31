@@ -24,8 +24,7 @@ const buildDataRegistry = async (
   };
 };
 
-export const getDataRegistries = async (saiSession: AuthorizationAgent, descriptionsLang: string) => {
-  return Promise.all(
+export const getDataRegistries = async (saiSession: AuthorizationAgent, descriptionsLang: string) =>
+  Promise.all(
     saiSession.registrySet.hasDataRegistry.map((registry) => buildDataRegistry(registry, descriptionsLang, saiSession))
   );
-};

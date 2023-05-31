@@ -26,6 +26,7 @@ async function buildSaiSession(oidcSession: Session, clientId: string): Promise<
 
 export class SessionManager implements ISessionManager {
   constructor(public storage: IStorage) {}
+
   async getSaiSession(webId: string): Promise<AuthorizationAgent> {
     const cached = cache.get(webId);
     if (cached) return cached;
@@ -60,7 +61,7 @@ export class SessionManager implements ISessionManager {
     const duplicate = existing.find((existingSubscription) => existingSubscription.endpoint === subscription.endpoint);
     if (duplicate) return;
 
-    return this.storage.set(key, JSON.stringify([subscription, ...existing]));
+    await this.storage.set(key, JSON.stringify([subscription, ...existing]));
   }
 
   async getWebhookSubscription(webId: string, peerWebId: string): Promise<WebhookSubscription | undefined> {

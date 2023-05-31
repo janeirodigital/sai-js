@@ -13,6 +13,7 @@ export class PushSubscriptionHandler extends HttpHandler {
     super();
     this.logger.info('PushSubscriptionHandler::constructor');
   }
+
   handle(context: AuthenticatedAuthnContext): Observable<HttpHandlerResponse> {
     this.logger.info('PushSubscriptionHandler::handle');
     return from(this.handleAsync(context));

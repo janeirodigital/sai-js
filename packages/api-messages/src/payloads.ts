@@ -8,16 +8,6 @@ export const AccessModes = {
   Delete: 'http://www.w3.org/ns/auth/acl#Delete'
 } as const;
 
-export type Payloads =
-  | Application[]
-  | SocialAgent[]
-  | SocialAgent
-  | DataRegistry[]
-  | AuthorizationData
-  | AccessAuthorization
-  | Partial<Application>
-  | Resource
-  | ShareAuthorizationConfirmation;
 export interface Application extends UniqueId {
   name: string;
   logo?: IRI;
@@ -50,13 +40,6 @@ export interface Description extends UniqueId {
   needId: IRI;
 }
 
-export interface AccessNeedGroup extends UniqueId {
-  label: string;
-  description?: string;
-  required?: boolean;
-  needs: AccessNeed[];
-}
-
 export interface AccessNeed extends UniqueId {
   label: string;
   description?: string;
@@ -69,6 +52,13 @@ export interface AccessNeed extends UniqueId {
   };
   children?: AccessNeed[];
   parent?: IRI;
+}
+
+export interface AccessNeedGroup extends UniqueId {
+  label: string;
+  description?: string;
+  required?: boolean;
+  needs: AccessNeed[];
 }
 
 export interface AuthorizationData extends UniqueId {
@@ -141,3 +131,14 @@ export type ShareAuthorization = {
 export interface ShareAuthorizationConfirmation {
   callbackEndpoint: IRI;
 }
+
+export type Payloads =
+  | Application[]
+  | SocialAgent[]
+  | SocialAgent
+  | DataRegistry[]
+  | AuthorizationData
+  | AccessAuthorization
+  | Partial<Application>
+  | Resource
+  | ShareAuthorizationConfirmation;

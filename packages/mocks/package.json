@@ -26,6 +26,7 @@
   "dependencies": {
     "@inrupt/solid-client-authn-node": "^1.11.7",
     "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.19",
-    "@janeirodigital/sai-server-interfaces": "^0.1.0"
+    "@janeirodigital/sai-server-interfaces": "^0.1.0",
+    "@jest/globals": "29.5.0"
   }
 }

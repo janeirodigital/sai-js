@@ -1,9 +1,12 @@
+/* eslint-disable */
+
 import type { IStorage } from '@inrupt/solid-client-authn-node';
 import { Redis } from 'ioredis';
 import { RedisConnectionInfo } from './redis-connection-info';
 
 export class RedisSolidStorage implements IStorage {
   private client;
+
   public constructor(info: RedisConnectionInfo) {
     this.client = new Redis(info);
   }
@@ -12,12 +15,9 @@ export class RedisSolidStorage implements IStorage {
     try {
       const result = await this.client.del(key).then();
       if (result > 0) return;
-      else {
-        return; // ??
-      }
-    } catch (e) {
-      return;
-    }
+
+      // ??
+    } catch (e) {}
   }
 
   async get(key: string): Promise<string | undefined> {
@@ -32,9 +32,7 @@ export class RedisSolidStorage implements IStorage {
   async set(key: string, value: string): Promise<void> {
     try {
       const result = await this.client.set(key, value);
-      if (result == 'OK') return;
-    } catch (e) {
-      return;
-    }
+      if (result === 'OK') return;
+    } catch (e) {}
   }
 }

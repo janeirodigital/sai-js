@@ -6,6 +6,22 @@ import type { ISessionManager } from '@janeirodigital/sai-server-interfaces';
 import type { AuthnContext } from '../models/http-solid-context';
 import { agentRedirectUrl, agentUrl2webId } from '../url-templates';
 
+function clientIdDocument(agentUrl: string) {
+  return {
+    '@context': [
+      'https://www.w3.org/ns/solid/oidc-context.jsonld',
+      {
+        interop: 'http://www.w3.org/ns/solid/interop#'
+      }
+    ],
+    client_id: agentUrl,
+    client_name: 'Solid Authorization Agent',
+    redirect_uris: [agentRedirectUrl(agentUrl)],
+    grant_types: ['refresh_token', 'authorization_code'],
+    'interop:hasAuthorizationRedirectEndpoint': process.env.FRONTEND_AUTHORIZATION_URL!
+  };
+}
+
 export class AgentsHandler extends HttpHandler {
   constructor(private sessionManager: ISessionManager) {
     super();
@@ -30,19 +46,18 @@ export class AgentsHandler extends HttpHandler {
         agent: applicationId,
         registration: (await sai.findApplicationRegistration(applicationId))?.iri
       };
-    } else {
-      return {
-        agent: webIdFromRequest,
-        registration: (await sai.findSocialAgentRegistration(webIdFromRequest))?.iri
-      };
     }
+    return {
+      agent: webIdFromRequest,
+      registration: (await sai.findSocialAgentRegistration(webIdFromRequest))?.iri
+    };
   }
 
   async handleAsync(context: AuthnContext): Promise<HttpHandlerResponse> {
     const agentUrl = context.request.url.toString();
     if (!context.authn.authenticated) {
       return {
-        body: this.clientIdDocument(agentUrl),
+        body: clientIdDocument(agentUrl),
         status: 200,
         headers: { 'Content-Type': 'application/ld+json' }
       };
@@ -58,25 +73,9 @@ export class AgentsHandler extends HttpHandler {
       headers['Link'] = `<${agent}>; anchor="${registration}"; rel="${INTEROP.registeredAgent.value}"`;
     }
     return {
-      body: this.clientIdDocument(agentUrl),
+      body: clientIdDocument(agentUrl),
       status: 200,
       headers
-    };
-  }
-
-  clientIdDocument(agentUrl: string) {
-    return {
-      '@context': [
-        'https://www.w3.org/ns/solid/oidc-context.jsonld',
-        {
-          interop: 'http://www.w3.org/ns/solid/interop#'
-        }
-      ],
-      client_id: agentUrl,
-      client_name: 'Solid Authorization Agent',
-      redirect_uris: [agentRedirectUrl(agentUrl)],
-      grant_types: ['refresh_token', 'authorization_code'],
-      'interop:hasAuthorizationRedirectEndpoint': process.env.FRONTEND_AUTHORIZATION_URL!
     };
   }
 

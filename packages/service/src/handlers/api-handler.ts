@@ -27,7 +27,7 @@ export class ApiHandler extends HttpHandler {
 
   async handleAsync(context: SaiContext): Promise<HttpHandlerResponse> {
     validateContentType(context, 'application/json');
-    const body = context.request.body;
+    const { body } = context.request;
     if (!body) {
       throw new BadRequestHttpError('body is required');
     }

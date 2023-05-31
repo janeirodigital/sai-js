@@ -1,3 +1,5 @@
+/* eslint-disable max-classes-per-file */
+
 import { IRI } from './index';
 import { Authorization, ShareAuthorization } from './payloads';
 
@@ -12,17 +14,6 @@ export const RequestMessageTypes = {
   RESOURCE_REQUEST: '[RESOURCE] Resource Requested',
   SHARE_AUTHORIZATION: '[RESOURCE] Share Authorization Requested'
 } as const;
-
-export type Request =
-  | ApplicationsRequest
-  | SocialAgentsRequest
-  | AddSocialAgentRequest
-  | DataRegistriesRequest
-  | DescriptionsRequest
-  | ApplicationAuthorizationRequest
-  | UnregisteredApplicationProfileRequest
-  | ResourceRequest
-  | ShareAuthorizationRequest;
 
 abstract class MessageBase {
   stringify(): string {
@@ -93,3 +84,14 @@ export class ShareAuthorizationRequest extends MessageBase {
     super();
   }
 }
+
+export type Request =
+  | ApplicationsRequest
+  | SocialAgentsRequest
+  | AddSocialAgentRequest
+  | DataRegistriesRequest
+  | DescriptionsRequest
+  | ApplicationAuthorizationRequest
+  | UnregisteredApplicationProfileRequest
+  | ResourceRequest
+  | ShareAuthorizationRequest;

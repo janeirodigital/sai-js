@@ -5,17 +5,15 @@ import { getLogger } from '@digita-ai/handlersjs-logging';
 
 const logger = getLogger();
 
-const buildSocialAgentProfile = (registration: CRUDSocialAgentRegistration): SocialAgent => {
+const buildSocialAgentProfile = (registration: CRUDSocialAgentRegistration): SocialAgent =>
   // TODO (angel) data validation and how to handle when the social agents profile is missing some components?
-  return {
+  ({
     id: registration.registeredAgent,
     label: registration.label,
     note: registration.note,
     authorizationDate: registration.registeredAt!.toISOString(),
     lastUpdateDate: registration.updatedAt?.toISOString()
-  };
-};
-
+  });
 export const getSocialAgents = async (saiSession: AuthorizationAgent) => {
   const profiles: SocialAgent[] = [];
   for await (const registration of saiSession.socialAgentRegistrations) {

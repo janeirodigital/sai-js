@@ -16,7 +16,7 @@ export class HttpSequenceContextHandler<T extends HttpHandlerContext = HttpHandl
     let observable = of(ctx);
 
     for (const handler of this.contextHandlers) {
-      observable = observable.pipe(mergeMap((ctx) => handler.handle(ctx)));
+      observable = observable.pipe(mergeMap((next) => handler.handle(next)));
     }
 
     return observable;

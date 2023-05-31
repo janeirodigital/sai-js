@@ -29,6 +29,6 @@ export class ReciprocalRegistrationsProcessor implements IProcessor {
       webhookTargetUrl(webId, registeredAgent),
       { fetch: saiSession.rawFetch }
     );
-    return this.sessionManager.setWebhookSubscription(webId, registeredAgent, subsciption);
+    await this.sessionManager.setWebhookSubscription(webId, registeredAgent, subsciption);
   }
 }

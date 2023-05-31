@@ -110,7 +110,7 @@ function buildDataAuthorizations(
       return accessNeed.inheritsFromNeed === parentDataAuthorization.satisfiesAccessNeed;
     });
     if (inheritingDataAuthorizations.length) {
-      parentDataAuthorization.children = inheritingDataAuthorizations;
+      return { ...parentDataAuthorization, children: inheritingDataAuthorizations };
     }
     return parentDataAuthorization;
   });

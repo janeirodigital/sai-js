@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+
 import type { IProcessor, ISessionManager } from '@janeirodigital/sai-server-interfaces';
 import type { IPushNotificationsJob } from '../models/jobs';
 // import { sendWebPush } from "../services";

@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+
 import { from, Observable } from 'rxjs';
 import {
   HttpHandler,
@@ -6,10 +8,10 @@ import {
   UnauthorizedHttpError
 } from '@digita-ai/handlersjs-http';
 import { getLogger } from '@digita-ai/handlersjs-logging';
+import { IQueue } from '@janeirodigital/sai-server-interfaces';
 import type { AuthenticatedAuthnContext } from '../models/http-solid-context';
 import { validateContentType } from '../utils/http-validators';
 import { decodeWebId } from '../url-templates';
-import { IQueue } from '@janeirodigital/sai-server-interfaces';
 import { IDelegatedGrantsJobData, IPushNotificationsJobData } from '../models/jobs';
 
 interface Notification {
