@@ -1,0 +1,7 @@
+@prefix interop: <http://www.w3.org/ns/solid/interop#>.
+
+<http://localhost:3000/bob/registrySet>
+  a interop:RegistrySet;
+  interop:hasAgentRegistry <http://localhost:3000/bob/agentRegistry/> ;
+  interop:hasAuthorizationRegistry <http://localhost:3000/bob/authorizationRegistry/> ;
+  interop:hasDataRegistry <http://localhost:3000/bob/dataRegistry/> .

@@ -1,0 +1,17 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server/^0.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:solid:authorization-agent:worker:PushNotifications",
+      "@type": "BullWorker",
+      "queueName": "push-notifications",
+      "processor": {
+        "@type": "PushNotificationsProcessor",
+        "sessionManager": { "@id": "urn:ssv:SessionManager" }
+      },
+      "info": { "@id": "urn:ssv:RedisConnectionInfo" }
+    }
+  ]
+}

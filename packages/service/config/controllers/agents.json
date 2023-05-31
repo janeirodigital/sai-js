@@ -1,0 +1,47 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:solid:authorization-agent:controller:Agents",
+      "@type": "HttpHandlerController",
+      "label": "Agents Controller",
+      "preResponseHandler": {
+        "@type": "HttpSequenceContextHandler",
+        "contextHandlers": [
+          {
+            "@type": "AuthnContextHandler",
+            "strict": false
+          }
+        ]
+      },
+      "routes": [
+        {
+          "@type": "HttpHandlerRoute",
+          "path": "/agents/:encodedWebId",
+          "operations": [
+            {
+              "@type": "HttpHandlerOperation",
+              "method": "GET",
+              "publish": false
+            },
+            {
+              "@type": "HttpHandlerOperation",
+              "method": "HEAD",
+              "publish": false
+            }
+          ],
+          "handler": {
+            "@type": "AgentsHandler",
+            "sessionManager": {
+              "@id": "urn:ssv:SessionManager"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

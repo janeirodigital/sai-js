@@ -1,0 +1,40 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:solid:authorization-agent:controller:Webhooks",
+      "@type": "HttpHandlerController",
+      "label": "WebHooks Controller",
+      "preResponseHandler": {
+        "@type": "HttpSequenceContextHandler",
+        "contextHandlers": [
+          {
+            "@type": "AuthnContextHandler"
+          }
+        ]
+      },
+      "routes": [
+        {
+          "@type": "HttpHandlerRoute",
+          "path": "/agents/:encodedWebId/webhook/:encodedPeerWebId",
+          "operations": [
+            {
+              "@type": "HttpHandlerOperation",
+              "method": "POST",
+              "publish": false
+            }
+          ],
+          "handler": {
+            "@type": "WebHooksHandler",
+            "grantsQueue": { "@id": "urn:solid:authorization-agent:queue:delegated-grants" },
+            "pushQueue": { "@id": "urn:solid:authorization-agent:queue:push-notifications" }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld"
+  ],
+  "import": [
+    "./controllers/agents.json",
+    "./controllers/login.json",
+    "./controllers/login-redirect.json",
+    "./controllers/api.json",
+    "./controllers/push-subscription.json",
+    "./controllers/webhooks.json"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:solid:authorization-agent:default:Service",
+      "@type": "NodeHttpServer",
+      "port": "4000",
+      "host": "0.0.0.0",
+      "nodeHttpStreamsHandler": {
+        "@type": "NodeHttpRequestResponseHandler",
+        "hsts_maxAge": 0,
+        "hsts_includeSubDomains": false,
+        "httpHandler": {
+          "@type": "HttpCorsRequestHandler",
+          "options_exposeHeaders": ["Link"],
+          "handler": {
+            "@type": "ErrorHandler",
+            "nestedHandler": {
+              "@type": "RoutedHttpRequestHandler",
+              "handlerControllerList": [
+                { "@id": "urn:solid:authorization-agent:controller:Agents" },
+                { "@id": "urn:solid:authorization-agent:controller:Login" },
+                { "@id": "urn:solid:authorization-agent:controller:LoginRedirect" },
+                { "@id": "urn:solid:authorization-agent:controller:API" },
+                { "@id": "urn:solid:authorization-agent:controller:PushSubscription" },
+                { "@id": "urn:solid:authorization-agent:controller:Webhooks" }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:solid:authorization-agent:controller:PushSubscription",
+      "@type": "HttpHandlerController",
+      "label": "Push Subscription Controller",
+      "preResponseHandler": {
+        "@type": "HttpSequenceContextHandler",
+        "contextHandlers": [
+          {
+            "@type": "AuthnContextHandler"
+          }
+        ]
+      },
+      "routes": [
+        {
+          "@type": "HttpHandlerRoute",
+          "path": "/push-subscribe",
+          "operations": [
+            {
+              "@type": "HttpHandlerOperation",
+              "method": "POST",
+              "publish": false
+            }
+          ],
+          "handler": {
+            "@type": "PushSubscriptionHandler",
+            "sessionManager": {
+              "@id": "urn:ssv:SessionManager"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

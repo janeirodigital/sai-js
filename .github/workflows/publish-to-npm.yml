@@ -16,6 +16,7 @@ jobs:
           - data-model
           - namespaces
           - utils
+          - api-messages
 
     permissions:
       contents: read

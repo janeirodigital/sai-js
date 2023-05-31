@@ -17,6 +17,12 @@ coverage:
       utils:
         flags:
           - utils
+      service:
+        flags:
+          - service
+      api-mesages:
+        flags:
+          - api-messages
 
 flags:
   application:
@@ -34,3 +40,9 @@ flags:
   utils:
     paths:
       - packages/utils
+  service:
+    paths:
+      - packages/service
+  api-messages:
+    paths:
+      - packages/api-messages

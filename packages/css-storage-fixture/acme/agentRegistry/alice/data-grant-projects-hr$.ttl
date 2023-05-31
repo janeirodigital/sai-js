@@ -1,0 +1,18 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX interop: <http://www.w3.org/ns/solid/interop#>
+PREFIX acl: <http://www.w3.org/ns/auth/acl#>
+
+<http://localhost:3000/acme/agentRegistry/alice/data-grant-projects-hr>
+  a interop:DataGrant ;
+    interop:dataOwner <http://localhost:3000/acme/profile/card#me> ;
+    interop:grantee <http://localhost:3000/alice/profile/card#me> ;
+    interop:grantedBy <https://dan.example/#id> ;
+    interop:grantedWith <https://auth.acme.example/#agent> ;
+    interop:grantedAt "2020-09-05T06:15:01Z"^^xsd:dateTime ;
+    interop:registeredShapeTree <http://localhost:3000/shapetrees/trees/Project> ;
+    interop:hasDataRegistration <http://localhost:3000/acme-hr/dataRegistry/projects/> ;
+    interop:scopeOfGrant interop:AllFromRegistry ;
+    interop:accessMode acl:Read, acl:Create, acl:Update, acl:Delete .
+
+<http://localhost:3000/acme/agentRegistry/alice/data-grant-tasks-hr>
+    interop:inheritsFromGrant <http://localhost:3000/acme/agentRegistry/alice/data-grant-projects-hr> .

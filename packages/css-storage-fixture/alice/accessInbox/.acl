@@ -1,0 +1,9 @@
+# Root ACL resource for the agent account
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+
+# The access inbox allows creation by authorized agents
+<#public>
+    a acl:Authorization;
+    acl:agentClass acl:AuthenticatedAgent;
+    acl:accessTo <./>;
+    acl:mode acl:Append . # should be Create

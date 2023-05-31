@@ -1,0 +1,70 @@
+{
+  "name": "@janeirodigital/sai-server",
+  "version": "0.1.0",
+  "description": "",
+  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server",
+  "lsd:components": "dist/components/components.jsonld",
+  "lsd:contexts": {
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
+  },
+  "lsd:importPaths": {
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server/^0.0.0/components/": "dist/components/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server/^0.0.0/config/": "config/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server/^0.0.0/dist/": "dist/"
+  },
+  "bin": {
+    "sai-server": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "start": "node dist/componentsMain.js",
+    "debug": "npm run build && node --inspect dist/componentsMain.js",
+    "build": "npm run build:ts && npm run build:components",
+    "build:components": "componentsjs-generator -s dist -c dist/components -r ssv -i .componentsignore",
+    "build:ts": "tsc",
+    "build:watch": "tsc --watch",
+    "clean": "rm -rf dist/",
+    "test:unit": "jest test/unit",
+    "test:integration": "npm run build && jest --coverage=false --runInBand test/integration",
+    "test": "npm run test:unit && npm run test:integration",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write {src,test}/**/*.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@digita-ai/handlersjs-http": "^0.18.0",
+    "@inrupt/solid-client-authn-node": "^1.11.7",
+    "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.19",
+    "@janeirodigital/interop-data-model": "^1.0.0-rc.19",
+    "@janeirodigital/interop-namespaces": "^1.0.0-rc.19",
+    "@janeirodigital/sai-api-messages": "^0.10.0",
+    "@janeirodigital/sai-server-interfaces": "^0.1.0",
+    "@janeirodigital/sai-server-mocks": "^0.1.0",
+    "@solid/access-token-verifier": "^2.0.5",
+    "bullmq": "^3.12.0",
+    "componentsjs": "^5.3.2",
+    "dotenv": "^16.0.3",
+    "ioredis": "^5.3.2",
+    "n3": "^1.16.4",
+    "rxjs": "^7.8.0",
+    "solid-webhook-client": "^0.1.1",
+    "web-push": "^3.5.0",
+    "yargs": "^17.7.1"
+  },
+  "devDependencies": {
+    "@rdfjs/types": "^1.1.0",
+    "@types/body-parser": "^1.19.2",
+    "@types/n3": "^1.10.4",
+    "@types/web-push": "^3.3.2",
+    "@types/yargs": "^17.0.24",
+    "nodemon": "^2.0.22"
+  },
+  "volta": {
+    "node": "16.20.0",
+    "yarn": "1.22.19"
+  }
+}

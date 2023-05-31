@@ -1,0 +1,15 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+PREFIX interop: <http://www.w3.org/ns/solid/interop#>
+
+<>
+    a foaf:PersonalProfileDocument;
+    foaf:maker <http://localhost:3000/bob/profile/card#me>;
+    foaf:primaryTopic <http://localhost:3000/bob/profile/card#me>.
+
+<http://localhost:3000/bob/profile/card#me>
+
+    solid:oidcIssuer <http://localhost:3000/>;
+    a foaf:Person ;
+    interop:hasRegistrySet <http://localhost:3000/bob/registrySet>;
+    interop:hasAuthorizationAgent <http://localhost:4000/agents/aHR0cDovL2xvY2FsaG9zdDozMDAwL2JvYi9wcm9maWxlL2NhcmQjbWU=> .
