@@ -1,0 +1,45 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Sabre//Sabre VObject 4.5.3//EN
+CALSCALE:GREGORIAN
+BEGIN:VTIMEZONE
+TZID:UTC
+X-MICROSOFT-CDO-TZID:0
+BEGIN:STANDARD
+DTSTART:20220513T120000
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0000
+TZNAME:UTC
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:7dbf452f-e918-4092-9006-91dfc168ec21
+DTSTAMP:20230403T161153Z
+SUMMARY:Solid Data Interoperability
+DTSTART:20230508T120000Z
+DTEND:20230508T130000Z
+DESCRIPTION:https://www.w3.org/events/meetings/7dbf452f-e918-4092-9006-91df
+ c168ec21/20230508T120000\n\nAnyone may join the meeting. Participants must
+  abide by the terms and spirit of the Solid Code of Conduct: https://githu
+ b.com/solid/process/blob/main/code-of-conduct.md and the W3C Code of Ethic
+ s and Professional Conduct (CEPC): https://www.w3.org/Consortium/cepc/\n\n
+ Meeting Guidelines: https://github.com/solid/specification/blob/main/meeti
+ ngs/README.md\n\nMinute Template https://github.com/solid/specification/bl
+ ob/main/meetings/template.md\n\nSolid Technical Reports Contributing Guide
+ : https://github.com/solid/specification/blob/main/CONTRIBUTING.md\n\nSoli
+ d Technical Reports: https://solidproject.org/TR/\n\nRepositories: https:/
+ /github.com/solid/data-interoperability-panel/\n\nChat: https://gitter.im/
+ solid/data-interoperability-panel\n\nJoining Instructions: https://meet.ji
+ t.si/solid-data-interoperability
+STATUS:CONFIRMED
+CREATED:20230403T153624Z
+LAST-MODIFIED:20230403T161153Z
+SEQUENCE:2
+ORGANIZER;CN=W3C Calendar;PARTSTAT=ACCEPTED;ROLE=NON-PARTICIPANT:mailto:nor
+ eply@w3.org
+ATTENDEE;CUTYPE=GROUP;ROLE=OPT-PARTICIPANT;RSVP=FALSE;CN=Solid Community Gr
+ oup:mailto:public-solid@w3.org
+LOCATION:https://meet.jit.si/solid-data-interoperability
+RECURRENCE-ID:20230508T120000Z
+END:VEVENT
+END:VCALENDAR

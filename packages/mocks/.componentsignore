@@ -1,0 +1,6 @@
+
+[
+    "IStorage",
+    "ISessionManager",
+    "IQueue"
+]

@@ -1,0 +1,32 @@
+{
+  "name": "@janeirodigital/sai-server-mocks",
+  "private": true,
+  "version": "0.1.0",
+  "description": "",
+  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server-mocks",
+  "lsd:components": "dist/components/components.jsonld",
+  "lsd:contexts": {
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server-mocks/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
+  },
+  "lsd:importPaths": {
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server-mocks/^0.0.0/components/": "dist/components/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server-mocks/^0.0.0/dist/": "dist/"
+  },
+  "main": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "npm run build:ts && npm run build:components",
+    "build:components": "componentsjs-generator -s src -c dist/components -r ssvm -i .componentsignore",
+    "build:ts": "tsc",
+    "clean": "rm -rf dist/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@inrupt/solid-client-authn-node": "^1.16.0",
+    "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.19",
+    "@janeirodigital/sai-server-interfaces": "^0.1.0",
+    "@jest/globals": "29.5.0"
+  }
+}

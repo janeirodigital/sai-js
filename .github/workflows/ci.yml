@@ -1,5 +1,11 @@
 name: CI
 on: [push, pull_request]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: janeirodigital/sai-service
+  GITHUB_TOKEN: ${{github.token}}
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -12,6 +18,8 @@ jobs:
           - namespaces
           - test-utils
           - utils
+          - service
+          - api-messages
     steps:
       - name: Use Node.js 16.x
         uses: actions/setup-node@v2
@@ -19,6 +27,8 @@ jobs:
           node-version: 16.x
       - name: Check out repository
         uses: actions/checkout@v2
+      - name: Modify .npmrc
+        run: echo '//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}' >> .npmrc
       - name: Install dependencies
         run: yarn install
       - name: Build packages
@@ -31,3 +41,55 @@ jobs:
         with:
           flags: ${{ matrix.package }}
           directory: ${{ github.workspace }}/packages/${{ matrix.package }}/coverage
+
+      - name: ZIP package
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && matrix.package == 'service'
+        run: |
+          mkdir dist
+          mv node_modules/ dist/
+          mv packages/ dist/
+          mv deploy/ dist/
+          cp package.json dist/
+          cp Dockerfile dist/
+          tar -zcvf dist.tar.gz dist
+
+      - name: Save build artifact
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && matrix.package == 'service'
+        uses: actions/upload-artifact@v3
+        with:
+          name: built-packages
+          path: dist.tar.gz
+
+  publish:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: built-packages
+
+      - name: Decompress package
+        run: tar -xvzf dist.tar.gz --strip-components 1
+
+      - name: Login to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

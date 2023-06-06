@@ -1,0 +1,20 @@
+{
+  "name": "@janeirodigital/sai-server-interfaces",
+  "private": true,
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "npm run build:ts",
+    "build:ts": "tsc",
+    "clean": "rm -rf dist/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@inrupt/solid-client-authn-node": "^1.16.0",
+    "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.19"
+  }
+}

@@ -1,0 +1,7 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX interop: <http://www.w3.org/ns/solid/interop#>
+
+<http://localhost:3000/alice-home/dataRegistry/>
+  interop:hasDataRegistration
+   <http://localhost:3000/alice-home/dataRegistry/projects/> ,
+   <http://localhost:3000/alice-home/dataRegistry/tasks/> .

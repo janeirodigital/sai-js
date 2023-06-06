@@ -1,0 +1,34 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:solid:authorization-agent:controller:LoginRedirect",
+      "@type": "HttpHandlerController",
+      "label": "Login Redirect Controler",
+      "routes": [
+        {
+          "@type": "HttpHandlerRoute",
+          "path": "/agents/:encodedWebId/redirect",
+          "operations": [
+            {
+              "@type": "HttpHandlerOperation",
+              "method": "GET",
+              "publish": false
+            }
+          ],
+          "handler": {
+            "@type": "LoginRedirectHandler",
+            "sessionManager": {
+              "@id": "urn:ssv:SessionManager"
+            },
+            "queue": { "@id": "urn:solid:authorization-agent:queue:access-inbox" }
+          }
+        }
+      ]
+    }
+  ]
+}

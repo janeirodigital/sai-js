@@ -1,0 +1,12 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX ldp: <http://www.w3.org/ns/ldp#>
+PREFIX interop: <http://www.w3.org/ns/solid/interop#>
+PREFIX solidtrees: <http://localhost:3000/shapetrees/trees/>
+
+<http://localhost:3000/alice-work/dataRegistry/files/>
+  a interop:DataRegistration ;
+  interop:registeredBy <http://localhost:3000/alice/profile/card#me> ;
+  interop:registeredWith <http://localhost:4000/agents/aHR0cDovL2xvY2FsaG9zdDozMDAwL2FsaWNlL3Byb2ZpbGUvY2FyZCNtZQ==> ;
+  interop:registeredAt "2020-04-04T20:15:47.000Z"^^xsd:dateTime ;
+  interop:updatedAt "2020-04-04T21:11:33.000Z"^^xsd:dateTime ;
+  interop:registeredShapeTree solidtrees:File .

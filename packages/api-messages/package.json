@@ -1,0 +1,18 @@
+{
+  "name": "@janeirodigital/sai-api-messages",
+  "version": "0.10.0",
+  "description": "",
+  "type": "module",
+  "main": "dist/cjs/index.js",
+  "module": "dist/mjs/index.js",
+  "scripts": {
+    "build": "npm run build:cjs && npm run build:mjs && sh fixup.sh",
+    "build:cjs": "tsc -b tsconfig-cjs.json",
+    "build:mjs": "tsc -b tsconfig-mjs.json",
+    "clean": "rm -rf dist/",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "publish": "npm run clean && npm run build"
+  },
+  "author": "",
+  "license": "MIT"
+}

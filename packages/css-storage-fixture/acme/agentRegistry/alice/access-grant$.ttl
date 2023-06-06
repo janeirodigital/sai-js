@@ -1,0 +1,15 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX interop: <http://www.w3.org/ns/solid/interop#>
+
+<http://localhost:3000/acme/agentRegistry/alice/access-grant>
+  a interop:AccessGrant ;
+    interop:grantee <http://localhost:3000/alice/profile/card#me> ;
+    interop:granted: true ;
+    interop:grantedBy <https://dan.example/#id> ;
+    interop:grantedWith <https://auth.acme.example/#agent> ;
+    interop:grantedAt "2020-09-05T06:15:01Z"^^xsd:dateTime ;
+    interop:hasDataGrant
+      <http://localhost:3000/acme/agentRegistry/alice/data-grant-projects-rnd> ,
+      <http://localhost:3000/acme/agentRegistry/alice/data-grant-tasks-rnd> ,
+      <http://localhost:3000/acme/agentRegistry/alice/data-grant-projects-hr> ,
+      <http://localhost:3000/acme/agentRegistry/alice/data-grant-tasks-hr> .

@@ -1,0 +1,5 @@
+PREFIX interop: <http://www.w3.org/ns/solid/interop#>
+
+<http://localhost:3000/bob/agentRegistry/>
+  interop:hasSocialAgentRegistration
+    <http://localhost:3000/bob/agentRegistry/alice/> .

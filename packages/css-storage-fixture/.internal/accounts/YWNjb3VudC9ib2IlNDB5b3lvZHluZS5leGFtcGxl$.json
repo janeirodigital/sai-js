@@ -1,0 +1,6 @@
+{
+  "email": "bob@yoyodyne.example",
+  "password": "$2b$10$GtdWwMsyt2yQvXw7zBGb3usje9v.UhZKQY82GVNsoRSrU6e566nGO",
+  "verified": true,
+  "webId": "http://localhost:3000/bob/profile/card#me"
+}

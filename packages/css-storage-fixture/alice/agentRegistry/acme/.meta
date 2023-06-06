@@ -1,0 +1,11 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX interop: <http://www.w3.org/ns/solid/interop#>
+
+<http://localhost:3000/alice/agentRegistry/acme/>
+  a interop:SocialAgentRegistration;
+  interop:registeredAgent <http://localhost:3000/acme/profile/card#me> ;
+  interop:registeredAt "2021-01-12T18:14:52.000Z"^^xsd:dateTime ;
+  interop:reciprocalRegistration <http://localhost:3000/acme/agentRegistry/alice/> ;
+  skos:prefLabel "ACME" ;
+  skos:note "A producer of open source gadget. We are collaborating on some software projects" .
