@@ -1,5 +1,5 @@
 import { DataFactory } from 'n3';
-import { INTEROP, OIDC } from '@janeirodigital/interop-namespaces';
+import { INTEROP, OIDC } from '@janeirodigital/interop-utils';
 import { AuthorizationAgentFactory, CRUDApplicationRegistration, CRUDSocialAgentRegistration } from '..';
 import { CRUDContainer } from '.';
 

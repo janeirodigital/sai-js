@@ -6,7 +6,7 @@ import {
   ImmutableDataAuthorization,
   ReadableAccessAuthorization
 } from '@janeirodigital/interop-data-model';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 
 // Nesting is being used to capture inheritance before IRIs are available
 export type NestedDataAuthorizationData = DataAuthorizationData & {

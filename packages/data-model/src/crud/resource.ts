@@ -1,4 +1,4 @@
-import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
+import { INTEROP, XSD } from '@janeirodigital/interop-utils';
 import { DataFactory, Store } from 'n3';
 import { AuthorizationAgentFactory, InteropFactory, ReadableResource } from '..';
 

@@ -1,4 +1,4 @@
-import { ACL } from '@janeirodigital/interop-namespaces';
+import { ACL } from '@janeirodigital/interop-utils';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';

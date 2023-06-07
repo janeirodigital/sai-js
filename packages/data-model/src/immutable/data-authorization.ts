@@ -1,5 +1,5 @@
 import { DataFactory } from 'n3';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 import { AuthorizationAgentFactory } from '..';
 import { ImmutableResource } from '.';
 

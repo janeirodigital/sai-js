@@ -6,7 +6,7 @@ import { jest } from '@jest/globals';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory } from 'n3';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 import {
   AuthorizationAgentFactory,
   ReadableDataRegistration,

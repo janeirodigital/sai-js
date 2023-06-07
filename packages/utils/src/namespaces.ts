@@ -1,6 +1,14 @@
-import { buildNamespace } from './builder';
+import { DataFactory } from 'n3';
+import { NamedNode } from '@rdfjs/types';
 
-export { buildNamespace } from './builder';
+// TODO find a way to type the namespace
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export function buildNamespace(base: string): any {
+  const handler = {
+    get: (target: { base: string }, property: string): NamedNode => DataFactory.namedNode(target.base + property)
+  };
+  return new Proxy({ base }, handler);
+}
 
 export const INTEROP = buildNamespace('http://www.w3.org/ns/solid/interop#');
 export const RDF = buildNamespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');

@@ -1,5 +1,5 @@
 import { Mixin } from 'ts-mixer';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 import { DataFactory } from 'n3';
 import { AuthorizationAgentFactory, ReadableAccessGrant } from '..';
 import { CRUDContainer } from './container';

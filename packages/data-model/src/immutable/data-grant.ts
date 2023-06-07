@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
 import { NamedNode } from '@rdfjs/types';
-import { INTEROP, RDF } from '@janeirodigital/interop-namespaces';
+import { INTEROP, RDF } from '@janeirodigital/interop-utils';
 import { AuthorizationAgentFactory, DataGrant, InheritableDataGrant } from '..';
 import { ImmutableResource } from '.';
 

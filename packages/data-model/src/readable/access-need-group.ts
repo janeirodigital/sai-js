@@ -1,4 +1,4 @@
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 import { AuthorizationAgentFactory } from '..';
 import { ReadableResource } from './resource';
 import { ReadableAccessNeed } from './access-need';

@@ -10,8 +10,7 @@ import {
   ReadableDataRegistration,
   ReadableDataInstance
 } from '@janeirodigital/interop-data-model';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { WhatwgFetch, RdfFetch, fetchWrapper, asyncIterableToArray } from '@janeirodigital/interop-utils';
+import { INTEROP, WhatwgFetch, RdfFetch, fetchWrapper, asyncIterableToArray } from '@janeirodigital/interop-utils';
 import {
   AccessAuthorizationStructure,
   generateAuthorization,

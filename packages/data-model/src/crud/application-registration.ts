@@ -1,4 +1,4 @@
-import { INTEROP, OIDC } from '@janeirodigital/interop-namespaces';
+import { INTEROP, OIDC } from '@janeirodigital/interop-utils';
 import { NamedNode } from '@rdfjs/types';
 import { AgentRegistrationData, CRUDAgentRegistration } from '.';
 import { AuthorizationAgentFactory } from '..';

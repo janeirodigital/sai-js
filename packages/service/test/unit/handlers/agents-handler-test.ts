@@ -23,7 +23,7 @@ jest.mock('../../../src/session-manager', () => {
 });
 
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 import { InMemoryStorage } from '@inrupt/solid-client-authn-node';
 import { HttpHandlerRequest } from '@digita-ai/handlersjs-http';
 

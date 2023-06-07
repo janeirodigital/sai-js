@@ -3,7 +3,7 @@ import { DataFactory } from 'n3';
 import 'jest-rdf';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
-import { INTEROP, ACL } from '@janeirodigital/interop-namespaces';
+import { INTEROP, ACL } from '@janeirodigital/interop-utils';
 import { randomUUID } from 'crypto';
 import { ImmutableDataGrant, AuthorizationAgentFactory } from '../../src';
 

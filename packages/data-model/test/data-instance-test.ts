@@ -6,7 +6,7 @@ import { randomUUID } from 'crypto';
 import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { DataGrant, DataInstance, ApplicationFactory } from '../src';
-import { RDFS } from '@janeirodigital/interop-namespaces';
+import { RDFS } from '@janeirodigital/interop-utils';
 import { describe } from 'node:test';
 
 const factory = new ApplicationFactory({ fetch, randomUUID });

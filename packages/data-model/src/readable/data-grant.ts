@@ -1,7 +1,7 @@
 import { DatasetCore, NamedNode } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { Memoize } from 'typescript-memoize';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 import { DataInstance, InteropFactory, DataGrant } from '..';
 import { ReadableResource } from '.';
 

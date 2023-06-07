@@ -5,7 +5,7 @@ import { jest } from '@jest/globals';
 import 'jest-rdf';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
-import { INTEROP, ACL } from '@janeirodigital/interop-namespaces';
+import { INTEROP, ACL } from '@janeirodigital/interop-utils';
 import { randomUUID } from 'crypto';
 import { AuthorizationAgentFactory, AccessAuthorizationData } from '../../src';
 import { access } from 'fs';

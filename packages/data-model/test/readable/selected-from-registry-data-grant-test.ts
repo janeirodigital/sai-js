@@ -3,7 +3,7 @@ import 'jest-rdf';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 import { DataInstance, ApplicationFactory, SelectedFromRegistryDataGrant } from '../../src';
 
 const factory = new ApplicationFactory({ fetch, randomUUID });

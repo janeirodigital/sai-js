@@ -1,6 +1,11 @@
 import { DataFactory } from 'n3';
-import { SKOS, INTEROP } from '@janeirodigital/interop-namespaces';
-import { discoverAuthorizationAgent, discoverAgentRegistration, WhatwgFetch } from '@janeirodigital/interop-utils';
+import {
+  SKOS,
+  INTEROP,
+  discoverAuthorizationAgent,
+  discoverAgentRegistration,
+  WhatwgFetch
+} from '@janeirodigital/interop-utils';
 import { AgentRegistrationData, CRUDAgentRegistration } from '.';
 import { AuthorizationAgentFactory } from '..';
 

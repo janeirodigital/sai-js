@@ -1,5 +1,4 @@
-import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { asyncIterableToArray } from '@janeirodigital/interop-utils';
+import { INTEROP, asyncIterableToArray } from '@janeirodigital/interop-utils';
 import { Memoize } from 'typescript-memoize';
 import {
   AuthorizationAgentFactory,
