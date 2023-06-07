@@ -4,7 +4,7 @@ on: [push, pull_request]
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: janeirodigital/sai-service
-  GITHUB_TOKEN: ${{github.token}}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   test:
