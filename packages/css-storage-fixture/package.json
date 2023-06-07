@@ -10,10 +10,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@solid/community-server": "5.1.0"
-  },
-  "volta": {
-    "node": "16.20.0",
-    "yarn": "1.22.19"
+    "@solid/community-server": "6.0.0"
   }
 }
