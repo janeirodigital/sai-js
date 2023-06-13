@@ -1,6 +1,6 @@
 {
   "name": "@janeirodigital/sai-api-messages",
-  "version": "0.10.0",
+  "version": "1.0.0-rc.20",
   "description": "",
   "type": "module",
   "main": "dist/cjs/index.js",

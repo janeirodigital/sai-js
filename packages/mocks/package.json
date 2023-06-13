@@ -1,7 +1,7 @@
 {
   "name": "@janeirodigital/sai-server-mocks",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0-rc.20",
   "description": "",
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server-mocks",
   "lsd:components": "dist/components/components.jsonld",
@@ -26,7 +26,7 @@
   "dependencies": {
     "@inrupt/solid-client-authn-node": "^1.16.0",
     "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.20",
-    "@janeirodigital/sai-server-interfaces": "^0.1.0",
+    "@janeirodigital/sai-server-interfaces": "^1.0.0-rc.20",
     "@jest/globals": "29.5.0"
   }
 }

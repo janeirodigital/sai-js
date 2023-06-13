@@ -1,6 +1,6 @@
 {
   "name": "@janeirodigital/sai-server",
-  "version": "0.1.0",
+  "version": "1.0.0-rc.20",
   "description": "",
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server",
   "lsd:components": "dist/components/components.jsonld",
@@ -44,8 +44,8 @@
     "@janeirodigital/interop-data-model": "^1.0.0-rc.20",
     "@janeirodigital/interop-utils": "^1.0.0-rc.20",
     "@janeirodigital/sai-api-messages": "^0.10.0",
-    "@janeirodigital/sai-server-interfaces": "^0.1.0",
-    "@janeirodigital/sai-server-mocks": "^0.1.0",
+    "@janeirodigital/sai-server-interfaces": "^1.0.0-rc.20",
+    "@janeirodigital/sai-server-mocks": "^1.0.0-rc.20",
     "@solid/access-token-verifier": "^2.0.5",
     "bullmq": "^3.15.2",
     "componentsjs": "^5.4.2",
