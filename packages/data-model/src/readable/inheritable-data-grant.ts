@@ -1,4 +1,4 @@
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 import { DatasetCore } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
 import { AbstractDataGrant, AllFromRegistryDataGrant, InheritedDataGrant, SelectedFromRegistryDataGrant } from '.';

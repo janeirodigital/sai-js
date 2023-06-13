@@ -1,4 +1,4 @@
-import { SKOS } from '@janeirodigital/interop-namespaces';
+import { SKOS } from '@janeirodigital/interop-utils';
 import { InteropFactory } from '..';
 import { ReadableResource } from './resource';
 

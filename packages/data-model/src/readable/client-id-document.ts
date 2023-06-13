@@ -1,4 +1,4 @@
-import { OIDC } from '@janeirodigital/interop-namespaces';
+import { OIDC } from '@janeirodigital/interop-utils';
 import { InteropFactory } from '..';
 import { ReadableResource } from './resource';
 

@@ -1,5 +1,5 @@
 import { DataFactory } from 'n3';
-import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
+import { INTEROP, XSD } from '@janeirodigital/interop-utils';
 import { AuthorizationAgentFactory, ImmutableDataAuthorization, ReadableAccessAuthorization } from '..';
 import { ImmutableResource } from '.';
 

@@ -7,3 +7,4 @@ export * from './fetch';
 export * from './link-header';
 export * from './async-iterable-to-array';
 export * from './discovery';
+export * from './namespaces';

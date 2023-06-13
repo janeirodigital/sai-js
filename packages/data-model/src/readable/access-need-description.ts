@@ -1,4 +1,4 @@
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 import { InteropFactory } from '..';
 import { ReadableAccessDescription } from './access-description';
 

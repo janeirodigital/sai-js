@@ -1,5 +1,4 @@
-import { INTEROP } from '@janeirodigital/interop-namespaces';
-import { getAllMatchingQuads, getOneMatchingQuad, RdfFetch } from '@janeirodigital/interop-utils';
+import { INTEROP, getAllMatchingQuads, getOneMatchingQuad, RdfFetch } from '@janeirodigital/interop-utils';
 import { DatasetCore, NamedNode, Quad, Term } from '@rdfjs/types';
 import { DataFactory, Store } from 'n3';
 import { BaseFactory } from '.';

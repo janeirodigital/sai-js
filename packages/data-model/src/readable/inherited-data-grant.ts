@@ -1,5 +1,5 @@
 import { Memoize } from 'typescript-memoize';
-import { ACL } from '@janeirodigital/interop-namespaces';
+import { ACL } from '@janeirodigital/interop-utils';
 import { AbstractDataGrant, AllFromRegistryDataGrant, SelectedFromRegistryDataGrant } from '.';
 import { DataInstance } from '..';
 

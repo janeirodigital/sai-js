@@ -8,9 +8,6 @@ coverage:
       data-model:
         flags:
           - data-model
-      namespaces:
-        flags:
-          - namespaces
       test-utils:
         flags:
           - test-utils
@@ -31,9 +28,6 @@ flags:
   data-model:
     paths:
       - packages/data-model
-  namespaces:
-    paths:
-      - packages/namespaces
   test-utils:
     paths:
       - packages/test-utils

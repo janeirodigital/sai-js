@@ -15,7 +15,7 @@ import {
   CRUDDataRegistry
 } from '@janeirodigital/interop-data-model';
 import { asyncIterableToArray } from '@janeirodigital/interop-utils';
-import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
+import { ACL, INTEROP } from '@janeirodigital/interop-utils';
 import { AccessAuthorizationStructure, AuthorizationAgent, ShareDataInstanceStructure } from '../src';
 
 const webId = 'https://alice.example/#id';

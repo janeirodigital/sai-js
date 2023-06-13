@@ -1,7 +1,11 @@
 import { DataFactory, NamedNode } from 'n3';
 import { DatasetCore } from '@rdfjs/types';
-import { getDescriptionResource, insertPatch, targetDataRegistrationLink } from '@janeirodigital/interop-utils';
-import { SHAPETREES } from '@janeirodigital/interop-namespaces';
+import {
+  getDescriptionResource,
+  insertPatch,
+  targetDataRegistrationLink,
+  SHAPETREES
+} from '@janeirodigital/interop-utils';
 import { ReadableResource, ApplicationFactory, DataGrant, InheritedDataGrant, ReadableShapeTree } from '.';
 
 export class DataInstance extends ReadableResource {

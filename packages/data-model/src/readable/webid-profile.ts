@@ -1,4 +1,4 @@
-import { INTEROP, RDFS } from '@janeirodigital/interop-namespaces';
+import { INTEROP, RDFS } from '@janeirodigital/interop-utils';
 import { InteropFactory } from '..';
 import { ReadableResource } from './resource';
 

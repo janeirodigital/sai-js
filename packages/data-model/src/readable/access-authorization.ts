@@ -1,5 +1,5 @@
 import { Memoize } from 'typescript-memoize';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 import {
   ReadableResource,
   ReadableDataAuthorization,

@@ -1,7 +1,7 @@
 import { Memoize } from 'typescript-memoize';
 import { DataFactory } from 'n3';
 import { NamedNode } from '@rdfjs/types';
-import { SHAPETREES, XSD } from '@janeirodigital/interop-namespaces';
+import { SHAPETREES, XSD } from '@janeirodigital/interop-utils';
 import { InteropFactory } from '..';
 import { ReadableResource, ReadableShapeTreeDescription } from '.';
 

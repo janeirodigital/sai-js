@@ -2,7 +2,7 @@
 import 'jest-rdf';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 import { getAllMatchingQuads, getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { DataFactory } from 'n3';
 import { randomUUID } from 'crypto';

@@ -1,4 +1,4 @@
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 import { DataFactory } from 'n3';
 import { CRUDResource } from '.';
 import { AuthorizationAgentFactory } from '..';

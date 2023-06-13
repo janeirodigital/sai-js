@@ -9,7 +9,7 @@ import {
 } from '@solid/access-token-verifier';
 import { MockedSessionManager } from '@janeirodigital/sai-server-mocks';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 import { baseUrl, agentRedirectUrl, encodeWebId, webId2agentUrl } from '../../src/url-templates';
 import { createTestServer } from './components-builder';
 

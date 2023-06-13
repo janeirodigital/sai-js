@@ -1,5 +1,5 @@
 import { Memoize } from 'typescript-memoize';
-import { LDP } from '@janeirodigital/interop-namespaces';
+import { LDP } from '@janeirodigital/interop-utils';
 import { InteropFactory } from '..';
 import { ReadableResource, ReadableShapeTree } from '.';
 

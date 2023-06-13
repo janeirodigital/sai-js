@@ -4,7 +4,7 @@ import type {
   AccessAuthorizationStructure,
   NestedDataAuthorizationData
 } from '@janeirodigital/interop-authorization-agent';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from '@janeirodigital/interop-utils';
 import type {
   AuthorizationData,
   Authorization,

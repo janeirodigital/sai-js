@@ -48,7 +48,6 @@
   },
   "dependencies": {
     "@janeirodigital/interop-data-model": "^1.0.0-rc.19",
-    "@janeirodigital/interop-namespaces": "^1.0.0-rc.19",
     "@janeirodigital/interop-utils": "^1.0.0-rc.19",
     "n3": "^1.16.4"
   },

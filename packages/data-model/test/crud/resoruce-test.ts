@@ -6,7 +6,7 @@ import 'jest-rdf';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory, Store } from 'n3';
-import { INTEROP, XSD } from '@janeirodigital/interop-namespaces';
+import { INTEROP, XSD } from '@janeirodigital/interop-utils';
 import { ApplicationFactory, AuthorizationAgentFactory, CRUDResource } from '../../src';
 
 const webId = 'https://alice.example/#id';

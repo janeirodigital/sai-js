@@ -1,6 +1,6 @@
 import { DatasetCore } from '@rdfjs/types';
 import { Memoize } from 'typescript-memoize';
-import { ACL } from '@janeirodigital/interop-namespaces';
+import { ACL } from '@janeirodigital/interop-utils';
 import { AbstractDataGrant, InheritableDataGrant } from '.';
 import { DataInstance, InteropFactory } from '..';
 

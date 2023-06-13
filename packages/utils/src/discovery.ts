@@ -1,6 +1,6 @@
 import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
-import { INTEROP } from '@janeirodigital/interop-namespaces';
+import { INTEROP } from './namespaces';
 import { getOneMatchingQuad } from './match';
 import { getAgentRegistrationIri } from './link-header';
 import { RdfFetch, WhatwgFetch } from './fetch';

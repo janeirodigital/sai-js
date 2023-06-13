@@ -14,7 +14,6 @@ jobs:
           - authorization-agent
           - application
           - data-model
-          - namespaces
           - utils
           - api-messages
 

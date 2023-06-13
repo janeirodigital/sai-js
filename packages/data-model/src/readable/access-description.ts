@@ -1,4 +1,4 @@
-import { SKOS } from '@janeirodigital/interop-namespaces';
+import { SKOS } from '@janeirodigital/interop-utils';
 import { ReadableResource } from './resource';
 
 export abstract class ReadableAccessDescription extends ReadableResource {

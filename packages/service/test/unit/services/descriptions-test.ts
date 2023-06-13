@@ -7,7 +7,7 @@ import {
   ReadableClientIdDocument
 } from '@janeirodigital/interop-data-model';
 import { getDescriptions, recordAuthorization } from '../../../src/services';
-import { ACL, INTEROP } from '@janeirodigital/interop-namespaces';
+import { ACL, INTEROP } from '@janeirodigital/interop-utils';
 import { Authorization } from '@janeirodigital/sai-api-messages';
 
 jest.setTimeout(30000);

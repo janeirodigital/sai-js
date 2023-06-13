@@ -1,5 +1,5 @@
 import { NamedNode } from 'n3';
-import { buildNamespace } from '../src/builder';
+import { buildNamespace } from '../src/namespaces';
 
 describe('buildNamespace', () => {
   const base = 'http://example.com#';
