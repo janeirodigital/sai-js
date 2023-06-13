@@ -11,6 +11,7 @@ export function buildNamespace(base: string): any {
 }
 
 export const INTEROP = buildNamespace('http://www.w3.org/ns/solid/interop#');
+export const NOTIFY = buildNamespace('http://www.w3.org/ns/solid/notifications#');
 export const RDF = buildNamespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 export const RDFS = buildNamespace('http://www.w3.org/2000/01/rdf-schema#');
 export const LDP = buildNamespace('http://www.w3.org/ns/ldp#');
