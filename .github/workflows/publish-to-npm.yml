@@ -4,6 +4,9 @@ on:
   release:
     types: [created]
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   publish-npm:
     runs-on: ubuntu-latest
@@ -28,7 +31,10 @@ jobs:
           node-version: 16
           registry-url: https://registry.npmjs.org/
 
-      - run: yarn install --frozen-lockfile
+      - name: Modify .npmrc
+        run: echo '//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}' >> .npmrc
+
+      - run: yarn install
       - run: npx lerna bootstrap
       - run: npx lerna run build
 
