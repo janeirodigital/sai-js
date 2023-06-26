@@ -11,6 +11,14 @@ Modules implementing [Solid Application Interoperability Specification](https://
 
 Requires node.js 15.6.0 or higher. ([Volta](https://volta.sh/) may help with managing node versions)
 
+### Github packages
+
+* generate [github token](https://github.com/settings/tokens) ( only `packages:read` scope)
+* Modify `~/.npmrc` ([per-user config file](https://docs.npmjs.com/cli/v7/configuring-npm/npmrc#per-user-config-file))
+  and add line `//npm.pkg.github.com/:_authToken=` and the generated token.
+
+### Bootstrapping
+
 ```bash
 yarn install
 npx lerna bootstrap
