@@ -1,7 +1,7 @@
 {
   "name": "@janeirodigital/sai-server-mocks",
   "private": true,
-  "version": "1.0.0-rc.20",
+  "version": "1.0.0-rc.21",
   "description": "",
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server-mocks",
   "lsd:components": "dist/components/components.jsonld",
@@ -25,8 +25,8 @@
   "license": "MIT",
   "dependencies": {
     "@inrupt/solid-client-authn-node": "^1.16.0",
-    "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.20",
-    "@janeirodigital/sai-server-interfaces": "^1.0.0-rc.20",
+    "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.21",
+    "@janeirodigital/sai-server-interfaces": "^1.0.0-rc.21",
     "@jest/globals": "29.5.0"
   }
 }
