@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { Mock } from 'jest-mock';
-import { InMemoryStorage, Session } from '@inrupt/solid-client-authn-node';
+import { InMemoryStorage } from '@inrupt/solid-client-authn-core';
+import { Session } from '@inrupt/solid-client-authn-node';
 import { HttpError, BadRequestHttpError, HttpHandlerRequest } from '@digita-ai/handlersjs-http';
 import { agentRedirectUrl, AuthenticatedAuthnContext, LoginHandler, webId2agentUrl } from '../../../src';
 
