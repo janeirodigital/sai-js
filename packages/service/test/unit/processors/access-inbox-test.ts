@@ -1,10 +1,20 @@
+import { NOTIFY } from '@janeirodigital/interop-utils';
 import type { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { InMemoryStorage } from '@inrupt/solid-client-authn-node';
-import { WebhookSubscription } from '@janeirodigital/sai-server-interfaces';
+import type { NotificationChannel } from '@solid-notifications/types';
 import { AccessInboxProcessor, IAccessInboxJob, webhookTargetUrl } from '../../../src';
 
-import { subscribe } from 'solid-webhook-client';
-jest.mock('solid-webhook-client');
+import { SubscriptionClient } from '@solid-notifications/subscription';
+const mockedSubscribe = jest.fn();
+jest.mock('@solid-notifications/subscription', () => {
+  return {
+    SubscriptionClient: jest.fn(() => {
+      return {
+        subscribe: mockedSubscribe
+      };
+    })
+  };
+});
 
 import { SessionManager } from '../../../src/session-manager';
 jest.mock('../../../src/session-manager', () => {
@@ -18,8 +28,6 @@ jest.mock('../../../src/session-manager', () => {
     })
   };
 });
-
-const mockedSubscribe = jest.mocked(subscribe);
 
 const sessionManager = jest.mocked(new SessionManager(new InMemoryStorage()));
 const webId = 'https://alice.example';
@@ -49,7 +57,7 @@ test('gets sai session of the correct user', async () => {
 
 test('does not try to subscribe if already subscribed', async () => {
   sessionManager.getWebhookSubscription.mockImplementationOnce(async (webId, peerWebId) => {
-    return {} as unknown as WebhookSubscription;
+    return {} as unknown as NotificationChannel;
   });
   await processor.processorFunction(job);
   expect(sessionManager.getWebhookSubscription).toBeCalledWith(webId, webId);
@@ -65,13 +73,13 @@ test('does not try to subscribe if no inbox', async () => {
 });
 
 test('subscribes and stores the subscription', async () => {
-  const subsciption: WebhookSubscription = {
-    unsubscribeEndpoint: 'https://publisher.example/unsubscribe/123'
+  const subsciption: NotificationChannel = {
+    id: 'urn:uuid:259288ca-a4e9-4772-8410-c6fe16a21752',
+    type: NOTIFY.WebhookChannel2023.value,
+    topic: 'https://some.example/inbox'
   };
   mockedSubscribe.mockImplementationOnce(async () => subsciption);
   await processor.processorFunction(job);
-  expect(mockedSubscribe).toBeCalledWith(accessInbox, webhookTargetUrl(webId, webId), {
-    fetch: saiSessionMock.rawFetch
-  });
+  expect(mockedSubscribe).toBeCalledWith(accessInbox, NOTIFY.WebhookChannel2023.value, webhookTargetUrl(webId, webId));
   expect(sessionManager.setWebhookSubscription).toBeCalledWith(webId, webId, subsciption);
 });

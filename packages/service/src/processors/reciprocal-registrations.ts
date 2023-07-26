@@ -1,4 +1,5 @@
-import { subscribe } from 'solid-webhook-client';
+import { SubscriptionClient } from '@solid-notifications/subscription';
+import { NOTIFY } from '@janeirodigital/interop-utils';
 import type { IProcessor, ISessionManager } from '@janeirodigital/sai-server-interfaces';
 import type { IReciprocalRegistrationsJob } from '../models/jobs';
 import { webhookTargetUrl } from '../url-templates';
@@ -24,11 +25,12 @@ export class ReciprocalRegistrationsProcessor implements IProcessor {
 
     // manage webook subscription
     if (await this.sessionManager.getWebhookSubscription(webId, registeredAgent)) return;
-    const subsciption = await subscribe(
+    const subscriptionClient = new SubscriptionClient(saiSession.rawFetch);
+    const channel = await subscriptionClient.subscribe(
       registration.reciprocalRegistration.iri,
-      webhookTargetUrl(webId, registeredAgent),
-      { fetch: saiSession.rawFetch }
+      NOTIFY.WebhookChannel2023.value,
+      webhookTargetUrl(webId, registeredAgent)
     );
-    await this.sessionManager.setWebhookSubscription(webId, registeredAgent, subsciption);
+    await this.sessionManager.setWebhookSubscription(webId, registeredAgent, channel);
   }
 }

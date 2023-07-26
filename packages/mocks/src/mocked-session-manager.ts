@@ -3,8 +3,9 @@
 import { jest } from '@jest/globals';
 import type { PushSubscription } from 'web-push';
 import { IStorage, Session } from '@inrupt/solid-client-authn-node';
+import type { NotificationChannel } from '@solid-notifications/types';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
-import { ISessionManager, WebhookSubscription } from '@janeirodigital/sai-server-interfaces';
+import { ISessionManager } from '@janeirodigital/sai-server-interfaces';
 
 export class MockedSessionManager implements ISessionManager {
   constructor(public storage: IStorage) {}
@@ -20,8 +21,8 @@ export class MockedSessionManager implements ISessionManager {
   addPushSubscription = jest.fn(async (webId: string, subscription: PushSubscription) => {});
 
   getWebhookSubscription = jest.fn(
-    async (webId: string, peerWebId: string) => undefined as unknown as WebhookSubscription
+    async (webId: string, peerWebId: string) => undefined as unknown as NotificationChannel
   );
 
-  setWebhookSubscription = jest.fn(async (webId: string, peerWebId: string, subscription: WebhookSubscription) => {});
+  setWebhookSubscription = jest.fn(async (webId: string, peerWebId: string, subscription: NotificationChannel) => {});
 }

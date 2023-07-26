@@ -1,8 +1,9 @@
 import { randomUUID } from 'crypto';
 import type { PushSubscription } from 'web-push';
 import { getSessionFromStorage, IStorage, Session } from '@inrupt/solid-client-authn-node';
+import type { NotificationChannel } from '@solid-notifications/types';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
-import { ISessionManager, WebhookSubscription } from '@janeirodigital/sai-server-interfaces';
+import { ISessionManager } from '@janeirodigital/sai-server-interfaces';
 import { webId2agentUrl } from './url-templates';
 
 type WebId = string;
@@ -64,13 +65,13 @@ export class SessionManager implements ISessionManager {
     await this.storage.set(key, JSON.stringify([subscription, ...existing]));
   }
 
-  async getWebhookSubscription(webId: string, peerWebId: string): Promise<WebhookSubscription | undefined> {
+  async getWebhookSubscription(webId: string, peerWebId: string): Promise<NotificationChannel | undefined> {
     const key = `${prefixes.webhook}${webId}:${peerWebId}`;
     const value = await this.storage.get(key);
-    return value ? (JSON.parse(value) as WebhookSubscription) : undefined;
+    return value ? (JSON.parse(value) as NotificationChannel) : undefined;
   }
 
-  async setWebhookSubscription(webId: string, peerWebId: string, subscription: WebhookSubscription): Promise<void> {
+  async setWebhookSubscription(webId: string, peerWebId: string, subscription: NotificationChannel): Promise<void> {
     const key = `${prefixes.webhook}${webId}:${peerWebId}`;
     return this.storage.set(key, JSON.stringify(subscription));
   }

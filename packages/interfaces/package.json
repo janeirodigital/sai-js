@@ -15,5 +15,8 @@
   "dependencies": {
     "@inrupt/solid-client-authn-node": "^1.16.0",
     "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.21"
+  },
+  "devDependencies": {
+    "@solid-notifications/types": "^0.0.0"
   }
 }

@@ -1,10 +1,20 @@
+import { NOTIFY } from '@janeirodigital/interop-utils';
 import type { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { InMemoryStorage } from '@inrupt/solid-client-authn-node';
-import { WebhookSubscription } from '@janeirodigital/sai-server-interfaces';
+import type { NotificationChannel } from '@solid-notifications/types';
 import { ReciprocalRegistrationsProcessor, IReciprocalRegistrationsJob, webhookTargetUrl } from '../../../src';
 
-import { subscribe } from 'solid-webhook-client';
-jest.mock('solid-webhook-client');
+import { SubscriptionClient } from '@solid-notifications/subscription';
+const mockedSubscribe = jest.fn();
+jest.mock('@solid-notifications/subscription', () => {
+  return {
+    SubscriptionClient: jest.fn(() => {
+      return {
+        subscribe: mockedSubscribe
+      };
+    })
+  };
+});
 
 import { SessionManager } from '../../../src/session-manager';
 jest.mock('../../../src/session-manager', () => {
@@ -18,8 +28,6 @@ jest.mock('../../../src/session-manager', () => {
     })
   };
 });
-
-const mockedSubscribe = jest.mocked(subscribe);
 
 const sessionManager = jest.mocked(new SessionManager(new InMemoryStorage()));
 const webId = 'https://alice.example';
@@ -77,7 +85,7 @@ describe('webhook subscription', () => {
 
   test('does not try to subscribe if already subscribed', async () => {
     sessionManager.getWebhookSubscription.mockImplementation(async () => {
-      return {} as unknown as WebhookSubscription;
+      return {} as unknown as NotificationChannel;
     });
     await processor.processorFunction(job);
     expect(sessionManager.getWebhookSubscription).toBeCalledWith(webId, peerWebId);
@@ -85,8 +93,10 @@ describe('webhook subscription', () => {
   });
 
   test('subscribes and stores the subscription', async () => {
-    const subsciption: WebhookSubscription = {
-      unsubscribeEndpoint: 'https://publisher.example/unsubscribe/123'
+    const subsciption: NotificationChannel = {
+      id: 'urn:uuid:6a16912b-236d-426a-bca7-a765e0f2dae9',
+      type: NOTIFY.WebhookChannel2023.value,
+      topic: 'https://some.example/something'
     };
     sessionManager.getWebhookSubscription.mockImplementationOnce(async () => {
       return undefined;
@@ -95,8 +105,8 @@ describe('webhook subscription', () => {
     await processor.processorFunction(job);
     expect(mockedSubscribe).toBeCalledWith(
       mockedRegistrationWithReciprocial.reciprocalRegistration.iri,
-      webhookTargetUrl(webId, peerWebId),
-      { fetch: saiSessionMock.rawFetch }
+      NOTIFY.WebhookChannel2023.value,
+      webhookTargetUrl(webId, peerWebId)
     );
     expect(sessionManager.setWebhookSubscription).toBeCalledWith(webId, peerWebId, subsciption);
   });

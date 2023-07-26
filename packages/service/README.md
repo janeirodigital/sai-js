@@ -12,7 +12,7 @@
 - [Components.js](https://componentsjs.readthedocs.io/en/latest/)
 - [Handlers.js](https://github.com/digita-ai/handlersjs)
 - [sai-js](https://github.com/janeirodigital/sai-js)
-- [solid-webhook-client](https://github.com/o-development/solid-webhook-client)
+- [solid-notifications-client](https://github.com/o-development/solid-notifications-client)
 - [web-push](https://www.npmjs.com/package/web-push)
 
 ## Features
@@ -36,7 +36,7 @@ A compatible frontend also uses Solid-OIDC to authenticate with the service.
 
 ### Solid Notifications (Webhook Subscription)
 
-[Social Agents](https://solid.github.io/data-interoperability-panel/specification/#social-agents) create a [Social Agent Registration](https://solid.github.io/data-interoperability-panel/specification/#social-agent-registration) for each of their social peers and vice-versa. To stay up to date with changes to registration created by social peers, one's Authorization Agent service uses [Webhook Subscription Type](https://github.com/solid/notifications/blob/main/webhook-subscription-2021.md) for [Solid Notifications Protocol](https://solidproject.org/TR/notifications-protocol), specifically [solid-webhook-client](https://github.com/o-development/solid-webhook-client).
+[Social Agents](https://solid.github.io/data-interoperability-panel/specification/#social-agents) create a [Social Agent Registration](https://solid.github.io/data-interoperability-panel/specification/#social-agent-registration) for each of their social peers and vice-versa. To stay up to date with changes to registration created by social peers, one's Authorization Agent service uses [Webhook Subscription Type](https://github.com/solid/notifications/blob/main/webhook-subscription-2021.md) for [Solid Notifications Protocol](https://solidproject.org/TR/notifications-protocol), specifically [solid-notifications-client](https://github.com/o-development/solid-notifications-client).
 
 The webhook subscription still hasn't landed in CSS ([PR#1388 feat: notification webhooks](https://github.com/CommunitySolidServer/CommunitySolidServer/pull/1388))
 

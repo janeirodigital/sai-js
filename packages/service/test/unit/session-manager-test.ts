@@ -1,7 +1,9 @@
 import { jest } from '@jest/globals';
 import type { PushSubscription } from 'web-push';
 import { InMemoryStorage, IStorage, Session } from '@inrupt/solid-client-authn-node';
+import type { NotificationChannel } from '@solid-notifications/types';
 
+import { NOTIFY } from '@janeirodigital/interop-utils';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 jest.mock('@janeirodigital/interop-authorization-agent');
 const MockedAuthorizationAgent = AuthorizationAgent as jest.MockedFunction<any>;
@@ -19,7 +21,6 @@ const mockedGetSessionFromStorage = getSessionFromStorage as jest.MockedFunction
 
 import { SessionManager } from '../../src/session-manager';
 import { webId2agentUrl } from '../../src/url-templates';
-import { WebhookSubscription } from '@janeirodigital/sai-server-interfaces';
 
 let manager: SessionManager;
 let storage: IStorage;
@@ -133,12 +134,14 @@ describe('WebhookSubscriptions', () => {
   const peerWebId = 'https://bob.example';
 
   test('sets and gets the subscription', async () => {
-    const subscription: WebhookSubscription = {
-      unsubscribeEndpoint: 'https://publisher.example/123'
+    const channel: NotificationChannel = {
+      id: 'urn:uuid:6a16912b-236d-426a-bca7-a765e0f2dae9',
+      type: NOTIFY.WebhookChannel2023.value,
+      topic: 'https://some.example/something'
     };
 
-    await manager.setWebhookSubscription(webId, peerWebId, subscription);
-    expect(await manager.getWebhookSubscription(webId, peerWebId)).toStrictEqual(subscription);
+    await manager.setWebhookSubscription(webId, peerWebId, channel);
+    expect(await manager.getWebhookSubscription(webId, peerWebId)).toStrictEqual(channel);
   });
 
   test('returns undefined if does not exist', async () => {
