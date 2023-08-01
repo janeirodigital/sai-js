@@ -5,11 +5,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "community-solid-server -c @css:config/file.json"
+    "start": "community-solid-server -c config.json"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@solid/community-server": "6.0.0"
+    "@solid/community-server": "6.0.1"
   }
 }
