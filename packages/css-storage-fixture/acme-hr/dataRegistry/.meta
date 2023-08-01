@@ -4,4 +4,6 @@ PREFIX interop: <http://www.w3.org/ns/solid/interop#>
 <http://localhost:3000/acme-hr/dataRegistry/>
   interop:hasDataRegistration
    <http://localhost:3000/acme-hr/dataRegistry/projects/> ,
-   <http://localhost:3000/acme-hr/dataRegistry/tasks/> .
+   <http://localhost:3000/acme-hr/dataRegistry/tasks/> ,
+   <http://localhost:3000/acme-hr/dataRegistry/images/> ,
+   <http://localhost:3000/acme-hr/dataRegistry/files/> .

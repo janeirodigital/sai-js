@@ -5,6 +5,7 @@ PREFIX interop: <http://www.w3.org/ns/solid/interop#>
   a interop:AccessAuthorization ;
   interop:grantedBy <http://localhost:3000/alice/profile/card#me> ;
   interop:grantedAt "2020-09-05T06:15:01Z"^^xsd:dateTime ;
+  interop:granted true;
   interop:grantee  <http://localhost:3000/kim/profile/card#me> ;
   interop:hasDataAuthorization
     <http://localhost:3000/alice/authorizationRegistry/kim/projects> ,

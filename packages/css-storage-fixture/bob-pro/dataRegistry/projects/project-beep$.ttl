@@ -1,0 +1,8 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX pm: <https://vocab.example/project-management/>
+
+<http://localhost:3000/bob-pro/dataRegistry/projects/project-beep>
+  rdfs:label "Project Beep" ;
+  pm:hasTask
+    <http://localhost:3000/bob-pro/dataRegistry/tasks/task-zim> ,
+    <http://localhost:3000/bob-pro/dataRegistry/tasks/task-zoom> .
