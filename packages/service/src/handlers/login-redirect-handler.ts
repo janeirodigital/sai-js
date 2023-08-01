@@ -3,7 +3,7 @@ import { HttpHandler, HttpHandlerResponse, HttpHandlerContext, InternalServerErr
 import { getLogger } from '@digita-ai/handlersjs-logging';
 import type { IQueue, ISessionManager } from '@janeirodigital/sai-server-interfaces';
 import { frontendUrl, decodeWebId } from '../url-templates';
-import { IAccessInboxJobData } from '../models/jobs';
+import { IReciprocalRegistrationsJobData } from '../models/jobs';
 
 export class LoginRedirectHandler extends HttpHandler {
   private logger = getLogger();
@@ -34,8 +34,17 @@ export class LoginRedirectHandler extends HttpHandler {
       // TODO clarify this scenario
       throw new InternalServerError();
     } else {
-      // ensure subscribed to access inbox
-      await this.queue.add({ webId } as IAccessInboxJobData);
+      // ensure subscribed to reciprocal registrations
+      // TODO: change into a single job that will create one job per registration
+      const saiSession = await this.sessionManager.getSaiSession(webId);
+      for await (const socialAgentRegistration of saiSession.socialAgentRegistrations) {
+        if (socialAgentRegistration.reciprocalRegistration) {
+          await this.queue.add({
+            webId,
+            registeredAgent: socialAgentRegistration.registeredAgent
+          } as IReciprocalRegistrationsJobData);
+        }
+      }
 
       return { body: {}, status: 302, headers: { location: frontendUrl } };
     }

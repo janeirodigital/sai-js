@@ -4,12 +4,12 @@ import { from, Observable } from 'rxjs';
 import {
   HttpHandler,
   HttpHandlerResponse,
+  HttpHandlerContext,
   BadRequestHttpError,
   UnauthorizedHttpError
 } from '@digita-ai/handlersjs-http';
 import { getLogger } from '@digita-ai/handlersjs-logging';
 import { IQueue } from '@janeirodigital/sai-server-interfaces';
-import type { AuthenticatedAuthnContext } from '../models/http-solid-context';
 import { validateContentType } from '../utils/http-validators';
 import { decodeWebId } from '../url-templates';
 import { IDelegatedGrantsJobData, IPushNotificationsJobData } from '../models/jobs';
@@ -28,14 +28,14 @@ export class WebHooksHandler extends HttpHandler {
     this.logger.info('WebHooksHandler::constructor');
   }
 
-  async handleAsync(context: AuthenticatedAuthnContext): Promise<HttpHandlerResponse> {
+  async handleAsync(context: HttpHandlerContext): Promise<HttpHandlerResponse> {
     validateContentType(context, 'application/ld+json');
 
     // verify if sender is Authorized
-    if (!this.senderAuthorized(context)) throw new UnauthorizedHttpError();
+    // if (!this.senderAuthorized(context)) throw new UnauthorizedHttpError();
 
-    const notification = context.request.body as Notification;
-    this.validateNotification(notification);
+    // const notification = context.request.body as Notification;
+    // this.validateNotification(notification);
 
     const webId = decodeWebId(context.request.parameters!.encodedWebId);
     const peerWebId = decodeWebId(context.request.parameters!.encodedPeerWebId);
@@ -53,17 +53,17 @@ export class WebHooksHandler extends HttpHandler {
     return { body: {}, status: 200, headers: {} };
   }
 
-  handle(context: AuthenticatedAuthnContext): Observable<HttpHandlerResponse> {
+  handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
     this.logger.info('WebHooksHandler::handle');
     return from(this.handleAsync(context));
   }
 
-  validateNotification(notification: Notification): void {
-    if (!notification.object?.id) throw new BadRequestHttpError();
-  }
+  // validateNotification(notification: Notification): void {
+  //   if (!notification.object?.id) throw new BadRequestHttpError();
+  // }
 
   // TODO: as spec updates, use webId from subscription response
-  senderAuthorized(context: AuthenticatedAuthnContext): boolean {
-    return context.authn.webId === decodeWebId(context.request.parameters!.encodedPeerWebId);
-  }
+  // senderAuthorized(context: AuthenticatedAuthnContext): boolean {
+  //   return context.authn.webId === decodeWebId(context.request.parameters!.encodedPeerWebId);
+  // }
 }

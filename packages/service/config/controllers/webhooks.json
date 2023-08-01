@@ -9,14 +9,6 @@
       "@id": "urn:solid:authorization-agent:controller:Webhooks",
       "@type": "HttpHandlerController",
       "label": "WebHooks Controller",
-      "preResponseHandler": {
-        "@type": "HttpSequenceContextHandler",
-        "contextHandlers": [
-          {
-            "@type": "AuthnContextHandler"
-          }
-        ]
-      },
       "routes": [
         {
           "@type": "HttpHandlerRoute",
