@@ -93,7 +93,7 @@ yarn start
 Open http://localhost:4200, Log in using default provider and with `alice@example.org` & `password`.
 Connect to server.
 
-Run Projectron demo application, by default it will run on `localhost:4100`
+Run Projectron demo application, by default it will run on `localhost:4300`
 
 ```bash
 cd projectron
@@ -101,4 +101,4 @@ yarn install
 yarn start
 ```
 
-Open http://localhost:4100, Log in using default provider and request authorization.
+Open http://localhost:4300, Log in using default provider and request authorization.
