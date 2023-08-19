@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "community-solid-server -c config.json"
+    "start": "community-solid-server -c config.json",
+    "clean": "find . -type d -empty -delete"
   },
   "author": "",
   "license": "MIT",
