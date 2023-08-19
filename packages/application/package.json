@@ -49,6 +49,7 @@
   "dependencies": {
     "@janeirodigital/interop-data-model": "^1.0.0-rc.21",
     "@janeirodigital/interop-utils": "^1.0.0-rc.21",
+    "@solid-notifications/subscription": "^0.0.0",
     "n3": "^1.16.4"
   },
   "devDependencies": {
