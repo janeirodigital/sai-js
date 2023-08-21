@@ -10,7 +10,7 @@ import {
   InheritableDataGrant,
   CRUDAgentRegistration
 } from '..';
-import { ReadableResource } from '.';
+import { ReadableResource, SelectedFromRegistryDataGrant } from '.';
 
 export class ReadableDataAuthorization extends ReadableResource {
   factory: AuthorizationAgentFactory;
@@ -158,6 +158,9 @@ export class ReadableDataAuthorization extends ReadableResource {
             delegationOfGrant: sourceGrant.iri,
             accessMode: this.accessMode.filter((mode) => sourceGrant.accessMode.includes(mode))
           };
+          if (sourceGrant.scopeOfGrant.value === INTEROP.SelectedFromRegistry.value) {
+            data.hasDataInstance = [...(sourceGrant as SelectedFromRegistryDataGrant).hasDataInstance];
+          }
           if (childDataGrants.length) {
             data.hasInheritingGrant = childDataGrants;
           }

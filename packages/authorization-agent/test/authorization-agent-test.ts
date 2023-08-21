@@ -168,7 +168,7 @@ describe('recordAccessAuthorization', () => {
       registeredShapeTree: 'https://solidshapes.example/tree/Project',
       dataOwner: 'https://omni.example/#corp',
       accessMode: [ACL.Read.value],
-      scopeOfAuthorization: INTEROP.SelectedInstances.value,
+      scopeOfAuthorization: INTEROP.SelectedFromRegistry.value,
       hasDataRegistration: 'https://home.alice.example/some-registration/',
       hasDataInstance: ['https://home.alice.example/06c7ac17-2825-411b-ad55-31bb46aa75cd']
     };
@@ -412,10 +412,10 @@ describe('findSocialAgentsWithAccess', () => {
     );
   });
 
-  test('with scope SelectedInstances', async () => {
+  test('with scope SelectedFromRegistry', async () => {
     const allAuthorization = {
       iri: 'mocked-selected-instances',
-      scopeOfAuthorization: INTEROP.SelectedInstances.value,
+      scopeOfAuthorization: INTEROP.SelectedFromRegistry.value,
       dataOwner: webId,
       hasDataRegistration: 'https://home.alice.example/some-registration/',
       hasDataInstance: [dataInstance.iri],
@@ -523,7 +523,7 @@ describe('shareDataInstance', () => {
           {
             grantee: details.agents[0],
             registeredShapeTree: shapeTree,
-            scopeOfAuthorization: INTEROP.SelectedInstances.value,
+            scopeOfAuthorization: INTEROP.SelectedFromRegistry.value,
             dataOwner: webId,
             hasDataRegistration: dataInstance.dataRegistration.iri,
             accessMode: details.accessMode,

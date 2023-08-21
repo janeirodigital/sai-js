@@ -222,7 +222,7 @@ export class AuthorizationAgent {
             agentsWithAccess.push(formatAgentWithAccess(dataAuthorization));
           }
           break;
-        case INTEROP.SelectedInstances.value:
+        case INTEROP.SelectedFromRegistry.value:
           if (
             dataAuthorization.hasDataRegistration === dataInstance.dataRegistration.iri &&
             dataAuthorization.hasDataInstance.includes(dataInstanceIri)
@@ -247,7 +247,7 @@ export class AuthorizationAgent {
     const dataAuthorization: NestedDataAuthorizationData = {
       grantee: agent,
       registeredShapeTree: dataInstance.dataRegistration.registeredShapeTree,
-      scopeOfAuthorization: INTEROP.SelectedInstances.value,
+      scopeOfAuthorization: INTEROP.SelectedFromRegistry.value,
       dataOwner: this.webId, // TODO: delegated authorizations and trusted agents
       hasDataRegistration: dataInstance.dataRegistration.iri,
       accessMode: details.accessMode,

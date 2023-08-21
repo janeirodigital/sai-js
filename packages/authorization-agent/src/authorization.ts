@@ -78,7 +78,7 @@ export async function generateAuthorization(
 
   let dataAuthorizationsToReuse: string[] = [];
 
-  // TODO: agent has and access authorization, with data authorization (SelectedInstances) which does not include this data instance
+  // TODO: agent has and access authorization, with data authorization (SelectedFromRegistry) which does not include this data instance
   // do we need to check access modes? (if same extend data authorization, if different create a new one)
   if (extendIfExists && authorization.granted) {
     const existingAccessAuthorization = await authorizationRegistry.findAuthorization(authorization.grantee);
@@ -94,7 +94,7 @@ export async function generateAuthorization(
         );
         if (matchingDataAuthorization) {
           // TODO: should we handle it differently
-          if (matchingDataAuthorization.scopeOfAuthorization !== INTEROP.SelectedInstances.value)
+          if (matchingDataAuthorization.scopeOfAuthorization !== INTEROP.SelectedFromRegistry.value)
             throw new Error(`unexpected scope: ${matchingDataAuthorization.scopeOfAuthorization}`);
 
           // copy over selected instances from existing data authorization
