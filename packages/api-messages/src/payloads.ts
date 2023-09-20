@@ -25,7 +25,8 @@ export interface SocialAgent extends UniqueId {
 
 export interface DataRegistration extends UniqueId {
   shapeTree: IRI;
-  dataRegistry: IRI;
+  // TODO dataOwner: IRI;
+  dataRegistry?: IRI;
   count: number;
   label?: string; // TODO label should be ensured
 }
@@ -61,8 +62,14 @@ export interface AccessNeedGroup extends UniqueId {
   needs: AccessNeed[];
 }
 
+export interface DataOwner extends UniqueId {
+  label: string;
+  dataRegistrations: DataRegistration[];
+}
+
 export interface AuthorizationData extends UniqueId {
   accessNeedGroup: AccessNeedGroup;
+  dataOwners: DataOwner[];
 }
 
 export interface DataAuthorization {
@@ -90,7 +97,7 @@ export interface DeniedAuthorization extends BaseAuthorization {
 export type Authorization = GrantedAuthorization | DeniedAuthorization;
 
 export interface AccessAuthorization extends UniqueId, GrantedAuthorization {
-  callbackEndpoint?: IRI;
+  callbackEndpoint: IRI;
 }
 
 export type ShapeTree = {
@@ -106,9 +113,12 @@ export type ChildResource = {
     label: string;
   };
 };
-export type Resource = {
+export type DataInstance = {
   id: IRI;
   label?: string;
+};
+
+export type Resource = DataInstance & {
   shapeTree: ShapeTree;
   children: ChildResource[];
   accessGrantedTo: IRI[];
@@ -138,6 +148,7 @@ export type Payloads =
   | SocialAgent
   | DataRegistry[]
   | AuthorizationData
+  | DataInstance[]
   | AccessAuthorization
   | Partial<Application>
   | Resource

@@ -7,6 +7,7 @@ export const RequestMessageTypes = {
   APPLICATIONS_REQUEST: '[APPLICATION PROFILES] Application Profiles Requested',
   SOCIAL_AGENTS_REQUEST: '[SOCIAL AGENTS] Application Profiles Requested',
   DESCRIPTIONS_REQUEST: '[DESCRIPTIONS] Descriptions Requested',
+  LIST_DATA_INSTANCES_REQUEST: '[LIST DATA INSTANCES] List Data Instances Requested',
   DATA_REGISTRIES_REQUEST: '[DATA_REGISTRIES] Data Registries Requested',
   ADD_SOCIAL_AGENT_REQUEST: '[SOCIAL AGENTS] Data Registries Requested',
   APPLICATION_AUTHORIZATION: '[APPLICATION] Authorization submitted',
@@ -61,6 +62,14 @@ export class DescriptionsRequest extends MessageBase {
   }
 }
 
+export class ListDataInstancesRequest extends MessageBase {
+  public type = RequestMessageTypes.LIST_DATA_INSTANCES_REQUEST;
+
+  constructor(private registrationId: IRI) {
+    super();
+  }
+}
+
 export class ApplicationAuthorizationRequest extends MessageBase {
   public type = RequestMessageTypes.APPLICATION_AUTHORIZATION;
 
@@ -91,6 +100,7 @@ export type Request =
   | AddSocialAgentRequest
   | DataRegistriesRequest
   | DescriptionsRequest
+  | ListDataInstancesRequest
   | ApplicationAuthorizationRequest
   | UnregisteredApplicationProfileRequest
   | ResourceRequest

@@ -17,7 +17,9 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'no-useless-constructor': 'off',
     'dot-notation': 'off',
-    '@typescript-eslint/ban-ts-comment': 'off'
+    '@typescript-eslint/ban-ts-comment': 'off',
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': 'warn'
   },
   overrides: [
     {

@@ -10,6 +10,8 @@
     "build:cjs": "tsc -b tsconfig-cjs.json",
     "build:mjs": "tsc -b tsconfig-mjs.json",
     "clean": "rm -rf dist/",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "publish": "npm run clean && npm run build"
   },

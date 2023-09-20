@@ -8,13 +8,15 @@ import {
   Payloads,
   SocialAgent,
   Resource,
-  ShareAuthorizationConfirmation
+  ShareAuthorizationConfirmation,
+  DataInstance
 } from './payloads';
 
 export const ResponseMessageTypes = {
   APPLICATIONS_RESPONSE: '[APPLICATION PROFILES] Application Profiles Received',
   SOCIAL_AGENTS_RESPONSE: '[SOCIAL AGENTS PROFILES] Application Profiles Received',
   DESCRIPTIONS_RESPONSE: '[DESCRIPTIONS] Descriptions Received',
+  LIST_DATA_INSTANCES_RESPONSE: '[LIST DATA INSTANCES] List Data Instances Received',
   DATA_REGISTRIES_RESPONSE: '[DATA_REGISTRIES] Data Registries Received',
   SOCIAL_AGENT_RESPONSE: '[SOCIAL AGENTS] Social Agent Received',
   APPLICATION_AUTHORIZATION_REGISTERED: '[APPLICATION] Authorization registered',
@@ -52,6 +54,10 @@ export type DescriptionsResponseMessage = IResponseMessage<
   typeof ResponseMessageTypes.DESCRIPTIONS_RESPONSE,
   AuthorizationData
 >;
+export type ListDataInstancesResponseMessage = IResponseMessage<
+  typeof ResponseMessageTypes.LIST_DATA_INSTANCES_RESPONSE,
+  DataInstance[]
+>;
 export type ApplicationAuthorizationResponseMessage = IResponseMessage<
   typeof ResponseMessageTypes.APPLICATION_AUTHORIZATION_REGISTERED,
   AccessAuthorization
@@ -72,6 +78,7 @@ export type ResponseMessage =
   | SocialAgentResponseMessage
   | DataRegistriesResponseMessage
   | DescriptionsResponseMessage
+  | ListDataInstancesResponseMessage
   | ApplicationAuthorizationResponseMessage
   | UnregisteredApplicationResponseMessage
   | ResourceResponseMessage
@@ -144,6 +151,17 @@ export class DescriptionsResponse {
   public payload: AuthorizationData;
 
   constructor(message: DescriptionsResponseMessage) {
+    validateType(message.type, this.type);
+    this.payload = message.payload;
+  }
+}
+
+export class ListDataInstancesResponse {
+  public type = ResponseMessageTypes.LIST_DATA_INSTANCES_RESPONSE;
+
+  public payload: DataInstance[];
+
+  constructor(message: ListDataInstancesResponseMessage) {
     validateType(message.type, this.type);
     this.payload = message.payload;
   }
