@@ -15,27 +15,27 @@ PREFIX solidtrees: <http://localhost:3000/shapetrees/trees/>
 <#need-project>
   a interop:AccessNeed ;
   interop:registeredShapeTree solidtrees:Project ;
-  interop:accessNecessity interop:accessRequired ;
+  interop:accessNecessity interop:AccessRequired ;
   interop:accessMode acl:Read, acl:Create, acl:Update, acl:Delete .
 
 <#need-task>
   a interop:AccessNeed ;
   interop:registeredShapeTree solidtrees:Task ;
-  interop:accessNecessity interop:accessRequired ;
+  interop:accessNecessity interop:AccessRequired ;
   interop:accessMode acl:Read, acl:Create, acl:Update, acl:Delete ;
   interop:inheritsFromNeed <#need-project> .
 
 <#need-image>
   a interop:AccessNeed ;
   interop:registeredShapeTree solidtrees:Image ;
-  interop:accessNecessity interop:accessRequired ;
+  interop:accessNecessity interop:AccessOptional ;
   interop:accessMode acl:Read, acl:Create, acl:Update, acl:Delete ;
   interop:inheritsFromNeed <#need-project> .
 
 <#need-file>
   a interop:AccessNeed ;
   interop:registeredShapeTree solidtrees:File ;
-  interop:accessNecessity interop:accessRequired ;
+  interop:accessNecessity interop:AccessOptional ;
   interop:accessMode acl:Read, acl:Create, acl:Update, acl:Delete ;
   interop:inheritsFromNeed <#need-project> .
 
