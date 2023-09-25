@@ -12,7 +12,8 @@ import {
   addSocialAgent,
   getUnregisteredApplicationProfile,
   getResource,
-  shareResource
+  shareResource,
+  listDataInstances
 } from '../services';
 import type { SaiContext } from '../models/http-solid-context';
 import { validateContentType } from '../utils/http-validators';
@@ -92,6 +93,15 @@ export class ApiHandler extends HttpHandler {
           body: {
             type: ResponseMessageTypes.DESCRIPTIONS_RESPONSE,
             payload: await getDescriptions(body.applicationId, body.lang, context.saiSession)
+          },
+          status: 200,
+          headers: {}
+        };
+      case RequestMessageTypes.LIST_DATA_INSTANCES_REQUEST:
+        return {
+          body: {
+            type: ResponseMessageTypes.LIST_DATA_INSTANCES_RESPONSE,
+            payload: await listDataInstances(body.registrationId, context.saiSession)
           },
           status: 200,
           headers: {}

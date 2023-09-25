@@ -1,4 +1,12 @@
-import { DataAuthorizationData, ReadableAccessNeed, ReadableAccessNeedGroup } from '@janeirodigital/interop-data-model';
+import {
+  CRUDSocialAgentRegistration,
+  DataAuthorizationData,
+  InheritedDataGrant,
+  ReadableAccessNeed,
+  ReadableAccessNeedGroup,
+  ReadableDataRegistration,
+  SelectedFromRegistryDataGrant
+} from '@janeirodigital/interop-data-model';
 import type {
   AuthorizationAgent,
   AccessAuthorizationStructure,
@@ -11,7 +19,10 @@ import type {
   AccessAuthorization,
   AccessNeed,
   AccessNeedGroup,
-  GrantedAuthorization
+  GrantedAuthorization,
+  DataOwner,
+  DataRegistration,
+  DataInstance
 } from '@janeirodigital/sai-api-messages';
 
 const formatAccessNeed = (accessNeed: ReadableAccessNeed, descriptionsLang: string): AccessNeed => {
@@ -35,6 +46,58 @@ const formatAccessNeed = (accessNeed: ReadableAccessNeed, descriptionsLang: stri
   return formatted;
 };
 
+async function findUserDataRegistrations(
+  accessNeedGroup: ReadableAccessNeedGroup,
+  saiSession: AuthorizationAgent
+): Promise<DataRegistration[]> {
+  const dataRegistrations: DataRegistration[] = [];
+  for (const dataRegistry of saiSession.registrySet.hasDataRegistry) {
+    for (const accessNeed of accessNeedGroup.accessNeeds) {
+      // eslint-disable-next-line no-await-in-loop
+      const dataRegistration = await saiSession.findDataRegistration(dataRegistry.iri, accessNeed.shapeTree.iri);
+      if (dataRegistration)
+        dataRegistrations.push({
+          id: dataRegistration.iri,
+          dataRegistry: dataRegistry.iri,
+          label: `${dataRegistration.iri.split('/').slice(0, 4).join('/')}/`, // TODO get proper label,
+          shapeTree: accessNeed.shapeTree.iri,
+          count: dataRegistration.contains.length
+        });
+    }
+  }
+  return dataRegistrations;
+}
+
+async function findSocialAgentDataRegistrations(
+  socialAgentRegistration: CRUDSocialAgentRegistration,
+  accessNeedGroup: ReadableAccessNeedGroup,
+  saiSession: AuthorizationAgent
+): Promise<DataRegistration[]> {
+  const dataRegistrations: DataRegistration[] = [];
+  if (!socialAgentRegistration.accessGrant) return [];
+  for (const dataGrant of socialAgentRegistration.accessGrant.hasDataGrant) {
+    for (const accessNeed of accessNeedGroup.accessNeeds) {
+      if (
+        dataGrant.registeredShapeTree === accessNeed.shapeTree.iri &&
+        !(dataGrant instanceof InheritedDataGrant) // TODO clarify case when this could happen
+      ) {
+        dataRegistrations.push({
+          id: dataGrant.hasDataRegistration,
+          label: `${dataGrant.hasDataRegistration.split('/').slice(0, 4).join('/')}/`, // TODO get proper label
+          shapeTree: accessNeed.shapeTree.iri,
+          // @ts-ignore
+          count: dataGrant.hasDataInstance
+            ? // @ts-ignore
+              dataGrant.hasDataInstance.length
+            : // eslint-disable-next-line no-await-in-loop
+              (await saiSession.factory.readable.dataRegistration(dataGrant.hasDataRegistration)).contains.length
+        });
+      }
+    }
+  }
+  return dataRegistrations;
+}
+
 /**
  * Get the descriptions for the requested language. If the descriptions for the language are not found
  * `null` will be returned.
@@ -55,6 +118,31 @@ export const getDescriptions = async (
     descriptionsLang
   );
 
+  const dataOwners: DataOwner[] = [
+    {
+      id: saiSession.webId,
+      label: saiSession.webId, // TODO get from user's webid document
+      dataRegistrations: await findUserDataRegistrations(accessNeedGroup, saiSession)
+    }
+  ];
+
+  for await (const socialAgentRegistration of saiSession.socialAgentRegistrations) {
+    if (socialAgentRegistration.reciprocalRegistration) {
+      const dataRegistrations = await findSocialAgentDataRegistrations(
+        socialAgentRegistration.reciprocalRegistration,
+        accessNeedGroup,
+        saiSession
+      );
+      if (dataRegistrations.length) {
+        dataOwners.push({
+          id: socialAgentRegistration.registeredAgent,
+          label: socialAgentRegistration.label,
+          dataRegistrations
+        });
+      }
+    }
+  }
+
   return {
     // TODO if the id is the unique id of something then it should not be its own id. It should refer by a different name,
     //      e.g.: applicationId and be documented as such
@@ -64,12 +152,31 @@ export const getDescriptions = async (
       label: accessNeedGroup.descriptions[descriptionsLang].label!,
       description: accessNeedGroup.descriptions[descriptionsLang].definition,
       needs: accessNeedGroup.accessNeeds.map((need) => formatAccessNeed(need, descriptionsLang))
-    } as AccessNeedGroup
+    } as AccessNeedGroup,
+    dataOwners
   };
+};
+
+export const listDataInstances = async (
+  registrationId: string,
+  saiSession: AuthorizationAgent
+): Promise<DataInstance[]> => {
+  const dataRegistration = await saiSession.factory.readable.dataRegistration(registrationId);
+  const dataInstances: DataInstance[] = [];
+  for (const dataInstanceIri of dataRegistration.contains) {
+    // eslint-disable-next-line no-await-in-loop
+    const dataInstance = await saiSession.factory.readable.dataInstance(dataInstanceIri);
+    dataInstances.push({
+      id: dataInstance.iri,
+      label: dataInstance.label
+    });
+  }
+  return dataInstances;
 };
 
 // currently the spec only anticipates one level of inheritance
 // since we still don't have IRIs at this point, we need to use nesting to represent inheritance
+// TODO validate all scopes
 function buildDataAuthorizations(
   authorization: GrantedAuthorization,
   accessNeedGroup: ReadableAccessNeedGroup
@@ -87,8 +194,17 @@ function buildDataAuthorizations(
       registeredShapeTree: accessNeed.shapeTree.iri,
       scopeOfAuthorization: INTEROP[dataAuthorization.scope].value,
       accessMode: accessNeed!.accessMode
-      // TODO handle more specific scopes
     };
+    if (saiReady.scopeOfAuthorization === INTEROP.AllFromAgent.value) {
+      saiReady.dataOwner = dataAuthorization.dataOwner;
+    } else if (saiReady.scopeOfAuthorization === INTEROP.AllFromRegistry.value) {
+      saiReady.dataOwner = dataAuthorization.dataOwner;
+      saiReady.hasDataRegistration = dataAuthorization.dataRegistration;
+    } else if (saiReady.scopeOfAuthorization === INTEROP.SelectedFromRegistry.value) {
+      saiReady.dataOwner = dataAuthorization.dataOwner;
+      saiReady.hasDataRegistration = dataAuthorization.dataRegistration;
+      saiReady.hasDataInstance = dataAuthorization.dataInstances;
+    }
     return saiReady;
   });
   const parents: NestedDataAuthorizationData[] = [];

@@ -1,22 +1,50 @@
-import { jest } from '@jest/globals';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { jest, beforeEach, describe, test, expect } from '@jest/globals';
 import type { AuthorizationAgent, NestedDataAuthorizationData } from '@janeirodigital/interop-authorization-agent';
 import {
   CRUDApplicationRegistration,
+  ReadableDataInstance,
   ReadableAccessAuthorization,
   ReadableAccessNeedGroup,
-  ReadableClientIdDocument
+  ReadableClientIdDocument,
+  ReadableDataRegistration
 } from '@janeirodigital/interop-data-model';
-import { getDescriptions, recordAuthorization } from '../../../src/services';
 import { ACL, INTEROP } from '@janeirodigital/interop-utils';
 import { Authorization } from '@janeirodigital/sai-api-messages';
+import { getDescriptions, recordAuthorization, listDataInstances } from '../../../src/services';
 
 jest.setTimeout(30000);
 
+const projectShapeTree = 'https://solidshapes.example/trees/Project';
+
 describe('getDescriptions', () => {
+  const webId = 'https://alice.example';
   const applicationIri = 'https://projectron.example';
   const lang = 'en';
 
   const saiSession = jest.mocked({
+    webId,
+    registrySet: {
+      hasDataRegistry: [{ iri: 'https://home.alice.example/data/' }, { iri: 'https://work.alice.example/data/' }]
+    },
+    findDataRegistration: jest.fn(),
+    socialAgentRegistrations: [
+      {
+        registeredAgent: 'https://acme.example',
+        label: 'ACME',
+        reciprocalRegistration: {
+          accessGrant: {
+            hasDataGrant: [
+              {
+                registeredShapeTree: projectShapeTree,
+                hasDataRegistration: 'https://rnd.acme.example/data/projects/',
+                hasDataInstance: new Array(17)
+              }
+            ]
+          }
+        }
+      }
+    ],
     factory: {
       readable: {
         clientIdDocument: jest.fn(),
@@ -70,7 +98,7 @@ describe('getDescriptions', () => {
       required: true,
       accessMode: [ACL.Read],
       shapeTree: {
-        iri: 'https://solidshapes.example/trees/Project',
+        iri: projectShapeTree,
         descriptions: {
           [lang]: {
             label: 'Projects'
@@ -94,7 +122,20 @@ describe('getDescriptions', () => {
       hasAccessNeedGroup: accessNeedGroup.iri
     } as unknown as ReadableClientIdDocument);
     saiSession.factory.readable.accessNeedGroup.mockResolvedValueOnce(accessNeedGroup);
-
+    saiSession.findDataRegistration.mockImplementationOnce(
+      async () =>
+        ({
+          iri: 'https://home.alice.example/data/projects/',
+          contains: new Array(23)
+        } as unknown as ReadableDataRegistration)
+    );
+    saiSession.findDataRegistration.mockImplementationOnce(
+      async () =>
+        ({
+          iri: 'https://work.alice.example/data/projects/',
+          contains: new Array(34)
+        } as unknown as ReadableDataRegistration)
+    );
     const expected = {
       id: applicationIri,
       accessNeedGroup: {
@@ -128,12 +169,85 @@ describe('getDescriptions', () => {
             ]
           }
         ]
-      }
+      },
+      dataOwners: [
+        {
+          id: webId,
+          label: webId,
+          // @ts-ignore
+          dataRegistrations: [
+            {
+              id: 'https://home.alice.example/data/projects/',
+              label: 'https://home.alice.example/data/', // TODO generalize
+              shapeTree: projectShapeTree,
+              dataRegistry: 'https://home.alice.example/data/',
+              count: 23
+            },
+            {
+              id: 'https://work.alice.example/data/projects/',
+              label: 'https://work.alice.example/data/', // TODO generalize
+              shapeTree: projectShapeTree,
+              dataRegistry: 'https://work.alice.example/data/',
+              count: 34
+            }
+          ]
+        },
+        {
+          id: 'https://acme.example',
+          label: 'ACME',
+          // @ts-ignore
+          dataRegistrations: [
+            {
+              id: 'https://rnd.acme.example/data/projects/',
+              label: 'https://rnd.acme.example/data/', // TODO generalize
+              shapeTree: projectShapeTree,
+              count: 17
+            }
+          ]
+        }
+      ]
     };
 
     const descriptions = await getDescriptions(applicationIri, lang, saiSession);
     expect(descriptions).toStrictEqual(expected);
   });
+});
+
+describe('listDataInstances', () => {
+  const saiSession = jest.mocked({
+    factory: {
+      readable: {
+        dataRegistration: jest.fn(),
+        dataInstance: jest.fn()
+      }
+    }
+  } as unknown as AuthorizationAgent);
+
+  beforeEach(() => {
+    saiSession.factory.readable.dataRegistration.mockReset();
+  });
+
+  test('list instances for existing registration', async () => {
+    const registrationId = 'https://rnd.acme.example/data/projects/';
+    const count = 23;
+    const template = {
+      iri: 'https://iri.example',
+      lable: 'Example'
+    } as unknown as ReadableDataInstance;
+    saiSession.factory.readable.dataRegistration.mockResolvedValueOnce({
+      contains: new Array(count)
+    } as unknown as ReadableDataRegistration);
+    saiSession.factory.readable.dataInstance.mockResolvedValue(template);
+    const result = await listDataInstances(registrationId, saiSession);
+    expect(saiSession.factory.readable.dataRegistration).toBeCalledWith(registrationId);
+    expect(saiSession.factory.readable.dataInstance).toHaveBeenCalledTimes(count);
+    for (const instance of result) {
+      expect(instance.id).toBe(template.iri);
+      expect(instance.label).toBe(template.label);
+    }
+  });
+
+  test.todo('thorw error if registration does not exist');
 });
 
 describe('recordAuthorization', () => {
@@ -189,7 +303,7 @@ describe('recordAuthorization', () => {
       grantee: bobWebId,
       scopeOfAuthorization: INTEROP.All.value,
       accessMode: [INTEROP.Read.value],
-      registeredShapeTree: 'https://solidshapes.example/trees/Project',
+      registeredShapeTree: projectShapeTree,
       children: [
         {
           satisfiesAccessNeed: 'https://projectron.example/access-needs#need-task',
@@ -208,7 +322,7 @@ describe('recordAuthorization', () => {
       {
         iri: 'https://projectron.example/access-needs#need-project',
         shapeTree: {
-          iri: 'https://solidshapes.example/trees/Project'
+          iri: projectShapeTree
         },
         accessMode: [INTEROP.Read.value],
         children: [
