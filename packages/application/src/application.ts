@@ -1,4 +1,5 @@
 import { SubscriptionClient } from '@solid-notifications/subscription';
+import type { NotificationChannel } from '@solid-notifications/types';
 import { ApplicationFactory, ReadableApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
 import {
   WhatwgFetch,
@@ -71,7 +72,12 @@ export class Application {
   // TODO: fail gracefully
   private async subscribeToRegistration(): Promise<void> {
     const subscriptionClient = new SubscriptionClient(this.fetch);
-    const channel = await subscriptionClient.subscribe(this.registrationIri, NOTIFY.WebSocketChannel2023.value);
+    let channel: NotificationChannel;
+    try {
+      channel = await subscriptionClient.subscribe(this.registrationIri, NOTIFY.WebSocketChannel2023.value);
+    } catch {
+      return;
+    }
     // TODO: move Web Socket to a Web Worker
     const websocket = new WebSocket(channel.receiveFrom);
     websocket.onmessage = async (evt) => {
