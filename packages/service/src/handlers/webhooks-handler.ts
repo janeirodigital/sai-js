@@ -1,13 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 import { from, Observable } from 'rxjs';
-import {
-  HttpHandler,
-  HttpHandlerResponse,
-  HttpHandlerContext,
-  BadRequestHttpError,
-  UnauthorizedHttpError
-} from '@digita-ai/handlersjs-http';
+import { HttpHandler, HttpHandlerResponse, HttpHandlerContext } from '@digita-ai/handlersjs-http';
 import { getLogger } from '@digita-ai/handlersjs-logging';
 import { IQueue } from '@janeirodigital/sai-server-interfaces';
 import { validateContentType } from '../utils/http-validators';

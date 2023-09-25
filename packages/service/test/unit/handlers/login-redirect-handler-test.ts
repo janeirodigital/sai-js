@@ -1,20 +1,20 @@
-import { jest } from '@jest/globals';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { jest, beforeEach, test, expect } from '@jest/globals';
 import { InMemoryStorage, Session } from '@inrupt/solid-client-authn-node';
 import { HttpHandlerContext, HttpHandlerRequest } from '@digita-ai/handlersjs-http';
 
+import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { MockedQueue } from '@janeirodigital/sai-server-mocks';
 import { LoginRedirectHandler, frontendUrl, baseUrl, encodeWebId } from '../../../src';
 
 import { SessionManager } from '../../../src/session-manager';
-jest.mock('../../../src/session-manager', () => {
-  return {
-    SessionManager: jest.fn(() => {
-      return {
-        getOidcSession: jest.fn()
-      };
-    })
-  };
-});
+
+jest.mock('../../../src/session-manager', () => ({
+  SessionManager: jest.fn(() => ({
+    getOidcSession: jest.fn(),
+    getSaiSession: jest.fn()
+  }))
+}));
 
 let loginRedirectHandler: LoginRedirectHandler;
 const manager = jest.mocked(new SessionManager(new InMemoryStorage()));
@@ -51,6 +51,13 @@ test('redirects to frontend after handing a valid redirect', (done) => {
         webId: aliceWebId
       }
     } as unknown as Session;
+  });
+
+  manager.getSaiSession.mockImplementationOnce(async (id: string) => {
+    expect(id).toBe(aliceWebId);
+    return {
+      socialAgentRegistrations: []
+    } as unknown as AuthorizationAgent;
   });
 
   loginRedirectHandler.handle(ctx).subscribe((response) => {

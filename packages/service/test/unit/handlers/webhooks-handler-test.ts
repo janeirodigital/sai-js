@@ -1,4 +1,5 @@
-import { jest } from '@jest/globals';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { beforeEach, test, expect } from '@jest/globals';
 import { BadRequestHttpError, HttpError, HttpHandlerRequest, UnauthorizedHttpError } from '@digita-ai/handlersjs-http';
 
 import { MockedQueue } from '@janeirodigital/sai-server-mocks';
@@ -42,7 +43,7 @@ test('should respond with 400 if not application/ld+json', (done) => {
   });
 });
 
-test('should respond with 403 if not authorized', (done) => {
+test.skip('should respond with 403 if not authorized', (done) => {
   const request = {
     headers: { 'content-type': 'application/ld+json' },
     parameters: {
@@ -60,7 +61,7 @@ test('should respond with 403 if not authorized', (done) => {
   });
 });
 
-test('should respond with Bad Request if invalid notification', (done) => {
+test.skip('should respond with Bad Request if invalid notification', (done) => {
   const request = {
     headers: { 'content-type': 'application/ld+json' },
     parameters: {

@@ -30,6 +30,6 @@
     "@jest/globals": "29.5.0"
   },
   "devDependencies": {
-    "@solid-notifications/types": "^0.0.0"
+    "@solid-notifications/types": "^0.1.0"
   }
 }

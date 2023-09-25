@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest, describe, beforeEach, test, expect } from '@jest/globals';
 import { BadRequestHttpError, HttpError, HttpHandlerRequest, HttpHandlerResponse } from '@digita-ai/handlersjs-http';
 import { getLogger } from '@digita-ai/handlersjs-logging';
@@ -7,6 +8,7 @@ import {
   AccessAuthorization,
   Application,
   AuthorizationData,
+  DataInstance,
   DataRegistry,
   RequestMessageTypes,
   Resource,
@@ -17,18 +19,19 @@ import {
 import { MockedQueue } from '@janeirodigital/sai-server-mocks';
 import { ApiHandler, SaiContext } from '../../../src';
 import * as services from '../../../src/services';
-jest.mock('../../../src/services', () => {
-  return {
-    getApplications: jest.fn(),
-    getSocialAgents: jest.fn(),
-    addSocialAgent: jest.fn(),
-    getDataRegistries: jest.fn(),
-    getDescriptions: jest.fn(),
-    recordAuthorization: jest.fn(),
-    getResource: jest.fn(),
-    shareResource: jest.fn()
-  };
-});
+
+jest.mock('../../../src/services', () => ({
+  getApplications: jest.fn(),
+  getUnregisteredApplicationProfile: jest.fn(),
+  getSocialAgents: jest.fn(),
+  addSocialAgent: jest.fn(),
+  getDataRegistries: jest.fn(),
+  getDescriptions: jest.fn(),
+  listDataInstances: jest.fn(),
+  recordAuthorization: jest.fn(),
+  getResource: jest.fn(),
+  shareResource: jest.fn()
+}));
 
 const mocked = jest.mocked(services);
 const logger = getLogger();
@@ -83,6 +86,23 @@ describe('incorrect request', () => {
       }
     });
   });
+
+  test('should respond with 400 if unsupported message type', (done) => {
+    const request = {
+      headers: { 'content-type': 'application/json' },
+      body: {
+        type: 'unsupported'
+      }
+    } as unknown as HttpHandlerRequest;
+    const ctx = { request, authn, saiSession, logger } as SaiContext;
+
+    apiHandler.handle(ctx).subscribe({
+      error: (e: HttpError) => {
+        expect(e).toBeInstanceOf(BadRequestHttpError);
+        done();
+      }
+    });
+  });
 });
 
 describe('getApplications', () => {
@@ -103,6 +123,30 @@ describe('getApplications', () => {
         expect(response.body.type).toBe(ResponseMessageTypes.APPLICATIONS_RESPONSE);
         expect(response.body.payload).toBe(applications);
         expect(mocked.getApplications).toBeCalledTimes(1);
+        done();
+      }
+    });
+  });
+});
+
+describe('getUnregisteredApplicationProfile', () => {
+  test('sucessful response', (done) => {
+    const request = {
+      headers,
+      body: {
+        type: RequestMessageTypes.UNREGISTERED_APPLICATION_PROFILE
+      }
+    } as unknown as HttpHandlerRequest;
+    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const profile = {} as unknown as Partial<Application>;
+    mocked.getUnregisteredApplicationProfile.mockResolvedValueOnce(profile);
+
+    apiHandler.handle(ctx).subscribe({
+      next: (response: HttpHandlerResponse) => {
+        expect(response.status).toBe(200);
+        expect(response.body.type).toBe(ResponseMessageTypes.UNREGISTERED_APPLICATION_PROFILE);
+        expect(response.body.payload).toBe(profile);
+        expect(mocked.getUnregisteredApplicationProfile).toBeCalledTimes(1);
         done();
       }
     });
@@ -211,6 +255,33 @@ describe('getDescriptions', () => {
 
         const { applicationId, lang } = request.body;
         expect(mocked.getDescriptions).toBeCalledWith(applicationId, lang, saiSession);
+        done();
+      }
+    });
+  });
+});
+
+describe('listDataInstances', () => {
+  test('sucessful response', (done) => {
+    const request = {
+      headers,
+      body: {
+        type: RequestMessageTypes.LIST_DATA_INSTANCES_REQUEST,
+        registrationId: 'https://hr.acme.example/data/projects/'
+      }
+    } as unknown as HttpHandlerRequest;
+    const ctx = { request, authn, saiSession, logger } as SaiContext;
+
+    const dataInstances = [] as unknown as DataInstance[];
+    mocked.listDataInstances.mockResolvedValueOnce(dataInstances);
+
+    apiHandler.handle(ctx).subscribe({
+      next: (response: HttpHandlerResponse) => {
+        expect(response.status).toBe(200);
+        expect(response.body.type).toBe(ResponseMessageTypes.LIST_DATA_INSTANCES_RESPONSE);
+        expect(response.body.payload).toBe(dataInstances);
+
+        expect(mocked.listDataInstances).toBeCalledWith(request.body.registrationId, saiSession);
         done();
       }
     });
