@@ -69,6 +69,7 @@ export class AuthnContextHandler implements HttpContextHandler {
         ...context,
         authn: {
           authenticated: true,
+          issuer: token.iss,
           webId: token.webid,
           clientId: token.client_id
         }

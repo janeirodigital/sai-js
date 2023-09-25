@@ -13,6 +13,7 @@ export interface UnauthenticatedAuthnContext extends HttpHandlerContext {
 export interface AuthenticatedAuthnContext extends HttpHandlerContext {
   authn: {
     authenticated: true;
+    issuer: string;
     webId: string;
     clientId: string;
   };

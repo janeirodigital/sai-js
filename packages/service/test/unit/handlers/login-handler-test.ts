@@ -1,26 +1,25 @@
-import { jest } from '@jest/globals';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { jest, beforeEach, describe, test, expect } from '@jest/globals';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Mock } from 'jest-mock';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { InMemoryStorage } from '@inrupt/solid-client-authn-core';
 import { Session } from '@inrupt/solid-client-authn-node';
-import { HttpError, BadRequestHttpError, HttpHandlerRequest } from '@digita-ai/handlersjs-http';
+import { HttpHandlerRequest } from '@digita-ai/handlersjs-http';
 import { agentRedirectUrl, AuthenticatedAuthnContext, LoginHandler, webId2agentUrl } from '../../../src';
 
 import { SessionManager } from '../../../src/session-manager';
 
-jest.mock('../../../src/session-manager', () => {
-  return {
-    SessionManager: jest.fn(() => {
-      return {
-        getOidcSession: jest.fn()
-      };
-    })
-  };
-});
+jest.mock('../../../src/session-manager', () => ({
+  SessionManager: jest.fn(() => ({
+    getOidcSession: jest.fn()
+  }))
+}));
 
 jest.mock('@inrupt/solid-client-authn-node');
 const MockedSession = Session as jest.MockedFunction<any>;
 
-const idp = 'https://op.example';
+const issuer = 'https://op.example';
 let loginHandler: LoginHandler;
 const manager = jest.mocked(new SessionManager(new InMemoryStorage()));
 
@@ -32,7 +31,8 @@ describe('authenticated request', () => {
   const aliceWebId = 'https://alice.example';
   const authn = {
     webId: aliceWebId,
-    clientId: 'https://projectron.example'
+    clientId: 'https://projectron.example',
+    issuer
   };
   const opRedirectUrl = 'https:/op.example/auth/?something';
   const agentUrl = webId2agentUrl(authn.webId);
@@ -47,43 +47,8 @@ describe('authenticated request', () => {
     loginHandler = new LoginHandler(manager);
   });
 
-  test('should respond with 400 if not application/json', (done) => {
-    const request = {
-      headers: {}
-    } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn } as AuthenticatedAuthnContext;
-
-    loginHandler.handle(ctx).subscribe({
-      error: (e: HttpError) => {
-        expect(e).toBeInstanceOf(BadRequestHttpError);
-        done();
-      }
-    });
-  });
-
-  test('should respond with 400 if not idp provided', (done) => {
-    const request = {
-      headers: {
-        'content-type': 'application/json'
-      }
-    } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn } as AuthenticatedAuthnContext;
-
-    loginHandler.handle(ctx).subscribe({
-      error: (e: HttpError) => {
-        expect(e).toBeInstanceOf(BadRequestHttpError);
-        done();
-      }
-    });
-  });
-
   test('should respond 204 if already logged in', (done) => {
-    const request = {
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: { idp }
-    } as unknown as HttpHandlerRequest;
+    const request = {} as unknown as HttpHandlerRequest;
     const ctx = { request, authn } as AuthenticatedAuthnContext;
     manager.getOidcSession.mockImplementationOnce(async (webId) => {
       expect(webId).toBe(aliceWebId);
@@ -105,12 +70,7 @@ describe('authenticated request', () => {
   });
 
   test('correctly initiate login on oidc session', (done) => {
-    const request = {
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: { idp }
-    } as unknown as HttpHandlerRequest;
+    const request = {} as unknown as HttpHandlerRequest;
     const ctx = { request, authn } as AuthenticatedAuthnContext;
     const mockOidcSession = {
       info: {
@@ -130,7 +90,7 @@ describe('authenticated request', () => {
       expect(manager.getOidcSession).toBeCalledTimes(1);
       expect(loginMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          oidcIssuer: idp,
+          oidcIssuer: issuer,
           clientId: agentUrl,
           redirectUrl: agentRedirectUrl(agentUrl)
         })

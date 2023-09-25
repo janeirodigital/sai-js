@@ -5,7 +5,6 @@ import { getLogger } from '@digita-ai/handlersjs-logging';
 import type { ISessionManager } from '@janeirodigital/sai-server-interfaces';
 import { agentRedirectUrl, webId2agentUrl } from '../url-templates';
 import type { AuthenticatedAuthnContext } from '../models/http-solid-context';
-import { validateContentType } from '../utils/http-validators';
 
 export class LoginHandler extends HttpHandler {
   private logger = getLogger();
@@ -16,14 +15,6 @@ export class LoginHandler extends HttpHandler {
   }
 
   async handleAsync(context: AuthenticatedAuthnContext): Promise<HttpHandlerResponse> {
-    validateContentType(context, 'application/json');
-
-    const idp: string = context.request.body?.idp;
-
-    if (!idp) {
-      throw new BadRequestHttpError('No Identity or Identity Provider sent with the request');
-    }
-
     const { webId } = context.authn;
 
     const oidcSession = await this.sessionManager.getOidcSession(webId);
@@ -37,7 +28,7 @@ export class LoginHandler extends HttpHandler {
     const completeRedirectUrl: string = await new Promise((resolve) => {
       oidcSession.login({
         redirectUrl: agentRedirectUrl(agentUrl),
-        oidcIssuer: idp,
+        oidcIssuer: context.authn.issuer,
         clientName: process.env.APP_NAME,
         clientId: agentUrl,
         handleRedirect: (url: string) => {
