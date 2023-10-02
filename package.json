@@ -1,9 +1,6 @@
 {
   "name": "interop",
   "private": true,
-  "workspaces": [
-    "./packages/*"
-  ],
   "devDependencies": {
     "@jest/globals": "^29.5.0 ",
     "@types/jest": "^29.5.2",
