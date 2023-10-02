@@ -2,17 +2,31 @@ node_modules/
 package-lock.json
 yarn.lock
 
-packages/*/dist
+dist/
 packages/*/coverage
 tsconfig.tsbuildinfo
 
-*.idea
-*.vscode
-*.swp
-*.DS_Store
-*.log
-
+# CSS internals
 packages/css-storage-fixture/.internal/idp
 packages/css-storage-fixture/.internal/locks
 packages/css-storage-fixture/.internal/forgot-password
 packages/css-storage-fixture/.internal/notifications
+
+# OS
+.DS_Store
+
+# logs
+*.log
+
+# local env files
+.env.local
+.env.*.local
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

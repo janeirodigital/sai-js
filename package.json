@@ -27,8 +27,7 @@
     "prepare": "husky install"
   },
   "volta": {
-    "node": "20.7.0",
-    "yarn": "1.22.19"
+    "node": "20.7.0"
   },
   "packageManager": "pnpm@8.8.0"
 }
