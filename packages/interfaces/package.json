@@ -17,6 +17,8 @@
     "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.21"
   },
   "devDependencies": {
-    "@solid-notifications/types": "^0.1.0"
+    "@solid-notifications/types": "^0.1.0",
+    "@types/web-push": "^3.3.2",
+    "web-push": "^3.6.1"
   }
 }

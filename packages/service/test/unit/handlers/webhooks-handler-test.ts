@@ -2,7 +2,7 @@
 import { beforeEach, test, expect } from '@jest/globals';
 import { BadRequestHttpError, HttpError, HttpHandlerRequest, UnauthorizedHttpError } from '@digita-ai/handlersjs-http';
 
-import { MockedQueue } from '@janeirodigital/sai-server-mocks';
+import { MockedQueue } from '../mocked-queue';
 import {
   WebHooksHandler,
   AuthenticatedAuthnContext,

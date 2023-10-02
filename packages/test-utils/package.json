@@ -33,13 +33,12 @@
     "test": "test"
   },
   "scripts": {
-    "build": "tsc -b .",
+    "build": "tsc -b . && cp ./src/data.json ./dist/data.json",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@janeirodigital/interop-utils": "^1.0.0-rc.21",
-    "data-interoperability-panel": "elf-pavlik/data-interoperability-panel#35e95b3"
+    "@janeirodigital/interop-utils": "^1.0.0-rc.21"
   },
   "devDependencies": {
     "@rdfjs/types": "^1.1.0",

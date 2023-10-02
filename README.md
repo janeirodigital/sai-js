@@ -20,10 +20,9 @@ Requires node.js 18 or higher. ([Volta](https://volta.sh/) may help with managin
 ### Bootstrapping
 
 ```bash
-yarn install
-npx lerna bootstrap
-npx lerna run build
-npx lerna run test
+pnpm install
+pnpx turbo run build
+pnpx turbo run test
 ```
 
 ## Intended dependents

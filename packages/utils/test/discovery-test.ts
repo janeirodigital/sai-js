@@ -1,20 +1,33 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { statelessFetch, fetch } from '@janeirodigital/interop-test-utils';
 import {
   RdfResponse,
   discoverAuthorizationAgent,
   discoverAgentRegistration,
-  discoverAuthorizationRedirectEndpoint
+  discoverAuthorizationRedirectEndpoint,
+  INTEROP
 } from '../src';
+import type { RdfFetch, WhatwgFetch } from '../src';
+import { DataFactory, Store } from 'n3';
 
 const webId = 'https://alice.example/#id';
 const authorizationAgentIri = 'https://auth.alice.example/';
+const rdfFetch = jest.fn<RdfFetch>();
+const statelessFetch = jest.fn<WhatwgFetch>();
 
 describe('discoverAuthorizationAgent', () => {
   test('should discover Authorization Agent from the WebID document', async () => {
-    const iri = await discoverAuthorizationAgent(webId, fetch);
+    rdfFetch.mockResolvedValueOnce({
+      dataset: async () =>
+        new Store([
+          DataFactory.quad(
+            DataFactory.namedNode(webId),
+            INTEROP.hasAuthorizationAgent,
+            DataFactory.literal(authorizationAgentIri)
+          )
+        ])
+    } as unknown as RdfResponse);
+    const iri = await discoverAuthorizationAgent(webId, rdfFetch);
     expect(iri).toBe(authorizationAgentIri);
   });
 });
@@ -27,26 +40,20 @@ describe('discoverAgentRegistration', () => {
       anchor="${agentRegistrationIri}";
       rel="http://www.w3.org/ns/solid/interop#registeredAgent"
     `;
-    const mocked = jest.fn(statelessFetch);
-    const responseMock = {
+    statelessFetch.mockResolvedValueOnce({
       ok: true,
       headers: { get: (name: string): string | null => (name === 'Link' ? linkString : null) }
-    } as unknown as RdfResponse;
-    responseMock.clone = () => ({ ...responseMock });
-    mocked.mockResolvedValueOnce(responseMock);
-    const iri = await discoverAgentRegistration(authorizationAgentIri, mocked);
+    } as unknown as RdfResponse);
+    const iri = await discoverAgentRegistration(authorizationAgentIri, statelessFetch);
     expect(iri).toBe(agentRegistrationIri);
   });
 
   test('should return null if no link header ', async () => {
-    const mocked = jest.fn(statelessFetch);
-    const responseMock = {
+    statelessFetch.mockResolvedValueOnce({
       ok: true,
       headers: { get: (): null => null }
-    } as unknown as RdfResponse;
-    responseMock.clone = () => ({ ...responseMock });
-    mocked.mockResolvedValueOnce(responseMock);
-    const iri = await discoverAgentRegistration(authorizationAgentIri, mocked);
+    } as unknown as RdfResponse);
+    const iri = await discoverAgentRegistration(authorizationAgentIri, statelessFetch);
     expect(iri).toBeNull();
   });
 });
@@ -54,6 +61,14 @@ describe('discoverAgentRegistration', () => {
 describe('discoverAuthorizationRedirectEndpoint', () => {
   test('should discover authorization uri from Client ID document', async () => {
     const authorizationRedirectUri = 'https://auth.example/authorize';
+    statelessFetch.mockResolvedValueOnce({
+      text: async () => `
+        {
+          "@context": { "interop": "http://www.w3.org/ns/solid/interop#" },
+          "interop:hasAuthorizationRedirectEndpoint": "${authorizationRedirectUri}"
+        }
+      `
+    } as unknown as Response);
     const iri = await discoverAuthorizationRedirectEndpoint(authorizationAgentIri, statelessFetch);
     expect(iri).toBe(authorizationRedirectUri);
   });

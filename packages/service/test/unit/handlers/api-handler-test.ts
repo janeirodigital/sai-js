@@ -16,8 +16,9 @@ import {
   ShareAuthorizationConfirmation,
   SocialAgent
 } from '@janeirodigital/sai-api-messages';
-import { MockedQueue } from '@janeirodigital/sai-server-mocks';
+
 import { ApiHandler, SaiContext } from '../../../src';
+import { MockedQueue } from '../mocked-queue';
 import * as services from '../../../src/services';
 
 jest.mock('../../../src/services', () => ({

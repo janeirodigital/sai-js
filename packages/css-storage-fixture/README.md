@@ -14,8 +14,6 @@ All accounts use `password` as the password
 
 ## Starting CSS
 
-After running `npx lerna bootstrap` at the root of mono reopo.
-
 ```bash
-npm start
+pnpm start
 ```

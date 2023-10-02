@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import { IQueue } from '@janeirodigital/sai-server-interfaces';
 
 export class MockedQueue implements IQueue {

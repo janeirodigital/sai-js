@@ -4,7 +4,7 @@ import { InMemoryStorage, Session } from '@inrupt/solid-client-authn-node';
 import { HttpHandlerContext, HttpHandlerRequest } from '@digita-ai/handlersjs-http';
 
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
-import { MockedQueue } from '@janeirodigital/sai-server-mocks';
+import { MockedQueue } from '../mocked-queue';
 import { LoginRedirectHandler, frontendUrl, baseUrl, encodeWebId } from '../../../src';
 
 import { SessionManager } from '../../../src/session-manager';

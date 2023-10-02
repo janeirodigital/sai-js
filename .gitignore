@@ -1,7 +1,4 @@
 node_modules/
-lerna-debug.log
-npm-debug.log
-yarn-error.log
 package-lock.json
 yarn.lock
 
@@ -13,6 +10,7 @@ tsconfig.tsbuildinfo
 *.vscode
 *.swp
 *.DS_Store
+*.log
 
 packages/css-storage-fixture/.internal/idp
 packages/css-storage-fixture/.internal/locks
