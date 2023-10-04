@@ -36,6 +36,9 @@ export default defineConfig({
     include: ['jsonld-streaming-parser', 'n3', 'http-link-header']
   },
   server: {
+    hmr: {
+      overlay: false
+    },
     port: 4500,
     fs: {
       strict: false

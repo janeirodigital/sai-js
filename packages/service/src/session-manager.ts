@@ -33,9 +33,12 @@ export class SessionManager implements ISessionManager {
     if (cached) return cached;
 
     const oidcSession = await this.getOidcSession(webId);
+    if (!oidcSession.info.isLoggedIn) throw new Error('OIDC session not logged in');
+
     const agentUrl = webId2agentUrl(webId);
     const saiSession = await buildSaiSession(oidcSession, agentUrl);
     cache.set(webId, saiSession);
+
     return saiSession;
   }
 

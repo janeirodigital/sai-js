@@ -40,7 +40,7 @@ afterEach(() => {
 describe('getSaiSession', () => {
   test('creates sai session', async () => {
     const oidcSession = {
-      info: { webId, sessionId: webId },
+      info: { webId, sessionId: webId, isLoggedIn: true },
       fetch: () => {}
     } as unknown as Session;
 

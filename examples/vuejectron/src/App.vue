@@ -1,14 +1,3 @@
-<style>
-a {
-  text-decoration: none;
-}
-a:link {
-  color: black;
-}
-a:visited {
-  color: black;
-}
-</style>
 <template>
   <Suspense>
     <router-view />
@@ -19,5 +8,15 @@ a:visited {
 </template>
 
 <script lang="ts" setup>
-//
+import { watch } from 'vue';
+import { useTheme } from 'vuetify';
+import { usePreferredDark } from '@vueuse/core';
+
+const theme = useTheme();
+
+const preferredDark = usePreferredDark();
+
+watch(preferredDark, (newValue) => {
+  theme.global.name.value = newValue ? 'dark' : 'light';
+});
 </script>

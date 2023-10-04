@@ -30,3 +30,5 @@ packages/css-storage-fixture/.internal/notifications
 *.njsproj
 *.sln
 *.sw?
+
+.turbo

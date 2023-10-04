@@ -8,11 +8,13 @@ import { useCoreStore } from './core';
 export const useAppStore = defineStore('app', () => {
   const coreStore = useCoreStore();
   const agents = ref<Agent[]>([]);
-  const projects = ref<Project[]>([]);
-  const registrations = ref<Registration[]>([]);
+  const projects = ref<Record<string, Project[]>>({});
+  const registrations = ref<Record<string, Registration[]>>({});
   const tasks = ref<Task[]>([]);
   const files = ref<FileInstance[]>([]);
   const images = ref<ImageInstance[]>([]);
+  const currentAgent = ref<Agent>();
+  const currentProject = ref<Project>();
 
   // DO NOT AWAIT! (infinite loop)
   async function watchSai(): Promise<void> {
@@ -25,20 +27,23 @@ export const useAppStore = defineStore('app', () => {
       if (done) {
         break;
       }
-      if (value.type === 'GRANT') loadAgents();
+      if (value.type === 'GRANT') loadAgents(true);
     }
   }
 
-  async function loadAgents(): Promise<void> {
-    const sai = useSai(coreStore.userId);
-    agents.value = await sai.getAgents();
+  async function loadAgents(force = false): Promise<void> {
+    if (force || !agents.value.length) {
+      const sai = useSai(coreStore.userId);
+      agents.value = await sai.getAgents();
+    }
   }
 
   async function loadProjects(ownerId: string): Promise<void> {
+    if (registrations.value[ownerId]) return;
     const sai = useSai(coreStore.userId);
     const data = await sai.getProjects(ownerId);
-    projects.value = data.projects;
-    registrations.value = data.registrations;
+    projects.value = { ...projects.value, ...data.projects };
+    registrations.value = { ...registrations.value, ...data.registrations };
   }
 
   async function loadTasks(projectId: string): Promise<void> {
@@ -102,13 +107,25 @@ export const useAppStore = defineStore('app', () => {
     images.value = data.images;
   }
 
+  function setCurrentAgent(agentId: string) {
+    currentAgent.value = agents.value.find((a) => a.id === agentId);
+  }
+
+  function setCurrentProject(registrationId: string, projectId: string) {
+    currentProject.value = projects.value[registrationId]?.find((p) => p.id === projectId);
+  }
+
   return {
     agents,
+    currentAgent,
+    currentProject,
     registrations,
     projects,
     tasks,
     files,
     images,
+    setCurrentAgent,
+    setCurrentProject,
     watchSai,
     loadAgents,
     loadProjects,

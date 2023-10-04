@@ -133,28 +133,30 @@ async function getAgents(): Promise<Agent[]> {
 
 async function getProjects(
   ownerId: string
-): Promise<{ ownerId: string; projects: Project[]; registrations: Registration[] }> {
+): Promise<{ projects: Record<string, Project[]>; registrations: Record<string, Registration[]> }> {
   const session = await ensureSaiSession();
   const user = session.dataOwners.find((agent) => agent.iri === ownerId);
   if (!user) {
     throw new Error(`data registration not found for ${ownerId}`);
   }
-  const projects: Project[] = [];
-  const registrations: Registration[] = [];
+  const projects: Record<string, Project[]> = {};
+  const registrations: Record<string, Registration[]> = {};
+  registrations[ownerId] = [];
   for (const registration of user.selectRegistrations(shapeTrees.project)) {
-    registrations.push({
+    registrations[ownerId].push({
       id: registration.iri,
       label: 'TODO',
       owner: ownerId,
       canCreate: registration.grant.accessMode.includes(ACL.Create.value)
     });
+    projects[registration.iri] = [];
     for await (const dataInstance of registration.dataInstances) {
       cache[dataInstance.iri] = dataInstance;
       ownerIndex[dataInstance.iri] = ownerId;
-      projects.push(instance2Project(dataInstance, ownerId, registration.iri));
+      projects[registration.iri].push(instance2Project(dataInstance, ownerId, registration.iri));
     }
   }
-  return { ownerId, projects, registrations };
+  return { projects, registrations };
 }
 
 async function getTasks(projectId: string): Promise<{ projectId: string; tasks: Task[] }> {
