@@ -82,6 +82,7 @@ export function useSai(userId: string | null) {
     getStream,
     isAuthorized,
     getAuthorizationRedirectUri,
+    share,
     getAgents,
     getProjects,
     getTasks,
@@ -116,6 +117,14 @@ async function isAuthorized(): Promise<boolean> {
 async function getAuthorizationRedirectUri(): Promise<string> {
   const session = await ensureSaiSession();
   return session.authorizationRedirectUri;
+}
+
+async function share(resourceId: string) {
+  const session = await ensureSaiSession();
+  const shareUri = session.getShareUri(resourceId);
+  if (!shareUri) throw new Error('shareUri is undefined');
+  window.localStorage.setItem('restorePath', `${window.location.pathname}${window.location.search}`);
+  window.location.href = shareUri;
 }
 
 async function getAgents(): Promise<Agent[]> {
@@ -199,11 +208,8 @@ async function updateTask(task: Task): Promise<Task> {
 
 async function deleteTask(task: Task): Promise<void> {
   await ensureSaiSession();
-  let instance: DataInstance;
-
-  instance = cache[task.id];
+  const instance = cache[task.id];
   await instance.delete();
-
   delete cache[task.id];
 }
 

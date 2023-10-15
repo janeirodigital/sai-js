@@ -51,15 +51,15 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to) => {
+  if (to.name === 'redirect') return;
   const coreStore = useCoreStore();
-  await coreStore.restoreOidcSession();
+  await coreStore.restoreOidcSession(to);
 
   if (!to.meta.public) {
     if (!coreStore.userId || !coreStore.isAuthorized) {
       return {
         name: 'login'
-        // query: { redirect: to.fullPath },
       };
     }
   }
@@ -68,8 +68,10 @@ router.beforeEach(async (to, from) => {
 async function handleRedirect() {
   const coreStore = useCoreStore();
   await coreStore.handleRedirect(window.location.href);
-
-  return { name: 'agent', query: { agent: coreStore.userId } };
+  const restoreUrl = localStorage.getItem('restorePath');
+  localStorage.removeItem('restorePath');
+  const defaultRoute = { name: 'agent', query: { agent: coreStore.userId } };
+  return restoreUrl ? restoreUrl : defaultRoute;
 }
 
 router.afterEach((to, from) => {

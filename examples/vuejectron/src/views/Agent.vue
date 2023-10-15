@@ -3,6 +3,7 @@
     <div
       v-if="appStore.currentAgent && appStore.registrations[appStore.currentAgent.id]"
       v-for="registration in appStore.registrations[appStore.currentAgent.id]"
+      :key="registration.id"
     >
       <h3>{{ registration.label }}</h3>
       <v-list>
@@ -31,8 +32,8 @@ watch(
   () => route.query.agent,
   (agent) => {
     if (agent) {
-      appStore.setCurrentAgent(agent as string);
-      appStore.loadProjects(agent as string); // TODO
+      appStore.setCurrentAgent(agent as string); //TODO
+      appStore.loadProjects(agent as string); //TODO
     }
   },
   { immediate: true }

@@ -73,8 +73,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { computedAsync } from '@vueuse/core';
 
 import { useAppStore } from '@/store/app';
@@ -87,17 +87,15 @@ import InputDialog from '@/components/InputDialog.vue';
 const download = ref<HTMLAnchorElement>();
 const upload = ref<HTMLInputElement>();
 
-const coreSotre = useCoreStore();
-const sai = useSai(coreSotre.userId);
+const coreStore = useCoreStore();
+const sai = useSai(coreStore.userId);
 
 const route = useRoute();
-const router = useRouter();
 const dialog = ref(false);
 
 const selectedTask = ref<Task | null>(null);
 
 const appStore = useAppStore();
-const imageUrl = (id: string) => computed(async () => await sai.dataUrl(id));
 
 const imageUrls = computedAsync(async () => await Promise.all(appStore.images.map((image) => sai.dataUrl(image.id))));
 

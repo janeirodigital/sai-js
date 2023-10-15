@@ -7,6 +7,7 @@ import {
   login as oidcLogin
 } from '@inrupt/solid-client-authn-browser';
 import { useSai } from '@/sai';
+import { RouteLocationNormalized } from 'vue-router';
 
 class OidcError extends Error {
   constructor(private oidcInfo?: ISessionInfo) {
@@ -48,11 +49,11 @@ export const useCoreStore = defineStore('core', () => {
     window.location.href = await sai.getAuthorizationRedirectUri();
   }
 
-  async function restoreOidcSession(): Promise<void> {
+  async function restoreOidcSession(to: RouteLocationNormalized): Promise<void> {
     const oidcSession = getDefaultSession();
 
     if (!oidcSession.info.isLoggedIn) {
-      // if session can be restored it will redirect to oidcIssuer, which will return back to `/redirect`
+      if (to.name !== 'login') localStorage.setItem('restorePath', to.fullPath);
       const oidcInfo = await oidcSession.handleIncomingRedirect({ restorePreviousSession: true });
       if (oidcInfo?.webId) {
         userId.value = oidcInfo.webId;

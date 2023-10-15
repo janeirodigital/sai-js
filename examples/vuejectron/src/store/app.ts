@@ -115,6 +115,11 @@ export const useAppStore = defineStore('app', () => {
     currentProject.value = projects.value[registrationId]?.find((p) => p.id === projectId);
   }
 
+  async function shareProject(projectId: string) {
+    const sai = useSai(coreStore.userId);
+    sai.share(projectId);
+  }
+
   return {
     agents,
     currentAgent,
@@ -126,6 +131,7 @@ export const useAppStore = defineStore('app', () => {
     images,
     setCurrentAgent,
     setCurrentProject,
+    shareProject,
     watchSai,
     loadAgents,
     loadProjects,

@@ -30,6 +30,9 @@
     <template v-slot:prepend v-if="icon">
       <v-btn :icon="icon" @click="navigateUp"> </v-btn>
     </template>
+    <template v-slot:append v-if="route.query.project">
+      <v-btn icon="mdi-share-variant" @click="shareProject"> </v-btn>
+    </template>
   </v-app-bar>
 
   <v-container>
@@ -70,6 +73,9 @@ const icon = computed(() =>
 const appStore = useAppStore();
 appStore.watchSai();
 await appStore.loadAgents();
+if (route.query.project) {
+  await appStore.loadProjects(route.query.agent as string);
+}
 
 const showSnackbar = ref(false);
 const newAgent = ref<Agent>();
@@ -86,6 +92,12 @@ function navigateUp() {
     router.push({ name: 'agent', query: { agent: route.query.agent } });
   } else {
     router.push({ name: 'dashboard' });
+  }
+}
+
+function shareProject() {
+  if (appStore.currentProject) {
+    appStore.shareProject(appStore.currentProject.id);
   }
 }
 
