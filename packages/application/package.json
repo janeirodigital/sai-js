@@ -50,7 +50,7 @@
     "@janeirodigital/interop-data-model": "^1.0.0-rc.21",
     "@janeirodigital/interop-utils": "^1.0.0-rc.21",
     "@solid-notifications/subscription": "^0.1.0",
-    "n3": "^1.16.4"
+    "n3": "^1.17.1"
   },
   "devDependencies": {
     "@janeirodigital/interop-test-utils": "^1.0.0-rc.21",
