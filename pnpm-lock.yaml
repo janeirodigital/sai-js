@@ -196,8 +196,8 @@ importers:
   packages/css-storage-fixture:
     dependencies:
       '@solid/community-server':
-        specifier: 6.0.1
-        version: 6.0.1
+        specifier: ^6.1.0
+        version: 6.1.0
 
   packages/data-model:
     dependencies:
@@ -3905,9 +3905,9 @@ packages:
       - encoding
     dev: false
 
-  /@solid/community-server@6.0.1:
+  /@solid/community-server@6.1.0:
     resolution:
-      { integrity: sha512-Ll/CokpMTjFAKt1QzmeEW8QPnzUaU/X1X/T8GwMcF9O3Da2qIWRU0negMN3DKFFVTuZK6Kj1swrFxOwbo29oRQ== }
+      { integrity: sha512-aDYEh30K3bAuzoHOjMmEUCr9CHf1jG1DE33p34Pf1rrwDC6SAwQXumEprkcrJzUF/wmsVESSYoFxtykfHNGSbQ== }
     engines: { node: '>=14.14' }
     hasBin: true
     dependencies:
