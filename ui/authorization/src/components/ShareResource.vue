@@ -53,7 +53,9 @@
     </v-card-text>
     <div class="px-2 d-flex justify-space-between">
       <v-btn color="warning" variant="tonal" :disabled="loading">Cancel</v-btn>
-      <v-btn color="primary" variant="flat" size="large" :loading="loading" @click="share">Share</v-btn>
+      <v-btn color="primary" variant="flat" size="large" :loading="loading" :disabled="!valid" @click="share"
+        >Share</v-btn
+      >
     </div>
   </v-card>
   <v-bottom-navigation> </v-bottom-navigation>
@@ -81,6 +83,8 @@ const shareData: ShareAuthorizationModes = reactive({
 });
 
 const loading = ref(false);
+
+const valid = computed(() => Boolean(shareData.accessMode.length && selectedAgents.size));
 
 const selectedAgents = reactive<Set<string>>(new Set());
 
