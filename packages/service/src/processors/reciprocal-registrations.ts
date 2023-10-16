@@ -25,7 +25,7 @@ export class ReciprocalRegistrationsProcessor implements IProcessor {
 
     // manage webook subscription
     if (await this.sessionManager.getWebhookSubscription(webId, registeredAgent)) return;
-    const subscriptionClient = new SubscriptionClient(saiSession.rawFetch);
+    const subscriptionClient = new SubscriptionClient(saiSession.rawFetch as typeof fetch); // TODO: remove as
     const channel = await subscriptionClient.subscribe(
       registration.reciprocalRegistration.iri,
       NOTIFY.WebhookChannel2023.value,

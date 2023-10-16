@@ -10,11 +10,9 @@ export class AccessInboxProcessor implements IProcessor {
   async processorFunction(job: IAccessInboxJob): Promise<void> {
     const { webId } = job.data;
     const saiSession = await this.sessionManager.getSaiSession(webId);
-
     if (await this.sessionManager.getWebhookSubscription(webId, webId)) return;
     if (!saiSession.webIdProfile?.hasAccessInbox) return;
-
-    const subscriptionClient = new SubscriptionClient(saiSession.rawFetch);
+    const subscriptionClient = new SubscriptionClient(saiSession.rawFetch as typeof fetch); // TODO: remove as
     const channel = await subscriptionClient.subscribe(
       saiSession.webIdProfile.hasAccessInbox,
       NOTIFY.WebhookChannel2023.value,
