@@ -53,7 +53,10 @@ export const useCoreStore = defineStore('core', () => {
     const oidcSession = getDefaultSession();
 
     if (!oidcSession.info.isLoggedIn) {
-      if (to.name !== 'login') localStorage.setItem('restorePath', to.fullPath);
+      const restoreUrl = localStorage.getItem('restorePath');
+      if (to.name !== 'login' && !restoreUrl) {
+        localStorage.setItem('restorePath', to.fullPath);
+      }
       const oidcInfo = await oidcSession.handleIncomingRedirect({ restorePreviousSession: true });
       if (oidcInfo?.webId) {
         userId.value = oidcInfo.webId;
