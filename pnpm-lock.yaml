@@ -183,7 +183,7 @@ importers:
         specifier: ^1.0.0-rc.21
         version: link:../utils
       n3:
-        specifier: ^1.16.4
+        specifier: ^1.17.1
         version: 1.17.1
     devDependencies:
       '@janeirodigital/interop-test-utils':
