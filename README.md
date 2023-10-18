@@ -7,9 +7,30 @@
 
 Modules implementing [Solid Application Interoperability Specification](https://solid.github.io/data-interoperability-panel/specification/)
 
+## Intended dependents
+
+|                           | package                                                                                                                          |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Solid Applications        | [`@janeirodigital/interop-application`](https://github.com/janeirodigital/sai-js/tree/main/packages/application)                 |
+| Solid Authorization Agent | [`@janeirodigital/interop-authorization-agent`](https://github.com/janeirodigital/sai-js/tree/main/packages/authorization-agent) |
+
 ## Development
 
-Requires node.js 18 or higher. ([Volta](https://volta.sh/) may help with managing node versions)
+### Docker
+
+Default setup assumes `docker` command available, and runs it as non-root user.
+It only uses [official redis image](https://hub.docker.com/_/redis) for the authorization agent service.
+
+### Node, corepack and pnpm
+
+Requires node.js 20 or higher with corepack ([Volta](https://volta.sh/) may help with managing node versions).
+Uses pnpm as package manager.
+
+```bash
+volta install node@20
+volta install corepack
+corepack prepare pnpm@latest --activate
+```
 
 ### Github packages
 
@@ -23,81 +44,33 @@ Requires node.js 18 or higher. ([Volta](https://volta.sh/) may help with managin
 pnpm install
 pnpx turbo run build
 pnpx turbo run test
+pnpx turbo run dev
 ```
 
-## Intended dependents
+It will run following:
 
-|                           | package                                                                                                                          |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Solid Applications        | [`@janeirodigital/interop-application`](https://github.com/janeirodigital/sai-js/tree/main/packages/application)                 |
-| Solid Authorization Agent | [`@janeirodigital/interop-authorization-agent`](https://github.com/janeirodigital/sai-js/tree/main/packages/authorization-agent) |
+#### Community Solid Server
 
-## Demo setup
+Run from [packages/css-solid-fixture](https://github.com/janeirodigital/sai-js/tree/main/packages/css-storage-fixture).
+Used for solid storage instances and solid-oidc provider.
 
-Install node and yarn with [Volta](https://volta.sh/)
+Available on http://localhost:3000, default demo account is `alice@example.org` with `password`.
 
-```bash
-volta install node@16
-volta install node@18
-volta install yarn@1
-```
+#### Authorization Agent
 
-Create workspace directory and enter it
+##### Service
 
-```bash
-mkdir sai
-cd sai
-```
+Run from [packages/service](https://github.com/janeirodigital/sai-js/tree/main/packages/service).
+Available on http://localhost:4000 (API only)
 
-Clone repositories
+##### UI
 
-```bash
-git clone https://github.com/janeirodigital/sai-js.git
-git clone https://github.com/janeirodigital/sai-impl-web.git
-git clone https://github.com/hackers4peace/projectron.git
-```
+Run from [ui/authorization](https://github.com/janeirodigital/sai-js/tree/main/ui/authorization).
+Available on http://localhost:4200 , requires signing up with UI first and later signing up in with the service (_Connect server_).
+Dev config uses local CSS as default provider when input left empty.
 
-Run Redis with docker.
-It is recommended to delete and recreate _sai-redis_ container before each working session. It prevents problems with expired OIDC tokens.
+#### Demo app (Vujectron)
 
-```bash
-docker run --name sai-redis -p 6379:6379 -d redis
-```
-
-[Add github packages](#github-packages) and [Bootstrap sai-js monorepo](#bootstrapping)
-
-Run Community Solid Server, by default it will run on `localhost:3000`
-
-```bash
-cd sai-js/packages/css-storage-fixture
-yarn start
-```
-
-Run Authorization Agent Service, by default it will run on `localhost:4000`
-It is recommended to restart it any time generated authorization data gets manually discarded or deleted.
-
-```bash
-cd sai-js/packages/service
-yarn start
-```
-
-Run Authorization Agent Web frontend, by default it will run on `localhost:4200`
-
-```bash
-cd sai-impl-web
-yarn install
-yarn start
-```
-
-Open http://localhost:4200, Log in using default provider and with `alice@example.org` & `password`.
-Connect to server.
-
-Run Projectron demo application, by default it will run on `localhost:4300`
-
-```bash
-cd projectron
-yarn install
-yarn start
-```
-
-Open http://localhost:4300, Log in using default provider and request authorization.
+Run from [examples/vuejectron](https://github.com/janeirodigital/sai-js/tree/main/examples/vuejectron).
+Available on http://localhost:4500 , requires signup and authorization.
+Dev config uses local CSS as default provider when input left empty.
