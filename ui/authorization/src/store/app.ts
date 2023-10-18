@@ -1,5 +1,6 @@
 // Utilities
-import { useBackend } from '@/backend';
+import { reactive, ref } from 'vue';
+import { defineStore } from 'pinia';
 import {
   Resource,
   AuthorizationData,
@@ -9,10 +10,10 @@ import {
   ShareAuthorizationConfirmation,
   Authorization,
   AccessAuthorization,
-  DataInstance
+  DataInstance,
+  DataRegistry
 } from '@janeirodigital/sai-api-messages';
-import { defineStore } from 'pinia';
-import { reactive, ref } from 'vue';
+import { useBackend } from '@/backend';
 
 export const useAppStore = defineStore('app', () => {
   const lang = ref('en');
@@ -20,9 +21,11 @@ export const useAppStore = defineStore('app', () => {
   const shareAuthorizationConfirmation = ref<ShareAuthorizationConfirmation | null>(null);
   const authorizationData = ref<AuthorizationData | null>(null);
   const accessAuthorization = ref<AccessAuthorization | null>(null);
-  const socialAgents = ref<SocialAgent[]>([]);
+  const socialAgentList = ref<SocialAgent[]>([]);
   const application = ref<Partial<Application> | null>(null);
   const loadedDataInstances = reactive<DataInstance[]>([]);
+  const applicationList = reactive<Application[]>([]);
+  const dataRegistryList = reactive<DataRegistry[]>([]);
 
   const backend = useBackend();
 
@@ -49,12 +52,26 @@ export const useAppStore = defineStore('app', () => {
     accessAuthorization.value = await backend.authorizeApp(authorization);
   }
 
-  async function getSocialAgents() {
-    socialAgents.value = await backend.getSocialAgents();
+  async function listSocialAgents() {
+    socialAgentList.value = await backend.listSocialAgents();
   }
 
   async function getApplication(applicationId: string) {
     application.value = await backend.getApplication(applicationId);
+  }
+
+  async function listApplications() {
+    if (!applicationList.length) {
+      const applications = await backend.listApplications();
+      applicationList.push(...applications);
+    }
+  }
+
+  async function listDataRegistries(lang = 'en') {
+    if (!dataRegistryList.length) {
+      const dataRegistries = await backend.listDataRegistires(lang);
+      dataRegistryList.push(...dataRegistries);
+    }
   }
 
   return {
@@ -63,15 +80,19 @@ export const useAppStore = defineStore('app', () => {
     authorizationData,
     accessAuthorization,
     loadedDataInstances,
-    socialAgents,
+    socialAgentList,
     application,
+    applicationList,
+    dataRegistryList,
     shareAuthorizationConfirmation,
     getResource,
     shareResource,
     getAuthoriaztion,
     listDataInstances,
     authorizeApp,
-    getSocialAgents,
-    getApplication
+    listSocialAgents,
+    getApplication,
+    listApplications,
+    listDataRegistries
   };
 });

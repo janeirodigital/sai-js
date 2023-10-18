@@ -5,9 +5,16 @@ import {
   ApplicationAuthorizationRequest,
   ApplicationAuthorizationResponse,
   ApplicationAuthorizationResponseMessage,
+  ApplicationsRequest,
+  ApplicationsResponse,
+  ApplicationsResponseMessage,
   Authorization,
   AuthorizationData,
   DataInstance,
+  DataRegistriesRequest,
+  DataRegistriesResponse,
+  DataRegistriesResponseMessage,
+  DataRegistry,
   DescriptionsRequest,
   DescriptionsResponse,
   DescriptionsResponseMessage,
@@ -36,33 +43,17 @@ import {
 const backendBaseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
 const authnFetch = getDefaultSession().fetch;
 
-export function useBackend() {
-  return {
-    checkServerSession,
-    getResource,
-    shareResource,
-    getAuthorization,
-    listDataInstances,
-    authorizeApp,
-    getSocialAgents,
-    getApplication
-  };
-}
-
 async function checkServerSession(): Promise<{ isLoggedIn: boolean; redirectUrl?: string }> {
   const options = {
     method: 'POST'
   };
   const result = await authnFetch(`${backendBaseUrl}/login`, options);
-
-  if (result.status === 204) {
-    return { isLoggedIn: true };
-  } else if (result.status === 200) {
+  if (result.status === 204) return { isLoggedIn: true };
+  if (result.status === 200) {
     const { redirectUrl } = await result.json();
     return { isLoggedIn: false, redirectUrl };
-  } else {
-    throw new Error(`login check failed, status = ${result.status}`);
   }
+  throw new Error(`login check failed, status = ${result.status}`);
 }
 
 async function getDataFromApi<T extends ResponseMessage>(request: Request): Promise<T> {
@@ -108,7 +99,7 @@ async function authorizeApp(authorization: Authorization): Promise<AccessAuthori
   return response.payload;
 }
 
-async function getSocialAgents(): Promise<SocialAgent[]> {
+async function listSocialAgents(): Promise<SocialAgent[]> {
   const request = new SocialAgentsRequest();
   const data = await getDataFromApi<SocialAgentsResponseMessage>(request);
   const response = new SocialAgentsResponse(data);
@@ -122,9 +113,38 @@ async function getApplication(applicationId: IRI): Promise<Partial<Application>>
   return response.payload;
 }
 
+async function listApplications(): Promise<Application[]> {
+  const request = new ApplicationsRequest();
+  const data = await getDataFromApi<ApplicationsResponseMessage>(request);
+  const response = new ApplicationsResponse(data);
+  return response.payload;
+}
+
+async function listDataRegistires(lang: string): Promise<DataRegistry[]> {
+  const request = new DataRegistriesRequest(lang);
+  const data = await getDataFromApi<DataRegistriesResponseMessage>(request);
+  const response = new DataRegistriesResponse(data);
+  return response.payload;
+}
+
 async function shareResource(shareAuthorization: ShareAuthorization): Promise<ShareAuthorizationConfirmation> {
   const request = new ShareAuthorizationRequest(shareAuthorization);
   const data = await getDataFromApi<ShareAuthorizationResponseMessage>(request);
   const response = new ShareAuthorizationResponse(data);
   return response.payload;
+}
+
+export function useBackend() {
+  return {
+    checkServerSession,
+    getResource,
+    shareResource,
+    getAuthorization,
+    listDataInstances,
+    authorizeApp,
+    listSocialAgents,
+    getApplication,
+    listApplications,
+    listDataRegistires
+  };
 }

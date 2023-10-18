@@ -6,8 +6,8 @@ import {
   handleIncomingRedirect,
   login as oidcLogin
 } from '@inrupt/solid-client-authn-browser';
-import { useBackend } from '@/backend';
 import type { RouteLocationNormalized } from 'vue-router';
+import { useBackend } from '@/backend';
 
 class OidcError extends Error {
   constructor(private oidcInfo?: ISessionInfo) {
@@ -19,6 +19,7 @@ export const useCoreStore = defineStore('core', () => {
   const userId = ref<string | null>(null);
   const isBackendLoggedIn = ref(false);
   const redirectUrlForBackend = ref('');
+  const lang = ref('en');
 
   async function login(oidcIssuer: string) {
     const options = {
@@ -56,5 +57,5 @@ export const useCoreStore = defineStore('core', () => {
     }
   }
 
-  return { userId, isBackendLoggedIn, redirectUrlForBackend, login, handleRedirect, restoreOidcSession };
+  return { userId, lang, isBackendLoggedIn, redirectUrlForBackend, login, handleRedirect, restoreOidcSession };
 });

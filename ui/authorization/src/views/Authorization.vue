@@ -1,16 +1,18 @@
 <template>
-  <AuthorizeApp
-    v-if="!route.query.resource && appStore.authorizationData && appStore.application"
-    :application="appStore.application"
-    :authorizationData="appStore.authorizationData"
-  ></AuthorizeApp>
-  <AuthorizeAgent v-if="!route.query.resource && agent" :agent="agent"></AuthorizeAgent>
-  <ShareResource
-    v-if="!route.query.webid && clientId && appStore.resource"
-    :applicationId="clientId"
-    :resource="appStore.resource"
-    :social-agents="appStore.socialAgents"
-  ></ShareResource>
+  <v-main>
+    <AuthorizeApp
+      v-if="!route.query.resource && appStore.authorizationData && appStore.application"
+      :application="appStore.application"
+      :authorizationData="appStore.authorizationData"
+    ></AuthorizeApp>
+    <AuthorizeAgent v-if="!route.query.resource && agent" :agent="agent"></AuthorizeAgent>
+    <ShareResource
+      v-if="!route.query.webid && clientId && appStore.resource"
+      :applicationId="clientId"
+      :resource="appStore.resource"
+      :social-agents="appStore.socialAgentList"
+    ></ShareResource>
+  </v-main>
 </template>
 
 <script lang="ts" setup>
@@ -46,7 +48,7 @@ watch(
   () => route.query.webid,
   (webid) => {
     if (webid) {
-      appStore.getSocialAgents();
+      appStore.listSocialAgents();
       if (Array.isArray(webid)) throw new Error('only one agent is allowed');
       agentId.value = webid;
     }
@@ -59,7 +61,7 @@ watch(
   (id) => {
     if (id) {
       appStore.getResource(id);
-      appStore.getSocialAgents();
+      appStore.listSocialAgents();
     }
   },
   { immediate: true }
@@ -77,6 +79,6 @@ watch(
 );
 
 const agent = computed(() => {
-  return appStore.socialAgents.find((a) => a.id === agentId.value);
+  return appStore.socialAgentList.find((a) => a.id === agentId.value);
 });
 </script>

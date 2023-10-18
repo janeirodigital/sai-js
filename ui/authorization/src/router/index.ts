@@ -1,7 +1,15 @@
 // Composables
 import { h } from 'vue';
-import { useCoreStore } from '@/store/core';
 import { createRouter, createWebHistory } from 'vue-router';
+import { useCoreStore } from '@/store/core';
+
+async function handleRedirect() {
+  const coreStore = useCoreStore();
+  await coreStore.handleRedirect(window.location.href);
+  const restoreUrl = localStorage.getItem('restoreUrl');
+  localStorage.removeItem('restoreUrl');
+  return restoreUrl || { name: 'dashboard' };
+}
 
 const routes = [
   {
@@ -14,11 +22,26 @@ const routes = [
         component: () => import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard.vue'),
         children: [
           {
-            path: '/authorize',
-            name: 'authorization',
-            component: () => import(/* webpackChunkName: "authorization" */ '@/views/Authorization.vue')
+            path: '/applications',
+            name: 'application-list',
+            component: () => import(/* webpackChunkName: "application-list" */ '@/views/ApplicationList.vue')
+          },
+          {
+            path: '/social-agents',
+            name: 'social-agent-list',
+            component: () => import(/* webpackChunkName: "social-agent-list" */ '@/views/SocialAgentList.vue')
+          },
+          {
+            path: '/data-registries',
+            name: 'data-registry-list',
+            component: () => import(/* webpackChunkName: "data-registry-list" */ '@/views/DataRegistryList.vue')
           }
         ]
+      },
+      {
+        path: '/authorize',
+        name: 'authorization',
+        component: () => import(/* webpackChunkName: "authorization" */ '@/views/Authorization.vue')
       },
       {
         path: '/login',
@@ -42,8 +65,8 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach(async (to, from) => {
-  if (to.name === 'redirect') return;
+router.beforeEach(async (to) => {
+  if (to.name === 'redirect') return undefined;
   const coreStore = useCoreStore();
   await coreStore.restoreOidcSession(to);
 
@@ -54,14 +77,7 @@ router.beforeEach(async (to, from) => {
       };
     }
   }
+  return undefined;
 });
-
-async function handleRedirect() {
-  const coreStore = useCoreStore();
-  await coreStore.handleRedirect(window.location.href);
-  const restoreUrl = localStorage.getItem('restoreUrl');
-  localStorage.removeItem('restoreUrl');
-  return restoreUrl ? restoreUrl : { name: 'dashboard' };
-}
 
 export default router;
