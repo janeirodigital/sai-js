@@ -3,9 +3,7 @@ import {
   DataAuthorizationData,
   InheritedDataGrant,
   ReadableAccessNeed,
-  ReadableAccessNeedGroup,
-  ReadableDataRegistration,
-  SelectedFromRegistryDataGrant
+  ReadableAccessNeedGroup
 } from '@janeirodigital/interop-data-model';
 import type {
   AuthorizationAgent,
@@ -158,19 +156,44 @@ export const getDescriptions = async (
 };
 
 export const listDataInstances = async (
+  agentId: string,
   registrationId: string,
   saiSession: AuthorizationAgent
 ): Promise<DataInstance[]> => {
-  const dataRegistration = await saiSession.factory.readable.dataRegistration(registrationId);
   const dataInstances: DataInstance[] = [];
-  for (const dataInstanceIri of dataRegistration.contains) {
-    // eslint-disable-next-line no-await-in-loop
-    const dataInstance = await saiSession.factory.readable.dataInstance(dataInstanceIri);
-    dataInstances.push({
-      id: dataInstance.iri,
-      label: dataInstance.label
-    });
+  if (agentId === saiSession.webId) {
+    const dataRegistration = await saiSession.factory.readable.dataRegistration(registrationId);
+    for (const dataInstanceIri of dataRegistration.contains) {
+      // eslint-disable-next-line no-await-in-loop
+      const dataInstance = await saiSession.factory.readable.dataInstance(dataInstanceIri);
+      dataInstances.push({
+        id: dataInstance.iri,
+        label: dataInstance.label
+      });
+    }
+  } else {
+    const socialAgentRegistration = (await saiSession.findSocialAgentRegistration(agentId)).reciprocalRegistration;
+    if (!socialAgentRegistration) {
+      throw new Error(`missing social agent registration: ${agentId}`);
+    }
+    if (!socialAgentRegistration.accessGrant) {
+      throw new Error(`missing access grant for social agent: ${agentId}`);
+    }
+    for (const dataGrant of socialAgentRegistration.accessGrant.hasDataGrant) {
+      if (dataGrant.hasDataRegistration === registrationId) {
+        // TODO: optimize not to create crud data instances
+        // eslint-disable-next-line no-await-in-loop
+        for await (const instance of dataGrant.getDataInstanceIterator()) {
+          const dataInstance = await saiSession.factory.readable.dataInstance(instance.iri);
+          dataInstances.push({
+            id: dataInstance.iri,
+            label: dataInstance.label
+          });
+        }
+      }
+    }
   }
+
   return dataInstances;
 };
 

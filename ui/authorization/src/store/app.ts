@@ -25,7 +25,7 @@ export const useAppStore = defineStore('app', () => {
   const application = ref<Partial<Application> | null>(null);
   const loadedDataInstances = reactive<Record<string, DataInstance[]>>({});
   const applicationList = reactive<Application[]>([]);
-  const dataRegistryList = reactive<DataRegistry[]>([]);
+  const dataRegistryList = reactive<Record<string, DataRegistry[]>>({});
 
   const backend = useBackend();
 
@@ -42,8 +42,8 @@ export const useAppStore = defineStore('app', () => {
   }
 
   // TODO rename list with load
-  async function listDataInstances(registrationId: string) {
-    const dataInstances = await backend.listDataInstances(registrationId);
+  async function listDataInstances(agentId: string, registrationId: string) {
+    const dataInstances = await backend.listDataInstances(agentId, registrationId);
     loadedDataInstances[registrationId] = [...dataInstances];
   }
 
@@ -66,10 +66,10 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
-  async function listDataRegistries(lang = 'en') {
+  async function listDataRegistries(agentId: string, lang = 'en') {
     if (!dataRegistryList.length) {
-      const dataRegistries = await backend.listDataRegistires(lang);
-      dataRegistryList.push(...dataRegistries);
+      const dataRegistries = await backend.listDataRegistires(agentId, lang);
+      dataRegistryList[agentId] = [...dataRegistries];
     }
   }
 

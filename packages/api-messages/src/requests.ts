@@ -41,7 +41,11 @@ export class SocialAgentsRequest extends MessageBase {
 export class AddSocialAgentRequest extends MessageBase {
   public type = RequestMessageTypes.ADD_SOCIAL_AGENT_REQUEST;
 
-  constructor(public webId: IRI, public label: string, public note?: string) {
+  constructor(
+    public webId: IRI,
+    public label: string,
+    public note?: string
+  ) {
     super();
   }
 }
@@ -49,7 +53,10 @@ export class AddSocialAgentRequest extends MessageBase {
 export class DataRegistriesRequest extends MessageBase {
   public type = RequestMessageTypes.DATA_REGISTRIES_REQUEST;
 
-  constructor(private lang: string) {
+  constructor(
+    private agentId: string,
+    private lang: string
+  ) {
     super();
   }
 }
@@ -57,7 +64,10 @@ export class DataRegistriesRequest extends MessageBase {
 export class DescriptionsRequest extends MessageBase {
   public type = RequestMessageTypes.DESCRIPTIONS_REQUEST;
 
-  constructor(private applicationId: IRI, private lang: string) {
+  constructor(
+    private applicationId: IRI,
+    private lang: string
+  ) {
     super();
   }
 }
@@ -65,7 +75,10 @@ export class DescriptionsRequest extends MessageBase {
 export class ListDataInstancesRequest extends MessageBase {
   public type = RequestMessageTypes.LIST_DATA_INSTANCES_REQUEST;
 
-  constructor(private registrationId: IRI) {
+  constructor(
+    private agentId: string,
+    private registrationId: IRI
+  ) {
     super();
   }
 }
@@ -81,7 +94,10 @@ export class ApplicationAuthorizationRequest extends MessageBase {
 export class ResourceRequest extends MessageBase {
   public type = RequestMessageTypes.RESOURCE_REQUEST;
 
-  constructor(public id: IRI, private lang: string) {
+  constructor(
+    public id: IRI,
+    private lang: string
+  ) {
     super();
   }
 }

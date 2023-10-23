@@ -83,7 +83,7 @@ export class ApiHandler extends HttpHandler {
         return {
           body: {
             type: ResponseMessageTypes.DATA_REGISTRIES_RESPONSE,
-            payload: await getDataRegistries(context.saiSession, body.lang)
+            payload: await getDataRegistries(body.agentId, body.lang, context.saiSession)
           },
           status: 200,
           headers: {}
@@ -101,7 +101,7 @@ export class ApiHandler extends HttpHandler {
         return {
           body: {
             type: ResponseMessageTypes.LIST_DATA_INSTANCES_RESPONSE,
-            payload: await listDataInstances(body.registrationId, context.saiSession)
+            payload: await listDataInstances(body.agentId, body.registrationId, context.saiSession)
           },
           status: 200,
           headers: {}

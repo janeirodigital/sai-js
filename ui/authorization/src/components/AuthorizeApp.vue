@@ -36,6 +36,7 @@ span.label {
         <v-list-item
           class="ml-3"
           v-for="child in accessNeed.children"
+          :key="child.id"
           lines="three"
           @click="toggleSelect(accessNeed.id, child.id)"
         >
@@ -82,6 +83,7 @@ span.label {
             <v-expansion-panels variant="popout">
               <v-expansion-panel
                 v-for="agent in props.authorizationData.dataOwners"
+                :key="agent.id"
                 :disabled="topLevelScope !== 'some'"
               >
                 <v-expansion-panel-title class="d-flex flex-row">
@@ -125,6 +127,7 @@ span.label {
                   <v-expansion-panels variant="popout">
                     <v-expansion-panel
                       v-for="registration in agent.dataRegistrations"
+                      :key="registration.id"
                       :disabled="agentsIndex[agent.id].scope !== 'some'"
                     >
                       <v-expansion-panel-title class="d-flex flex-row">
@@ -273,7 +276,7 @@ function buildRegistrationsIndex(data: typeof props.authorizationData.dataOwners
         id: registration.id,
         agent: agent.id,
         scope: 'all',
-        count: registration.count
+        count: registration.count!
       };
     }
   }
@@ -356,7 +359,7 @@ function registrationScopeChanged(agentId: string, registrationId: string, scope
 }
 
 async function loadDataInstances(agentId: string, registrationId: string, selected: boolean): Promise<void> {
-  await appStore.listDataInstances(registrationId);
+  await appStore.listDataInstances(agentId, registrationId);
   addDataInstancesToIndex(agentId, registrationId, appStore.loadedDataInstances[registrationId], selected);
 }
 

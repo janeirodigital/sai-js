@@ -37,4 +37,10 @@ export class InheritedDataGrant extends AbstractDataGrant {
   get canCreate(): boolean {
     return this.accessMode.includes(ACL.Write.value);
   }
+
+  // TODO: extract to a mixin
+  get dataRegistryIri(): string {
+    const dataRegistrationIri = this.getObject('hasDataRegistration').value;
+    return `${dataRegistrationIri.split('/').slice(0, -2).join('/')}/`;
+  }
 }

@@ -27,7 +27,7 @@ export interface DataRegistration extends UniqueId {
   shapeTree: IRI;
   // TODO dataOwner: IRI;
   dataRegistry?: IRI;
-  count: number;
+  count?: number;
   label?: string; // TODO label should be ensured
 }
 

@@ -85,8 +85,8 @@ async function getAuthorization(clientId: IRI, lang: string): Promise<Authorizat
   return response.payload;
 }
 
-async function listDataInstances(registrationId: IRI): Promise<DataInstance[]> {
-  const request = new ListDataInstancesRequest(registrationId);
+async function listDataInstances(agentId: IRI, registrationId: IRI): Promise<DataInstance[]> {
+  const request = new ListDataInstancesRequest(agentId, registrationId);
   const data = await getDataFromApi<ListDataInstancesResponseMessage>(request);
   const response = new ListDataInstancesResponse(data);
   return response.payload;
@@ -120,8 +120,8 @@ async function listApplications(): Promise<Application[]> {
   return response.payload;
 }
 
-async function listDataRegistires(lang: string): Promise<DataRegistry[]> {
-  const request = new DataRegistriesRequest(lang);
+async function listDataRegistires(agentId: string, lang: string): Promise<DataRegistry[]> {
+  const request = new DataRegistriesRequest(agentId, lang);
   const data = await getDataFromApi<DataRegistriesResponseMessage>(request);
   const response = new DataRegistriesResponse(data);
   return response.payload;

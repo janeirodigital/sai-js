@@ -15,7 +15,7 @@
       <span>Peers</span>
     </v-btn>
 
-    <v-btn :to="{name: 'data-registry-list'}">
+    <v-btn :to="{name: 'data-registry-list', query: {agent: coreStore.userId}}">
       <v-icon>mdi-hexagon-multiple-outline</v-icon>
 
       <span>Data</span>
@@ -24,4 +24,6 @@
 </template>
 
 <script lang="ts" setup>
+import { useCoreStore } from '@/store/core';
+const coreStore = useCoreStore()
 </script>

@@ -25,4 +25,10 @@ export abstract class InheritableDataGrant extends AbstractDataGrant {
   get hasInheritingGrantIriList(): string[] {
     return this.getSubjectsArray(INTEROP.inheritsFromGrant).map((subject) => subject.value);
   }
+
+  // TODO: extract to a mixin
+  get dataRegistryIri(): string {
+    const dataRegistrationIri = this.getObject('hasDataRegistration').value;
+    return `${dataRegistrationIri.split('/').slice(0, -2).join('/')}/`;
+  }
 }
