@@ -1,3 +1,4 @@
+import { SHAPETREES, buildNamespace, getDescriptionResource } from '@janeirodigital/interop-utils';
 import { InteropFactory, ReadableDataRegistration } from '..';
 import { ReadableResource } from './resource';
 
@@ -14,13 +15,24 @@ export class ReadableDataInstance extends ReadableResource {
 
   children: ChildInfo[];
 
-  constructor(public iri: string, public factory: InteropFactory, public descriptionLang?: string) {
+  constructor(
+    public iri: string,
+    public factory: InteropFactory,
+    public descriptionLang?: string
+  ) {
     super(iri, factory);
   }
 
   private async bootstrap(): Promise<void> {
-    await this.fetchData();
     await this.buildDataRegistration();
+    if (!this.isBlob) {
+      await this.fetchData();
+    } else {
+      const descriptionIri = await this.discoverDescriptionResource();
+      const response = await this.fetch(descriptionIri);
+      this.dataset = await response.dataset();
+    }
+
     if (this.descriptionLang) {
       await this.dataRegistration?.shapeTree?.getDescription(this.descriptionLang);
       this.children = await this.buildChildrenInfo();
@@ -43,11 +55,13 @@ export class ReadableDataInstance extends ReadableResource {
   }
 
   get label(): string | undefined {
+    let label;
     const predicate = this.dataRegistration?.shapeTree?.describesInstance;
     if (predicate) {
-      return this.getObject(predicate).value;
+      label = this.getObject(predicate)?.value;
     }
-    return undefined;
+    const NFO = buildNamespace('http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#');
+    return label || this.getObject(NFO.fileName)?.value;
   }
 
   get shapeTree(): { iri: string; label: string } {
@@ -55,6 +69,11 @@ export class ReadableDataInstance extends ReadableResource {
       iri: this.dataRegistration!.shapeTree!.iri,
       label: this.dataRegistration!.shapeTree!.descriptions[this.descriptionLang]!.label
     };
+  }
+
+  // TODO: extract as mixin from other data instance
+  get isBlob(): boolean {
+    return this.dataRegistration.shapeTree?.expectsType.value === SHAPETREES.NonRDFResource.value;
   }
 
   async buildChildrenInfo(): Promise<ChildInfo[]> {
@@ -70,5 +89,16 @@ export class ReadableDataInstance extends ReadableResource {
         };
       })
     );
+  }
+
+  // TODO: extract as mixin from container
+  async discoverDescriptionResource(): Promise<string> {
+    // @ts-ignore
+    const response = await this.fetch.raw(this.iri, {
+      method: 'HEAD'
+    });
+
+    // get value of describedby Link
+    return getDescriptionResource(response.headers.get('Link'));
   }
 }
