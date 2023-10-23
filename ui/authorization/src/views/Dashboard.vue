@@ -16,7 +16,7 @@
     </v-btn>
 
     <v-btn :to="{name: 'data-registry-list'}">
-      <v-icon>mdi-hexagon-outline</v-icon>
+      <v-icon>mdi-hexagon-multiple-outline</v-icon>
 
       <span>Data</span>
     </v-btn>

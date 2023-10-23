@@ -23,7 +23,7 @@ export const useAppStore = defineStore('app', () => {
   const accessAuthorization = ref<AccessAuthorization | null>(null);
   const socialAgentList = ref<SocialAgent[]>([]);
   const application = ref<Partial<Application> | null>(null);
-  const loadedDataInstances = reactive<DataInstance[]>([]);
+  const loadedDataInstances = reactive<Record<string, DataInstance[]>>({});
   const applicationList = reactive<Application[]>([]);
   const dataRegistryList = reactive<DataRegistry[]>([]);
 
@@ -41,11 +41,10 @@ export const useAppStore = defineStore('app', () => {
     authorizationData.value = await backend.getAuthorization(clientId, lang.value);
   }
 
-  // TODO change to computed in component
+  // TODO rename list with load
   async function listDataInstances(registrationId: string) {
     const dataInstances = await backend.listDataInstances(registrationId);
-    loadedDataInstances.push(...dataInstances);
-    return dataInstances;
+    loadedDataInstances[registrationId] = [...dataInstances];
   }
 
   async function authorizeApp(authorization: Authorization) {

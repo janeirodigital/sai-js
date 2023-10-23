@@ -160,9 +160,9 @@ span.label {
                           <v-btn class="flex-grow-1" icon="mdi-checkbox-outline" value="all"></v-btn>
                         </v-btn-toggle>
                         <template v-if="registrationsIndex[registration.id].scope === 'some'">
-                          <v-list v-if="dataInstancesLoaded(registration.id)">
+                          <v-list v-if="appStore.loadedDataInstances[registration.id]">
                             <v-list-item
-                              v-for="dataInstance of loadedDataInstances[registration.id]"
+                              v-for="dataInstance of appStore.loadedDataInstances[registration.id]"
                               :key="dataInstance.id"
                               :disabled="registrationsIndex[registration.id].scope !== 'some'"
                               @click="toggleOneInstance(dataInstance.id)"
@@ -234,8 +234,6 @@ const props = defineProps<{
   application: Partial<Application>;
   authorizationData: AuthorizationData;
 }>();
-
-const loadedDataInstances: Record<string, DataInstance[]> = {};
 
 type PropagatingScope = 'none' | 'all';
 type Scope = PropagatingScope | 'some';
@@ -347,15 +345,10 @@ function setScopeForAgentRegistrations(agentId: string, scope: PropagatingScope)
   }
 }
 
-// TODO optimise for empty data registrations
-function dataInstancesLoaded(registrationId: string): boolean {
-  return Object.values(dataInstancesIndex).some((i) => i.registration == registrationId);
-}
-
 function registrationScopeChanged(agentId: string, registrationId: string, scope: Scope) {
   if (scope !== 'some') {
     setSelectedForRegistrationInstances(registrationId, scope === 'all');
-  } else if (!dataInstancesLoaded(registrationId)) {
+  } else if (!appStore.loadedDataInstances[registrationId]) {
     const previousScope = registrationsIndex[registrationId].scope;
     loadDataInstances(agentId, registrationId, previousScope === 'all');
   }
@@ -363,9 +356,8 @@ function registrationScopeChanged(agentId: string, registrationId: string, scope
 }
 
 async function loadDataInstances(agentId: string, registrationId: string, selected: boolean): Promise<void> {
-  const dataInstances = await appStore.listDataInstances(registrationId);
-  loadedDataInstances[registrationId] = dataInstances;
-  addDataInstancesToIndex(agentId, registrationId, dataInstances, selected);
+  await appStore.listDataInstances(registrationId);
+  addDataInstancesToIndex(agentId, registrationId, appStore.loadedDataInstances[registrationId], selected);
 }
 
 function setSelectedForRegistrationInstances(registrationId: string, selected: boolean): void {
