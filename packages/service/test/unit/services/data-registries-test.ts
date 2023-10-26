@@ -1,16 +1,19 @@
-import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
+import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { getDataRegistries } from '../../../src/services/data-registries';
 
+const webId = 'https://alice.example';
+
 const saiSession = {
+  webId,
   factory: {
     readable: {
       shapeTree: jest.fn((iri: string) => {
         if (iri.includes('Project')) {
           return { descriptions: { en: { label: 'Projects' } } };
-        } else {
-          return { descriptions: { en: { label: 'Tasks' } } };
         }
+        return { descriptions: { en: { label: 'Tasks' } } };
       })
     }
   },
@@ -51,7 +54,7 @@ const saiSession = {
 } as unknown as AuthorizationAgent;
 
 test('gets well formated data registries', async () => {
-  const result = await getDataRegistries(saiSession, 'en');
+  const result = await getDataRegistries(webId, 'en', saiSession);
   expect(result).toEqual([
     {
       id: 'https://rnd.acme.example/data/',

@@ -16,9 +16,9 @@ import { getDescriptions, recordAuthorization, listDataInstances } from '../../.
 jest.setTimeout(30000);
 
 const projectShapeTree = 'https://solidshapes.example/trees/Project';
+const webId = 'https://alice.example';
 
 describe('getDescriptions', () => {
-  const webId = 'https://alice.example';
   const applicationIri = 'https://projectron.example';
   const lang = 'en';
 
@@ -215,6 +215,7 @@ describe('getDescriptions', () => {
 
 describe('listDataInstances', () => {
   const saiSession = jest.mocked({
+    webId,
     factory: {
       readable: {
         dataRegistration: jest.fn(),
@@ -238,7 +239,7 @@ describe('listDataInstances', () => {
       contains: new Array(count)
     } as unknown as ReadableDataRegistration);
     saiSession.factory.readable.dataInstance.mockResolvedValue(template);
-    const result = await listDataInstances(registrationId, saiSession);
+    const result = await listDataInstances(webId, registrationId, saiSession);
     expect(saiSession.factory.readable.dataRegistration).toBeCalledWith(registrationId);
     expect(saiSession.factory.readable.dataInstance).toHaveBeenCalledTimes(count);
     for (const instance of result) {

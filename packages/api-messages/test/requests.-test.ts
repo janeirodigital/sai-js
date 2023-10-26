@@ -57,10 +57,12 @@ describe('Request has proper message type', () => {
 
   test('DataRegistriesRequest', () => {
     const lang = 'en';
+    const agentId = 'https://bob.example';
 
-    const request = new DataRegistriesRequest(lang);
+    const request = new DataRegistriesRequest(agentId, lang);
     const expected = {
       type: RequestMessageTypes.DATA_REGISTRIES_REQUEST,
+      agentId,
       lang
     };
     expect(JSON.parse(request.stringify())).toEqual(expected);
@@ -80,10 +82,12 @@ describe('Request has proper message type', () => {
 
   test('ListDataInstancesRequest', () => {
     const registrationId = 'https://home.alice.example/data/projects';
+    const agentId = 'https://bob.example';
 
-    const request = new ListDataInstancesRequest(registrationId);
+    const request = new ListDataInstancesRequest(agentId, registrationId);
     const expected = {
       type: RequestMessageTypes.LIST_DATA_INSTANCES_REQUEST,
+      agentId,
       registrationId
     };
     expect(JSON.parse(request.stringify())).toEqual(expected);

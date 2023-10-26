@@ -36,6 +36,12 @@ test('should set hasDataRegistration', async () => {
   expect(dataGrant.hasDataRegistration).toBe(dataRegistrationIri);
 });
 
+// depends on slash semantics
+test('should provide dataRegistryIri', async () => {
+  const dataGrant = (await factory.readable.dataGrant(snippetIri)) as AllFromRegistryDataGrant;
+  expect(dataGrant.dataRegistryIri).toBe('https://');
+});
+
 test('should provide data instance iterator', async () => {
   const dataGrant = await factory.readable.dataGrant(snippetIri);
   let count = 0;

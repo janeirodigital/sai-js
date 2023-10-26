@@ -41,10 +41,10 @@ let apiHandler: ApiHandler;
 let queue: MockedQueue;
 let saiSession: AuthorizationAgent;
 
-const aliceWebId = 'https://alice.example';
+const webId = 'https://alice.example';
 
 const authn = {
-  webId: aliceWebId,
+  webId,
   clientId: 'https://frontend.example'
 };
 
@@ -268,6 +268,7 @@ describe('listDataInstances', () => {
       headers,
       body: {
         type: RequestMessageTypes.LIST_DATA_INSTANCES_REQUEST,
+        agentId: 'https://bob.example',
         registrationId: 'https://hr.acme.example/data/projects/'
       }
     } as unknown as HttpHandlerRequest;
@@ -282,7 +283,7 @@ describe('listDataInstances', () => {
         expect(response.body.type).toBe(ResponseMessageTypes.LIST_DATA_INSTANCES_RESPONSE);
         expect(response.body.payload).toBe(dataInstances);
 
-        expect(mocked.listDataInstances).toBeCalledWith(request.body.registrationId, saiSession);
+        expect(mocked.listDataInstances).toBeCalledWith(request.body.agentId, request.body.registrationId, saiSession);
         done();
       }
     });
