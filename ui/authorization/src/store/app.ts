@@ -47,8 +47,16 @@ export const useAppStore = defineStore('app', () => {
     loadedDataInstances[registrationId] = [...dataInstances];
   }
 
+  async function listApplications(force = false) {
+    if (!applicationList.length || force) {
+      const applications = await backend.listApplications();
+      applicationList.push(...applications);
+    }
+  }
+
   async function authorizeApp(authorization: Authorization) {
     accessAuthorization.value = await backend.authorizeApp(authorization);
+    listApplications(true);
   }
 
   async function listSocialAgents() {
@@ -57,13 +65,6 @@ export const useAppStore = defineStore('app', () => {
 
   async function getApplication(applicationId: string) {
     application.value = await backend.getApplication(applicationId);
-  }
-
-  async function listApplications() {
-    if (!applicationList.length) {
-      const applications = await backend.listApplications();
-      applicationList.push(...applications);
-    }
   }
 
   async function listDataRegistries(agentId: string, lang = 'en') {

@@ -4,6 +4,7 @@
       v-if="!route.query.resource && appStore.authorizationData && appStore.application"
       :application="appStore.application"
       :authorizationData="appStore.authorizationData"
+      :redirect="route.query.redirect !== 'false'"
     ></AuthorizeApp>
     <AuthorizeAgent v-if="!route.query.resource && agent" :agent="agent"></AuthorizeAgent>
     <ShareResource
@@ -33,6 +34,7 @@ const resourceId = ref<string | undefined>();
 watch(
   () => [route.query.client_id, route.query.resource],
   ([client_id, resource]) => {
+    if (route.name !== 'authorization') return
     if (route.query.webid) return;
     if (!client_id || Array.isArray(client_id)) throw new Error('one client_id is required');
     clientId.value = client_id;

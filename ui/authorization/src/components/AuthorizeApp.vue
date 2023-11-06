@@ -227,8 +227,10 @@ import {
   DataInstance
 } from '@janeirodigital/sai-api-messages';
 import { reactive, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { useCoreStore } from '@/store/core';
 import { useAppStore } from '@/store/app';
+const router = useRouter()
 
 const coreStore = useCoreStore();
 const appStore = useAppStore();
@@ -236,6 +238,7 @@ const appStore = useAppStore();
 const props = defineProps<{
   application: Partial<Application>;
   authorizationData: AuthorizationData;
+  redirect: Boolean
 }>();
 
 type PropagatingScope = 'none' | 'all';
@@ -567,7 +570,13 @@ function authorize(granted = true) {
 watch(
   () => appStore.accessAuthorization,
   (accessAuthorization) => {
-    if (accessAuthorization) window.location.href = accessAuthorization.callbackEndpoint;
+    if (accessAuthorization) {
+      if(props.redirect) {
+        window.location.href = accessAuthorization.callbackEndpoint;
+      } else {
+        router.push( { name: 'application-list' })
+      }
+    }
   }
 );
 </script>
