@@ -1,6 +1,0 @@
-{
-  "email": "admin@shapetrees.example",
-  "password": "$2a$10$hNiLt3JyAr0hC9sIq43/w.hd2j.jbwmED8MskiRDQQc4mOWqNitf6",
-  "verified": true,
-  "webId": "http://localhost:3000/shapetrees/profile/card#me"
-}

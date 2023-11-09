@@ -1,6 +1,0 @@
-{
-  "email": "alice@acme.example",
-  "password": "$2b$10$xhCupFkWAhcuD/5NxR/cK.G0xxVQD5S./YfBXhCghxfc8qz9lyLdK",
-  "verified": true,
-  "webId": "http://localhost:3000/alice/profile/card#me"
-}
