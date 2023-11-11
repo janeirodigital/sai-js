@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "community-solid-server -c config.json",
+    "start": "community-solid-server -c config.json -l warn",
     "dev": "pnpm run clean && pnpm run start",
     "clean": "find . -type d -empty -delete"
   },

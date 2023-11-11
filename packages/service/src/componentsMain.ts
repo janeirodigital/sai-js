@@ -5,7 +5,7 @@ import type { Server, NodeHttpServer } from '@digita-ai/handlersjs-http';
 import { ConsoleLogger, setLogger, LoggerLevel } from '@digita-ai/handlersjs-logging';
 import { IWorker } from '@janeirodigital/sai-server-interfaces';
 
-const logger = new ConsoleLogger('sai-server', LoggerLevel.info, LoggerLevel.info);
+const logger = new ConsoleLogger('sai-server', LoggerLevel.warn, LoggerLevel.warn);
 
 setLogger(logger);
 
