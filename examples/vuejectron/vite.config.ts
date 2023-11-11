@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 // Plugins
 import vue from '@vitejs/plugin-vue';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
@@ -27,18 +28,7 @@ export default defineConfig({
     },
     extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue']
   },
-  optimizeDeps: {
-    exclude: [
-      '@janeirodigital/interop-application',
-      '@janeirodigital/interop-utils',
-      '@janeirodigital/interop-data-model'
-    ],
-    include: ['jsonld-streaming-parser', 'n3', 'http-link-header']
-  },
   server: {
-    hmr: {
-      overlay: false
-    },
     port: 4500,
     fs: {
       strict: false
