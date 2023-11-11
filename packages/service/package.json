@@ -40,7 +40,7 @@
     "@digita-ai/handlersjs-core": "^0.19.3",
     "@digita-ai/handlersjs-http": "^0.19.3",
     "@digita-ai/handlersjs-logging": "^0.19.3",
-    "@inrupt/solid-client-authn-node": "^1.17.3",
+    "@inrupt/solid-client-authn-node": "^1.17.4",
     "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.21",
     "@janeirodigital/interop-data-model": "^1.0.0-rc.21",
     "@janeirodigital/interop-utils": "^1.0.0-rc.21",

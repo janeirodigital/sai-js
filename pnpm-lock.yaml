@@ -72,8 +72,8 @@ importers:
   examples/vuejectron:
     dependencies:
       '@inrupt/solid-client-authn-browser':
-        specifier: ^1.17.3
-        version: 1.17.3
+        specifier: ^1.17.4
+        version: 1.17.4
       '@janeirodigital/interop-application':
         specifier: ^1.0.0-rc.21
         version: link:../../packages/application
@@ -228,8 +228,8 @@ importers:
   packages/interfaces:
     dependencies:
       '@inrupt/solid-client-authn-node':
-        specifier: ^1.17.3
-        version: 1.17.3
+        specifier: ^1.17.4
+        version: 1.17.4
       '@janeirodigital/interop-authorization-agent':
         specifier: ^1.0.0-rc.21
         version: link:../authorization-agent
@@ -256,8 +256,8 @@ importers:
         specifier: ^0.19.3
         version: 0.19.3
       '@inrupt/solid-client-authn-node':
-        specifier: ^1.17.3
-        version: 1.17.3
+        specifier: ^1.17.4
+        version: 1.17.4
       '@janeirodigital/interop-authorization-agent':
         specifier: ^1.0.0-rc.21
         version: link:../authorization-agent
@@ -367,8 +367,8 @@ importers:
   ui/authorization:
     dependencies:
       '@inrupt/solid-client-authn-browser':
-        specifier: ^1.17.3
-        version: 1.17.3
+        specifier: ^1.17.4
+        version: 1.17.4
       '@janeirodigital/sai-api-messages':
         specifier: ^1.0.0-rc.21
         version: link:../../packages/api-messages
@@ -3040,13 +3040,13 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
-  /@inrupt/oidc-client-ext@1.17.3:
-    resolution: {integrity: sha512-lSZUkb+iacYUPjNzHICN6tBuv0nc+YPQ/Ua+QNtrLh9uq6AhJByLWLtvWtyk77fFS/qsCXJj3QjEWA2MXYjzbQ==}
+  /@inrupt/oidc-client-ext@1.17.4:
+    resolution: {integrity: sha512-IlpsGmuYzFkEtaOFAFgN0C9s6PXkq8fmFcbeuxE1877r5arcHIxX+7VQCZQMqyQLleBOEae+cHMbRAwKDQByew==}
     dependencies:
       '@inrupt/oidc-client': 1.11.6
-      '@inrupt/solid-client-authn-core': 1.17.3
+      '@inrupt/solid-client-authn-core': 1.17.4
       '@inrupt/universal-fetch': 1.0.3
-      jose: 4.15.1
+      jose: 4.15.4
       uuid: 9.0.1
     transitivePeerDependencies:
       - encoding
@@ -3062,14 +3062,14 @@ packages:
       serialize-javascript: 4.0.0
     dev: false
 
-  /@inrupt/solid-client-authn-browser@1.17.3:
-    resolution: {integrity: sha512-Mv8wLyyu09qBdtatFi53Wd0/yFOlEpbPMjdv0s7v3lbhh/HySrp/MJxYrBfgiGF8wNXrbiWE3fv001+iUjAagQ==}
+  /@inrupt/solid-client-authn-browser@1.17.4:
+    resolution: {integrity: sha512-Bf1N5vt0NEO/xP9nSaQb67y/O46mx3Qzgx/7QQslyrn8mZ7I/dCmzsd5oY+FnwZD9FHhyFfqaScsebB6/rhxNA==}
     dependencies:
-      '@inrupt/oidc-client-ext': 1.17.3
-      '@inrupt/solid-client-authn-core': 1.17.3
+      '@inrupt/oidc-client-ext': 1.17.4
+      '@inrupt/solid-client-authn-core': 1.17.4
       '@inrupt/universal-fetch': 1.0.3
       events: 3.3.0
-      jose: 4.15.1
+      jose: 4.15.4
       uuid: 9.0.1
     transitivePeerDependencies:
       - encoding
@@ -3085,14 +3085,27 @@ packages:
       uuid: 9.0.1
     transitivePeerDependencies:
       - encoding
+    dev: true
 
-  /@inrupt/solid-client-authn-node@1.17.3:
-    resolution: {integrity: sha512-3lmSh7VNBUVFlBQZBQAtqyVz2B0bRTP8Zm4mkIxG519b2oJwLQtttP/cqQU1WutqADjLLB7Xx4zQTnf2E7yZkw==}
+  /@inrupt/solid-client-authn-core@1.17.4:
+    resolution: {integrity: sha512-9N5douZKnsPEqqcrtE3FAlTugAsMWffcOZYIrV+Wd0iRsMS7ZFoUcg4cN03hCZjpMC7MIqa/PLsfOl944rno3w==}
     engines: {node: ^16.0.0 || ^18.0.0 || ^20.0.0}
     dependencies:
-      '@inrupt/solid-client-authn-core': 1.17.3
       '@inrupt/universal-fetch': 1.0.3
-      jose: 4.15.1
+      events: 3.3.0
+      jose: 4.15.4
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@inrupt/solid-client-authn-node@1.17.4:
+    resolution: {integrity: sha512-wvG3FvW0YXq8GEV8daFwg0ndvsaAFn+48M6K7FR1xp7ve/S6rEMDZov8F05JhvDyZv3PyB7RnWZSUnDGLM3Y+g==}
+    engines: {node: ^16.0.0 || ^18.0.0 || ^20.0.0}
+    dependencies:
+      '@inrupt/solid-client-authn-core': 1.17.4
+      '@inrupt/universal-fetch': 1.0.3
+      jose: 4.15.4
       openid-client: 5.5.0
       uuid: 9.0.1
     transitivePeerDependencies:
@@ -7911,7 +7924,7 @@ packages:
   /openid-client@5.5.0:
     resolution: {integrity: sha512-Y7Xl8BgsrkzWLHkVDYuroM67hi96xITyEDSkmWaGUiNX6CkcXC3XyQGdv5aWZ6dukVKBFVQCADi9gCavOmU14w==}
     dependencies:
-      jose: 4.15.1
+      jose: 4.15.4
       lru-cache: 6.0.0
       object-hash: 2.2.0
       oidc-token-hash: 5.0.3

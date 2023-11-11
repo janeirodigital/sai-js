@@ -8,7 +8,7 @@
     "lint": "eslint . --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@inrupt/solid-client-authn-browser": "^1.17.3",
+    "@inrupt/solid-client-authn-browser": "^1.17.4",
     "@janeirodigital/sai-api-messages": "^1.0.0-rc.21",
     "@mdi/font": "7.3.67",
     "pinia": "^2.1.7",
