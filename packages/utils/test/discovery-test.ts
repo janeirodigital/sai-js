@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
+import { DataFactory, Store } from 'n3';
 import {
   RdfResponse,
   discoverAuthorizationAgent,
@@ -8,7 +9,6 @@ import {
   INTEROP
 } from '../src';
 import type { RdfFetch, WhatwgFetch } from '../src';
-import { DataFactory, Store } from 'n3';
 
 const webId = 'https://alice.example/#id';
 const authorizationAgentIri = 'https://auth.alice.example/';
@@ -48,13 +48,13 @@ describe('discoverAgentRegistration', () => {
     expect(iri).toBe(agentRegistrationIri);
   });
 
-  test('should return null if no link header ', async () => {
+  test('should return undefined if no link header ', async () => {
     statelessFetch.mockResolvedValueOnce({
       ok: true,
-      headers: { get: (): null => null }
+      headers: { get: (): undefined => undefined }
     } as unknown as RdfResponse);
     const iri = await discoverAgentRegistration(authorizationAgentIri, statelessFetch);
-    expect(iri).toBeNull();
+    expect(iri).toBeUndefined();
   });
 });
 
