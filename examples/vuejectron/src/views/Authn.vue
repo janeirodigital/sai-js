@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="!hasError">
     <v-card-item v-if="!userId">
       <v-form @submit.prevent="login">
         <v-text-field v-model="oidcIssuer" :placeholder="defaultOidcIssuer" label="OIDC issuer"></v-text-field>
@@ -10,12 +10,19 @@
       <v-btn @click="requestAuthorization" block class="mt-2">Request Authorization</v-btn>
     </v-card-item>
   </v-card>
+  <v-card v-else>
+    <v-alert
+      type="error"
+      :title="store.saiError"
+    ></v-alert>
+  </v-card>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useCoreStore } from '@/store/core';
 const store = useCoreStore();
+const hasError = computed(() => !!store.saiError)
 
 const defaultOidcIssuer = import.meta.env.VITE_DEFAULT_OIDC_ISSUER;
 const oidcIssuer = ref('');

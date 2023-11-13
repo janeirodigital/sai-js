@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { RouteLocationNormalized } from 'vue-router';
+import { RequestError } from '@janeirodigital/interop-application';
 import {
   ISessionInfo,
   getDefaultSession,
@@ -7,7 +9,6 @@ import {
   login as oidcLogin
 } from '@inrupt/solid-client-authn-browser';
 import { useSai } from '@/sai';
-import { RouteLocationNormalized } from 'vue-router';
 
 class OidcError extends Error {
   constructor(private oidcInfo?: ISessionInfo) {
@@ -18,6 +19,7 @@ class OidcError extends Error {
 export const useCoreStore = defineStore('core', () => {
   const userId = ref<string | null>(null);
   const isAuthorized = ref(false);
+  const saiError = ref<string | undefined>();
   const authorizationRedirectUri = ref<string | null>(null);
 
   async function login(oidcIssuer: string) {
@@ -38,7 +40,14 @@ export const useCoreStore = defineStore('core', () => {
 
     const sai = useSai(oidcInfo.webId);
 
-    isAuthorized.value = await sai.isAuthorized();
+    try {
+      isAuthorized.value = await sai.isAuthorized();
+    } catch (err) {
+      if (err instanceof RequestError) {
+        saiError.value = err.message;
+        if (err.response) console.error(err.response);
+      }
+    }
   }
 
   async function authorize() {
@@ -64,5 +73,14 @@ export const useCoreStore = defineStore('core', () => {
     }
   }
 
-  return { userId, isAuthorized, authorizationRedirectUri, login, authorize, handleRedirect, restoreOidcSession };
+  return {
+    userId,
+    isAuthorized,
+    authorizationRedirectUri,
+    saiError,
+    login,
+    authorize,
+    handleRedirect,
+    restoreOidcSession
+  };
 });
