@@ -83,7 +83,7 @@ const newAgent = ref<Agent>();
 function showAgent() {
   showSnackbar.value = false;
   if (newAgent.value) {
-    router.push({ name: 'dashboard', query: { agent: newAgent.value.id } });
+    router.push({ name: 'agent', query: { agent: newAgent.value.id } });
   }
 }
 
