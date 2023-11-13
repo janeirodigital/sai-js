@@ -10,7 +10,8 @@ const buildApplicationProfile = (registration: CRUDApplicationRegistration): App
     logo: registration.logo,
     authorizationDate: registration.registeredAt!.toISOString(),
     lastUpdateDate: registration.updatedAt?.toISOString(),
-    accessNeedGroup: registration.accessNeedGroup!
+    accessNeedGroup: registration.accessNeedGroup!,
+    callbackEndpoint: registration.hasAuthorizationCallbackEndpoint
   });
 /**
  * Returns all the registered applications for the currently authenticated agent

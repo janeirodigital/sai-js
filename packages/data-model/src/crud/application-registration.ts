@@ -21,6 +21,10 @@ export class CRUDApplicationRegistration extends CRUDAgentRegistration {
     return this.getQuad(this.applicationNode, INTEROP.hasAccessNeedGroup)?.object.value;
   }
 
+  get hasAuthorizationCallbackEndpoint(): string | undefined {
+    return this.getQuad(this.applicationNode, INTEROP.hasAuthorizationCallbackEndpoint)?.object.value;
+  }
+
   get name(): string | undefined {
     return this.getQuad(this.applicationNode, OIDC.client_name)?.object.value;
   }

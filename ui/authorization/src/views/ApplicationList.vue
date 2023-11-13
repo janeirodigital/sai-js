@@ -11,6 +11,16 @@
         v-for="application in appStore.applicationList"
         :key="application.id" :prepend-avatar="application.logo"
         :title="application.name">
+        <template
+          v-slot:append
+          v-if="application.callbackEndpoint"
+        >
+          <a :href="application.callbackEndpoint" target="_blank">
+            <v-icon
+              icon="mdi-open-in-new"
+            ></v-icon>
+          </a>
+        </template>
       </v-list-item>
     </v-list>
     <v-btn

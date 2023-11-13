@@ -76,7 +76,12 @@ export class CRUDAgentRegistry extends CRUDContainer {
     // get data from ClientID document
     try {
       const clientIdDocument = await this.factory.readable.clientIdDocument(registeredAgent);
-      const props = [OIDC.client_name, OIDC.logo_uri, INTEROP.hasAccessNeedGroup];
+      const props = [
+        OIDC.client_name,
+        OIDC.logo_uri,
+        INTEROP.hasAccessNeedGroup,
+        INTEROP.hasAuthorizationCallbackEndpoint
+      ];
       for (const prop of props) {
         const quad = clientIdDocument.getQuad(clientIdDocument.node, prop);
         if (quad) registration.dataset.add(quad);

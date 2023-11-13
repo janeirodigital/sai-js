@@ -11,6 +11,7 @@ export const AccessModes = {
 export interface Application extends UniqueId {
   name: string;
   logo?: IRI;
+  callbackEndpoint?: IRI;
   authorizationDate: string; // interop:registeredAt
   lastUpdateDate?: string; // interop:updatedAt
   accessNeedGroup: IRI; // interop:hasAccessNeedGroup
