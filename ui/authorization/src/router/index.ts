@@ -1,11 +1,18 @@
 // Composables
 import { h } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import { useCoreStore } from '@/store/core';
+import { useCoreStore, OidcError } from '@/store/core';
 
 async function handleRedirect() {
   const coreStore = useCoreStore();
-  await coreStore.handleRedirect(window.location.href);
+  try {
+    await coreStore.handleRedirect(window.location.href);
+  } catch (err) {
+    if (err instanceof OidcError) {
+      return { name: 'login' };
+    }
+    throw err;
+  }
   const restoreUrl = localStorage.getItem('restoreUrl');
   localStorage.removeItem('restoreUrl');
   return restoreUrl || { name: 'dashboard' };

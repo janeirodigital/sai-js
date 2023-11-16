@@ -9,7 +9,7 @@ import {
 import type { RouteLocationNormalized } from 'vue-router';
 import { useBackend } from '@/backend';
 
-class OidcError extends Error {
+export class OidcError extends Error {
   constructor(private oidcInfo?: ISessionInfo) {
     super('oidcInfo');
   }
