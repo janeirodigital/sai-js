@@ -1,11 +1,13 @@
 import { DataFactory } from 'n3';
-import { INTEROP } from '@janeirodigital/interop-utils';
+import { INTEROP, RDF, SPACE, getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { ReadableDataRegistration } from '../readable';
 import { AuthorizationAgentFactory } from '..';
 import { CRUDContainer, CRUDDataRegistration } from '.';
 
 export class CRUDDataRegistry extends CRUDContainer {
   factory: AuthorizationAgentFactory;
+
+  storageIri: string;
 
   get hasDataRegistration(): string[] {
     return this.getObjectsArray('hasDataRegistration').map((obj) => obj.value);
@@ -47,6 +49,8 @@ export class CRUDDataRegistry extends CRUDContainer {
 
   async bootstrap(): Promise<void> {
     await this.fetchData();
+    const storageDescription = await this.fetchStorageDescription();
+    this.storageIri = getOneMatchingQuad(storageDescription, null, RDF.type, SPACE.Storage).subject.value;
   }
 
   static async build(iri: string, factory: AuthorizationAgentFactory): Promise<CRUDDataRegistry> {

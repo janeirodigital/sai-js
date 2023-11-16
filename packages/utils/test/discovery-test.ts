@@ -27,6 +27,7 @@ describe('discoverAuthorizationAgent', () => {
           )
         ])
     } as unknown as RdfResponse);
+    // @ts-ignore
     const iri = await discoverAuthorizationAgent(webId, rdfFetch);
     expect(iri).toBe(authorizationAgentIri);
   });

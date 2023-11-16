@@ -14,10 +14,10 @@ const agentId = 'https://jarvis.alice.example/#agent';
 const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
 const snippetIri = 'https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659';
 const newSnippetIri = 'https://auth.alice.example/afb6a337-40df-4fbe-9b00-5c9c1e56c812';
-const data = {};
+const data = { beep: 'boop' };
 
 class CRUDTestResource extends CRUDResource {
-  data: {};
+  data: { beep: string };
 
   protected async bootstrap(): Promise<void> {
     if (!this.data) {
@@ -27,7 +27,11 @@ class CRUDTestResource extends CRUDResource {
     }
   }
 
-  public static async build(iri: string, factory: ApplicationFactory, data?: {}): Promise<CRUDTestResource> {
+  public static async build(
+    iri: string,
+    factory: ApplicationFactory,
+    data?: { beep: string }
+  ): Promise<CRUDTestResource> {
     const instance = new CRUDTestResource(iri, factory, data);
     await instance.bootstrap();
     return instance;
@@ -36,6 +40,7 @@ class CRUDTestResource extends CRUDResource {
 
 describe('update', () => {
   test('should properly use fetch', async () => {
+    // @ts-ignore
     const localFactory = new ApplicationFactory({ fetch: jest.fn(fetch), randomUUID });
     const testResource = await CRUDTestResource.build(snippetIri, localFactory);
     await testResource.update();
@@ -116,6 +121,7 @@ describe('setters', () => {
 
 describe('delete', () => {
   test('should properly use fetch', async () => {
+    // @ts-ignore
     const localFactory = new ApplicationFactory({ fetch: jest.fn(fetch), randomUUID });
     const testResource = await CRUDTestResource.build(snippetIri, localFactory);
     await testResource.delete();

@@ -11,7 +11,9 @@ export interface RdfResponse extends Response {
 }
 
 export type WhatwgFetch = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
-export type RdfFetch = (iri: string, options?: RdfRequestInit) => Promise<RdfResponse>;
+export type RdfFetch = ((iri: string, options?: RdfRequestInit) => Promise<RdfResponse>) & {
+  raw: WhatwgFetch;
+};
 
 // TODO accept either string | NamedNode
 // https://github.com/janeirodigital/sai-js/issues/17

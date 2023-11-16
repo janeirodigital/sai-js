@@ -13,6 +13,7 @@ import { AuthorizationAgentFactory, CRUDContainer } from '../../src';
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
 const mockedFetch = jest.fn(fetch);
+// @ts-ignore
 const factory = new AuthorizationAgentFactory(webId, agentId, { fetch: mockedFetch, randomUUID });
 
 beforeEach(() => {

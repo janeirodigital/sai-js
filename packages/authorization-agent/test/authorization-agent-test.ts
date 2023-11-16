@@ -14,8 +14,7 @@ import {
   ReadableDataRegistration,
   CRUDDataRegistry
 } from '@janeirodigital/interop-data-model';
-import { asyncIterableToArray } from '@janeirodigital/interop-utils';
-import { ACL, INTEROP } from '@janeirodigital/interop-utils';
+import { asyncIterableToArray, ACL, INTEROP } from '@janeirodigital/interop-utils';
 import { AccessAuthorizationStructure, AuthorizationAgent, ShareDataInstanceStructure } from '../src';
 
 const webId = 'https://alice.example/#id';
@@ -147,7 +146,7 @@ describe('recordAccessAuthorization', () => {
         ({
           hasDataAuthorization: existingDataAuthorizations,
           dataAuthorizations: [] as unknown as AsyncIterable<ReadableDataAuthorization>
-        } as ReadableAccessAuthorization)
+        }) as ReadableAccessAuthorization
     );
 
     const accessAuthorization = await agent.recordAccessAuthorization(
@@ -202,7 +201,7 @@ describe('recordAccessAuthorization', () => {
         ({
           hasDataAuthorization: existingDataAuthorizations,
           dataAuthorizations: [matchingDataAuthorization] as unknown as AsyncIterable<ReadableDataAuthorization>
-        } as ReadableAccessAuthorization)
+        }) as ReadableAccessAuthorization
     );
 
     const accessAuthorization = await agent.recordAccessAuthorization(
@@ -249,7 +248,7 @@ describe('recordAccessAuthorization', () => {
         ({
           hasDataAuthorization: existingDataAuthorizations,
           dataAuthorizations: [matchingDataAuthorization] as unknown as AsyncIterable<ReadableDataAuthorization>
-        } as ReadableAccessAuthorization)
+        }) as ReadableAccessAuthorization
     );
 
     const authorization = {

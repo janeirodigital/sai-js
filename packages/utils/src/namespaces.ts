@@ -23,3 +23,4 @@ export const ACP = buildNamespace('http://www.w3.org/ns/solid/acp#');
 export const SOLID = buildNamespace('http://www.w3.org/ns/solid/terms#');
 export const OIDC = buildNamespace('http://www.w3.org/ns/solid/oidc#');
 export const DC = buildNamespace('http://purl.org/dc/terms/');
+export const SPACE = buildNamespace('http://www.w3.org/ns/pim/space#');

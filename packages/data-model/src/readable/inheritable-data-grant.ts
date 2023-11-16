@@ -27,8 +27,17 @@ export abstract class InheritableDataGrant extends AbstractDataGrant {
   }
 
   // TODO: extract to a mixin
+  // TODO: change not to rely on /
   get dataRegistryIri(): string {
     const dataRegistrationIri = this.getObject('hasDataRegistration').value;
     return `${dataRegistrationIri.split('/').slice(0, -2).join('/')}/`;
+  }
+
+  // TODO: extract to a mixin
+  // TODO: change not to rely on /
+  // TODO: get from storage description like in CRUDDataRegistry
+  get storageIri(): string {
+    const dataRegistrationIri = this.getObject('hasDataRegistration').value;
+    return `${dataRegistrationIri.split('/').slice(0, -3).join('/')}/`;
   }
 }

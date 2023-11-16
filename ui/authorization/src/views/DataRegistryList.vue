@@ -23,7 +23,7 @@ span.label {
         :key="registry.id">
         <v-expansion-panel-title class="d-flex flex-row">
           <v-icon color="primary" icon="mdi-hexagon-outline"></v-icon>
-          <span class="label flex-grow-1">{{ registry.id }}</span>
+          <span class="label flex-grow-1">{{ registry.label }}</span>
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-expansion-panels>

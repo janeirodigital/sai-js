@@ -20,6 +20,7 @@ const buildDataRegistry = async (
   }
   return {
     id: registry.iri,
+    label: registry.storageIri,
     registrations
   };
 };
@@ -43,6 +44,7 @@ const buildDataRegistryForGrant = async (
   }
   return {
     id: registryIri,
+    label: dataGrants[0].storageIri,
     registrations
   };
 };
@@ -62,13 +64,16 @@ export const getDataRegistries = async (agentId: string, descriptionsLang: strin
   if (!socialAgentRegistration.accessGrant) {
     throw new Error(`missing access grant for social agent: ${agentId}`);
   }
-  const dataGrantIndex = socialAgentRegistration.accessGrant.hasDataGrant.reduce((acc, dataGrant) => {
-    if (!acc[dataGrant.dataRegistryIri]) {
-      acc[dataGrant.dataRegistryIri] = [] as DataGrant[];
-    }
-    acc[dataGrant.dataRegistryIri].push(dataGrant);
-    return acc;
-  }, {} as Record<string, DataGrant[]>);
+  const dataGrantIndex = socialAgentRegistration.accessGrant.hasDataGrant.reduce(
+    (acc, dataGrant) => {
+      if (!acc[dataGrant.dataRegistryIri]) {
+        acc[dataGrant.dataRegistryIri] = [] as DataGrant[];
+      }
+      acc[dataGrant.dataRegistryIri].push(dataGrant);
+      return acc;
+    },
+    {} as Record<string, DataGrant[]>
+  );
   return Promise.all(
     Object.entries(dataGrantIndex).map(([registryIri, dataGrants]) =>
       buildDataRegistryForGrant(registryIri, dataGrants, descriptionsLang, saiSession)

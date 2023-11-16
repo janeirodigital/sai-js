@@ -1,10 +1,22 @@
-import { WhatwgFetch, RdfFetch, fetchWrapper } from '@janeirodigital/interop-utils';
 import { readFileSync } from 'fs';
+import { WhatwgFetch, RdfFetch, fetchWrapper } from '@janeirodigital/interop-utils';
 
+const STORAGE_DESCRIPTION_IRI = 'https://fake.example/storage-desription';
 const dataFile = new URL('data.json', import.meta.url);
 const data = JSON.parse(readFileSync(dataFile, 'utf-8'));
 
 async function common(url: string, options?: RequestInit, state?: { [key: string]: string }): Promise<Response> {
+  // handle storage description requests
+  if (url === STORAGE_DESCRIPTION_IRI) {
+    return {
+      clone: () => ({}) as unknown as Response,
+      headers: {
+        get: () => 'text/turtle'
+      },
+      text: async () => `<${STORAGE_DESCRIPTION_IRI}> a <http://www.w3.org/ns/pim/space#Storage> .`
+    } as unknown as Response;
+  }
+
   // strip fragment
   const strippedUrl = url.replace(/#.*$/, '');
   const text = async function text() {
@@ -20,7 +32,7 @@ async function common(url: string, options?: RequestInit, state?: { [key: string
           return 'text/turtle';
         }
         if (name === 'Link') {
-          return '<http://just.en.example/description-resource>; rel="describedby"';
+          return `<http://just.en.example/description-resource>; rel="describedby", <${STORAGE_DESCRIPTION_IRI}>; rel="http://www.w3.org/ns/solid/terms#storageDescription"`;
         }
         throw Error(`${name} not supported`);
       }
@@ -79,3 +91,10 @@ export const statelessFetch = async function statelessFetch(url: string, options
 } as WhatwgFetch;
 
 export const fetch = fetchWrapper(statelessFetch);
+
+fetch.raw = async () =>
+  ({
+    headers: {
+      get: () => `<${STORAGE_DESCRIPTION_IRI}>; rel="http://www.w3.org/ns/solid/terms#storageDescription"`
+    }
+  }) as unknown as Response;

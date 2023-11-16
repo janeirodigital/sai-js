@@ -5,9 +5,9 @@ import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
-import { DataGrant, DataInstance, ApplicationFactory } from '../src';
 import { RDFS } from '@janeirodigital/interop-utils';
 import { describe } from 'node:test';
+import { DataGrant, DataInstance, ApplicationFactory } from '../src';
 
 const factory = new ApplicationFactory({ fetch, randomUUID });
 const snippetIri = 'https://pro.alice.example/7a130c38-668a-4775-821a-08b38f2306fb#project';
@@ -85,6 +85,7 @@ test('should forward accessMode from the grant', async () => {
 
 describe('delete', () => {
   test('should properly use fetch', async () => {
+    // @ts-ignore
     const localFactory = new ApplicationFactory({ fetch: jest.fn(fetch), randomUUID });
     const dataInstance = await localFactory.dataInstance(snippetIri, defaultDataGrant);
     await dataInstance.delete();
@@ -103,6 +104,7 @@ describe('delete', () => {
   test('should remove reference from parent if a child', async () => {
     const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
     let taskToDelete;
+    // eslint-disable-next-line
     for await (const task of dataInstance.getChildInstancesIterator(taskShapeTree)) {
       taskToDelete = task;
       break;
@@ -130,6 +132,7 @@ describe('update', () => {
   });
 
   test('should properly use fetch', async () => {
+    // @ts-ignore
     const localFactory = new ApplicationFactory({ fetch: jest.fn(fetch), randomUUID });
     const dataInstance = await localFactory.dataInstance(snippetIri, defaultDataGrant);
     const dataRegistrationIri = 'https://pro.alice.example/773605f0-b5bf-4d46-878d-5c167eac8b5d';
@@ -142,6 +145,7 @@ describe('update', () => {
   });
 
   test('should set updated dataset on the data instance', async () => {
+    // @ts-ignore
     const localFactory = new ApplicationFactory({ fetch: jest.fn(fetch), randomUUID });
     const dataInstance = await localFactory.dataInstance(snippetIri, defaultDataGrant);
     await dataInstance.update(differentDataset);
@@ -189,6 +193,7 @@ test('updateAddingChildReference', async () => {
 test('updateRemovingChildReference', async () => {
   const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
   let taskToDelete;
+  // eslint-disable-next-line
   for await (const task of dataInstance.getChildInstancesIterator(taskShapeTree)) {
     taskToDelete = task;
     break;

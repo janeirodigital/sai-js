@@ -33,6 +33,7 @@ export interface DataRegistration extends UniqueId {
 }
 
 export interface DataRegistry extends UniqueId {
+  label: string;
   registrations: DataRegistration[];
 }
 

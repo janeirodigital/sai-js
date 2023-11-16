@@ -12,6 +12,7 @@ const agentId = 'https://alice.jarvis.example/#agent';
 
 describe('put', () => {
   test('should PUT its data', async () => {
+    // @ts-ignore
     const localFactory = new AuthorizationAgentFactory(webId, agentId, { fetch: jest.fn(fetch), randomUUID });
     const resource = new ImmutableResource(snippetIri, localFactory, {});
     await resource.put();
