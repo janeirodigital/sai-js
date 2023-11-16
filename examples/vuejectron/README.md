@@ -20,7 +20,7 @@ pnpm install
 yarn dev
 
 # npm
-npm run dev
+pnpm run dev
 
 # pnpm
 pnpm dev
@@ -33,7 +33,7 @@ pnpm dev
 yarn build
 
 # npm
-npm run build
+pnpm run build
 
 # pnpm
 pnpm build
@@ -46,7 +46,7 @@ pnpm build
 yarn lint
 
 # npm
-npm run lint
+pnpm run lint
 
 # pnpm
 pnpm lint

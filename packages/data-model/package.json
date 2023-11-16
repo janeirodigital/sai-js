@@ -39,12 +39,12 @@
     "test": "test"
   },
   "scripts": {
-    "build": "npm run build:cjs && npm run build:mjs && sh fixup.sh",
+    "build": "pnpm run build:cjs && pnpm run build:mjs && sh fixup.sh",
     "build:cjs": "tsc -b tsconfig-cjs.json",
     "build:mjs": "tsc -b tsconfig-mjs.json",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "clean": "rimraf dist tsconfig.tsbuildinfo",
-    "publish": "npm run clean && npm run build"
+    "publish": "pnpm run clean && pnpm run build"
   },
   "dependencies": {
     "@janeirodigital/interop-utils": "^1.0.0-rc.21",

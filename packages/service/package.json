@@ -23,7 +23,7 @@
     "redis:delete": "docker rm -f sai-redis",
     "dev": "pnpm run redis:delete && pnpm run redis:create && pnpm run debug",
     "debug": "pnpm run build && node --inspect dist/componentsMain.js",
-    "build": "pnpm run build:ts && npm run build:components",
+    "build": "pnpm run build:ts && pnpm run build:components",
     "build:components": "componentsjs-generator -s dist -c dist/components -r ssv -i .componentsignore",
     "build:ts": "tsc",
     "build:watch": "tsc --watch",
