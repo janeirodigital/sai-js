@@ -75,13 +75,13 @@ importers:
         specifier: ^1.17.4
         version: 1.17.4
       '@janeirodigital/interop-application':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../../packages/application
       '@janeirodigital/interop-data-model':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../../packages/data-model
       '@janeirodigital/interop-utils':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../../packages/utils
       '@mdi/font':
         specifier: 7.3.67
@@ -153,10 +153,10 @@ importers:
   packages/application:
     dependencies:
       '@janeirodigital/interop-data-model':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../data-model
       '@janeirodigital/interop-utils':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../utils
       '@solid-notifications/subscription':
         specifier: ^0.1.0
@@ -166,7 +166,7 @@ importers:
         version: 1.17.1
     devDependencies:
       '@janeirodigital/interop-test-utils':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../test-utils
       '@rdfjs/types':
         specifier: ^1.1.0
@@ -178,17 +178,17 @@ importers:
   packages/authorization-agent:
     dependencies:
       '@janeirodigital/interop-data-model':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../data-model
       '@janeirodigital/interop-utils':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../utils
       n3:
         specifier: ^1.17.1
         version: 1.17.1
     devDependencies:
       '@janeirodigital/interop-test-utils':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../test-utils
       '@rdfjs/types':
         specifier: ^1.1.0
@@ -203,7 +203,7 @@ importers:
   packages/data-model:
     dependencies:
       '@janeirodigital/interop-utils':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../utils
       n3:
         specifier: ^1.17.1
@@ -216,7 +216,7 @@ importers:
         version: 1.1.1
     devDependencies:
       '@janeirodigital/interop-test-utils':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../test-utils
       '@rdfjs/types':
         specifier: ^1.1.0
@@ -231,7 +231,7 @@ importers:
         specifier: ^1.17.4
         version: 1.17.4
       '@janeirodigital/interop-authorization-agent':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../authorization-agent
     devDependencies:
       '@solid-notifications/types':
@@ -259,19 +259,19 @@ importers:
         specifier: ^1.17.4
         version: 1.17.4
       '@janeirodigital/interop-authorization-agent':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../authorization-agent
       '@janeirodigital/interop-data-model':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../data-model
       '@janeirodigital/interop-utils':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../utils
       '@janeirodigital/sai-api-messages':
-        specifier: 1.0.0-rc.21
+        specifier: 1.0.0-rc.22
         version: link:../api-messages
       '@janeirodigital/sai-server-interfaces':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../interfaces
       '@solid-notifications/discovery':
         specifier: ^0.1.0
@@ -332,7 +332,7 @@ importers:
   packages/test-utils:
     dependencies:
       '@janeirodigital/interop-utils':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../utils
     devDependencies:
       '@rdfjs/types':
@@ -370,7 +370,7 @@ importers:
         specifier: ^1.17.4
         version: 1.17.4
       '@janeirodigital/sai-api-messages':
-        specifier: ^1.0.0-rc.21
+        specifier: ^1.0.0-rc.22
         version: link:../../packages/api-messages
       '@mdi/font':
         specifier: 7.3.67
