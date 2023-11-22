@@ -73,7 +73,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
-  if (to.name === 'redirect') return undefined;
+  if (to.name === 'redirect' || to.name === 'login') return undefined;
   const coreStore = useCoreStore();
   await coreStore.restoreOidcSession(to);
 
