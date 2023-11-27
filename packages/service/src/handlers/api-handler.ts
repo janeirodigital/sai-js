@@ -18,6 +18,7 @@ import {
 import type { SaiContext } from '../models/http-solid-context';
 import { validateContentType } from '../utils/http-validators';
 import { IReciprocalRegistrationsJobData } from '../models/jobs';
+import { requestAccessUsingApplicationNeeds } from '../services/access-request';
 
 export class ApiHandler extends HttpHandler {
   private logger = getLogger();
@@ -92,7 +93,7 @@ export class ApiHandler extends HttpHandler {
         return {
           body: {
             type: ResponseMessageTypes.DESCRIPTIONS_RESPONSE,
-            payload: await getDescriptions(body.applicationId, body.lang, context.saiSession)
+            payload: await getDescriptions(body.agentId, body.agentType, body.lang, context.saiSession)
           },
           status: 200,
           headers: {}
@@ -111,6 +112,16 @@ export class ApiHandler extends HttpHandler {
           body: {
             type: ResponseMessageTypes.APPLICATION_AUTHORIZATION_REGISTERED,
             payload: await recordAuthorization(body.authorization, context.saiSession)
+          },
+          status: 200,
+          headers: {}
+        };
+      case RequestMessageTypes.REQUEST_AUTHORIZATION_USING_APPLICATION_NEEDS:
+        await requestAccessUsingApplicationNeeds(body.applicationId, body.agentId, context.saiSession);
+        return {
+          body: {
+            type: ResponseMessageTypes.REQUEST_ACCESS_USING_APPLICATION_NEEDS_CONFIRMTION,
+            payload: null
           },
           status: 200,
           headers: {}

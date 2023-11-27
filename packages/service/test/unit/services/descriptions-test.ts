@@ -10,7 +10,7 @@ import {
   ReadableDataRegistration
 } from '@janeirodigital/interop-data-model';
 import { ACL, INTEROP } from '@janeirodigital/interop-utils';
-import { Authorization } from '@janeirodigital/sai-api-messages';
+import { AgentType, Authorization } from '@janeirodigital/sai-api-messages';
 import { getDescriptions, recordAuthorization, listDataInstances } from '../../../src/services';
 
 jest.setTimeout(30000);
@@ -61,7 +61,7 @@ describe('getDescriptions', () => {
   test('returns null if no access need group', async () => {
     saiSession.factory.readable.clientIdDocument.mockResolvedValueOnce({} as unknown as ReadableClientIdDocument);
 
-    const descriptions = await getDescriptions(applicationIri, lang, saiSession);
+    const descriptions = await getDescriptions(applicationIri, AgentType.Application, lang, saiSession);
     expect(descriptions).toBeNull();
   });
 
@@ -127,17 +127,18 @@ describe('getDescriptions', () => {
         ({
           iri: 'https://home.alice.example/data/projects/',
           contains: new Array(23)
-        } as unknown as ReadableDataRegistration)
+        }) as unknown as ReadableDataRegistration
     );
     saiSession.findDataRegistration.mockImplementationOnce(
       async () =>
         ({
           iri: 'https://work.alice.example/data/projects/',
           contains: new Array(34)
-        } as unknown as ReadableDataRegistration)
+        }) as unknown as ReadableDataRegistration
     );
     const expected = {
       id: applicationIri,
+      agentType: AgentType.Application,
       accessNeedGroup: {
         id: accessNeedGroup.iri,
         label: accessNeedGroup.descriptions[lang].label,
@@ -208,7 +209,7 @@ describe('getDescriptions', () => {
       ]
     };
 
-    const descriptions = await getDescriptions(applicationIri, lang, saiSession);
+    const descriptions = await getDescriptions(applicationIri, AgentType.Application, lang, saiSession);
     expect(descriptions).toStrictEqual(expected);
   });
 });
@@ -285,6 +286,7 @@ describe('recordAuthorization', () => {
   const accessNeedGroupIri = 'https://projectron.example/access-needs#need-group-pm';
   const authorization = {
     grantee: bobWebId,
+    agentType: AgentType.Application,
     accessNeedGroup: accessNeedGroupIri,
     dataAuthorizations: [
       {

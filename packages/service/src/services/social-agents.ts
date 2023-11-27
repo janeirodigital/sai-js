@@ -12,7 +12,8 @@ const buildSocialAgentProfile = (registration: CRUDSocialAgentRegistration): Soc
     label: registration.label,
     note: registration.note,
     authorizationDate: registration.registeredAt!.toISOString(),
-    lastUpdateDate: registration.updatedAt?.toISOString()
+    lastUpdateDate: registration.updatedAt?.toISOString(),
+    accessNeedGroup: registration.reciprocalRegistration?.hasAccessNeedGroup
   });
 export const getSocialAgents = async (saiSession: AuthorizationAgent) => {
   const profiles: SocialAgent[] = [];

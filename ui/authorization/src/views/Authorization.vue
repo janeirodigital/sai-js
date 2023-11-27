@@ -1,12 +1,13 @@
 <template>
   <v-main>
     <AuthorizeApp
-      v-if="!route.query.resource && appStore.authorizationData && appStore.application"
+      v-if="!route.query.resource && appStore.authorizationData
+            && (agent || appStore.application)"
       :application="appStore.application"
+      :agent="agent"
       :authorizationData="appStore.authorizationData"
       :redirect="route.query.redirect !== 'false'"
     ></AuthorizeApp>
-    <AuthorizeAgent v-if="!route.query.resource && agent" :agent="agent"></AuthorizeAgent>
     <ShareResource
       v-if="!route.query.webid && clientId && appStore.resource"
       :applicationId="clientId"
@@ -21,8 +22,8 @@ import { ref, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAppStore } from '@/store/app';
 import AuthorizeApp from '@/components/AuthorizeApp.vue';
-import AuthorizeAgent from '@/components/AuthorizeAgent.vue';
 import ShareResource from '@/components/ShareResource.vue';
+import { AgentType } from '@janeirodigital/sai-api-messages';
 
 const appStore = useAppStore();
 
@@ -53,6 +54,7 @@ watch(
       appStore.listSocialAgents();
       if (Array.isArray(webid)) throw new Error('only one agent is allowed');
       agentId.value = webid;
+      appStore.getAuthoriaztion(webid, AgentType.SocialAgent);
     }
   },
   { immediate: true }
@@ -74,7 +76,7 @@ watch(
   (id) => {
     if (id && !resourceId.value) {
       appStore.getApplication(id);
-      appStore.getAuthoriaztion(id);
+      appStore.getAuthoriaztion(id, AgentType.Application);
     }
   },
   { immediate: true }

@@ -6,5 +6,6 @@ PREFIX interop: <http://www.w3.org/ns/solid/interop#>
   a interop:SocialAgentRegistration;
   interop:registeredAgent <http://localhost:3000/alice/profile/card#me> ;
   interop:registeredAt "2020-07-12T10:36:21.000Z"^^xsd:dateTime ;
+  interop:reciprocalRegistration <http://localhost:3000/alice/agentRegistry/bob/> ;
   skos:prefLabel "Alice" ;
   skos:note "She lives near by" .

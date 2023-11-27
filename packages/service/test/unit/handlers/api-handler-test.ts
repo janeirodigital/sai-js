@@ -6,6 +6,7 @@ import { getLogger } from '@digita-ai/handlersjs-logging';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import {
   AccessAuthorization,
+  AgentType,
   Application,
   AuthorizationData,
   DataInstance,
@@ -239,7 +240,8 @@ describe('getDescriptions', () => {
       headers,
       body: {
         type: RequestMessageTypes.DESCRIPTIONS_REQUEST,
-        applicationId: 'https://projectron.example',
+        agentId: 'https://projectron.example',
+        agentType: AgentType.Application,
         lang: 'en'
       }
     } as unknown as HttpHandlerRequest;
@@ -254,8 +256,8 @@ describe('getDescriptions', () => {
         expect(response.body.type).toBe(ResponseMessageTypes.DESCRIPTIONS_RESPONSE);
         expect(response.body.payload).toBe(authorizationData);
 
-        const { applicationId, lang } = request.body;
-        expect(mocked.getDescriptions).toBeCalledWith(applicationId, lang, saiSession);
+        const { agentId, agentType, lang } = request.body;
+        expect(mocked.getDescriptions).toBeCalledWith(agentId, agentType, lang, saiSession);
         done();
       }
     });

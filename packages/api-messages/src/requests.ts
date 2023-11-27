@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 
 import { IRI } from './index';
-import { Authorization, ShareAuthorization } from './payloads';
+import { AgentType, Authorization, ShareAuthorization } from './payloads';
 
 export const RequestMessageTypes = {
   APPLICATIONS_REQUEST: '[APPLICATION PROFILES] Application Profiles Requested',
@@ -13,7 +13,9 @@ export const RequestMessageTypes = {
   APPLICATION_AUTHORIZATION: '[APPLICATION] Authorization submitted',
   UNREGISTERED_APPLICATION_PROFILE: 'ApplicationProfileRequest',
   RESOURCE_REQUEST: '[RESOURCE] Resource Requested',
-  SHARE_AUTHORIZATION: '[RESOURCE] Share Authorization Requested'
+  SHARE_AUTHORIZATION: '[RESOURCE] Share Authorization Requested',
+  REQUEST_AUTHORIZATION_USING_APPLICATION_NEEDS:
+    '[REQUEST AUTHORIZATION USING APPLICATION NEEDS] Request Authorization Using Application Needs Requested'
 } as const;
 
 abstract class MessageBase {
@@ -65,7 +67,8 @@ export class DescriptionsRequest extends MessageBase {
   public type = RequestMessageTypes.DESCRIPTIONS_REQUEST;
 
   constructor(
-    private applicationId: IRI,
+    private agentId: IRI,
+    private agentType: AgentType,
     private lang: string
   ) {
     super();
@@ -110,6 +113,17 @@ export class ShareAuthorizationRequest extends MessageBase {
   }
 }
 
+export class RequestAccessUsingApplicationNeedsRequest extends MessageBase {
+  public type = RequestMessageTypes.REQUEST_AUTHORIZATION_USING_APPLICATION_NEEDS;
+
+  constructor(
+    private applicationId: IRI,
+    private agentId: IRI
+  ) {
+    super();
+  }
+}
+
 export type Request =
   | ApplicationsRequest
   | SocialAgentsRequest
@@ -120,4 +134,5 @@ export type Request =
   | ApplicationAuthorizationRequest
   | UnregisteredApplicationProfileRequest
   | ResourceRequest
-  | ShareAuthorizationRequest;
+  | ShareAuthorizationRequest
+  | RequestAccessUsingApplicationNeedsRequest;

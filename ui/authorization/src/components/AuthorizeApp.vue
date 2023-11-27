@@ -12,7 +12,17 @@ span.label {
 }
 </style>
 <template>
-  <v-card :title="application.name" :prepend-avatar="application.logo">
+  <v-card
+    v-if="application"
+    :title="application.name"
+    :prepend-avatar="application.logo">
+  </v-card>
+  <v-card
+    v-if="agent"
+    :title="agent.label"
+    :subtitle="agent.note"
+  ></v-card>
+  <v-card>
     <v-card-text>
       <v-list-item lines="three" @click="toggleSelect(accessNeed.id)">
         <v-list-item-title>
@@ -58,10 +68,10 @@ span.label {
           </template>
         </v-list-item>
       </v-list>
-      <v-expansion-panels id="panel-hell" variant="popout">
-        <v-expansion-panel>
+      <v-expansion-panels id="panel-hell" variant="popout" v-model="panelsOpened">
+        <v-expansion-panel value="top">
           <v-expansion-panel-title class="d-flex flex-row">
-            <span class="flex-grow-1">All</span>
+            <span class="flex-grow-1">{{ topLevelScope }}</span>
             <v-chip color="agent" label>{{ props.authorizationData.dataOwners.length }}</v-chip>
             <template v-slot:actions>
               <v-badge color="agent" :content="statsForTopLevel()" :model-value="topLevelScope === 'some'">
@@ -224,21 +234,26 @@ import {
   AuthorizationData,
   BaseAuthorization,
   DataAuthorization,
-  DataInstance
+  DataInstance,
+  SocialAgent,
+  AgentType
 } from '@janeirodigital/sai-api-messages';
-import { reactive, ref, watch } from 'vue';
+import { reactive, ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCoreStore } from '@/store/core';
 import { useAppStore } from '@/store/app';
+import { VExpansionPanel } from 'vuetify/lib/components/index.mjs';
+
 const router = useRouter()
 
 const coreStore = useCoreStore();
 const appStore = useAppStore();
 
 const props = defineProps<{
-  application: Partial<Application>;
+  application?: Partial<Application>;
+  agent?: SocialAgent;
   authorizationData: AuthorizationData;
-  redirect: Boolean
+  redirect: boolean
 }>();
 
 type PropagatingScope = 'none' | 'all';
@@ -323,9 +338,22 @@ function findRegistrationDataInstances(registrationId: string): SelectableDataIn
   return Object.values(dataInstancesIndex).filter((dataInstance) => dataInstance.registration === registrationId);
 }
 
+const panelsOpened = ref<string[]>([]);
 const topLevelScope = ref<Scope>('all');
 
+// TODO: make propagation independent of DOM
+onMounted(() => {
+  // set default to current user
+  if (props.agent) {
+    topLevelScope.value = 'some'
+    setScopeForAgents('none')
+    agentsIndex[coreStore.userId!].scope = 'all'
+    panelsOpened.value = ['top']
+  }
+})
+
 watch(topLevelScope, (newScope) => {
+  console.log('newScope', newScope)
   if (newScope !== 'some') {
     setScopeForAgents(newScope);
   }
@@ -415,13 +443,11 @@ function statsForRegistration(registrationId: string): number {
   const registration = registrationsIndex[registrationId];
   if (registration.scope === 'none') {
     return 0;
+  } else if (registration.scope === 'all') {
+    return registration.count;
   } else {
-    if (registration.scope === 'all') {
-      return registration.count;
-    } else {
-      const dataInstances = findRegistrationDataInstances(registration.id);
-      return dataInstances.filter((dataInstance) => dataInstance.selected).length;
-    }
+    const dataInstances = findRegistrationDataInstances(registration.id);
+    return dataInstances.filter((dataInstance) => dataInstance.selected).length;
   }
 }
 
@@ -544,6 +570,7 @@ function authorize(granted = true) {
     let authorization: Authorization;
     const baseAuthorization = {
       grantee: props.authorizationData.id,
+      agentType: props.agent ? AgentType.SocialAgent : AgentType.Application,
       accessNeedGroup: props.authorizationData.accessNeedGroup.id
     } as BaseAuthorization;
     if (granted) {
@@ -573,6 +600,8 @@ watch(
     if (accessAuthorization) {
       if(props.redirect) {
         window.location.href = accessAuthorization.callbackEndpoint;
+      } else if (props.authorizationData.agentType === AgentType.SocialAgent) {
+        router.push( { name: 'social-agent-list' })
       } else {
         router.push( { name: 'application-list' })
       }

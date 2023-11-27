@@ -11,7 +11,8 @@ import {
   Authorization,
   AccessAuthorization,
   DataInstance,
-  DataRegistry
+  DataRegistry,
+  AgentType
 } from '@janeirodigital/sai-api-messages';
 import { useBackend } from '@/backend';
 
@@ -22,7 +23,7 @@ export const useAppStore = defineStore('app', () => {
   const authorizationData = ref<AuthorizationData | null>(null);
   const accessAuthorization = ref<AccessAuthorization | null>(null);
   const socialAgentList = ref<SocialAgent[]>([]);
-  const application = ref<Partial<Application> | null>(null);
+  const application = ref<Partial<Application> | undefined>();
   const loadedDataInstances = reactive<Record<string, DataInstance[]>>({});
   const applicationList = reactive<Application[]>([]);
   const dataRegistryList = reactive<Record<string, DataRegistry[]>>({});
@@ -37,8 +38,8 @@ export const useAppStore = defineStore('app', () => {
     shareAuthorizationConfirmation.value = await backend.shareResource(shareAuthorization);
   }
 
-  async function getAuthoriaztion(clientId: string) {
-    authorizationData.value = await backend.getAuthorization(clientId, lang.value);
+  async function getAuthoriaztion(agentId: string, agentType: AgentType) {
+    authorizationData.value = await backend.getAuthorization(agentId, agentType, lang.value);
   }
 
   // TODO rename list with load
@@ -50,6 +51,7 @@ export const useAppStore = defineStore('app', () => {
   async function listApplications(force = false) {
     if (!applicationList.length || force) {
       const applications = await backend.listApplications();
+      applicationList.length = 0;
       applicationList.push(...applications);
     }
   }
@@ -57,6 +59,10 @@ export const useAppStore = defineStore('app', () => {
   async function authorizeApp(authorization: Authorization) {
     accessAuthorization.value = await backend.authorizeApp(authorization);
     listApplications(true);
+  }
+
+  async function requestAccess(applicationId: string, agentId: string) {
+    await backend.requestAccess(applicationId, agentId);
   }
 
   async function listSocialAgents() {
@@ -90,6 +96,7 @@ export const useAppStore = defineStore('app', () => {
     getAuthoriaztion,
     listDataInstances,
     authorizeApp,
+    requestAccess,
     listSocialAgents,
     getApplication,
     listApplications,

@@ -43,6 +43,10 @@ export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
     return this.getObject(SKOS.note)?.value;
   }
 
+  get hasAccessNeedGroup(): string | undefined {
+    return this.getObject(INTEROP.hasAccessNeedGroup)?.value;
+  }
+
   // TODO: (elf-pavlik) recover if reciprocal can't be fetched
   private async buildReciprocalRegistration(): Promise<void> {
     const reciprocalRegistrationIri = this.getObject(INTEROP.reciprocalRegistration)?.value;
@@ -77,6 +81,25 @@ export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
     const reciprocalRegistrationIri = await this.discoverReciprocal(fetch);
     if (reciprocalRegistrationIri) {
       await this.updateReciprocal(reciprocalRegistrationIri);
+    }
+  }
+
+  public async setAccessNeedGroup(accessNeedGroupIri: string): Promise<void> {
+    const quad = DataFactory.quad(
+      DataFactory.namedNode(this.iri),
+      INTEROP.hasAccessNeedGroup,
+      DataFactory.namedNode(accessNeedGroupIri)
+    );
+    // unlink prevoius access grant if exists
+    if (this.hasAccessNeedGroup) {
+      const priorQuad = this.getQuad(
+        DataFactory.namedNode(this.iri),
+        INTEROP.hasAccessNeedGroup,
+        DataFactory.namedNode(this.hasAccessNeedGroup)
+      );
+      await this.replaceStatement(priorQuad, quad);
+    } else {
+      await this.addStatement(quad);
     }
   }
 

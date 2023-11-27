@@ -11,7 +11,8 @@ import {
   ResourceRequest,
   ShareAuthorizationRequest,
   SocialAgentsRequest,
-  ListDataInstancesRequest
+  ListDataInstancesRequest,
+  AgentType
 } from '../src/index';
 
 describe('Request has proper message type', () => {
@@ -70,11 +71,12 @@ describe('Request has proper message type', () => {
 
   test('DescriptionsRequest', () => {
     const lang = 'en';
-    const applicationId = 'http://app.example';
-    const request = new DescriptionsRequest(applicationId, lang);
+    const agentId = 'http://app.example';
+    const request = new DescriptionsRequest(agentId, AgentType.Application, lang);
     const expected = {
       type: RequestMessageTypes.DESCRIPTIONS_REQUEST,
-      applicationId,
+      agentId,
+      agentType: AgentType.Application,
       lang
     };
     expect(JSON.parse(request.stringify())).toEqual(expected);
@@ -96,6 +98,7 @@ describe('Request has proper message type', () => {
   test('ApplicationAuthorizationRequest (granted)', () => {
     const authorization = {
       grantee: 'https://app.example',
+      agentType: AgentType.Application,
       granted: true as const,
       accessNeedGroup: 'https://app.example/access-needs#group',
       dataAuthorizations: [
@@ -116,6 +119,7 @@ describe('Request has proper message type', () => {
   test('ApplicationAuthorizationRequest (not granted)', () => {
     const authorization = {
       grantee: 'https://app.example',
+      agentType: AgentType.Application,
       granted: false as const,
       accessNeedGroup: 'https://app.example/access-needs#group'
     };
@@ -144,9 +148,9 @@ describe('Request has proper message type', () => {
     const shareAuthorization = {
       applicationId: 'https://projectron.example',
       resource: 'https://work.alice.example/some-resource',
-      agents: [] as any[],
-      accessMode: [] as any[],
-      children: [] as any[]
+      agents: [] as string[],
+      accessMode: [] as string[],
+      children: [] as { shapeTree: string; accessMode: string[] }[]
     };
 
     const request = new ShareAuthorizationRequest(shareAuthorization);

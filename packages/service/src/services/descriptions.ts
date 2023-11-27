@@ -11,12 +11,13 @@ import type {
   NestedDataAuthorizationData
 } from '@janeirodigital/interop-authorization-agent';
 import { INTEROP } from '@janeirodigital/interop-utils';
-import type {
+import {
   AuthorizationData,
   Authorization,
   AccessAuthorization,
   AccessNeed,
   AccessNeedGroup,
+  AgentType,
   GrantedAuthorization,
   DataOwner,
   DataRegistration,
@@ -104,17 +105,24 @@ async function findSocialAgentDataRegistrations(
  * @param saiSession Authoirization Agent from `@janeirodigital/interop-authorization-agent`
  */
 export const getDescriptions = async (
-  applicationIri: string,
+  agentIri: string,
+  agentType: AgentType,
   descriptionsLang: string,
   saiSession: AuthorizationAgent
 ): Promise<AuthorizationData | null> => {
-  const clientIdDocument = await saiSession.factory.readable.clientIdDocument(applicationIri);
-  if (!clientIdDocument.hasAccessNeedGroup) return null;
+  let accessNeedGroupIri: string;
+  if (agentType === AgentType.Application) {
+    const clientIdDocument = await saiSession.factory.readable.clientIdDocument(agentIri);
+    if (!clientIdDocument.hasAccessNeedGroup) return null;
+    accessNeedGroupIri = clientIdDocument.hasAccessNeedGroup;
+  } else if (agentType === AgentType.SocialAgent) {
+    const socialAgentRegistration = await saiSession.findSocialAgentRegistration(agentIri);
+    if (!socialAgentRegistration) throw new Error(`registration not found for ${agentIri}`);
+    accessNeedGroupIri = socialAgentRegistration.reciprocalRegistration?.hasAccessNeedGroup;
+    if (!accessNeedGroupIri) return null;
+  } else throw new Error('wrong agent type');
 
-  const accessNeedGroup = await saiSession.factory.readable.accessNeedGroup(
-    clientIdDocument.hasAccessNeedGroup,
-    descriptionsLang
-  );
+  const accessNeedGroup = await saiSession.factory.readable.accessNeedGroup(accessNeedGroupIri, descriptionsLang);
 
   const dataOwners: DataOwner[] = [
     {
@@ -144,7 +152,8 @@ export const getDescriptions = async (
   return {
     // TODO if the id is the unique id of something then it should not be its own id. It should refer by a different name,
     //      e.g.: applicationId and be documented as such
-    id: applicationIri,
+    id: agentIri,
+    agentType,
     accessNeedGroup: {
       id: accessNeedGroup.iri,
       label: accessNeedGroup.descriptions[descriptionsLang].label!,
@@ -277,15 +286,17 @@ export const recordAuthorization = async (
   }
 
   const recorded = await saiSession.recordAccessAuthorization(structure);
-  // we need to ensure that Application Registration exists before generating Access Grant!
-  if (!(await saiSession.findApplicationRegistration(authorization.grantee))) {
-    await saiSession.registrySet.hasAgentRegistry.addApplicationRegistration(authorization.grantee);
+  const response = { id: recorded.iri, ...authorization } as AccessAuthorization;
+  if (authorization.agentType === AgentType.Application) {
+    // we need to ensure that Application Registration exists before generating Access Grant!
+    if (!(await saiSession.findApplicationRegistration(authorization.grantee))) {
+      await saiSession.registrySet.hasAgentRegistry.addApplicationRegistration(authorization.grantee);
+    }
+    const clientIdDocument = await saiSession.factory.readable.clientIdDocument(authorization.grantee);
+    if (clientIdDocument.callbackEndpoint) {
+      response.callbackEndpoint = clientIdDocument.callbackEndpoint;
+    }
   }
   await saiSession.generateAccessGrant(recorded.iri);
-  const response = { id: recorded.iri, ...authorization } as AccessAuthorization;
-  const clientIdDocument = await saiSession.factory.readable.clientIdDocument(authorization.grantee);
-  if (clientIdDocument.callbackEndpoint) {
-    response.callbackEndpoint = clientIdDocument.callbackEndpoint;
-  }
   return response;
 };

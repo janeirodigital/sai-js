@@ -22,7 +22,9 @@ export const ResponseMessageTypes = {
   APPLICATION_AUTHORIZATION_REGISTERED: '[APPLICATION] Authorization registered',
   UNREGISTERED_APPLICATION_PROFILE: 'ApplicationProfileResponse',
   RESOURCE_RESPONSE: '[RESOURCE] Resource Received',
-  SHARE_AUTHORIZATION_CONFIRMATION: '[RESOURCE] Share Authorization Confirmed'
+  SHARE_AUTHORIZATION_CONFIRMATION: '[RESOURCE] Share Authorization Confirmed',
+  REQUEST_ACCESS_USING_APPLICATION_NEEDS_CONFIRMTION:
+    '[REQUEST ACCESS USING APPLICATION NEEDS] Request Access Using Application Needs Confirmed'
 } as const;
 
 export type TResponseMessage = typeof ResponseMessageTypes;
@@ -62,6 +64,10 @@ export type ApplicationAuthorizationResponseMessage = IResponseMessage<
   typeof ResponseMessageTypes.APPLICATION_AUTHORIZATION_REGISTERED,
   AccessAuthorization
 >;
+export type RequestAccessUsingApplicationNeedResponseMessage = IResponseMessage<
+  typeof ResponseMessageTypes.REQUEST_ACCESS_USING_APPLICATION_NEEDS_CONFIRMTION,
+  null
+>;
 export type UnregisteredApplicationResponseMessage = IResponseMessage<
   typeof ResponseMessageTypes.UNREGISTERED_APPLICATION_PROFILE,
   Partial<Application>
@@ -80,6 +86,7 @@ export type ResponseMessage =
   | DescriptionsResponseMessage
   | ListDataInstancesResponseMessage
   | ApplicationAuthorizationResponseMessage
+  | RequestAccessUsingApplicationNeedResponseMessage
   | UnregisteredApplicationResponseMessage
   | ResourceResponseMessage
   | ShareAuthorizationResponseMessage;
@@ -197,5 +204,15 @@ export class ShareAuthorizationResponse {
   constructor(message: ShareAuthorizationResponseMessage) {
     validateType(message.type, this.type);
     this.payload = message.payload;
+  }
+}
+
+export class RequestAccessUsingApplicationNeedsResponse {
+  public type = ResponseMessageTypes.REQUEST_ACCESS_USING_APPLICATION_NEEDS_CONFIRMTION;
+
+  public payload: null;
+
+  constructor(message: RequestAccessUsingApplicationNeedResponseMessage) {
+    validateType(message.type, this.type);
   }
 }

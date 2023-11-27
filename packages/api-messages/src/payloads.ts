@@ -20,6 +20,7 @@ export interface Application extends UniqueId {
 export interface SocialAgent extends UniqueId {
   label: string;
   note?: string;
+  accessNeedGroup?: IRI;
   authorizationDate: string; // interop:registeredAt
   lastUpdateDate?: string; // interop:updatedAt
 }
@@ -69,7 +70,13 @@ export interface DataOwner extends UniqueId {
   dataRegistrations: DataRegistration[];
 }
 
+export enum AgentType {
+  SocialAgent = 'http://www.w3.org/ns/solid/interop#SocialAgent',
+  Application = 'http://www.w3.org/ns/solid/interop#Application'
+}
+
 export interface AuthorizationData extends UniqueId {
+  agentType: AgentType;
   accessNeedGroup: AccessNeedGroup;
   dataOwners: DataOwner[];
 }
@@ -84,6 +91,7 @@ export interface DataAuthorization {
 
 export interface BaseAuthorization {
   grantee: IRI;
+  agentType: AgentType;
   accessNeedGroup: IRI;
 }
 export interface GrantedAuthorization extends BaseAuthorization {
@@ -144,6 +152,11 @@ export interface ShareAuthorizationConfirmation {
   callbackEndpoint: IRI;
 }
 
+export type RequestAccessUsingApplicationNeeds = {
+  applicationId: IRI;
+  agentId: IRI;
+};
+
 export type Payloads =
   | Application[]
   | SocialAgent[]
@@ -154,4 +167,5 @@ export type Payloads =
   | AccessAuthorization
   | Partial<Application>
   | Resource
-  | ShareAuthorizationConfirmation;
+  | ShareAuthorizationConfirmation
+  | RequestAccessUsingApplicationNeeds;

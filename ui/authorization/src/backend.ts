@@ -1,6 +1,7 @@
 import { getDefaultSession } from '@inrupt/solid-client-authn-browser';
 import {
   AccessAuthorization,
+  AgentType,
   Application,
   ApplicationAuthorizationRequest,
   ApplicationAuthorizationResponse,
@@ -23,6 +24,8 @@ import {
   ListDataInstancesResponse,
   ListDataInstancesResponseMessage,
   Request,
+  RequestAccessUsingApplicationNeedsRequest,
+  RequestAccessUsingApplicationNeedsResponse,
   Resource,
   ResourceRequest,
   ResourceResponse,
@@ -78,8 +81,8 @@ async function getResource(resourceId: IRI, lang: string): Promise<Resource> {
   return response.payload;
 }
 
-async function getAuthorization(clientId: IRI, lang: string): Promise<AuthorizationData> {
-  const request = new DescriptionsRequest(clientId, lang);
+async function getAuthorization(agentId: IRI, agentType: AgentType, lang: string): Promise<AuthorizationData> {
+  const request = new DescriptionsRequest(agentId, agentType, lang);
   const data = await getDataFromApi<DescriptionsResponseMessage>(request);
   const response = new DescriptionsResponse(data);
   return response.payload;
@@ -97,6 +100,11 @@ async function authorizeApp(authorization: Authorization): Promise<AccessAuthori
   const data = await getDataFromApi<ApplicationAuthorizationResponseMessage>(request);
   const response = new ApplicationAuthorizationResponse(data);
   return response.payload;
+}
+
+async function requestAccess(applicationId: IRI, agentId: IRI): Promise<void> {
+  const request = new RequestAccessUsingApplicationNeedsRequest(applicationId, agentId);
+  await getDataFromApi<RequestAccessUsingApplicationNeedsResponse>(request);
 }
 
 async function listSocialAgents(): Promise<SocialAgent[]> {
@@ -142,6 +150,7 @@ export function useBackend() {
     getAuthorization,
     listDataInstances,
     authorizeApp,
+    requestAccess,
     listSocialAgents,
     getApplication,
     listApplications,
