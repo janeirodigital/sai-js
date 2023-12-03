@@ -25,7 +25,7 @@ export const useAppStore = defineStore('app', () => {
   const socialAgentList = ref<SocialAgent[]>([]);
   const application = ref<Partial<Application> | undefined>();
   const loadedDataInstances = reactive<Record<string, DataInstance[]>>({});
-  const applicationList = reactive<Application[]>([]);
+  const applicationList = ref<Application[]>([]);
   const dataRegistryList = reactive<Record<string, DataRegistry[]>>({});
 
   const backend = useBackend();
@@ -49,24 +49,26 @@ export const useAppStore = defineStore('app', () => {
   }
 
   async function listApplications(force = false) {
-    if (!applicationList.length || force) {
-      const applications = await backend.listApplications();
-      applicationList.length = 0;
-      applicationList.push(...applications);
+    if (!applicationList.value.length || force) {
+      applicationList.value = await backend.listApplications();
+    }
+  }
+
+  async function listSocialAgents(force = false) {
+    if (!socialAgentList.value.length || force) {
+      socialAgentList.value = await backend.listSocialAgents();
     }
   }
 
   async function authorizeApp(authorization: Authorization) {
     accessAuthorization.value = await backend.authorizeApp(authorization);
     listApplications(true);
+    listSocialAgents(true);
   }
 
   async function requestAccess(applicationId: string, agentId: string) {
     await backend.requestAccess(applicationId, agentId);
-  }
-
-  async function listSocialAgents() {
-    socialAgentList.value = await backend.listSocialAgents();
+    listSocialAgents(true);
   }
 
   async function getApplication(applicationId: string) {

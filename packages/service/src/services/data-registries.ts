@@ -62,7 +62,7 @@ export const getDataRegistries = async (agentId: string, descriptionsLang: strin
     throw new Error(`missing social agent registration: ${agentId}`);
   }
   if (!socialAgentRegistration.accessGrant) {
-    throw new Error(`missing access grant for social agent: ${agentId}`);
+    return [];
   }
   const dataGrantIndex = socialAgentRegistration.accessGrant.hasDataGrant.reduce(
     (acc, dataGrant) => {

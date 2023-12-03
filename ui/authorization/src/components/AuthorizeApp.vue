@@ -185,7 +185,7 @@ span.label {
                                 {{ dataInstance.label }}
                               </v-list-item-title>
                               <template v-slot:append>
-                                <v-list-item-action>
+                                <v-list-item-action v-if="dataInstancesIndex[dataInstance.id]">
                                   <v-checkbox-btn
                                     v-model="dataInstancesIndex[dataInstance.id].selected"
                                     :disabled="registrationsIndex[registration.id].scope !== 'some'"

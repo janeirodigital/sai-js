@@ -16,21 +16,13 @@ const snippet = `
 test('insertPatch', async () => {
   const dataset = await parseTurtle(snippet);
   const patch = await insertPatch(dataset);
-  const expected = `
-    INSERT DATA {
-      ${await serializeTurtle(dataset)}
-    }
-  `;
+  const expected = `INSERT DATA { ${await serializeTurtle(dataset)} }`;
   expect(patch).toBe(expected);
 });
 
 test('deletePatch', async () => {
   const dataset = await parseTurtle(snippet);
   const patch = await deletePatch(dataset);
-  const expected = `
-    DELETE DATA {
-      ${await serializeTurtle(dataset)}
-    }
-  `;
+  const expected = `DELETE DATA { ${await serializeTurtle(dataset)} }`;
   expect(patch).toBe(expected);
 });

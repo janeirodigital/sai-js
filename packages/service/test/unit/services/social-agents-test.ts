@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { jest } from '@jest/globals';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { addSocialAgent, getSocialAgents } from '../../../src/services/social-agents';
@@ -33,11 +34,13 @@ describe('getSocialAgents', () => {
           id: 'https://alice.example',
           label: 'Alice',
           note: 'A friend from a football team',
+          accessRequested: false,
           authorizationDate: '2020-04-04T20:15:47.000Z'
         },
         {
           id: 'https://bob.example',
           label: 'Bob',
+          accessRequested: false,
           authorizationDate: '2021-07-02T10:12:21.000Z',
           lastUpdateDate: '2021-09-24T11:12:21.000Z'
         }
@@ -65,7 +68,8 @@ describe('addSocialAgent', () => {
     expect(result).toEqual({
       id: existing.registeredAgent,
       label: existing.label,
-      authorizationDate: existing.registeredAt.toISOString()
+      authorizationDate: existing.registeredAt.toISOString(),
+      accessRequested: false
     });
     expect(addSocialAgentRegistration).not.toBeCalled();
   });
@@ -83,7 +87,8 @@ describe('addSocialAgent', () => {
       id: bobWebId,
       label,
       note,
-      authorizationDate: expect.any(String)
+      authorizationDate: expect.any(String),
+      accessRequested: false
     });
     expect(addSocialAgentRegistration).toBeCalledWith(bobWebId, label, note);
   });

@@ -21,7 +21,9 @@ export interface SocialAgent extends UniqueId {
   label: string;
   note?: string;
   accessNeedGroup?: IRI;
-  authorizationDate: string; // interop:registeredAt
+  accessRequested: boolean;
+  accessGrant?: IRI;
+  authorizationDate: string; // interop:registeredAt TODO: rename to not imply access
   lastUpdateDate?: string; // interop:updatedAt
 }
 

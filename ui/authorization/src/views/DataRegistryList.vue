@@ -13,7 +13,7 @@ span.label {
         </template>
         <template v-else>
           <v-icon color="agent" icon="mdi-account-circle-outline"></v-icon>
-          <span class="label flex-grow-1">{{ appStore.socialAgentList.find(a => a.id === route.query.agent)?.label }}</span>
+          <span class="label flex-grow-1">{{ agent?.label }}</span>
         </template>
       </v-card-title>
     </v-card>
@@ -51,6 +51,30 @@ span.label {
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
+    <v-card
+      v-if="agent && appStore.dataRegistryList[agent.id] && !hasData"
+    >
+      <template v-if="!agent.accessRequested">
+        <v-card-title>Request access</v-card-title>
+        <v-btn
+          prepend-icon="mdi-security"
+          @click="appListDialog = true"
+        >Based on application</v-btn>
+      </template>
+      <v-card-title v-else>Access requested</v-card-title>
+    </v-card>
+
+    <v-dialog :modelValue="appListDialog">
+      <v-list>
+        <v-list-item
+          v-for="application in appStore.applicationList"
+          :key="application.id" :prepend-avatar="application.logo"
+          :title="application.name"
+          @click="requestAccess(application.id)">
+        
+        </v-list-item>
+      </v-list>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -58,17 +82,35 @@ span.label {
 import { useCoreStore } from '@/store/core';
 import { useAppStore } from '@/store/app';
 import { useRoute } from 'vue-router';
-import { watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const appStore = useAppStore()
 const coreStore = useCoreStore()
 const route = useRoute()
+const appListDialog = ref(false)
+
+appStore.listSocialAgents()
+appStore.listApplications()
+
+function requestAccess(applicationId: string) {
+  if (!route.query.agent) return
+  appStore.requestAccess(applicationId, route.query.agent as string)
+  appListDialog.value = false  
+}
+
+const agent = computed(() => {
+  return appStore.socialAgentList.find((a) => a.id === route.query.agent);
+});
+
+const hasData = computed(() => {
+  return !!appStore.dataRegistryList[route.query.agent as string]?.length
+});
 
 watch(
   () => route.query.agent,
-  async (agent) => {
-    if (agent) {
-      await appStore.listDataRegistries(agent as string, coreStore.lang)
+  async (agentId) => {
+    if (agentId) {
+      await appStore.listDataRegistries(agentId as string, coreStore.lang)
     }
   },
   { immediate: true }

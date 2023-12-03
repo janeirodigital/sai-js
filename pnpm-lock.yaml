@@ -105,8 +105,8 @@ importers:
         specifier: ^4.2.5
         version: 4.2.5(vue@3.3.4)
       vuetify:
-        specifier: ^3.3.21
-        version: 3.3.21(typescript@5.2.2)(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
+        specifier: ^3.4.4
+        version: 3.4.4(typescript@5.2.2)(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
       webfontloader:
         specifier: ^1.6.28
         version: 1.6.28
@@ -143,7 +143,7 @@ importers:
         version: 4.4.11(@types/node@20.8.6)(sass@1.69.3)
       vite-plugin-vuetify:
         specifier: ^1.0.2
-        version: 1.0.2(vite@4.4.11)(vue@3.3.4)(vuetify@3.3.21)
+        version: 1.0.2(vite@4.4.11)(vue@3.3.4)(vuetify@3.4.4)
       vue-tsc:
         specifier: ^1.8.19
         version: 1.8.19(typescript@5.2.2)
@@ -228,8 +228,8 @@ importers:
   packages/interfaces:
     dependencies:
       '@inrupt/solid-client-authn-node':
-        specifier: ^1.17.4
-        version: 1.17.4
+        specifier: ^1.17.5
+        version: 1.17.5
       '@janeirodigital/interop-authorization-agent':
         specifier: ^1.0.0-rc.22
         version: link:../authorization-agent
@@ -256,8 +256,8 @@ importers:
         specifier: ^0.19.3
         version: 0.19.3
       '@inrupt/solid-client-authn-node':
-        specifier: ^1.17.4
-        version: 1.17.4
+        specifier: ^1.17.5
+        version: 1.17.5
       '@janeirodigital/interop-authorization-agent':
         specifier: ^1.0.0-rc.22
         version: link:../authorization-agent
@@ -388,8 +388,8 @@ importers:
         specifier: ^4.2.5
         version: 4.2.5(vue@3.3.4)
       vuetify:
-        specifier: ^3.3.21
-        version: 3.3.21(typescript@5.2.2)(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
+        specifier: ^3.4.4
+        version: 3.4.4(typescript@5.2.2)(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
       webfontloader:
         specifier: ^1.6.28
         version: 1.6.28
@@ -423,7 +423,7 @@ importers:
         version: 4.4.11(@types/node@20.8.6)(sass@1.69.3)
       vite-plugin-vuetify:
         specifier: ^1.0.2
-        version: 1.0.2(vite@4.4.11)(vue@3.3.4)(vuetify@3.3.21)
+        version: 1.0.2(vite@4.4.11)(vue@3.3.4)(vuetify@3.4.4)
       vue-tsc:
         specifier: ^1.8.19
         version: 1.8.19(typescript@5.2.2)
@@ -3099,11 +3099,23 @@ packages:
       - encoding
     dev: false
 
-  /@inrupt/solid-client-authn-node@1.17.4:
-    resolution: {integrity: sha512-wvG3FvW0YXq8GEV8daFwg0ndvsaAFn+48M6K7FR1xp7ve/S6rEMDZov8F05JhvDyZv3PyB7RnWZSUnDGLM3Y+g==}
+  /@inrupt/solid-client-authn-core@1.17.5:
+    resolution: {integrity: sha512-g3WShcPAqGuarPYlw12vUCo+et4elQLI+WYcHkCHGLuQQFF73r2iTicuKpkydQdIrZ5AZgxhwr315jmkx/vcFQ==}
     engines: {node: ^16.0.0 || ^18.0.0 || ^20.0.0}
     dependencies:
-      '@inrupt/solid-client-authn-core': 1.17.4
+      '@inrupt/universal-fetch': 1.0.3
+      events: 3.3.0
+      jose: 4.15.4
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@inrupt/solid-client-authn-node@1.17.5:
+    resolution: {integrity: sha512-lY2H/Uwy4vemKr2uvQ76e1QbiWZ6oevLzqh3K3JHwRLSh1CSLBNSfNKRiTTWNHOfPBGhBuwL5amA5yl4y208rQ==}
+    engines: {node: ^16.0.0 || ^18.0.0 || ^20.0.0}
+    dependencies:
+      '@inrupt/solid-client-authn-core': 1.17.5
       '@inrupt/universal-fetch': 1.0.3
       jose: 4.15.4
       openid-client: 5.5.0
@@ -3153,8 +3165,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /@janeirodigital/interop-utils@1.0.0-rc.21:
-    resolution: {integrity: sha512-+DTzWtoYmW6m2yCNuI/V0S8reZKPWvsgWOd3D5F6ChVMKTdwpe3DxkmJvgF1wo9jjS5ZeyUHiPSI5sSMDxYzvg==}
+  /@janeirodigital/interop-utils@1.0.0-rc.22:
+    resolution: {integrity: sha512-yXTeihFUIoPyU7wJf8uJlmmnbVAmSdd0FafahuqE1DbDNFH1hQ5eSRGryjLUnXgiaavTysWh+uFUqSFTn0VQwQ==}
     dependencies:
       http-link-header: 1.1.1
       jsonld-streaming-parser: 3.2.1
@@ -3582,7 +3594,7 @@ packages:
   /@solid-notifications/discovery@0.1.0:
     resolution: {integrity: sha512-n96D0LABrGCrJwRUm92cNE3LoeyE77TmisnJzA7NuHEHbFmf6q0CyUWE6K75aWyBp7MjrCOS/6pIzBTp5so/xg==}
     dependencies:
-      '@janeirodigital/interop-utils': 1.0.0-rc.21
+      '@janeirodigital/interop-utils': 1.0.0-rc.22
       n3: 1.17.1
     transitivePeerDependencies:
       - encoding
@@ -3591,7 +3603,7 @@ packages:
   /@solid-notifications/subscription@0.1.0:
     resolution: {integrity: sha512-BVXhM1FpLlpfjhGZ36SBjwDGTbvCfyuNQoOu+MCAZBntYjyzaUJ3OESvx4/C+RyvkvGsCKCEVKPrnEzsPSNZAw==}
     dependencies:
-      '@janeirodigital/interop-utils': 1.0.0-rc.21
+      '@janeirodigital/interop-utils': 1.0.0-rc.22
       '@solid-notifications/discovery': 0.1.0
       n3: 1.17.1
     transitivePeerDependencies:
@@ -4414,7 +4426,7 @@ packages:
       - typescript
     dev: true
 
-  /@vuetify/loader-shared@1.7.1(vue@3.3.4)(vuetify@3.3.21):
+  /@vuetify/loader-shared@1.7.1(vue@3.3.4)(vuetify@3.4.4):
     resolution: {integrity: sha512-kLUvuAed6RCvkeeTNJzuy14pqnkur8lTuner7v7pNE/kVhPR97TuyXwBSBMR1cJeiLiOfu6SF5XlCYbXByEx1g==}
     peerDependencies:
       vue: ^3.0.0
@@ -4423,7 +4435,7 @@ packages:
       find-cache-dir: 3.3.2
       upath: 2.0.1
       vue: 3.3.4
-      vuetify: 3.3.21(typescript@5.2.2)(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
+      vuetify: 3.4.4(typescript@5.2.2)(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
 
   /@vueuse/core@10.5.0(vue@3.3.4):
     resolution: {integrity: sha512-z/tI2eSvxwLRjOhDm0h/SXAjNm8N5ld6/SC/JQs6o6kpJ6Ya50LnEL8g5hoYu005i28L0zqB5L5yAl8Jl26K3A==}
@@ -9377,18 +9389,18 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
-  /vite-plugin-vuetify@1.0.2(vite@4.4.11)(vue@3.3.4)(vuetify@3.3.21):
+  /vite-plugin-vuetify@1.0.2(vite@4.4.11)(vue@3.3.4)(vuetify@3.4.4):
     resolution: {integrity: sha512-MubIcKD33O8wtgQXlbEXE7ccTEpHZ8nPpe77y9Wy3my2MWw/PgehP9VqTp92BLqr0R1dSL970Lynvisx3UxBFw==}
     engines: {node: '>=12'}
     peerDependencies:
       vite: ^2.7.0 || ^3.0.0 || ^4.0.0
       vuetify: ^3.0.0-beta.4
     dependencies:
-      '@vuetify/loader-shared': 1.7.1(vue@3.3.4)(vuetify@3.3.21)
+      '@vuetify/loader-shared': 1.7.1(vue@3.3.4)(vuetify@3.4.4)
       debug: 4.3.4
       upath: 2.0.1
       vite: 4.4.11(@types/node@20.8.6)(sass@1.69.3)
-      vuetify: 3.3.21(typescript@5.2.2)(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
+      vuetify: 3.4.4(typescript@5.2.2)(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
     transitivePeerDependencies:
       - supports-color
       - vue
@@ -9499,13 +9511,13 @@ packages:
       '@vue/server-renderer': 3.3.4(vue@3.3.4)
       '@vue/shared': 3.3.4
 
-  /vuetify@3.3.21(typescript@5.2.2)(vite-plugin-vuetify@1.0.2)(vue@3.3.4):
-    resolution: {integrity: sha512-CVC6MDC45H+IY8Nq5QO/lBhbSd/dg+IV46GKd+LIndriLoQXG+tFv31NQY++tOQgrKeZr6w2SUBMBxSZyHErfg==}
+  /vuetify@3.4.4(typescript@5.2.2)(vite-plugin-vuetify@1.0.2)(vue@3.3.4):
+    resolution: {integrity: sha512-qnQy3iPOLMcyKUAb5Oi2hw+2qjc9NQK/M2i95ZUvjpHEF5mTBvGwCJ2xXV4Yn9eaGhuUtWBqgR/3Op42S3d41g==}
     engines: {node: ^12.20 || >=14.13}
     peerDependencies:
       typescript: '>=4.7'
       vite-plugin-vuetify: ^1.0.0-alpha.12
-      vue: ^3.2.0
+      vue: ^3.3.0
       vue-i18n: ^9.0.0
       webpack-plugin-vuetify: ^2.0.0-alpha.11
     peerDependenciesMeta:
@@ -9519,7 +9531,7 @@ packages:
         optional: true
     dependencies:
       typescript: 5.2.2
-      vite-plugin-vuetify: 1.0.2(vite@4.4.11)(vue@3.3.4)(vuetify@3.3.21)
+      vite-plugin-vuetify: 1.0.2(vite@4.4.11)(vue@3.3.4)(vuetify@3.4.4)
       vue: 3.3.4
 
   /walker@1.0.8:

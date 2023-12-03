@@ -13,17 +13,23 @@ export class CRUDContainer extends CRUDResource {
     return containedIri;
   }
 
-  public async applyPatch(sparqlUpdate: string): Promise<void> {
+  public async applyPatch(sparqlUpdate: string, create = false): Promise<void> {
     await this.discoverDescriptionResource();
     // update the Description Resource
-    const { ok } = await this.fetch(this.descriptionResourceIri, {
+    const headers: { [key: string]: string } = {
+      'Content-Type': 'application/sparql-update'
+    };
+    if (create) {
+      headers['If-None-Match'] = '*';
+    } else {
+      headers['If-Match'] = '*';
+    }
+    const response = await this.fetch(this.descriptionResourceIri, {
       method: 'PATCH',
       body: sparqlUpdate,
-      headers: {
-        'Content-Type': 'application/sparql-update'
-      }
+      headers
     });
-    if (!ok) {
+    if (!response.ok) {
       throw new Error(`failed to patch ${this.descriptionResourceIri}`);
     }
   }
@@ -69,6 +75,6 @@ export class CRUDContainer extends CRUDResource {
 
     await this.discoverDescriptionResource();
     const sparqlUpdate = await insertPatch(this.dataset);
-    await this.applyPatch(sparqlUpdate);
+    await this.applyPatch(sparqlUpdate, true);
   }
 }
