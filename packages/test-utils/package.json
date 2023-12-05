@@ -1,7 +1,7 @@
 {
   "name": "@janeirodigital/interop-test-utils",
   "private": true,
-  "version": "1.0.0-rc.22",
+  "version": "1.0.0-rc.23",
   "description": "Internal testing utilities intended to be used by other modules implementing Solid Application Interoperability specification. Intended to be only used as a development dependency.",
   "contributors": [
     {
@@ -38,7 +38,7 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@janeirodigital/interop-utils": "^1.0.0-rc.22"
+    "@janeirodigital/interop-utils": "^1.0.0-rc.23"
   },
   "devDependencies": {
     "@rdfjs/types": "^1.1.0",
