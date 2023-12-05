@@ -42,9 +42,14 @@ corepack prepare pnpm@latest --activate
 
 ```bash
 pnpm install
-pnpx turbo run build
-pnpx turbo run test
-pnpx turbo run dev
+pnpm build
+pnpm test
+pnpm dev
+```
+In separate terminal
+
+```bash
+pnpm watch
 ```
 
 It will run following:

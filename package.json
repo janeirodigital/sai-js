@@ -21,16 +21,26 @@
     "prettier": "^3.0.3",
     "rimraf": "^5.0.5",
     "ts-jest": "^29.1.1",
+    "turbo": "^1.10.16",
+    "turbowatch": "^2.29.4",
     "typescript": "^5.2.2"
   },
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "pnpx turbo run build",
+    "test": "pnpx turbo run test",
+    "dev": "pnpm --filter '@janeirodigital/sai-server' redis && pnpx turbo run dev",
+    "watch": "./node_modules/.bin/turbowatch turbowatch.ts"
   },
   "volta": {
     "node": "20.7.0"
   },
   "packageManager": "pnpm@8.8.0",
   "lint-staged": {
-    "*.ts": ["eslint --config .eslintrc.js", "prettier --write", "git add"]
+    "*.ts": [
+      "eslint --config .eslintrc.js",
+      "prettier --write",
+      "git add"
+    ]
   }
 }
