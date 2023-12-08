@@ -29,3 +29,7 @@ export function agentRedirectUrl(agentUrl: string): string {
 export function webhookTargetUrl(webId: string, peerWebId: string): string {
   return `${baseUrl}/agents/${encodeWebId(webId)}/webhook/${encodeWebId(peerWebId)}`;
 }
+
+export function invitationCapabilityUrl(webId: string, uuid: string): string {
+  return `${baseUrl}/agents/${encodeWebId(webId)}/invitation/${uuid}`;
+}

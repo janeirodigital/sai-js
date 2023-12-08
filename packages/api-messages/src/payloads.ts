@@ -159,6 +159,19 @@ export type RequestAccessUsingApplicationNeeds = {
   agentId: IRI;
 };
 
+export type InvitationBase = {
+  label: string;
+  note?: string;
+};
+
+export type Invitation = InvitationBase & {
+  capabilityUrl: IRI;
+};
+
+export type SocialAgentInvitation = Invitation & {
+  id: IRI;
+};
+
 export type Payloads =
   | Application[]
   | SocialAgent[]
@@ -170,4 +183,7 @@ export type Payloads =
   | Partial<Application>
   | Resource
   | ShareAuthorizationConfirmation
-  | RequestAccessUsingApplicationNeeds;
+  | RequestAccessUsingApplicationNeeds
+  | InvitationBase
+  | Invitation
+  | SocialAgentInvitation;

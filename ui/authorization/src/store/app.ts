@@ -12,7 +12,8 @@ import {
   AccessAuthorization,
   DataInstance,
   DataRegistry,
-  AgentType
+  AgentType,
+  SocialAgentInvitation
 } from '@janeirodigital/sai-api-messages';
 import { useBackend } from '@/backend';
 
@@ -27,6 +28,7 @@ export const useAppStore = defineStore('app', () => {
   const loadedDataInstances = reactive<Record<string, DataInstance[]>>({});
   const applicationList = ref<Application[]>([]);
   const dataRegistryList = reactive<Record<string, DataRegistry[]>>({});
+  const invitationList = ref<SocialAgentInvitation[]>([]);
 
   const backend = useBackend();
 
@@ -60,6 +62,12 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
+  async function listSocialAgentInvitations(force = false) {
+    if (!invitationList.value.length || force) {
+      invitationList.value = await backend.listSocialAgentInvitations();
+    }
+  }
+
   async function authorizeApp(authorization: Authorization) {
     accessAuthorization.value = await backend.authorizeApp(authorization);
     listApplications(true);
@@ -82,6 +90,18 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
+  async function createInvitation(label: string, note?: string): Promise<SocialAgentInvitation> {
+    const socialAgentInvitation = await backend.createInvitation(label, note);
+    invitationList.value.push(socialAgentInvitation);
+    return socialAgentInvitation;
+  }
+
+  async function acceptInvitation(capabilityUrl: string, label: string, note?: string): Promise<SocialAgent> {
+    const socialAgent = await backend.acceptInvitation(capabilityUrl, label, note);
+    socialAgentList.value.push(socialAgent);
+    return socialAgent;
+  }
+
   return {
     lang,
     resource,
@@ -93,6 +113,7 @@ export const useAppStore = defineStore('app', () => {
     applicationList,
     dataRegistryList,
     shareAuthorizationConfirmation,
+    invitationList,
     getResource,
     shareResource,
     getAuthoriaztion,
@@ -102,6 +123,9 @@ export const useAppStore = defineStore('app', () => {
     listSocialAgents,
     getApplication,
     listApplications,
-    listDataRegistries
+    listDataRegistries,
+    createInvitation,
+    listSocialAgentInvitations,
+    acceptInvitation
   };
 });

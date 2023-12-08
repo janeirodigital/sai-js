@@ -9,7 +9,8 @@ import {
   SocialAgent,
   Resource,
   ShareAuthorizationConfirmation,
-  DataInstance
+  DataInstance,
+  SocialAgentInvitation
 } from './payloads';
 
 export const ResponseMessageTypes = {
@@ -24,7 +25,9 @@ export const ResponseMessageTypes = {
   RESOURCE_RESPONSE: '[RESOURCE] Resource Received',
   SHARE_AUTHORIZATION_CONFIRMATION: '[RESOURCE] Share Authorization Confirmed',
   REQUEST_ACCESS_USING_APPLICATION_NEEDS_CONFIRMTION:
-    '[REQUEST ACCESS USING APPLICATION NEEDS] Request Access Using Application Needs Confirmed'
+    '[REQUEST ACCESS USING APPLICATION NEEDS] Request Access Using Application Needs Confirmed',
+  SOCIAL_AGENT_INVITATIONS_RESPONSE: '[SOCIAL AGENT INVITATIONS] Social Agent Invitations Received',
+  INVITATION_REGISTRATION: '[INVITATION_REGISTRATION] Invitation registration'
 } as const;
 
 export type TResponseMessage = typeof ResponseMessageTypes;
@@ -77,6 +80,14 @@ export type ShareAuthorizationResponseMessage = IResponseMessage<
   typeof ResponseMessageTypes.SHARE_AUTHORIZATION_CONFIRMATION,
   ShareAuthorizationConfirmation
 >;
+export type SocialAgentInvitationsResponseMessage = IResponseMessage<
+  typeof ResponseMessageTypes.SOCIAL_AGENT_INVITATIONS_RESPONSE,
+  SocialAgentInvitation[]
+>;
+export type InvitationResponseMessage = IResponseMessage<
+  typeof ResponseMessageTypes.INVITATION_REGISTRATION,
+  SocialAgentInvitation
+>;
 
 export type ResponseMessage =
   | ApplicationsResponseMessage
@@ -89,7 +100,9 @@ export type ResponseMessage =
   | RequestAccessUsingApplicationNeedResponseMessage
   | UnregisteredApplicationResponseMessage
   | ResourceResponseMessage
-  | ShareAuthorizationResponseMessage;
+  | ShareAuthorizationResponseMessage
+  | SocialAgentInvitationsResponseMessage
+  | InvitationResponseMessage;
 
 function validateType(messageType: VResponseMessages, requiredType: VResponseMessages) {
   if (messageType !== requiredType) {
@@ -214,5 +227,27 @@ export class RequestAccessUsingApplicationNeedsResponse {
 
   constructor(message: RequestAccessUsingApplicationNeedResponseMessage) {
     validateType(message.type, this.type);
+  }
+}
+
+export class SocialAgentInvitationsResponse {
+  public type = ResponseMessageTypes.SOCIAL_AGENT_INVITATIONS_RESPONSE;
+
+  public payload: SocialAgentInvitation[];
+
+  constructor(message: SocialAgentInvitationsResponseMessage) {
+    validateType(message.type, this.type);
+    this.payload = message.payload;
+  }
+}
+
+export class SocialAgentInvitationResponse {
+  public type = ResponseMessageTypes.INVITATION_REGISTRATION;
+
+  public payload: SocialAgentInvitation;
+
+  constructor(message: InvitationResponseMessage) {
+    validateType(message.type, this.type);
+    this.payload = message.payload;
   }
 }

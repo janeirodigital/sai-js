@@ -1,7 +1,7 @@
 import { DataFactory } from 'n3';
 import { INTEROP, OIDC } from '@janeirodigital/interop-utils';
-import { AuthorizationAgentFactory, CRUDApplicationRegistration, CRUDSocialAgentRegistration } from '..';
-import { CRUDContainer } from '.';
+import { AuthorizationAgentFactory } from '..';
+import { CRUDContainer, CRUDApplicationRegistration, CRUDSocialAgentRegistration, CRUDSocialAgentInvitation } from '.';
 
 export class CRUDAgentRegistry extends CRUDContainer {
   factory: AuthorizationAgentFactory;
@@ -40,20 +40,41 @@ export class CRUDAgentRegistry extends CRUDContainer {
     };
   }
 
+  get socialAgentInvitations(): AsyncIterable<CRUDSocialAgentInvitation> {
+    const iris = this.getObjectsArray(INTEROP.hasSocialAgentInvitation).map((object) => object.value);
+    const { factory } = this;
+    return {
+      async *[Symbol.asyncIterator]() {
+        for (const iri of iris) {
+          yield factory.crud.socialAgentInvitation(iri);
+        }
+      }
+    };
+  }
+
   // eslint-disable-next-line consistent-return
-  public async findApplicationRegistration(iri: string): Promise<CRUDApplicationRegistration | undefined> {
+  public async findApplicationRegistration(registeredAgent: string): Promise<CRUDApplicationRegistration | undefined> {
     for await (const registration of this.applicationRegistrations) {
-      if (registration.registeredAgent === iri) {
+      if (registration.registeredAgent === registeredAgent) {
         return this.factory.crud.applicationRegistration(registration.iri);
       }
     }
   }
 
   // eslint-disable-next-line consistent-return
-  public async findSocialAgentRegistration(iri: string): Promise<CRUDSocialAgentRegistration | undefined> {
+  public async findSocialAgentRegistration(registeredAgent: string): Promise<CRUDSocialAgentRegistration | undefined> {
     for await (const registration of this.socialAgentRegistrations) {
-      if (registration.registeredAgent === iri) {
+      if (registration.registeredAgent === registeredAgent) {
         return this.factory.crud.socialAgentRegistration(registration.iri);
+      }
+    }
+  }
+
+  // eslint-disable-next-line consistent-return
+  public async findSocialAgentInvitation(capabilityUrl: string): Promise<CRUDSocialAgentInvitation | undefined> {
+    for await (const invitation of this.socialAgentInvitations) {
+      if (invitation.capabilityUrl === capabilityUrl) {
+        return this.factory.crud.socialAgentInvitation(invitation.iri);
       }
     }
   }
@@ -125,5 +146,27 @@ export class CRUDAgentRegistry extends CRUDContainer {
     // update itself to store changes
     await this.addStatement(quad);
     return registration;
+  }
+
+  public async addSocialAgentInvitation(
+    capabilityUrl: string,
+    prefLabel: string,
+    note?: string
+  ): Promise<CRUDSocialAgentInvitation> {
+    const invitation = await this.factory.crud.socialAgentInvitation(this.iriForContained(true), {
+      capabilityUrl,
+      prefLabel,
+      note
+    });
+    await invitation.create();
+    // link to created social agent registration
+    const quad = DataFactory.quad(
+      DataFactory.namedNode(this.iri),
+      INTEROP.hasSocialAgentInvitation,
+      DataFactory.namedNode(invitation.iri)
+    );
+    // update itself to store changes
+    await this.addStatement(quad);
+    return invitation;
   }
 }

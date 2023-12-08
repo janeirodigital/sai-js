@@ -26,7 +26,9 @@ import {
   ReadableAccessNeedGroupDescription,
   ReadableAccessDescriptionSet,
   ReadableAccessNeed,
-  ReadableAccessNeedGroup
+  ReadableAccessNeedGroup,
+  CRUDSocialAgentInvitation,
+  SocialAgentInvitationData
 } from '.';
 
 interface AuthorizationAgentReadableFactory extends BaseReadableFactory {
@@ -45,6 +47,7 @@ interface CRUDFactory {
     reciprocal?: boolean,
     data?: SocialAgentRegistrationData
   ): Promise<CRUDSocialAgentRegistration>;
+  socialAgentInvitation(iri: string, data?: SocialAgentInvitationData): Promise<CRUDSocialAgentInvitation>;
   dataRegistry(iri: string): Promise<CRUDDataRegistry>;
   dataRegistration(iri: string, data?: DataRegistrationData): Promise<CRUDDataRegistration>;
   authorizationRegistry(iri: string): Promise<CRUDAuthorizationRegistry>;
@@ -66,7 +69,11 @@ export class AuthorizationAgentFactory extends BaseFactory {
 
   crud: CRUDFactory;
 
-  constructor(public webId: string, public agentId: string, dependencies: FactoryDependencies) {
+  constructor(
+    public webId: string,
+    public agentId: string,
+    dependencies: FactoryDependencies
+  ) {
     super(dependencies);
 
     this.readable = this.readableFactory();
@@ -92,6 +99,12 @@ export class AuthorizationAgentFactory extends BaseFactory {
         data?: SocialAgentRegistrationData
       ): Promise<CRUDSocialAgentRegistration> {
         return CRUDSocialAgentRegistration.build(iri, factory, reciprocal, data);
+      },
+      socialAgentInvitation: async function socialAgentInvitation(
+        iri: string,
+        data?: SocialAgentInvitationData
+      ): Promise<CRUDSocialAgentInvitation> {
+        return CRUDSocialAgentInvitation.build(iri, factory, data);
       },
       dataRegistry: async function dataRegistry(iri: string): Promise<CRUDDataRegistry> {
         return CRUDDataRegistry.build(iri, factory);

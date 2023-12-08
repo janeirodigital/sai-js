@@ -42,6 +42,11 @@ const routes = [
             path: '/data-registries',
             name: 'data-registry-list',
             component: () => import(/* webpackChunkName: "data-registry-list" */ '@/views/DataRegistryList.vue')
+          },
+          {
+            path: '/invitation',
+            name: 'invitation',
+            component: () => import(/* webpackChunkName: "invitation" */ '@/views/Invitation.vue')
           }
         ]
       },

@@ -15,7 +15,10 @@ export const RequestMessageTypes = {
   RESOURCE_REQUEST: '[RESOURCE] Resource Requested',
   SHARE_AUTHORIZATION: '[RESOURCE] Share Authorization Requested',
   REQUEST_AUTHORIZATION_USING_APPLICATION_NEEDS:
-    '[REQUEST AUTHORIZATION USING APPLICATION NEEDS] Request Authorization Using Application Needs Requested'
+    '[REQUEST AUTHORIZATION USING APPLICATION NEEDS] Request Authorization Using Application Needs Requested',
+  SOCIAL_AGENT_INVITATIONS_REQUEST: '[SOCIAL AGENT INVITATIONS] Social Agent Invitations Requested',
+  CREATE_INVITATION: '[CREATE INVITATION] Create invitation',
+  ACCEPT_INVITATION: '[ACCEPT INVITATION] Accept invitation'
 } as const;
 
 abstract class MessageBase {
@@ -124,6 +127,33 @@ export class RequestAccessUsingApplicationNeedsRequest extends MessageBase {
   }
 }
 
+export class SocialAgentInvitationsRequest extends MessageBase {
+  public type = RequestMessageTypes.SOCIAL_AGENT_INVITATIONS_REQUEST;
+}
+
+export class CreateInvitationRequest extends MessageBase {
+  public type = RequestMessageTypes.CREATE_INVITATION;
+
+  constructor(
+    private label: string,
+    private note?: string
+  ) {
+    super();
+  }
+}
+
+export class AcceptInvitationRequest extends MessageBase {
+  public type = RequestMessageTypes.ACCEPT_INVITATION;
+
+  constructor(
+    private capabilityUrl: IRI,
+    private label: string,
+    private note?: string
+  ) {
+    super();
+  }
+}
+
 export type Request =
   | ApplicationsRequest
   | SocialAgentsRequest
@@ -135,4 +165,7 @@ export type Request =
   | UnregisteredApplicationProfileRequest
   | ResourceRequest
   | ShareAuthorizationRequest
-  | RequestAccessUsingApplicationNeedsRequest;
+  | RequestAccessUsingApplicationNeedsRequest
+  | SocialAgentInvitationsRequest
+  | CreateInvitationRequest
+  | AcceptInvitationRequest;

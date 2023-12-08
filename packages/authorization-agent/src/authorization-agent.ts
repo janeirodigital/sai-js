@@ -8,7 +8,8 @@ import {
   ReadableWebIdProfile,
   ReadableDataAuthorization,
   ReadableDataRegistration,
-  ReadableDataInstance
+  ReadableDataInstance,
+  CRUDSocialAgentInvitation
 } from '@janeirodigital/interop-data-model';
 import { INTEROP, WhatwgFetch, RdfFetch, fetchWrapper, asyncIterableToArray } from '@janeirodigital/interop-utils';
 import {
@@ -65,7 +66,11 @@ export class AuthorizationAgent {
 
   registrySet: CRUDRegistrySet;
 
-  constructor(public webId: string, public agentId: string, dependencies: AuthorizationAgentDependencies) {
+  constructor(
+    public webId: string,
+    public agentId: string,
+    dependencies: AuthorizationAgentDependencies
+  ) {
     this.rawFetch = dependencies.fetch;
     this.fetch = fetchWrapper(this.rawFetch);
     this.factory = new AuthorizationAgentFactory(webId, agentId, {
@@ -92,6 +97,14 @@ export class AuthorizationAgent {
 
   public async findSocialAgentRegistration(iri: string): Promise<CRUDSocialAgentRegistration | undefined> {
     return this.registrySet.hasAgentRegistry.findSocialAgentRegistration(iri);
+  }
+
+  get socialAgentInvitations(): AsyncIterable<CRUDSocialAgentInvitation> {
+    return this.registrySet.hasAgentRegistry.socialAgentInvitations;
+  }
+
+  public async findSocialAgentInvitation(iri: string): Promise<CRUDSocialAgentInvitation | undefined> {
+    return this.registrySet.hasAgentRegistry.findSocialAgentInvitation(iri);
   }
 
   public async findDataRegistration(dataRegistryIri: string, shapeTree: string): Promise<ReadableDataRegistration> {

@@ -5,7 +5,7 @@ import { getLogger } from '@digita-ai/handlersjs-logging';
 
 const logger = getLogger();
 
-const buildSocialAgentProfile = (registration: CRUDSocialAgentRegistration): SocialAgent =>
+export const buildSocialAgentProfile = (registration: CRUDSocialAgentRegistration): SocialAgent =>
   // TODO (angel) data validation and how to handle when the social agents profile is missing some components?
   ({
     id: registration.registeredAgent,

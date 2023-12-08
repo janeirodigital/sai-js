@@ -40,7 +40,17 @@ import {
   SocialAgentsResponse,
   SocialAgentsResponseMessage,
   UnregisteredApplicationProfileRequest,
-  UnregisteredApplicationProfileResponse
+  UnregisteredApplicationProfileResponse,
+  SocialAgentInvitation,
+  CreateInvitationRequest,
+  InvitationResponseMessage,
+  SocialAgentInvitationResponse,
+  AcceptInvitationRequest,
+  SocialAgentResponseMessage,
+  SocialAgentResponse,
+  SocialAgentInvitationsRequest,
+  SocialAgentInvitationsResponseMessage,
+  SocialAgentInvitationsResponse
 } from '@janeirodigital/sai-api-messages';
 
 const backendBaseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
@@ -142,6 +152,27 @@ async function shareResource(shareAuthorization: ShareAuthorization): Promise<Sh
   return response.payload;
 }
 
+async function createInvitation(label: string, note?: string): Promise<SocialAgentInvitation> {
+  const request = new CreateInvitationRequest(label, note);
+  const data = await getDataFromApi<InvitationResponseMessage>(request);
+  const response = new SocialAgentInvitationResponse(data);
+  return response.payload;
+}
+
+async function listSocialAgentInvitations(): Promise<SocialAgentInvitation[]> {
+  const request = new SocialAgentInvitationsRequest();
+  const data = await getDataFromApi<SocialAgentInvitationsResponseMessage>(request);
+  const response = new SocialAgentInvitationsResponse(data);
+  return response.payload;
+}
+
+async function acceptInvitation(capabilityUrl: string, label: string, note?: string): Promise<SocialAgent> {
+  const request = new AcceptInvitationRequest(capabilityUrl, label, note);
+  const data = await getDataFromApi<SocialAgentResponseMessage>(request);
+  const response = new SocialAgentResponse(data);
+  return response.payload;
+}
+
 export function useBackend() {
   return {
     checkServerSession,
@@ -154,6 +185,9 @@ export function useBackend() {
     listSocialAgents,
     getApplication,
     listApplications,
-    listDataRegistires
+    listDataRegistires,
+    createInvitation,
+    listSocialAgentInvitations,
+    acceptInvitation
   };
 }

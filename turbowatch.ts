@@ -2,9 +2,16 @@
 import { watch } from 'turbowatch';
 import path from 'node:path';
 
+function npmName(pkgName: string) {
+  if (pkgName === 'api-messages') {
+    return `@janeirodigital/sai-api-messages`;
+  }
+  return `@janeirodigital/interop-${pkgName}`;
+}
+
 // TODO watch service componentjs configs
 /* eslint-disable no-void */
-const packages = ['utils', 'data-model', 'application', 'authorization-agent'];
+const packages = ['utils', 'data-model', 'application', 'authorization-agent', 'api-messages'];
 for (const pkgName of packages) {
   void watch({
     project: path.join(__dirname, `packages/${pkgName}`),
@@ -13,7 +20,7 @@ for (const pkgName of packages) {
         expression: ['allof', ['not', ['dirname', 'node_modules']], ['match', '*.ts', 'basename']],
         name: 'build',
         onChange: async ({ spawn }) => {
-          await spawn`pnpm turbo run build --filter=@janeirodigital/interop-${pkgName}`;
+          await spawn`pnpm turbo run build --filter=${npmName(pkgName)}`;
         }
       }
     ]

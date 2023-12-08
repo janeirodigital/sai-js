@@ -1,0 +1,41 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:solid:authorization-agent:controller:Invitations",
+      "@type": "HttpHandlerController",
+      "label": "Invitations Controller",
+      "preResponseHandler": {
+        "@type": "HttpSequenceContextHandler",
+        "contextHandlers": [
+          {
+            "@type": "AuthnContextHandler"
+          }
+        ]
+      },
+      "routes": [
+        {
+          "@type": "HttpHandlerRoute",
+          "path": "/agents/:encodedWebId/invitation/:uuid",
+          "operations": [
+            {
+              "@type": "HttpHandlerOperation",
+              "method": "POST",
+              "publish": false
+            }
+          ],
+          "handler": {
+            "@type": "InvitationsHandler",
+            "sessionManager": {
+              "@id": "urn:ssv:SessionManager"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -19,6 +19,7 @@ import type { SaiContext } from '../models/http-solid-context';
 import { validateContentType } from '../utils/http-validators';
 import { IReciprocalRegistrationsJobData } from '../models/jobs';
 import { requestAccessUsingApplicationNeeds } from '../services/access-request';
+import { acceptInvitation, createInvitation, getSocialAgentInvitations } from '../services/invitations';
 
 export class ApiHandler extends HttpHandler {
   private logger = getLogger();
@@ -61,7 +62,7 @@ export class ApiHandler extends HttpHandler {
           status: 200,
           headers: {}
         };
-      case RequestMessageTypes.ADD_SOCIAL_AGENT_REQUEST:
+      case RequestMessageTypes.ADD_SOCIAL_AGENT_REQUEST: {
         // eslint-disable-next-line no-case-declarations
         const { webId, label, note } = body;
         // eslint-disable-next-line no-case-declarations
@@ -80,6 +81,7 @@ export class ApiHandler extends HttpHandler {
           status: 200,
           headers: {}
         };
+      }
       case RequestMessageTypes.DATA_REGISTRIES_REQUEST:
         return {
           body: {
@@ -143,6 +145,42 @@ export class ApiHandler extends HttpHandler {
           body: {
             type: ResponseMessageTypes.SHARE_AUTHORIZATION_CONFIRMATION,
             payload: await shareResource(context.saiSession, shareAuthorization)
+          },
+          status: 200,
+          headers: {}
+        };
+      }
+      case RequestMessageTypes.SOCIAL_AGENT_INVITATIONS_REQUEST: {
+        return {
+          body: {
+            type: ResponseMessageTypes.SOCIAL_AGENT_INVITATIONS_RESPONSE,
+            payload: await getSocialAgentInvitations(context.saiSession)
+          },
+          status: 200,
+          headers: {}
+        };
+      }
+      case RequestMessageTypes.CREATE_INVITATION: {
+        return {
+          body: {
+            type: ResponseMessageTypes.INVITATION_REGISTRATION,
+            payload: await createInvitation(context.saiSession, body)
+          },
+          status: 200,
+          headers: {}
+        };
+      }
+      case RequestMessageTypes.ACCEPT_INVITATION: {
+        const socialAgent = await acceptInvitation(context.saiSession, body);
+        const jobData: IReciprocalRegistrationsJobData = {
+          webId: context.saiSession.webId,
+          registeredAgent: socialAgent.id
+        };
+        await this.queue.add(jobData);
+        return {
+          body: {
+            type: ResponseMessageTypes.SOCIAL_AGENT_RESPONSE,
+            payload: socialAgent
           },
           status: 200,
           headers: {}
