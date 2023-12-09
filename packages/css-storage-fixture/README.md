@@ -11,6 +11,7 @@ All accounts use `password` as the password
 - bob@yoyodyne.example
 - acme@acme.example
 - admin@shapetrees.example
+- yori@encom.example
 
 ## Starting CSS
 

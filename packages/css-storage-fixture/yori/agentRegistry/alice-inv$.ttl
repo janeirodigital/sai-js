@@ -1,0 +1,10 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX interop: <http://www.w3.org/ns/solid/interop#>
+
+<http://localhost:3000/yori/agentRegistry/alice-inv>
+  a interop:SocialAgentInvitation;
+  interop:hasCapabilityUrl <http://localhost:4000/agents/aHR0cDovL2xvY2FsaG9zdDozMDAwL3lvcmkvcHJvZmlsZS9jYXJkI21l/invitation/cbfc5aeb-c81d-4ac2-a731-9a925018fd76> ;
+  interop:registeredAt "2021-01-12T18:14:52.000Z"^^xsd:dateTime ;
+  skos:prefLabel "Alice" ;
+  skos:note "Tron co-op guild member" .
