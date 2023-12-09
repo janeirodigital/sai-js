@@ -30,11 +30,11 @@ export class CRUDResource extends ReadableResource {
    */
   public async update(): Promise<void> {
     this.setTimestampsAndAgents();
-    const { ok } = await this.fetch(this.iri, {
+    const response = await this.fetch(this.iri, {
       method: 'PUT',
       dataset: this.dataset
     });
-    if (!ok) {
+    if (!response.ok) {
       throw new Error('failed to update');
     }
   }

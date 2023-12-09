@@ -98,7 +98,7 @@ export const useAppStore = defineStore('app', () => {
 
   async function acceptInvitation(capabilityUrl: string, label: string, note?: string): Promise<SocialAgent> {
     const socialAgent = await backend.acceptInvitation(capabilityUrl, label, note);
-    socialAgentList.value.push(socialAgent);
+    listSocialAgents(true);
     return socialAgent;
   }
 

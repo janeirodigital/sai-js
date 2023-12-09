@@ -153,13 +153,13 @@ export class CRUDAgentRegistry extends CRUDContainer {
     prefLabel: string,
     note?: string
   ): Promise<CRUDSocialAgentInvitation> {
-    const invitation = await this.factory.crud.socialAgentInvitation(this.iriForContained(true), {
+    const invitation = await this.factory.crud.socialAgentInvitation(this.iriForContained(), {
       capabilityUrl,
       prefLabel,
       note
     });
-    await invitation.create();
-    // link to created social agent registration
+    await invitation.update();
+    // link to created social agent invitation
     const quad = DataFactory.quad(
       DataFactory.namedNode(this.iri),
       INTEROP.hasSocialAgentInvitation,

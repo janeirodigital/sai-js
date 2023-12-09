@@ -17,7 +17,9 @@ function buildSocialAgentInvitation(socialAgentInvitation: CRUDSocialAgentInvita
 export async function getSocialAgentInvitations(saiSession: AuthorizationAgent): Promise<SocialAgentInvitation[]> {
   const invitations: SocialAgentInvitation[] = [];
   for await (const invitation of saiSession.socialAgentInvitations) {
-    invitations.push(buildSocialAgentInvitation(invitation));
+    if (!invitation.registeredAgent) {
+      invitations.push(buildSocialAgentInvitation(invitation));
+    }
   }
   return invitations;
 }
@@ -39,7 +41,9 @@ export async function acceptInvitation(saiSession: AuthorizationAgent, invitatio
   const response = await saiSession.fetch.raw(invitation.capabilityUrl, {
     method: 'POST'
   });
+  if (!response.ok) throw new Error('fetching capability url failed');
   const webId = (await response.text()).trim();
+  if (!webId) throw new Error('can not accept invitation without webid');
   // check if agent already has registration
   let socialAgentRegistration = await saiSession.findSocialAgentRegistration(webId);
   if (!socialAgentRegistration) {

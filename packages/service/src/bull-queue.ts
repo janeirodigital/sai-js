@@ -1,15 +1,19 @@
 import { IQueue } from '@janeirodigital/sai-server-interfaces';
-import { Queue } from 'bullmq';
+import { JobsOptions, Queue } from 'bullmq';
 import { RedisConnectionInfo } from './redis-connection-info';
 
 export class BullQueue implements IQueue {
   private bull: Queue;
 
-  constructor(private name: string, info: RedisConnectionInfo) {
+  constructor(
+    private name: string,
+    info: RedisConnectionInfo
+  ) {
     this.bull = new Queue(name, { connection: info });
   }
 
-  async add(data: any): Promise<void> {
-    this.bull.add(this.name, data);
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  async add(data: any, opts?: JobsOptions): Promise<void> {
+    this.bull.add(this.name, data, opts);
   }
 }

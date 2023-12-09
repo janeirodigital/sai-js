@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
 import { SKOS, INTEROP } from '@janeirodigital/interop-utils';
-import { CRUDContainer } from '.';
+import { CRUDResource } from '.';
 import { AuthorizationAgentFactory } from '..';
 
 export type SocialAgentInvitationData = {
@@ -9,7 +9,7 @@ export type SocialAgentInvitationData = {
   note?: string;
 };
 
-export class CRUDSocialAgentInvitation extends CRUDContainer {
+export class CRUDSocialAgentInvitation extends CRUDResource {
   data?: SocialAgentInvitationData;
 
   public constructor(iri: string, factory: AuthorizationAgentFactory, data?: SocialAgentInvitationData) {
@@ -27,6 +27,17 @@ export class CRUDSocialAgentInvitation extends CRUDContainer {
 
   get capabilityUrl(): string {
     return this.getObject(INTEROP.hasCapabilityUrl)!.value;
+  }
+
+  get registeredAgent(): string | undefined {
+    return this.getObject(INTEROP.registeredAgent)?.value;
+  }
+
+  set registeredAgent(webId: string) {
+    this.deleteQuad('registeredAgent');
+    this.dataset.add(
+      DataFactory.quad(DataFactory.namedNode(this.iri), INTEROP.registeredAgent, DataFactory.namedNode(webId))
+    );
   }
 
   protected datasetFromData(): void {
