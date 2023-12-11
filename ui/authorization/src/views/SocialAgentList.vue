@@ -51,6 +51,11 @@
           prepend-icon="mdi-content-copy"
           @click="copyCapabilityUrl(invitation)"
         >Copy link</v-btn>
+        <v-btn
+          v-if="shareAvaliable()"
+          prepend-icon="mdi-email-fast-outline"
+          @click="webShareUrl(invitation)"
+        >Send</v-btn>
       </v-card-actions>
     </v-card>
     <v-btn
@@ -91,6 +96,18 @@ const showAdd = ref(false)
 
 function copyCapabilityUrl(invitation: Invitation) {
   navigator.clipboard.writeText(invitation.capabilityUrl)
+}
+
+function webShareUrl(invitation: Invitation) {
+  navigator.share({
+    title: invitation.label,
+    text: invitation.note,
+    url: invitation.capabilityUrl
+  })
+}
+
+function shareAvaliable() {
+  return navigator.share
 }
 
 </script>
