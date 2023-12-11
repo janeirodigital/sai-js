@@ -8,16 +8,19 @@ import { validateContentType } from '../utils/http-validators';
 import { decodeWebId } from '../url-templates';
 import { IDelegatedGrantsJobData, IPushNotificationsJobData } from '../models/jobs';
 
-interface Notification {
-  object: {
-    id: string;
-  };
-}
+// interface Notification {
+//   object: {
+//     id: string;
+//   };
+// }
 
 export class WebHooksHandler extends HttpHandler {
   private logger = getLogger();
 
-  constructor(private grantsQueue: IQueue, private pushQueue: IQueue) {
+  constructor(
+    private grantsQueue: IQueue,
+    private pushQueue: IQueue
+  ) {
     super();
     this.logger.info('WebHooksHandler::constructor');
   }
@@ -34,14 +37,15 @@ export class WebHooksHandler extends HttpHandler {
     const webId = decodeWebId(context.request.parameters!.encodedWebId);
     const peerWebId = decodeWebId(context.request.parameters!.encodedPeerWebId);
 
-    if (webId === peerWebId) {
-      // notification from user's access inbox
-      // send push notification
-      await this.pushQueue.add({ webId } as IPushNotificationsJobData);
-    } else {
-      // notification from a reciprocal agent registration
+    // notification from a reciprocal agent registration
+
+    // ignore Add events
+    // TODO: body should be parsed in middleware
+    if (JSON.parse(context.request.body).type === 'Update') {
       // create job to update delegated data grants
       await this.grantsQueue.add({ webId, registeredAgent: peerWebId } as IDelegatedGrantsJobData);
+      // send push notification
+      await this.pushQueue.add({ webId, registeredAgent: peerWebId } as IPushNotificationsJobData);
     }
 
     return { body: {}, status: 200, headers: {} };

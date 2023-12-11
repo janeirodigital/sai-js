@@ -7,7 +7,9 @@
   "scripts": {
     "start": "community-solid-server -c config.json -l warn",
     "dev": "pnpm run clean && pnpm run start",
-    "clean": "find . -type d -empty -delete"
+    "clean": "pnpm clean:empty-directories && pnpm clean:notification-channels",
+    "clean:empty-directories": "find . -type d -empty -delete",
+    "clean:notification-channels": "rm -rf .internal/notifications/*"
   },
   "author": "",
   "license": "MIT",

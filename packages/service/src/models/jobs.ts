@@ -25,6 +25,7 @@ export interface IDelegatedGrantsJob {
 
 export interface IPushNotificationsJobData {
   webId: IRI;
+  registeredAgent: IRI;
 }
 export interface IPushNotificationsJob {
   data: IPushNotificationsJobData;

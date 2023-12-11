@@ -9,6 +9,8 @@ import {
 import type { RouteLocationNormalized } from 'vue-router';
 import { useBackend } from '@/backend';
 
+const backend = useBackend();
+
 export class OidcError extends Error {
   constructor(private oidcInfo?: ISessionInfo) {
     super('oidcInfo');
@@ -20,6 +22,7 @@ export const useCoreStore = defineStore('core', () => {
   const isBackendLoggedIn = ref(false);
   const redirectUrlForBackend = ref('');
   const lang = ref('en');
+  const pushSubscription = ref<PushSubscription | null>(null);
 
   async function login(oidcIssuer: string) {
     const options = {
@@ -38,7 +41,6 @@ export const useCoreStore = defineStore('core', () => {
     userId.value = oidcInfo.webId;
 
     // TODO check if backend authenticated
-    const backend = useBackend();
     const checkBackendResult = await backend.checkServerSession();
     isBackendLoggedIn.value = checkBackendResult.isLoggedIn;
     redirectUrlForBackend.value = checkBackendResult.redirectUrl ?? '';
@@ -57,5 +59,43 @@ export const useCoreStore = defineStore('core', () => {
     }
   }
 
-  return { userId, lang, isBackendLoggedIn, redirectUrlForBackend, login, handleRedirect, restoreOidcSession };
+  async function getPushSubscription() {
+    const registration = await navigator.serviceWorker.ready;
+    const subscription = await registration.pushManager.getSubscription();
+    if (subscription) {
+      pushSubscription.value = subscription;
+      await backend.subscribeToPushNotifications(subscription);
+    }
+  }
+
+  /* TODO: DRY ⬆️⬇️ */
+
+  async function enableNotifications() {
+    const result = await Notification.requestPermission();
+    if (result === 'granted') {
+      const registration = await navigator.serviceWorker.ready;
+      let subscription = await registration.pushManager.getSubscription();
+      if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: import.meta.env.VITE_VAPID_PUBLIC_KEY
+        });
+      }
+      pushSubscription.value = subscription;
+      await backend.subscribeToPushNotifications(subscription);
+    }
+  }
+
+  return {
+    userId,
+    lang,
+    isBackendLoggedIn,
+    redirectUrlForBackend,
+    pushSubscription,
+    login,
+    handleRedirect,
+    restoreOidcSession,
+    enableNotifications,
+    getPushSubscription
+  };
 });

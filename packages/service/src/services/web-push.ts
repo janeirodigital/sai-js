@@ -1,7 +1,11 @@
+import { CRUDSocialAgentRegistration } from '@janeirodigital/interop-data-model';
 import 'dotenv/config';
 import webpush, { PushSubscription } from 'web-push';
 
-export const sendWebPush = async (webId: string, subscriptions: PushSubscription[]): Promise<void> => {
+export const sendWebPush = async (
+  socialAgentRegistration: CRUDSocialAgentRegistration,
+  subscriptions: PushSubscription[]
+): Promise<void> => {
   webpush.setVapidDetails(
     process.env.PUSH_NOTIFICATION_EMAIL!,
     process.env.VAPID_PUBLIC_KEY!,
@@ -12,9 +16,9 @@ export const sendWebPush = async (webId: string, subscriptions: PushSubscription
   const notificationPayload = {
     notification: {
       title: 'SAI authorization agent',
-      body: 'Someone shared data with you',
+      body: `${socialAgentRegistration.label} shared data with you`,
       data: {
-        webId
+        webId: socialAgentRegistration.registeredAgent
       }
     }
   };

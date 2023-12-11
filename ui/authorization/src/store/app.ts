@@ -84,10 +84,8 @@ export const useAppStore = defineStore('app', () => {
   }
 
   async function listDataRegistries(agentId: string, lang = 'en') {
-    if (!dataRegistryList.length) {
-      const dataRegistries = await backend.listDataRegistires(agentId, lang);
-      dataRegistryList[agentId] = [...dataRegistries];
-    }
+    const dataRegistries = await backend.listDataRegistires(agentId, lang);
+    dataRegistryList[agentId] = [...dataRegistries];
   }
 
   async function createInvitation(label: string, note?: string): Promise<SocialAgentInvitation> {

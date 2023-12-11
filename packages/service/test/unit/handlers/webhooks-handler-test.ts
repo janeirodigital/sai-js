@@ -80,50 +80,29 @@ test.skip('should respond with Bad Request if invalid notification', (done) => {
   });
 });
 
-test('should add push notification job if from access inbox', (done) => {
-  const selfAuthn = {
-    webId: aliceWebId,
-    clientId: 'https://pub.example'
-  };
-  const request = {
-    headers: { 'content-type': 'application/ld+json' },
-    parameters: {
-      encodedWebId: encodeWebId(aliceWebId),
-      encodedPeerWebId: encodeWebId(aliceWebId)
-    },
-    body: { object: { id: 'https://alice.spamshield/access-inbox' } }
-  } as unknown as HttpHandlerRequest;
-  const ctx = { request, authn: selfAuthn } as AuthenticatedAuthnContext;
-
-  webHooksHandler.handle(ctx).subscribe({
-    next: (response) => {
-      expect(response.status).toBe(200);
-      expect(pushQueue.add).toBeCalledWith({ webId: aliceWebId } as IPushNotificationsJobData);
-      expect(grantsQueue.add).not.toBeCalled();
-      done();
-    }
-  });
-});
-
-test('should add push grants job if from reciprocal registration', (done) => {
+test('should add both jobs on Update', (done) => {
   const request = {
     headers: { 'content-type': 'application/ld+json' },
     parameters: {
       encodedWebId: encodeWebId(aliceWebId),
       encodedPeerWebId: encodeWebId(bobWebId)
     },
-    body: { object: { id: 'https://auth.bob.example/registrations/alice/' } }
+    // TODO: body should be parsed in middleware
+    body: JSON.stringify({ type: 'Update' })
   } as unknown as HttpHandlerRequest;
   const ctx = { request, authn } as AuthenticatedAuthnContext;
 
   webHooksHandler.handle(ctx).subscribe({
     next: (response) => {
       expect(response.status).toBe(200);
+      expect(pushQueue.add).toBeCalledWith({
+        webId: aliceWebId,
+        registeredAgent: bobWebId
+      } as IPushNotificationsJobData);
       expect(grantsQueue.add).toBeCalledWith({
         webId: aliceWebId,
         registeredAgent: bobWebId
       } as IDelegatedGrantsJobData);
-      expect(pushQueue.add).not.toBeCalled();
       done();
     }
   });

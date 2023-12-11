@@ -173,6 +173,18 @@ async function acceptInvitation(capabilityUrl: string, label: string, note?: str
   return response.payload;
 }
 
+// TODO: use api messages
+async function subscribeToPushNotifications(subscription: PushSubscription) {
+  const options = {
+    method: 'POST',
+    body: JSON.stringify(subscription),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+  await authnFetch(`${backendBaseUrl}/push-subscribe`, options);
+}
+
 export function useBackend() {
   return {
     checkServerSession,
@@ -188,6 +200,7 @@ export function useBackend() {
     listDataRegistires,
     createInvitation,
     listSocialAgentInvitations,
-    acceptInvitation
+    acceptInvitation,
+    subscribeToPushNotifications
   };
 }
