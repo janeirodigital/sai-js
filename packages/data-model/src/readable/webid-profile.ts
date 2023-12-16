@@ -3,10 +3,6 @@ import { InteropFactory } from '..';
 import { ReadableResource } from './resource';
 
 export class ReadableWebIdProfile extends ReadableResource {
-  get hasAccessInbox(): string | undefined {
-    return this.getObject(INTEROP.hasAccessInbox)?.value;
-  }
-
   get hasRegistrySet(): string | undefined {
     return this.getObject(INTEROP.hasRegistrySet)?.value;
   }

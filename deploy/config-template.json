@@ -5,7 +5,6 @@
   "import": [
     "./service.json",
     "./workers/reciprocal-registrations.json",
-    "./workers/access-inbox.json",
     "./workers/delegated-grants.json",
     "./workers/push-notifications.json"
   ],
@@ -34,14 +33,6 @@
       "@id": "urn:solid:authorization-agent:queue:reciprocal-registrations",
       "@type": "BullQueue",
       "name": "reciprocal-registrations",
-      "info": {
-        "@id": "urn:ssv:RedisConnectionInfo"
-      }
-    },
-    {
-      "@id": "urn:solid:authorization-agent:queue:access-inbox",
-      "@type": "BullQueue",
-      "name": "access-inbox",
       "info": {
         "@id": "urn:ssv:RedisConnectionInfo"
       }

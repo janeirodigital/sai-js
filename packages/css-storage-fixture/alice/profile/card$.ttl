@@ -14,5 +14,4 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     rdfs:label "Alice";
     solid:oidcIssuer <http://localhost:3000/>;
     interop:hasRegistrySet <http://localhost:3000/alice/registrySet>;
-    interop:hasAccessInbox <http://localhost:3000/alice/accessInbox/>;
     interop:hasAuthorizationAgent <http://localhost:4000/agents/aHR0cDovL2xvY2FsaG9zdDozMDAwL2FsaWNlL3Byb2ZpbGUvY2FyZCNtZQ==>.

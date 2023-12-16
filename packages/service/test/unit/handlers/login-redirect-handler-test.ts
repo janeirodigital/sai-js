@@ -18,7 +18,7 @@ jest.mock('../../../src/session-manager', () => ({
 
 let loginRedirectHandler: LoginRedirectHandler;
 const manager = jest.mocked(new SessionManager(new InMemoryStorage()));
-const queue = new MockedQueue('access-inbox');
+const queue = new MockedQueue('reciprocal-registrations');
 
 const aliceWebId = 'https://alice.example';
 const encodedWebId = encodeWebId(aliceWebId);
