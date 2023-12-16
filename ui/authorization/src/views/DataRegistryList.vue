@@ -9,7 +9,7 @@ span.label {
       <v-card-title>
         <template v-if="route.query.agent === coreStore.userId">
           <v-icon color="agent" icon="mdi-account-circle"></v-icon>
-          <span class="label flex-grow-1">Me</span>
+          <span class="label flex-grow-1">{{ $t('me') }}</span>
         </template>
         <template v-else>
           <v-icon color="agent" icon="mdi-account-circle-outline"></v-icon>
@@ -55,13 +55,13 @@ span.label {
       v-if="agent && appStore.dataRegistryList[agent.id] && !hasData"
     >
       <template v-if="!agent.accessRequested">
-        <v-card-title>Request access</v-card-title>
+        <v-card-title>{{ $t('request-access') }}</v-card-title>
         <v-btn
           prepend-icon="mdi-security"
           @click="appListDialog = true"
-        >Based on application</v-btn>
+        >{{ $t('based-on-an-application') }}</v-btn>
       </template>
-      <v-card-title v-else>Access requested</v-card-title>
+      <v-card-title v-else>{{ $t('access-requested') }}</v-card-title>
     </v-card>
 
     <v-dialog :modelValue="appListDialog">

@@ -8,9 +8,11 @@
     "lint": "eslint . --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@fluent/bundle": "^0.18.0",
     "@inrupt/solid-client-authn-browser": "^1.17.4",
     "@janeirodigital/sai-api-messages": "^1.0.0-rc.23",
     "@mdi/font": "7.3.67",
+    "fluent-vue": "^3.5.0",
     "pinia": "^2.1.7",
     "roboto-fontface": "*",
     "vue": "^3.3.4",
@@ -27,6 +29,7 @@
     "eslint": "^8.51.0",
     "eslint-plugin-vue": "^9.17.0",
     "typescript": "^5.2.2",
+    "unplugin-fluent-vue": "^1.1.4",
     "vite": "^4.4.11",
     "vite-plugin-pwa": "^0.17.4",
     "vite-plugin-vuetify": "^1.0.2",

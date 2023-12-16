@@ -18,13 +18,13 @@
         <v-btn 
           prepend-icon="mdi-hexagon-multiple-outline"
           :to="{name: 'data-registry-list', query: {agent: agent.id}}"
-        >Data</v-btn>
+        >{{ $t('data') }}</v-btn>
         <v-btn 
           :disabled="!agent.accessNeedGroup"
           prepend-icon="mdi-security"
           :to="{name: 'authorization', query: {webid: agent.id, redirect: 'false'}}"
         >
-          Access
+          {{ $t('access') }}
           <template
             v-slot:append
             v-if="agent.accessNeedGroup && !agent.accessGrant"
@@ -50,12 +50,12 @@
         <v-btn 
           prepend-icon="mdi-content-copy"
           @click="copyCapabilityUrl(invitation)"
-        >Copy link</v-btn>
+        >{{ $t('copy-link') }}</v-btn>
         <v-btn
           v-if="shareAvaliable()"
           prepend-icon="mdi-email-fast-outline"
           @click="webShareUrl(invitation)"
-        >Send</v-btn>
+        >{{ $t('send-link') }}</v-btn>
       </v-card-actions>
     </v-card>
     <v-btn
@@ -68,16 +68,12 @@
         <v-list-item
           prepend-icon="mdi-account-arrow-right"
           @click="router.push( { name: 'invitation', query: { direction: 'create'}})"
-        >Create invitation
-        </v-list-item>
+        >{{ $t('create-invitation') }}</v-list-item>
         <v-list-item
           prepend-icon="mdi-account-arrow-left"
           @click="router.push( { name: 'invitation', query: { direction: 'accept'}})"
-        >
-          Accept invitation
-        </v-list-item>
+        >{{ $t('accept-invitation') }}</v-list-item>
       </v-list>
-
     </v-bottom-sheet>
   </v-sheet>
 </template>

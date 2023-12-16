@@ -22,7 +22,7 @@
         </v-list-item>
       </v-list>
       <v-list>
-        <v-list-subheader>Choose agents</v-list-subheader>
+        <v-list-subheader>{{ $t('select-peers') }}</v-list-subheader>
         <v-list-item
           v-for="agent of potentialGrantees"
           :key="agent.id"
@@ -37,7 +37,7 @@
         </v-list-item>
       </v-list>
       <v-list>
-        <v-list-subheader>Agents with access</v-list-subheader>
+        <v-list-subheader>{{ $t('peers-with-access') }}</v-list-subheader>
         <v-list-item v-for="agent of existingGrantees" :key="agent.id" :title="agent.label" :value="agent.id">
           <template v-slot:append>
             <v-list-item-action end>
@@ -52,9 +52,9 @@
       </v-list>
     </v-card-text>
     <div class="px-2 d-flex justify-space-between">
-      <v-btn color="warning" variant="tonal" :disabled="loading">Cancel</v-btn>
+      <v-btn color="warning" variant="tonal" :disabled="loading">{{ $t('cancel') }}</v-btn>
       <v-btn color="primary" variant="flat" size="large" :loading="loading" :disabled="!valid" @click="share"
-        >Share</v-btn
+        >{{ $t('share') }}</v-btn
       >
     </div>
   </v-card>

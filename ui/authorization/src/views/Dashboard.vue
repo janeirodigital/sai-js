@@ -4,15 +4,14 @@
       v-if="!coreStore.pushSubscription"
       color="warning"
       icon="mdi-bell-cog-outline"
-      title="Notifications"
-      text="currently disabled"
+      v-bind="$ta('notifications-alert')"
     >
       <template v-slot:append>
         <v-btn
           color="secondary"
           :loading="enableNotificationsLoading"
           @click="enableNotifications"
-        >Enable</v-btn>
+        >{{ $t('enable') }}</v-btn>
       </template>
     </v-alert>
     <router-view></router-view>
@@ -21,19 +20,19 @@
     <v-btn :to="{name: 'application-list'}">
       <v-icon>mdi-apps</v-icon>
 
-      <span>Apps</span>
+      <span>{{ $t('applications') }}</span>
     </v-btn>
 
     <v-btn :to="{name: 'social-agent-list'}">
       <v-icon>mdi-account-group</v-icon>
 
-      <span>Peers</span>
+      <span>{{ $t('peers') }}</span>
     </v-btn>
 
     <v-btn :to="{name: 'data-registry-list', query: {agent: coreStore.userId}}">
       <v-icon>mdi-hexagon-multiple-outline</v-icon>
 
-      <span>Data</span>
+      <span>{{ $t('data') }}</span>
     </v-btn>
 </v-bottom-navigation>
 </template>

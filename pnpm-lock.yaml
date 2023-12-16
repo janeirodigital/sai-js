@@ -375,6 +375,9 @@ importers:
 
   ui/authorization:
     dependencies:
+      '@fluent/bundle':
+        specifier: ^0.18.0
+        version: 0.18.0
       '@inrupt/solid-client-authn-browser':
         specifier: ^1.17.4
         version: 1.17.4
@@ -384,6 +387,9 @@ importers:
       '@mdi/font':
         specifier: 7.3.67
         version: 7.3.67
+      fluent-vue:
+        specifier: ^3.5.0
+        version: 3.5.0(@fluent/bundle@0.18.0)(vue@3.3.4)
       pinia:
         specifier: ^2.1.7
         version: 2.1.7(typescript@5.2.2)(vue@3.3.4)
@@ -427,6 +433,9 @@ importers:
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
+      unplugin-fluent-vue:
+        specifier: ^1.1.4
+        version: 1.1.4(rollup@2.79.1)
       vite:
         specifier: ^4.4.11
         version: 4.4.11(@types/node@20.8.6)(sass@1.69.3)
@@ -3949,6 +3958,25 @@ packages:
     resolution: {integrity: sha512-JUFJad5lv7jxj926GPgymrWQxxjPYuJNiNjNMzqT+HiuP6Vl3dk5xzG+8sTX96np0ZAluvaMzPsjhHZ5rNuNQQ==}
     engines: {node: '>=14'}
 
+  /@fluent/bundle@0.18.0:
+    resolution: {integrity: sha512-8Wfwu9q8F9g2FNnv82g6Ch/E1AW1wwljsUOolH5NEtdJdv0sZTuWvfCM7c3teB9dzNaJA8rn4khpidpozHWYEA==}
+    engines: {node: '>=14.0.0', npm: '>=7.0.0'}
+    dev: false
+
+  /@fluent/sequence@0.8.0(@fluent/bundle@0.18.0):
+    resolution: {integrity: sha512-eV5QlEEVV/wR3AFQLXO67x4yPRPQXyqke0c8yucyMSeW36B3ecZyVFlY1UprzrfFV8iPJB4TAehDy/dLGbvQ1Q==}
+    engines: {node: '>=14.0.0', npm: '>=7.0.0'}
+    peerDependencies:
+      '@fluent/bundle': '>= 0.13.0'
+    dependencies:
+      '@fluent/bundle': 0.18.0
+    dev: false
+
+  /@fluent/syntax@0.19.0:
+    resolution: {integrity: sha512-5D2qVpZrgpjtqU4eNOcWGp1gnUCgjfM+vKGE2y03kKN6z5EBhtx0qdRFbg8QuNNj8wXNoX93KJoYb+NqoxswmQ==}
+    engines: {node: '>=14.0.0', npm: '>=7.0.0'}
+    dev: true
+
   /@humanwhocodes/config-array@0.11.11:
     resolution: {integrity: sha512-N2brEuAadi0CcdeMXUkhbZB84eskAc8MEX1By6qEchoVywSgXPIjou4rYsl0V3Hj0ZnuGycGCjdNgockbzeWNA==}
     engines: {node: '>=10.10.0'}
@@ -4547,6 +4575,21 @@ packages:
       rollup: 2.79.1
     dev: true
 
+  /@rollup/pluginutils@5.1.0(rollup@2.79.1):
+    resolution: {integrity: sha512-XTIWOPPcpvyKI6L1NHo0lFlCyznUEyPmPY1mc3KpPVDYulHSTvyeLNVW00QTLIAFNhR3kYnJTQHeGqU4M3n09g==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@types/estree': 1.0.5
+      estree-walker: 2.0.2
+      picomatch: 2.3.1
+      rollup: 2.79.1
+    dev: true
+
   /@rubensworks/saxes@6.0.1:
     resolution: {integrity: sha512-UW4OTIsOtJ5KSXo2Tchi4lhZqu+tlHrOAs4nNti7CrtB53kAZl3/hyrTi6HkMihxdbDM6m2Zc3swc/ZewEe1xw==}
     engines: {node: '>=v12.22.12'}
@@ -4804,6 +4847,10 @@ packages:
 
   /@types/estree@0.0.39:
     resolution: {integrity: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==}
+    dev: true
+
+  /@types/estree@1.0.5:
+    resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
     dev: true
 
   /@types/express-serve-static-core@4.17.37:
@@ -5507,6 +5554,12 @@ packages:
     hasBin: true
     dev: true
 
+  /acorn@8.11.2:
+    resolution: {integrity: sha512-nc0Axzp/0FILLEVsm4fNwLCwMttvhEI263QtVPQcbpfZZ3ts0hLsZGOpE6czNlid7CJ9MlyH8reXkpsf3YUY4w==}
+    engines: {node: '>=0.4.0'}
+    hasBin: true
+    dev: true
+
   /agent-base@7.1.0:
     resolution: {integrity: sha512-o/zjMZRhJxny7OyEF+Op8X+efiELC7k7yOjMzgfzVqOzXqkBkWI79YoTdOtsuWd5BWhAGAuOY/Xa6xpiaWXiNg==}
     engines: {node: '>= 14'}
@@ -5969,6 +6022,11 @@ packages:
       mimic-response: 4.0.0
       normalize-url: 8.0.0
       responselike: 3.0.0
+    dev: false
+
+  /cached-iterable@0.3.0:
+    resolution: {integrity: sha512-MDqM6TpBVebZD4UDtmlFp8EjVtRcsB6xt9aRdWymjk0fWVUUGgmt/V7o0H0gkI2Tkvv8B0ucjidZm4mLosdlWw==}
+    engines: {node: '>=8.9.0'}
     dev: false
 
   /call-bind@1.0.2:
@@ -7178,6 +7236,23 @@ packages:
   /flatted@3.2.9:
     resolution: {integrity: sha512-36yxDn5H7OFZQla0/jFJmbIKTdZAQHngCedGxiMmpNfEZM0sdEeT+WczLQrjK6D7o2aiyLYDnkw0R3JK0Qv1RQ==}
     dev: true
+
+  /fluent-vue@3.5.0(@fluent/bundle@0.18.0)(vue@3.3.4):
+    resolution: {integrity: sha512-hrp8x8x8zds79jc0i5ZYgY6ibS/Mg5IWOCt4gwlN8g40OR2SeO9o7cx4IFQVBSV3B8JnVkUr0xgnjO4uCvXKyw==}
+    peerDependencies:
+      '@fluent/bundle': '>=0.17.0'
+      '@vue/composition-api': '>=1.0.0-rc.1'
+      vue: ^2.6.11 || >=3.0.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      '@fluent/bundle': 0.18.0
+      '@fluent/sequence': 0.8.0(@fluent/bundle@0.18.0)
+      cached-iterable: 0.3.0
+      vue: 3.3.4
+      vue-demi: 0.14.6(vue@3.3.4)
+    dev: false
 
   /fn.name@1.1.0:
     resolution: {integrity: sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==}
@@ -10973,6 +11048,26 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
+  /unplugin-fluent-vue@1.1.4(rollup@2.79.1):
+    resolution: {integrity: sha512-cnhw9Mqog/D9qjQ2qRcdaq6RhibphIbnIj2uwVX5gUGhmoJwN3x0QYhpTLV5eMjgrUHK3o/E/07FAa6nGfcMRg==}
+    dependencies:
+      '@fluent/syntax': 0.19.0
+      '@rollup/pluginutils': 5.1.0(rollup@2.79.1)
+      magic-string: 0.30.4
+      unplugin: 1.5.1
+    transitivePeerDependencies:
+      - rollup
+    dev: true
+
+  /unplugin@1.5.1:
+    resolution: {integrity: sha512-0QkvG13z6RD+1L1FoibQqnvTwVBXvS4XSPwAyinVgoOCl2jAgwzdUKmEj05o4Lt8xwQI85Hb6mSyYkcAGwZPew==}
+    dependencies:
+      acorn: 8.11.2
+      chokidar: 3.5.3
+      webpack-sources: 3.2.3
+      webpack-virtual-modules: 0.6.1
+    dev: true
+
   /upath@1.2.0:
     resolution: {integrity: sha512-aZwGpamFO61g3OlfT7OQCHqhGnW43ieH9WZeP7QxN/G/jS4jfqUkZxoryvJgVPEcrl5NL/ggHsSmLMHuH64Lhg==}
     engines: {node: '>=4'}
@@ -11244,6 +11339,15 @@ packages:
 
   /webidl-conversions@4.0.2:
     resolution: {integrity: sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==}
+    dev: true
+
+  /webpack-sources@3.2.3:
+    resolution: {integrity: sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==}
+    engines: {node: '>=10.13.0'}
+    dev: true
+
+  /webpack-virtual-modules@0.6.1:
+    resolution: {integrity: sha512-poXpCylU7ExuvZK8z+On3kX+S8o/2dQ/SVYueKA0D4WEMXROXgY8Ez50/bQEUmvoSMMrWcrJqCHuhAbsiwg7Dg==}
     dev: true
 
   /webpod@0.0.2:

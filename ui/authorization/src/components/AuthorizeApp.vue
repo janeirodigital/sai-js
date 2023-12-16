@@ -71,7 +71,7 @@ span.label {
       <v-expansion-panels id="panel-hell" variant="popout" v-model="panelsOpened">
         <v-expansion-panel value="top">
           <v-expansion-panel-title class="d-flex flex-row">
-            <span class="flex-grow-1">{{ topLevelScope }}</span>
+            <span class="flex-grow-1">{{ topLevelScope === 'all' ? $t('all-data') : $t('selected-data') }}</span>
             <v-chip color="agent" label>{{ props.authorizationData.dataOwners.length }}</v-chip>
             <template v-slot:actions>
               <v-badge color="agent" :content="statsForTopLevel()" :model-value="topLevelScope === 'some'">
@@ -209,7 +209,7 @@ span.label {
     </v-card-text>
     <div class="px-2 d-flex justify-space-between">
       <v-btn color="error" variant="tonal" :loading="loadingDeny" :disabled="loadingAuthorize" @click="authorize(false)"
-        >Deny</v-btn
+        >{{ $t('deny') }}</v-btn
       >
       <v-btn
         color="success"
@@ -218,7 +218,7 @@ span.label {
         :loading="loadingAuthorize"
         :disabled="loadingDeny || statsForTopLevel() === 0"
         @click="authorize()"
-        >Authorize</v-btn
+        >{{ $t('authorize')}}</v-btn
       >
     </div>
   </v-card>

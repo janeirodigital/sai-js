@@ -3,10 +3,12 @@
 import vue from '@vitejs/plugin-vue';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 import { VitePWA } from 'vite-plugin-pwa';
+import { ExternalFluentPlugin, SFCFluentPlugin } from 'unplugin-fluent-vue/vite';
 
 // Utilities
 import { defineConfig } from 'vite';
 import { fileURLToPath, URL } from 'node:url';
+import path from 'node:path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -30,6 +32,17 @@ export default defineConfig({
       devOptions: {
         enabled: true
       }
+    }),
+    SFCFluentPlugin({
+      blockType: 'fluent', // default 'fluent' - name of the block in SFCs
+      checkSyntax: true // default true - whether to check syntax of the messages
+    }),
+    // define messages in external ftl files
+    ExternalFluentPlugin({
+      locales: ['en', 'pl'], // required - list of locales
+      checkSyntax: true, // default true - whether to check syntax of the messages
+      baseDir: path.resolve('src'), // base directory for Vue files
+      ftlDir: path.resolve('src/locales') // directory with ftl files
     })
   ],
   define: { 'process.env': {} },

@@ -28,7 +28,7 @@
       color="primary"
       @click="addDialog = true"
     >
-      <v-icon icon="mdi-plus"></v-icon>Add application
+      <v-icon icon="mdi-plus"></v-icon>{{  $t('add-application') }}
     </v-btn>
     <v-dialog
       persistent
@@ -37,13 +37,11 @@
       v-model="addDialog"
     >
       <v-card>
-        <v-card-title>
-          Add application
-        </v-card-title>
+        <v-card-title>{{ $t('add-application') }}</v-card-title>
         <v-card-text>
           <v-text-field
             v-model="addClientId"
-            label="Client Id"
+            v-bind:="$ta('add-application-input')"
           ></v-text-field>
         </v-card-text>
         <v-card-actions>
@@ -51,17 +49,13 @@
             color="warning"
             variant="tonal"
             @click="addDialog = false"
-          >
-            Cancel
-          </v-btn>
+          >{{ $t('cancel') }}</v-btn>
           <v-spacer></v-spacer>
           <v-btn
             color="primary"
             :disabled="!addClientId"
             @click="addApplication"
-          >
-            Next
-          </v-btn>
+          >{{ $t('next') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
