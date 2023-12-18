@@ -19,6 +19,11 @@ notifications-alert =
 
 applications = Apps
 peers = Peers
+settings = Settings
+
+# Settings
+
+language = Language
 
 # Authorization
 access = Access

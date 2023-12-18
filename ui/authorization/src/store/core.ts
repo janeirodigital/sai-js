@@ -22,6 +22,7 @@ export const useCoreStore = defineStore('core', () => {
   const isBackendLoggedIn = ref(false);
   const redirectUrlForBackend = ref('');
   const lang = ref('en');
+  const availableLanguages = ref(['en', 'pl']);
   const pushSubscription = ref<PushSubscription | null>(null);
 
   async function login(oidcIssuer: string) {
@@ -89,6 +90,7 @@ export const useCoreStore = defineStore('core', () => {
   return {
     userId,
     lang,
+    availableLanguages,
     isBackendLoggedIn,
     redirectUrlForBackend,
     pushSubscription,

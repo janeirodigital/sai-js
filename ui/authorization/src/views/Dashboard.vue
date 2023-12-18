@@ -34,6 +34,11 @@
 
       <span>{{ $t('data') }}</span>
     </v-btn>
+    <v-btn :to="{name: 'settings', query: {agent: coreStore.userId}}">
+      <v-icon>mdi-cog-outline</v-icon>
+
+      <span>{{ $t('settings') }}</span>
+    </v-btn>
 </v-bottom-navigation>
 </template>
 
