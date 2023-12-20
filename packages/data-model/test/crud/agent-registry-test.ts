@@ -1,9 +1,15 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { INTEROP } from '@janeirodigital/interop-utils';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory } from 'n3';
-import { CRUDSocialAgentRegistration, CRUDApplicationRegistration, AuthorizationAgentFactory } from '../../src';
+import {
+  CRUDSocialAgentRegistration,
+  CRUDApplicationRegistration,
+  AuthorizationAgentFactory,
+  CRUDSocialAgentInvitation
+} from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
@@ -30,6 +36,17 @@ test('should provide socialAgentRegistrations', async () => {
   expect(count).toBe(2);
 });
 
+// TODO: update snippets with some invitations
+test('should provide socialAgentInvitations', async () => {
+  const registry = await factory.crud.agentRegistry(snippetIri);
+  let count = 0;
+  for await (const invitation of registry.socialAgentInvitations) {
+    count += 1;
+    expect(invitation).toBeInstanceOf(CRUDSocialAgentRegistration);
+  }
+  expect(count).toBe(0);
+});
+
 describe('findApplicationRegistration', () => {
   test('finds application registration', async () => {
     const applicationIri = 'https://projectron.example/#app';
@@ -38,11 +55,22 @@ describe('findApplicationRegistration', () => {
   });
 });
 
-describe('findSocialRegistration', () => {
+describe('findSocialAgentRegistration', () => {
   test('finds social agent registration', async () => {
     const socialAgentIri = 'https://acme.example/#corp';
     const registry = await factory.crud.agentRegistry(snippetIri);
     expect(await registry.findSocialAgentRegistration(socialAgentIri)).toBeInstanceOf(CRUDSocialAgentRegistration);
+  });
+});
+
+// TODO: update snippets with some invitations
+describe.skip('findSocialAgentInvitation', () => {
+  test('finds social agent invitation', async () => {
+    const socialAgentInvitationIri = 'TODO';
+    const registry = await factory.crud.agentRegistry(snippetIri);
+    expect(await registry.findSocialAgentInvitation(socialAgentInvitationIri)).toBeInstanceOf(
+      CRUDSocialAgentInvitation
+    );
   });
 });
 
@@ -83,6 +111,33 @@ describe('addSocialAgentRegistration', () => {
         DataFactory.namedNode(registry.iri),
         INTEROP.hasApplicationRegistration,
         DataFactory.namedNode(registration.iri)
+      )
+    ).toBeTruthy();
+  });
+});
+
+describe('addSocialAgentInvitation', () => {
+  const capabilityUrl = 'https://auth.jane.example/some-secret-url';
+
+  test.skip('throws if invitation already exists', async () => {
+    const registry = await factory.crud.agentRegistry(snippetIri);
+    expect(registry.addSocialAgentInvitation(capabilityUrl, 'Someone')).rejects.toThrow('already exists');
+  });
+
+  test('returns added invitation', async () => {
+    const registry = await factory.crud.agentRegistry(snippetIri);
+    const invitation = await registry.addSocialAgentInvitation(capabilityUrl, 'Jane');
+    expect(invitation.capabilityUrl).toBe(capabilityUrl);
+  });
+
+  test('local datasets updates with hasSocialAgentInvitation statement', async () => {
+    const registry = await factory.crud.agentRegistry(snippetIri);
+    const invitation = await registry.addSocialAgentInvitation(capabilityUrl, 'Jane');
+    expect(
+      registry.dataset.match(
+        DataFactory.namedNode(registry.iri),
+        INTEROP.hasApplicationInvitation,
+        DataFactory.namedNode(invitation.iri)
       )
     ).toBeTruthy();
   });

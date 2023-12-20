@@ -153,6 +153,10 @@ export class CRUDAgentRegistry extends CRUDContainer {
     prefLabel: string,
     note?: string
   ): Promise<CRUDSocialAgentInvitation> {
+    const existing = await this.findSocialAgentInvitation(capabilityUrl);
+    if (existing) {
+      throw new Error(`Social Agent Invitation with ${capabilityUrl} already exists`);
+    }
     const invitation = await this.factory.crud.socialAgentInvitation(this.iriForContained(), {
       capabilityUrl,
       prefLabel,

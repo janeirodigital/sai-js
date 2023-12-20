@@ -9,11 +9,10 @@ import { CRUDSocialAgentRegistration, AuthorizationAgentFactory, ReadableAccessG
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
+const snippetIri = 'https://auth.alice.example/5dc3c14e-7830-475f-b8e3-4748d6c0bccb';
+const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
 
 describe('build', () => {
-  const snippetIri = 'https://auth.alice.example/5dc3c14e-7830-475f-b8e3-4748d6c0bccb';
-  const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
-
   test('should return instance of Social Agent Registration, with reciprocal', async () => {
     const socialAgentRegistration = await factory.crud.socialAgentRegistration(snippetIri);
     expect(socialAgentRegistration).toBeInstanceOf(CRUDSocialAgentRegistration);
@@ -118,5 +117,19 @@ describe('reciprocal registration discovery', () => {
       // @ts-ignore
       expect(socialAgentRegistration.updateReciprocal).not.toBeCalled();
     });
+  });
+});
+
+describe('setAccessNeedGroup', () => {
+  test('updates dataset also if one previousy existed', async () => {
+    const socialAgentRegistration = await factory.crud.socialAgentRegistration(snippetIri);
+    const newAccessNeedGroupIri = 'https://auth.alice.example/some-access-need-group';
+    expect(socialAgentRegistration.hasAccessNeedGroup).toBeUndefined();
+    await socialAgentRegistration.setAccessNeedGroup(newAccessNeedGroupIri);
+    expect(socialAgentRegistration.hasAccessNeedGroup).toBe(newAccessNeedGroupIri);
+
+    const anotherAccessNeedGroupIri = 'https://auth.alice.example/another-access-need-group';
+    await socialAgentRegistration.setAccessNeedGroup(anotherAccessNeedGroupIri);
+    expect(socialAgentRegistration.hasAccessNeedGroup).toBe(anotherAccessNeedGroupIri);
   });
 });
