@@ -223,7 +223,7 @@ export class ShareAuthorizationResponse {
 export class RequestAccessUsingApplicationNeedsResponse {
   public type = ResponseMessageTypes.REQUEST_ACCESS_USING_APPLICATION_NEEDS_CONFIRMTION;
 
-  public payload: null;
+  public payload: null = null;
 
   constructor(message: RequestAccessUsingApplicationNeedResponseMessage) {
     validateType(message.type, this.type);

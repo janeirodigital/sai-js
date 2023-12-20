@@ -12,7 +12,11 @@ import {
   ShareAuthorizationRequest,
   SocialAgentsRequest,
   ListDataInstancesRequest,
-  AgentType
+  AgentType,
+  RequestAccessUsingApplicationNeedsRequest,
+  SocialAgentInvitationsRequest,
+  CreateInvitationRequest,
+  AcceptInvitationRequest
 } from '../src/index';
 
 describe('Request has proper message type', () => {
@@ -157,6 +161,52 @@ describe('Request has proper message type', () => {
     const expected = {
       type: RequestMessageTypes.SHARE_AUTHORIZATION,
       shareAuthorization
+    };
+    expect(JSON.parse(request.stringify())).toEqual(expected);
+  });
+
+  test('RequestAccessUsingApplicationNeedsRequest', () => {
+    const applicationId = 'https://projectron.example';
+    const agentId = 'https://bob.example';
+
+    const request = new RequestAccessUsingApplicationNeedsRequest(applicationId, agentId);
+    const expected = {
+      type: RequestMessageTypes.REQUEST_AUTHORIZATION_USING_APPLICATION_NEEDS,
+      agentId,
+      applicationId
+    };
+    expect(JSON.parse(request.stringify())).toEqual(expected);
+  });
+
+  test('SocialAgentInvitationsRequest', () => {
+    const request = new SocialAgentInvitationsRequest();
+    expect(request.type).toBe(RequestMessageTypes.SOCIAL_AGENT_INVITATIONS_REQUEST);
+  });
+
+  test('CreateInvitationRequest', () => {
+    const label = 'Yori';
+    const note = 'A cage fighter';
+
+    const request = new CreateInvitationRequest(label, note);
+    const expected = {
+      type: RequestMessageTypes.CREATE_INVITATION,
+      label,
+      note
+    };
+    expect(JSON.parse(request.stringify())).toEqual(expected);
+  });
+
+  test('AcceptInvitationRequest', () => {
+    const capabilityUrl = 'https://auth.alice.example/some-secret-url';
+    const label = 'Yori';
+    const note = 'A cage fighter';
+
+    const request = new AcceptInvitationRequest(capabilityUrl, label, note);
+    const expected = {
+      type: RequestMessageTypes.ACCEPT_INVITATION,
+      capabilityUrl,
+      label,
+      note
     };
     expect(JSON.parse(request.stringify())).toEqual(expected);
   });

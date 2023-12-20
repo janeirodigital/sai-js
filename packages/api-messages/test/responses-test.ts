@@ -10,12 +10,16 @@ import {
   DataRegistry,
   DescriptionsResponse,
   ListDataInstancesResponse,
+  RequestAccessUsingApplicationNeedsResponse,
   Resource,
   ResourceResponse,
   ResponseMessageTypes,
   ShareAuthorizationConfirmation,
   ShareAuthorizationResponse,
   SocialAgent,
+  SocialAgentInvitation,
+  SocialAgentInvitationResponse,
+  SocialAgentInvitationsResponse,
   SocialAgentResponse,
   SocialAgentsResponse,
   UnregisteredApplicationProfileResponse
@@ -238,5 +242,71 @@ describe('ResourceResponse', () => {
     };
     // @ts-ignore
     expect(() => new ResourceResponse(message)).toThrow('Invalid message type');
+  });
+});
+
+describe('RequestAccessUsingApplicationNeedsResponse', () => {
+  test('correct', () => {
+    const message = {
+      type: ResponseMessageTypes.REQUEST_ACCESS_USING_APPLICATION_NEEDS_CONFIRMTION,
+      payload: null as null
+    };
+
+    const response = new RequestAccessUsingApplicationNeedsResponse(message);
+    expect(response.type).toEqual(ResponseMessageTypes.REQUEST_ACCESS_USING_APPLICATION_NEEDS_CONFIRMTION);
+    expect(response.payload).toBe(null);
+  });
+
+  test('incorrect', () => {
+    const message = {
+      type: ResponseMessageTypes.SOCIAL_AGENT_RESPONSE,
+      payload: {} as SocialAgent
+    };
+    // @ts-ignore
+    expect(() => new RequestAccessUsingApplicationNeedsResponse(message)).toThrow('Invalid message type');
+  });
+});
+
+describe('SocialAgentInvitationResponse', () => {
+  test('correct', () => {
+    const message = {
+      type: ResponseMessageTypes.INVITATION_REGISTRATION,
+      payload: {} as SocialAgentInvitation
+    };
+
+    const response = new SocialAgentInvitationResponse(message);
+    expect(response.type).toEqual(ResponseMessageTypes.INVITATION_REGISTRATION);
+    expect(response.payload).toBe(message.payload);
+  });
+
+  test('incorrect', () => {
+    const message = {
+      type: ResponseMessageTypes.APPLICATIONS_RESPONSE,
+      payload: {} as SocialAgent
+    };
+    // @ts-ignore
+    expect(() => new SocialAgentInvitationResponse(message)).toThrow('Invalid message type');
+  });
+});
+
+describe('SocialAgentInvitationsResponse', () => {
+  test('correct', () => {
+    const message = {
+      type: ResponseMessageTypes.SOCIAL_AGENT_INVITATIONS_RESPONSE,
+      payload: [{} as SocialAgentInvitation]
+    };
+
+    const response = new SocialAgentInvitationsResponse(message);
+    expect(response.type).toEqual(ResponseMessageTypes.SOCIAL_AGENT_INVITATIONS_RESPONSE);
+    expect(response.payload).toBe(message.payload);
+  });
+
+  test('incorrect', () => {
+    const message = {
+      type: ResponseMessageTypes.APPLICATIONS_RESPONSE,
+      payload: {} as SocialAgent
+    };
+    // @ts-ignore
+    expect(() => new SocialAgentInvitationResponse(message)).toThrow('Invalid message type');
   });
 });
