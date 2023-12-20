@@ -15,7 +15,8 @@ import {
   Resource,
   ResponseMessageTypes,
   ShareAuthorizationConfirmation,
-  SocialAgent
+  SocialAgent,
+  SocialAgentInvitation
 } from '@janeirodigital/sai-api-messages';
 
 import { ApiHandler, SaiContext } from '../../../src';
@@ -31,8 +32,12 @@ jest.mock('../../../src/services', () => ({
   getDescriptions: jest.fn(),
   listDataInstances: jest.fn(),
   recordAuthorization: jest.fn(),
+  requestAccessUsingApplicationNeeds: jest.fn(),
   getResource: jest.fn(),
-  shareResource: jest.fn()
+  shareResource: jest.fn(),
+  getSocialAgentInvitations: jest.fn(),
+  createInvitation: jest.fn(),
+  acceptInvitation: jest.fn()
 }));
 
 const mocked = jest.mocked(services);
@@ -319,6 +324,35 @@ describe('recordAuthorization', () => {
   });
 });
 
+describe('requestAccessUsingApplicationNeeds', () => {
+  test('sucessful response', (done) => {
+    const request = {
+      headers,
+      body: {
+        type: RequestMessageTypes.REQUEST_AUTHORIZATION_USING_APPLICATION_NEEDS,
+        applicationId: 'https://projectron.example',
+        agentId: 'https://alice.example'
+      }
+    } as unknown as HttpHandlerRequest;
+    const ctx = { request, authn, saiSession, logger } as SaiContext;
+
+    apiHandler.handle(ctx).subscribe({
+      next: (response: HttpHandlerResponse) => {
+        expect(response.status).toBe(200);
+        expect(response.body.type).toBe(ResponseMessageTypes.REQUEST_ACCESS_USING_APPLICATION_NEEDS_CONFIRMTION);
+        expect(response.body.payload).toBe(null);
+
+        expect(mocked.requestAccessUsingApplicationNeeds).toBeCalledWith(
+          request.body.applicationId,
+          request.body.agentId,
+          saiSession
+        );
+        done();
+      }
+    });
+  });
+});
+
 describe('getResource', () => {
   test('sucessful response', (done) => {
     const request = {
@@ -368,6 +402,78 @@ describe('shareResource', () => {
         expect(response.body.payload).toBe(confirmation);
 
         expect(mocked.shareResource).toBeCalledWith(saiSession, request.body.shareAuthorization);
+        done();
+      }
+    });
+  });
+});
+
+describe('getSocialAgentInvitations', () => {
+  test('sucessful response', (done) => {
+    const request = {
+      headers,
+      body: {
+        type: RequestMessageTypes.SOCIAL_AGENT_INVITATIONS_REQUEST
+      }
+    } as unknown as HttpHandlerRequest;
+    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const socialAgentInvitations = [] as unknown as SocialAgentInvitation[];
+    mocked.getSocialAgentInvitations.mockResolvedValueOnce(socialAgentInvitations);
+
+    apiHandler.handle(ctx).subscribe({
+      next: (response: HttpHandlerResponse) => {
+        expect(response.status).toBe(200);
+        expect(response.body.type).toBe(ResponseMessageTypes.SOCIAL_AGENT_INVITATIONS_RESPONSE);
+        expect(response.body.payload).toBe(socialAgentInvitations);
+        expect(mocked.getSocialAgentInvitations).toBeCalledTimes(1);
+        done();
+      }
+    });
+  });
+});
+
+describe('createInvitation', () => {
+  test('sucessful response', (done) => {
+    const request = {
+      headers,
+      body: {
+        type: RequestMessageTypes.CREATE_INVITATION
+      }
+    } as unknown as HttpHandlerRequest;
+    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const socialAgentInvitation = {} as SocialAgentInvitation;
+    mocked.createInvitation.mockResolvedValueOnce(socialAgentInvitation);
+
+    apiHandler.handle(ctx).subscribe({
+      next: (response: HttpHandlerResponse) => {
+        expect(response.status).toBe(200);
+        expect(response.body.type).toBe(ResponseMessageTypes.INVITATION_REGISTRATION);
+        expect(response.body.payload).toBe(socialAgentInvitation);
+        expect(mocked.createInvitation).toBeCalledWith(saiSession, request.body);
+        done();
+      }
+    });
+  });
+});
+
+describe('acceptInvitation', () => {
+  test('sucessful response', (done) => {
+    const request = {
+      headers,
+      body: {
+        type: RequestMessageTypes.ACCEPT_INVITATION
+      }
+    } as unknown as HttpHandlerRequest;
+    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const socialAgent = {} as SocialAgent;
+    mocked.acceptInvitation.mockResolvedValueOnce(socialAgent);
+
+    apiHandler.handle(ctx).subscribe({
+      next: (response: HttpHandlerResponse) => {
+        expect(response.status).toBe(200);
+        expect(response.body.type).toBe(ResponseMessageTypes.SOCIAL_AGENT_RESPONSE);
+        expect(response.body.payload).toBe(socialAgent);
+        expect(mocked.acceptInvitation).toBeCalledWith(saiSession, request.body);
         done();
       }
     });

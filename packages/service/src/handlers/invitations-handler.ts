@@ -32,20 +32,19 @@ export class InvitationsHandler extends HttpHandler {
         socialAgentInvitation.label,
         socialAgentInvitation.note
       );
+      // create job to discover, add and subscribe to reciprocal registration
+      await this.queue.add(
+        {
+          webId: userId,
+          registeredAgent: socialAgentRegistration.registeredAgent
+        } as IReciprocalRegistrationsJobData,
+        { delay: 10000 }
+      );
     }
 
     // update invitation with agent who accepted it
     socialAgentInvitation.registeredAgent = socialAgentRegistration.registeredAgent;
     await socialAgentInvitation.update();
-
-    // create job to discover, add and subscribe to reciprocal registration
-    await this.queue.add(
-      {
-        webId: userId,
-        registeredAgent: socialAgentRegistration.registeredAgent
-      } as IReciprocalRegistrationsJobData,
-      { delay: 10000 }
-    );
 
     return {
       body: userId,

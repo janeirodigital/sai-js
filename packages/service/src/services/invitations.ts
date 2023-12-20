@@ -43,6 +43,7 @@ export async function acceptInvitation(saiSession: AuthorizationAgent, invitatio
   });
   if (!response.ok) throw new Error('fetching capability url failed');
   const webId = (await response.text()).trim();
+  // TODO: validate with regex
   if (!webId) throw new Error('can not accept invitation without webid');
   // check if agent already has registration
   let socialAgentRegistration = await saiSession.findSocialAgentRegistration(webId);

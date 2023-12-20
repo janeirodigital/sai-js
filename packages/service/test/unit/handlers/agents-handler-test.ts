@@ -1,3 +1,11 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { jest } from '@jest/globals';
+
+import { InMemoryStorage } from '@inrupt/solid-client-authn-node';
+import { HttpHandlerRequest } from '@digita-ai/handlersjs-http';
+import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
+import { INTEROP } from '@janeirodigital/interop-utils';
+
 import {
   AgentsHandler,
   SessionManager,
@@ -7,25 +15,17 @@ import {
   webId2agentUrl,
   encodeWebId
 } from '../../../src';
-import { jest } from '@jest/globals';
 
 jest.mock('../../../src/session-manager', () => {
   const originalModule = jest.requireActual('../../../src/session-manager') as object;
 
   return {
     ...originalModule,
-    SessionManager: jest.fn(() => {
-      return {
-        getSaiSession: jest.fn()
-      };
-    })
+    SessionManager: jest.fn(() => ({
+      getSaiSession: jest.fn()
+    }))
   };
 });
-
-import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
-import { INTEROP } from '@janeirodigital/interop-utils';
-import { InMemoryStorage } from '@inrupt/solid-client-authn-node';
-import { HttpHandlerRequest } from '@digita-ai/handlersjs-http';
 
 const aliceWebId = 'https://alice.example';
 const aliceAgentUrl = webId2agentUrl(aliceWebId);
@@ -70,15 +70,16 @@ describe('authenticated request', () => {
   test('application registration discovery', (done) => {
     const applicationRegistrationIri = 'https://some.example/application-registration';
 
-    manager.getSaiSession.mockImplementation(async (webId) => {
-      return {
-        webId,
-        findApplicationRegistration: async (applicationId) => {
-          expect(applicationId).toBe(clientId);
-          return { iri: applicationRegistrationIri };
-        }
-      } as AuthorizationAgent;
-    });
+    manager.getSaiSession.mockImplementation(
+      async (webId) =>
+        ({
+          webId,
+          findApplicationRegistration: async (applicationId) => {
+            expect(applicationId).toBe(clientId);
+            return { iri: applicationRegistrationIri };
+          }
+        }) as AuthorizationAgent
+    );
 
     const request = {
       url: aliceAgentUrl
@@ -99,15 +100,16 @@ describe('authenticated request', () => {
     const bobWebId = 'https://bob.example/';
     const socialAgentRegistrationIri = 'https://some.example/application-registration';
 
-    manager.getSaiSession.mockImplementation(async (webId) => {
-      return {
-        webId,
-        findSocialAgentRegistration: async (webid) => {
-          expect(webid).toBe(bobWebId);
-          return { iri: socialAgentRegistrationIri };
-        }
-      } as AuthorizationAgent;
-    });
+    manager.getSaiSession.mockImplementation(
+      async (webId) =>
+        ({
+          webId,
+          findSocialAgentRegistration: async (webid) => {
+            expect(webid).toBe(bobWebId);
+            return { iri: socialAgentRegistrationIri };
+          }
+        }) as AuthorizationAgent
+    );
 
     const request = {
       url: aliceAgentUrl
@@ -119,7 +121,7 @@ describe('authenticated request', () => {
       clientId
     };
 
-    const ctx = { request, authn: authn } as AuthenticatedAuthnContext;
+    const ctx = { request, authn } as AuthenticatedAuthnContext;
 
     agentsHandler.handle(ctx).subscribe((response) => {
       expect(manager.getSaiSession).toBeCalledWith(aliceWebId);

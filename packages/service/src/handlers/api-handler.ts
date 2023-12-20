@@ -13,13 +13,15 @@ import {
   getUnregisteredApplicationProfile,
   getResource,
   shareResource,
-  listDataInstances
+  listDataInstances,
+  requestAccessUsingApplicationNeeds,
+  acceptInvitation,
+  createInvitation,
+  getSocialAgentInvitations
 } from '../services';
 import type { SaiContext } from '../models/http-solid-context';
 import { validateContentType } from '../utils/http-validators';
 import { IReciprocalRegistrationsJobData } from '../models/jobs';
-import { requestAccessUsingApplicationNeeds } from '../services/access-request';
-import { acceptInvitation, createInvitation, getSocialAgentInvitations } from '../services/invitations';
 
 export class ApiHandler extends HttpHandler {
   private logger = getLogger();
