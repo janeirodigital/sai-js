@@ -1,9 +1,4 @@
 import type { HttpHandlerContext } from '@digita-ai/handlersjs-http';
-import type { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
-
-export interface SaiContext extends HttpHandlerContext {
-  saiSession: AuthorizationAgent;
-}
 
 export interface UnauthenticatedAuthnContext extends HttpHandlerContext {
   authn: {
@@ -20,5 +15,3 @@ export interface AuthenticatedAuthnContext extends HttpHandlerContext {
 }
 
 export type AuthnContext = UnauthenticatedAuthnContext | AuthenticatedAuthnContext;
-
-export type HttpSolidContext = SaiContext & AuthnContext;

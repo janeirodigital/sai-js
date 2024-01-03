@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { Session } from '@inrupt/solid-client-authn-node';
 import { BadRequestHttpError, HttpError, HttpHandlerRequest, HttpHandlerResponse } from '@digita-ai/handlersjs-http';
 import { getLogger } from '@digita-ai/handlersjs-logging';
 
@@ -19,7 +20,7 @@ import {
   SocialAgentInvitation
 } from '@janeirodigital/sai-api-messages';
 
-import { ApiHandler, SaiContext } from '../../../src';
+import { ApiHandler, AuthenticatedAuthnContext, SessionManager } from '../../../src';
 import { MockedQueue } from '../mocked-queue';
 import * as services from '../../../src/services';
 
@@ -36,30 +37,90 @@ jest.mock('../../../src/services', () => ({
   getResource: jest.fn(),
   shareResource: jest.fn(),
   getSocialAgentInvitations: jest.fn(),
+  initLogin: jest.fn(),
   createInvitation: jest.fn(),
   acceptInvitation: jest.fn()
 }));
 
 const mocked = jest.mocked(services);
 const logger = getLogger();
+const saiSession: AuthorizationAgent = {} as AuthorizationAgent;
+const manager = {
+  getSaiSession: jest.fn(() => saiSession),
+  getOidcSession: jest.fn()
+} as unknown as jest.Mocked<SessionManager>;
 
 let apiHandler: ApiHandler;
 let queue: MockedQueue;
-let saiSession: AuthorizationAgent;
 
 const webId = 'https://alice.example';
 
 const authn = {
   webId,
-  clientId: 'https://frontend.example'
+  clientId: 'https://frontend.example',
+  authenticated: true,
+  issuer: 'https://op.example'
 };
 
 const headers = { 'content-type': 'application/json' };
 
 beforeEach(() => {
+  manager.getSaiSession.mockClear();
+  manager.getOidcSession.mockReset();
   queue = new MockedQueue('grants');
-  apiHandler = new ApiHandler(queue);
-  saiSession = {} as unknown as AuthorizationAgent;
+  apiHandler = new ApiHandler(manager, queue);
+});
+
+describe('hello', () => {
+  test('when is logged in', (done) => {
+    const oidcSession = { info: { isLoggedIn: true, webId } } as Session;
+    const request = {
+      headers,
+      body: {
+        type: RequestMessageTypes.HELLO_REQUEST
+      }
+    } as unknown as HttpHandlerRequest;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
+    manager.getOidcSession.mockResolvedValueOnce(oidcSession);
+
+    apiHandler.handle(ctx).subscribe({
+      next: (response: HttpHandlerResponse) => {
+        expect(response.status).toBe(200);
+        expect(response.body.type).toBe(ResponseMessageTypes.HELLO_RESPONSE);
+        expect(response.body.payload.isLoggedIn).toBe(true);
+        expect(response.body.payload.completeRedirectUrl).toBeUndefined();
+        expect(mocked.initLogin).not.toBeCalled();
+        done();
+      }
+    });
+  });
+
+  test('when is not logged in', (done) => {
+    const opRedirectUrl = 'https:/op.example/auth/?something';
+    const oidcSession = {
+      info: { isLoggedIn: false }
+    } as unknown as Session;
+    manager.getOidcSession.mockResolvedValueOnce(oidcSession);
+
+    const request = {
+      headers,
+      body: {
+        type: RequestMessageTypes.HELLO_REQUEST
+      }
+    } as unknown as HttpHandlerRequest;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
+    mocked.initLogin.mockResolvedValueOnce(opRedirectUrl);
+    apiHandler.handle(ctx).subscribe({
+      next: (response: HttpHandlerResponse) => {
+        expect(response.status).toBe(200);
+        expect(response.body.type).toBe(ResponseMessageTypes.HELLO_RESPONSE);
+        expect(response.body.payload.isLoggedIn).toBe(false);
+        expect(response.body.payload.completeRedirectUrl).toBe(opRedirectUrl);
+        expect(mocked.initLogin).toBeCalledTimes(1);
+        done();
+      }
+    });
+  });
 });
 
 describe('incorrect request', () => {
@@ -68,7 +129,7 @@ describe('incorrect request', () => {
       headers: { 'content-type': 'text/turtle' },
       body: '<a> <b> <c> .'
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
 
     apiHandler.handle(ctx).subscribe({
       error: (e: HttpError) => {
@@ -83,7 +144,7 @@ describe('incorrect request', () => {
     const request = {
       headers: { 'content-type': 'application/json' }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
 
     apiHandler.handle(ctx).subscribe({
       error: (e: HttpError) => {
@@ -101,7 +162,7 @@ describe('incorrect request', () => {
         type: 'unsupported'
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
 
     apiHandler.handle(ctx).subscribe({
       error: (e: HttpError) => {
@@ -120,7 +181,7 @@ describe('getApplications', () => {
         type: RequestMessageTypes.APPLICATIONS_REQUEST
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
     const applications = [] as unknown as Application[];
     mocked.getApplications.mockResolvedValueOnce(applications);
 
@@ -144,7 +205,7 @@ describe('getUnregisteredApplicationProfile', () => {
         type: RequestMessageTypes.UNREGISTERED_APPLICATION_PROFILE
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
     const profile = {} as unknown as Partial<Application>;
     mocked.getUnregisteredApplicationProfile.mockResolvedValueOnce(profile);
 
@@ -168,7 +229,7 @@ describe('getSocialAgents', () => {
         type: RequestMessageTypes.SOCIAL_AGENTS_REQUEST
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
     const socialAgents = [] as unknown as SocialAgent[];
     mocked.getSocialAgents.mockResolvedValueOnce(socialAgents);
 
@@ -196,7 +257,7 @@ describe('addSocialAgent', () => {
         note: 'Funny fella'
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
 
     const socialAgent = { id: bobWebId } as unknown as SocialAgent;
     mocked.addSocialAgent.mockResolvedValueOnce(socialAgent);
@@ -223,7 +284,7 @@ describe('getDataRegistries', () => {
         type: RequestMessageTypes.DATA_REGISTRIES_REQUEST
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
     const dataRegistries = [] as unknown as DataRegistry[];
     mocked.getDataRegistries.mockResolvedValueOnce(dataRegistries);
 
@@ -250,7 +311,7 @@ describe('getDescriptions', () => {
         lang: 'en'
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
 
     const authorizationData = {} as unknown as AuthorizationData;
     mocked.getDescriptions.mockResolvedValueOnce(authorizationData);
@@ -279,7 +340,7 @@ describe('listDataInstances', () => {
         registrationId: 'https://hr.acme.example/data/projects/'
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
 
     const dataInstances = [] as unknown as DataInstance[];
     mocked.listDataInstances.mockResolvedValueOnce(dataInstances);
@@ -306,7 +367,7 @@ describe('recordAuthorization', () => {
         authorization: {}
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
 
     const accessAuthorization = {} as unknown as AccessAuthorization;
     mocked.recordAuthorization.mockResolvedValueOnce(accessAuthorization);
@@ -334,7 +395,7 @@ describe('requestAccessUsingApplicationNeeds', () => {
         agentId: 'https://alice.example'
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
 
     apiHandler.handle(ctx).subscribe({
       next: (response: HttpHandlerResponse) => {
@@ -363,7 +424,7 @@ describe('getResource', () => {
         lang: 'fr'
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
 
     const resource = {} as unknown as Resource;
     mocked.getResource.mockResolvedValueOnce(resource);
@@ -390,7 +451,7 @@ describe('shareResource', () => {
         shareAuthorization: {}
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
 
     const confirmation = {} as unknown as ShareAuthorizationConfirmation;
     mocked.shareResource.mockResolvedValueOnce(confirmation);
@@ -416,7 +477,7 @@ describe('getSocialAgentInvitations', () => {
         type: RequestMessageTypes.SOCIAL_AGENT_INVITATIONS_REQUEST
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
     const socialAgentInvitations = [] as unknown as SocialAgentInvitation[];
     mocked.getSocialAgentInvitations.mockResolvedValueOnce(socialAgentInvitations);
 
@@ -440,7 +501,7 @@ describe('createInvitation', () => {
         type: RequestMessageTypes.CREATE_INVITATION
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
     const socialAgentInvitation = {} as SocialAgentInvitation;
     mocked.createInvitation.mockResolvedValueOnce(socialAgentInvitation);
 
@@ -464,7 +525,7 @@ describe('acceptInvitation', () => {
         type: RequestMessageTypes.ACCEPT_INVITATION
       }
     } as unknown as HttpHandlerRequest;
-    const ctx = { request, authn, saiSession, logger } as SaiContext;
+    const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
     const socialAgent = {} as SocialAgent;
     mocked.acceptInvitation.mockResolvedValueOnce(socialAgent);
 

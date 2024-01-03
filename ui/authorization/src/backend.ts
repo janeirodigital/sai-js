@@ -50,24 +50,15 @@ import {
   SocialAgentResponse,
   SocialAgentInvitationsRequest,
   SocialAgentInvitationsResponseMessage,
-  SocialAgentInvitationsResponse
+  SocialAgentInvitationsResponse,
+  LoginStatus,
+  HelloRequest,
+  HelloResponse,
+  HelloResponseMessage
 } from '@janeirodigital/sai-api-messages';
 
 const backendBaseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
 const authnFetch = getDefaultSession().fetch;
-
-async function checkServerSession(): Promise<{ isLoggedIn: boolean; redirectUrl?: string }> {
-  const options = {
-    method: 'POST'
-  };
-  const result = await authnFetch(`${backendBaseUrl}/login`, options);
-  if (result.status === 204) return { isLoggedIn: true };
-  if (result.status === 200) {
-    const { redirectUrl } = await result.json();
-    return { isLoggedIn: false, redirectUrl };
-  }
-  throw new Error(`login check failed, status = ${result.status}`);
-}
 
 async function getDataFromApi<T extends ResponseMessage>(request: Request): Promise<T> {
   const commonOptions = {
@@ -82,6 +73,13 @@ async function getDataFromApi<T extends ResponseMessage>(request: Request): Prom
   };
   const response = await authnFetch(`${backendBaseUrl}/api`, options);
   return (await response.json()) as T;
+}
+
+async function checkServerSession(): Promise<LoginStatus> {
+  const request = new HelloRequest();
+  const data = await getDataFromApi<HelloResponseMessage>(request);
+  const response = new HelloResponse(data);
+  return response.payload;
 }
 
 async function getResource(resourceId: IRI, lang: string): Promise<Resource> {

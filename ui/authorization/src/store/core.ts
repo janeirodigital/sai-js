@@ -42,9 +42,9 @@ export const useCoreStore = defineStore('core', () => {
     userId.value = oidcInfo.webId;
 
     // TODO check if backend authenticated
-    const checkBackendResult = await backend.checkServerSession();
-    isBackendLoggedIn.value = checkBackendResult.isLoggedIn;
-    redirectUrlForBackend.value = checkBackendResult.redirectUrl ?? '';
+    const loginStatus = await backend.checkServerSession();
+    isBackendLoggedIn.value = loginStatus.isLoggedIn;
+    redirectUrlForBackend.value = loginStatus.completeRedirectUrl ?? '';
   }
 
   async function restoreOidcSession(to: RouteLocationNormalized): Promise<void> {

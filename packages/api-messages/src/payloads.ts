@@ -8,6 +8,16 @@ export const AccessModes = {
   Delete: 'http://www.w3.org/ns/auth/acl#Delete'
 } as const;
 
+export type LoginStatus =
+  | {
+      isLoggedIn: false;
+      completeRedirectUrl: string;
+    }
+  | {
+      isLoggedIn: true;
+      completeRedirectUrl?: never;
+    };
+
 export interface Application extends UniqueId {
   name: string;
   logo?: IRI;
@@ -173,6 +183,7 @@ export type SocialAgentInvitation = Invitation & {
 };
 
 export type Payloads =
+  | LoginStatus
   | Application[]
   | SocialAgent[]
   | SocialAgent

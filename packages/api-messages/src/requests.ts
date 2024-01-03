@@ -4,6 +4,7 @@ import { IRI } from './index';
 import { AgentType, Authorization, ShareAuthorization } from './payloads';
 
 export const RequestMessageTypes = {
+  HELLO_REQUEST: '[HELLO] Hello Requested',
   APPLICATIONS_REQUEST: '[APPLICATION PROFILES] Application Profiles Requested',
   SOCIAL_AGENTS_REQUEST: '[SOCIAL AGENTS] Application Profiles Requested',
   DESCRIPTIONS_REQUEST: '[DESCRIPTIONS] Descriptions Requested',
@@ -25,6 +26,10 @@ abstract class MessageBase {
   stringify(): string {
     return JSON.stringify(this);
   }
+}
+
+export class HelloRequest extends MessageBase {
+  public type = RequestMessageTypes.HELLO_REQUEST;
 }
 
 export class ApplicationsRequest extends MessageBase {
@@ -155,6 +160,7 @@ export class AcceptInvitationRequest extends MessageBase {
 }
 
 export type Request =
+  | HelloRequest
   | ApplicationsRequest
   | SocialAgentsRequest
   | AddSocialAgentRequest

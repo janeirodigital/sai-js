@@ -14,12 +14,6 @@
         "contextHandlers": [
           {
             "@type": "AuthnContextHandler"
-          },
-          {
-            "@type": "AuthorizationAgentContextHandler",
-            "sessionManager": {
-              "@id": "urn:ssv:SessionManager"
-            }
           }
         ]
       },
@@ -36,6 +30,9 @@
           ],
           "handler": {
             "@type": "ApiHandler",
+            "sessionManager": {
+              "@id": "urn:ssv:SessionManager"
+            },
             "queue": { "@id": "urn:solid:authorization-agent:queue:reciprocal-registrations" }
           }
         }

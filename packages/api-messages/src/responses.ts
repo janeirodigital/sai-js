@@ -10,10 +10,12 @@ import {
   Resource,
   ShareAuthorizationConfirmation,
   DataInstance,
-  SocialAgentInvitation
+  SocialAgentInvitation,
+  LoginStatus
 } from './payloads';
 
 export const ResponseMessageTypes = {
+  HELLO_RESPONSE: '[HELLO] Hello Response',
   APPLICATIONS_RESPONSE: '[APPLICATION PROFILES] Application Profiles Received',
   SOCIAL_AGENTS_RESPONSE: '[SOCIAL AGENTS PROFILES] Application Profiles Received',
   DESCRIPTIONS_RESPONSE: '[DESCRIPTIONS] Descriptions Received',
@@ -38,6 +40,8 @@ export type IResponseMessage<T extends VResponseMessages, P extends Payloads> = 
   type: T;
   payload: P;
 };
+
+export type HelloResponseMessage = IResponseMessage<typeof ResponseMessageTypes.HELLO_RESPONSE, LoginStatus>;
 
 export type ApplicationsResponseMessage = IResponseMessage<
   typeof ResponseMessageTypes.APPLICATIONS_RESPONSE,
@@ -90,6 +94,7 @@ export type InvitationResponseMessage = IResponseMessage<
 >;
 
 export type ResponseMessage =
+  | HelloResponseMessage
   | ApplicationsResponseMessage
   | SocialAgentsResponseMessage
   | SocialAgentResponseMessage
@@ -107,6 +112,17 @@ export type ResponseMessage =
 function validateType(messageType: VResponseMessages, requiredType: VResponseMessages) {
   if (messageType !== requiredType) {
     throw new Error(`Invalid message type! Expected: ${messageType}, received: ${requiredType}`);
+  }
+}
+
+export class HelloResponse {
+  public type = ResponseMessageTypes.HELLO_RESPONSE;
+
+  public payload: LoginStatus;
+
+  constructor(message: HelloResponseMessage) {
+    validateType(message.type, this.type);
+    this.payload = message.payload;
   }
 }
 

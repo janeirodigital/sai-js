@@ -6,3 +6,4 @@ export * from './web-push';
 export * from './data-instance';
 export * from './access-request';
 export * from './invitations';
+export * from './login';
