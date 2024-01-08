@@ -8,7 +8,6 @@
     "./controllers/agents.json",
     "./controllers/login-redirect.json",
     "./controllers/api.json",
-    "./controllers/push-subscription.json",
     "./controllers/webhooks.json",
     "./controllers/invitations.json"
   ],
@@ -33,7 +32,6 @@
                 { "@id": "urn:solid:authorization-agent:controller:Agents" },
                 { "@id": "urn:solid:authorization-agent:controller:LoginRedirect" },
                 { "@id": "urn:solid:authorization-agent:controller:API" },
-                { "@id": "urn:solid:authorization-agent:controller:PushSubscription" },
                 { "@id": "urn:solid:authorization-agent:controller:Webhooks" },
                 { "@id": "urn:solid:authorization-agent:controller:Invitations" }
               ]

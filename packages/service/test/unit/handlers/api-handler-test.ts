@@ -47,7 +47,8 @@ const logger = getLogger();
 const saiSession: AuthorizationAgent = {} as AuthorizationAgent;
 const manager = {
   getSaiSession: jest.fn(() => saiSession),
-  getOidcSession: jest.fn()
+  getOidcSession: jest.fn(),
+  addPushSubscription: jest.fn()
 } as unknown as jest.Mocked<SessionManager>;
 
 let apiHandler: ApiHandler;
@@ -67,6 +68,7 @@ const headers = { 'content-type': 'application/json' };
 beforeEach(() => {
   manager.getSaiSession.mockClear();
   manager.getOidcSession.mockReset();
+  manager.addPushSubscription.mockReset();
   queue = new MockedQueue('grants');
   apiHandler = new ApiHandler(manager, queue);
 });
@@ -119,6 +121,25 @@ describe('hello', () => {
         expect(mocked.initLogin).toBeCalledTimes(1);
         done();
       }
+    });
+  });
+  test('should add the subscription', (done) => {
+    const oidcSession = {
+      info: { isLoggedIn: false }
+    } as unknown as Session;
+    manager.getOidcSession.mockResolvedValueOnce(oidcSession);
+    const request = {
+      headers: { 'content-type': 'application/json' },
+      body: {
+        type: RequestMessageTypes.HELLO_REQUEST,
+        subscription: { endpoint: 'https://endpoint.example' } as PushSubscription
+      }
+    } as unknown as HttpHandlerRequest;
+    const ctx = { request, authn } as AuthenticatedAuthnContext;
+
+    apiHandler.handle(ctx).subscribe(() => {
+      expect(manager.addPushSubscription).toBeCalledWith(webId, request.body.subscription);
+      done();
     });
   });
 });

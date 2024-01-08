@@ -49,12 +49,13 @@ import { useAppStore } from '@/store/app';
 const coreStore = useCoreStore()
 const appStore = useAppStore()
 
-coreStore.getPushSubscription()
 const enableNotificationsLoading = ref(false)
 
-function enableNotifications() {
+async function enableNotifications() {
   enableNotificationsLoading.value = true
-  coreStore.enableNotifications()
+  await coreStore.enableNotifications()
+  enableNotificationsLoading.value = false
+
 }
 
 // TODO: act differently depending on message.data

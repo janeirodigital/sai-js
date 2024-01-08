@@ -75,8 +75,8 @@ async function getDataFromApi<T extends ResponseMessage>(request: Request): Prom
   return (await response.json()) as T;
 }
 
-async function checkServerSession(): Promise<LoginStatus> {
-  const request = new HelloRequest();
+async function checkServerSession(subscription?: PushSubscription): Promise<LoginStatus> {
+  const request = new HelloRequest(subscription);
   const data = await getDataFromApi<HelloResponseMessage>(request);
   const response = new HelloResponse(data);
   return response.payload;
@@ -171,18 +171,6 @@ async function acceptInvitation(capabilityUrl: string, label: string, note?: str
   return response.payload;
 }
 
-// TODO: use api messages
-async function subscribeToPushNotifications(subscription: PushSubscription) {
-  const options = {
-    method: 'POST',
-    body: JSON.stringify(subscription),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
-  await authnFetch(`${backendBaseUrl}/push-subscribe`, options);
-}
-
 export function useBackend() {
   return {
     checkServerSession,
@@ -198,7 +186,6 @@ export function useBackend() {
     listDataRegistires,
     createInvitation,
     listSocialAgentInvitations,
-    acceptInvitation,
-    subscribeToPushNotifications
+    acceptInvitation
   };
 }

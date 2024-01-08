@@ -34,6 +34,15 @@ export const useCoreStore = defineStore('core', () => {
     await oidcLogin(options);
   }
 
+  async function getPushSubscription() {
+    const registration = await navigator.serviceWorker.ready;
+    const subscription = await registration.pushManager.getSubscription();
+    if (subscription) {
+      pushSubscription.value = subscription;
+    }
+    return backend.checkServerSession(subscription ?? undefined);
+  }
+
   async function handleRedirect(url: string) {
     const oidcInfo = await handleIncomingRedirect(url);
     if (!oidcInfo?.webId) {
@@ -42,7 +51,7 @@ export const useCoreStore = defineStore('core', () => {
     userId.value = oidcInfo.webId;
 
     // TODO check if backend authenticated
-    const loginStatus = await backend.checkServerSession();
+    const loginStatus = await getPushSubscription();
     isBackendLoggedIn.value = loginStatus.isLoggedIn;
     redirectUrlForBackend.value = loginStatus.completeRedirectUrl ?? '';
   }
@@ -60,17 +69,6 @@ export const useCoreStore = defineStore('core', () => {
     }
   }
 
-  async function getPushSubscription() {
-    const registration = await navigator.serviceWorker.ready;
-    const subscription = await registration.pushManager.getSubscription();
-    if (subscription) {
-      pushSubscription.value = subscription;
-      await backend.subscribeToPushNotifications(subscription);
-    }
-  }
-
-  /* TODO: DRY ⬆️⬇️ */
-
   async function enableNotifications() {
     const result = await Notification.requestPermission();
     if (result === 'granted') {
@@ -83,8 +81,9 @@ export const useCoreStore = defineStore('core', () => {
         });
       }
       pushSubscription.value = subscription;
-      await backend.subscribeToPushNotifications(subscription);
+      await backend.checkServerSession(subscription);
     }
+    return result;
   }
 
   return {

@@ -42,6 +42,10 @@ export class ApiHandler extends HttpHandler {
       throw new BadRequestHttpError('body is required');
     }
     if (body.type === RequestMessageTypes.HELLO_REQUEST) {
+      if (body.subscription) {
+        await this.sessionManager.addPushSubscription(context.authn.webId, body.subscription);
+      }
+
       const oidcSession = await this.sessionManager.getOidcSession(context.authn.webId);
       let loginStatus: LoginStatus;
 

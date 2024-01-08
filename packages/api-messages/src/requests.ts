@@ -30,6 +30,10 @@ abstract class MessageBase {
 
 export class HelloRequest extends MessageBase {
   public type = RequestMessageTypes.HELLO_REQUEST;
+
+  constructor(public subscription?: PushSubscription) {
+    super();
+  }
 }
 
 export class ApplicationsRequest extends MessageBase {
