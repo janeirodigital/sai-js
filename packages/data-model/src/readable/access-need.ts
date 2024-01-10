@@ -13,7 +13,11 @@ export class ReadableAccessNeed extends ReadableResource {
 
   public descriptions: { [key: string]: ReadableAccessNeedDescription } = {};
 
-  constructor(public iri: string, public factory: AuthorizationAgentFactory, public descriptionLang?: string) {
+  constructor(
+    public iri: string,
+    public factory: AuthorizationAgentFactory,
+    public descriptionLang?: string
+  ) {
     super(iri, factory);
   }
 
@@ -39,7 +43,16 @@ export class ReadableAccessNeed extends ReadableResource {
     return this.getObject(INTEROP.accessNecessity)?.value === INTEROP.AccessRequired.value;
   }
 
-  private async getDescription(descriptionLang: string): Promise<ReadableAccessNeedDescription | undefined> {
+  get descriptionLanguages(): Set<string> {
+    return new Set(this.getQuadArray(null, INTEROP.usesLanguage).map((quad) => quad.object.value));
+  }
+
+  get reliableDescriptionLanguages(): Set<string> {
+    return new Set([...this.descriptionLanguages].filter((lang) => this.shapeTree.descriptionLanguages.has(lang)));
+  }
+
+  public async getDescription(descriptionLang: string): Promise<ReadableAccessNeedDescription | undefined> {
+    if (this.descriptions[descriptionLang]) return this.descriptions[descriptionLang];
     const descriptionSetIri = ReadableAccessDescriptionSet.findInLanguage(this, descriptionLang);
     if (!descriptionSetIri) return undefined;
     const descriptionSet = await this.factory.readable.accessDescriptionSet(descriptionSetIri);

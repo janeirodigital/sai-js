@@ -56,3 +56,9 @@ test('should gracefully fail if description set with missing description for lan
   const shapeTree = await factory.readable.shapeTree(snippetIri, lang);
   expect(shapeTree.descriptions[lang]).toBeUndefined();
 });
+
+test('should get description languages', async () => {
+  const lang = 'fr';
+  const shapeTree = await factory.readable.shapeTree(snippetIri, lang);
+  expect([...shapeTree.descriptionLanguages]).toStrictEqual(['en', 'pl', 'de']);
+});

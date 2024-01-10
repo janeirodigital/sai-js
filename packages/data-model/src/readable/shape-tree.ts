@@ -14,7 +14,11 @@ export class ReadableShapeTree extends ReadableResource {
 
   public descriptions: { [key: string]: ReadableShapeTreeDescription } = {};
 
-  constructor(public iri: string, public factory: InteropFactory, public descriptionLang?: string) {
+  constructor(
+    public iri: string,
+    public factory: InteropFactory,
+    public descriptionLang?: string
+  ) {
     super(iri, factory);
   }
 
@@ -39,11 +43,9 @@ export class ReadableShapeTree extends ReadableResource {
   }
 
   public async getDescription(lang: string): Promise<ReadableShapeTreeDescription> {
-    const descriptionSetNode = this.getQuad(
-      null,
-      SHAPETREES.usesLanguage,
-      DataFactory.literal(lang, XSD.language)
-    )?.subject;
+    if (this.descriptions[lang]) return this.descriptions[lang];
+    const descriptionSetNode = this.getQuad(null, SHAPETREES.usesLanguage, DataFactory.literal(lang, XSD.language))
+      ?.subject;
     if (!descriptionSetNode) return null;
     const descriptionNodes = this.getSubjectsArray(SHAPETREES.describes);
     // get description from the set for the language (in specific description set)
@@ -70,6 +72,11 @@ export class ReadableShapeTree extends ReadableResource {
   @Memoize()
   get describesInstance(): NamedNode {
     return this.getObject('describesInstance', SHAPETREES);
+  }
+
+  @Memoize()
+  get descriptionLanguages(): Set<string> {
+    return new Set(this.getQuadArray(null, SHAPETREES.usesLanguage).map((quad) => quad.object.value));
   }
 
   @Memoize()

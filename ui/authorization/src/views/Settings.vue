@@ -13,17 +13,8 @@
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
 import { useCoreStore } from '@/store/core';
-import { fluent } from '@/plugins/fluent'
-import { FluentBundle } from '@fluent/bundle';
 
 const coreStore = useCoreStore()
 
-watch(() => coreStore.lang, async (lang) => {
-  const newMessages = await import(`@/locales/${lang}.ftl`)
-  const newBundle = new FluentBundle(lang)
-  newBundle.addResource(newMessages.default);
-  fluent.bundles = [newBundle]
-})
 </script>

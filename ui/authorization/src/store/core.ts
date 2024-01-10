@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import {
   ISessionInfo,
   getDefaultSession,
@@ -7,6 +7,8 @@ import {
   login as oidcLogin
 } from '@inrupt/solid-client-authn-browser';
 import type { RouteLocationNormalized } from 'vue-router';
+import { FluentBundle } from '@fluent/bundle';
+import { fluent } from '@/plugins/fluent';
 import { useBackend } from '@/backend';
 
 const backend = useBackend();
@@ -24,6 +26,17 @@ export const useCoreStore = defineStore('core', () => {
   const lang = ref('en');
   const availableLanguages = ref(['en', 'pl']);
   const pushSubscription = ref<PushSubscription | null>(null);
+
+  watch(lang, async (newLang) => {
+    localStorage.setItem('lang', newLang);
+    const newMessages = await import(`@/locales/${newLang}.ftl`);
+    const newBundle = new FluentBundle(newLang);
+    newBundle.addResource(newMessages.default);
+    fluent.bundles = [newBundle];
+  });
+
+  const restoredLang = localStorage.getItem('lang');
+  if (restoredLang) lang.value = restoredLang;
 
   async function login(oidcIssuer: string) {
     const options = {

@@ -7,7 +7,8 @@ import {
   ReadableAccessAuthorization,
   ReadableAccessNeedGroup,
   ReadableClientIdDocument,
-  ReadableDataRegistration
+  ReadableDataRegistration,
+  ReadableAccessNeed
 } from '@janeirodigital/interop-data-model';
 import { ACL, INTEROP } from '@janeirodigital/interop-utils';
 import { AgentType, Authorization } from '@janeirodigital/sai-api-messages';
@@ -76,6 +77,7 @@ describe('getDescriptions', () => {
           definition: 'definition for tasks'
         }
       },
+      getDescription: jest.fn(async (lang: string) => childAccessNeed.descriptions[lang]),
       required: true,
       accessMode: [ACL.Read],
       shapeTree: {
@@ -84,9 +86,10 @@ describe('getDescriptions', () => {
           [lang]: {
             label: 'Tasks'
           }
-        }
+        },
+        getDescription: jest.fn(async (lang: string) => childAccessNeed.shapeTree.descriptions[lang])
       }
-    };
+    } as unknown as ReadableAccessNeed;
     const accessNeed = {
       iri: accessNeedIri,
       descriptions: {
@@ -95,6 +98,7 @@ describe('getDescriptions', () => {
           definition: 'definition for projects'
         }
       },
+      getDescription: jest.fn(async (lang: string) => accessNeed.descriptions[lang]),
       required: true,
       accessMode: [ACL.Read],
       shapeTree: {
@@ -103,10 +107,11 @@ describe('getDescriptions', () => {
           [lang]: {
             label: 'Projects'
           }
-        }
+        },
+        getDescription: jest.fn(async (lang: string) => accessNeed.shapeTree.descriptions[lang])
       },
       children: [childAccessNeed]
-    };
+    } as unknown as ReadableAccessNeed;
 
     const accessNeedGroup = {
       iri: 'https://projectron.example/access-needs#need-group-pm',
@@ -116,6 +121,8 @@ describe('getDescriptions', () => {
           definition: 'Manage project and tasks'
         }
       },
+      reliableDescriptionLanguages: new Set([lang]),
+      getDescription: jest.fn(async (lang: string) => accessNeedGroup.descriptions[lang]),
       accessNeeds: [accessNeed]
     } as unknown as ReadableAccessNeedGroup;
     saiSession.factory.readable.clientIdDocument.mockResolvedValueOnce({
@@ -139,7 +146,7 @@ describe('getDescriptions', () => {
     const expected = {
       id: applicationIri,
       agentType: AgentType.Application,
-      accessNeedGroup: {
+      accessNeedGroup: expect.objectContaining({
         id: accessNeedGroup.iri,
         label: accessNeedGroup.descriptions[lang].label,
         description: accessNeedGroup.descriptions[lang].definition,
@@ -170,7 +177,7 @@ describe('getDescriptions', () => {
             ]
           }
         ]
-      },
+      }),
       dataOwners: [
         {
           id: webId,
@@ -208,7 +215,6 @@ describe('getDescriptions', () => {
         }
       ]
     };
-
     const descriptions = await getDescriptions(applicationIri, AgentType.Application, lang, saiSession);
     expect(descriptions).toStrictEqual(expected);
   });

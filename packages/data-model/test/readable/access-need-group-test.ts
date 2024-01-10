@@ -45,4 +45,9 @@ describe('descriptions', () => {
     const needGroup = await factory.readable.accessNeedGroup(snippetIri, lang);
     expect(needGroup.descriptions[lang]).toBeUndefined();
   });
+
+  test('should get reliable description languages', async () => {
+    const needGroup = await factory.readable.accessNeedGroup(snippetIri);
+    expect([...needGroup.reliableDescriptionLanguages]).toStrictEqual(['en', 'pl']);
+  });
 });

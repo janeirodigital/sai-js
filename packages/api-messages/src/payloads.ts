@@ -75,6 +75,8 @@ export interface AccessNeedGroup extends UniqueId {
   description?: string;
   required?: boolean;
   needs: AccessNeed[];
+  descriptionLanguages: string[];
+  lang: string;
 }
 
 export interface DataOwner extends UniqueId {

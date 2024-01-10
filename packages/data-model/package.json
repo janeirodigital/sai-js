@@ -56,5 +56,8 @@
     "@janeirodigital/interop-test-utils": "^1.0.0-rc.23",
     "@rdfjs/types": "^1.1.0",
     "@types/n3": "^1.16.2"
+  },
+  "volta": {
+    "node": "20.7.0"
   }
 }

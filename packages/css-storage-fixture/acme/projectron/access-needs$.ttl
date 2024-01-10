@@ -9,7 +9,8 @@ PREFIX solidtrees: <http://localhost:3000/shapetrees/trees/>
   interop:accessScenario interop:PersonalAccess ;
   interop:authenticatesAs interop:SocialAgent ;
   interop:hasAccessDescriptionSet
-    <./descriptions-en> ;
+    <./descriptions-en> ,
+    <./descriptions-es> ;
   interop:hasAccessNeed <#need-project> .
 
 <#need-project>
@@ -42,3 +43,6 @@ PREFIX solidtrees: <http://localhost:3000/shapetrees/trees/>
 
 <./descriptions-en>
   interop:usesLanguage "en"^^xsd:language .
+
+<./descriptions-es>
+  interop:usesLanguage "es"^^xsd:language .

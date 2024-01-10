@@ -60,4 +60,15 @@ describe('descriptions', () => {
     const need = await factory.readable.accessNeed(snippetIri, lang);
     expect(need.descriptions[lang]).toBeUndefined();
   });
+
+  test('should get description languages', async () => {
+    const lang = 'en';
+    const accessNeed = await factory.readable.accessNeed(snippetIri, lang);
+    expect([...accessNeed.descriptionLanguages]).toStrictEqual(['en', 'pl']);
+  });
+
+  test('should get reliable description languages', async () => {
+    const accessNeed = await factory.readable.accessNeed(snippetIri);
+    expect([...accessNeed.reliableDescriptionLanguages]).toStrictEqual(['en', 'pl']);
+  });
 });

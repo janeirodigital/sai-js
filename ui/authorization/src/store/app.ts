@@ -40,8 +40,8 @@ export const useAppStore = defineStore('app', () => {
     shareAuthorizationConfirmation.value = await backend.shareResource(shareAuthorization);
   }
 
-  async function getAuthoriaztion(agentId: string, agentType: AgentType) {
-    authorizationData.value = await backend.getAuthorization(agentId, agentType, lang.value);
+  async function getAuthoriaztion(agentId: string, agentType: AgentType, preferredLang = lang.value) {
+    authorizationData.value = await backend.getAuthorization(agentId, agentType, preferredLang);
   }
 
   // TODO rename list with load

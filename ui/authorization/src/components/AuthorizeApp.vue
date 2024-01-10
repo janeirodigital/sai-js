@@ -22,7 +22,26 @@ span.label {
     :title="agent.label"
     :subtitle="agent.note"
   ></v-card>
-  <v-card>
+  <v-alert
+        v-if="coreStore.lang !== authorizationData.accessNeedGroup.lang"
+        color="info"
+        icon="mdi-translate"
+      >
+    <template v-slot:append>
+      <template v-if="authorizationData.accessNeedGroup.descriptionLanguages.length === 1">
+        {{ authorizationData.accessNeedGroup.lang }}
+      </template>
+      <template v-else>
+        <v-select
+          v-model="alternativeLang"
+          :items="authorizationData.accessNeedGroup.descriptionLanguages"
+          :disabled="langLoading"
+        ></v-select>
+      </template>
+    </template>
+  </v-alert>
+  <v-skeleton-loader type="card@2" v-if="langLoading"></v-skeleton-loader>
+  <v-card v-else>
     <v-card-text>
       <v-list-item lines="three" @click="toggleSelect(accessNeed.id)">
         <v-list-item-title>
@@ -238,7 +257,7 @@ import {
   SocialAgent,
   AgentType
 } from '@janeirodigital/sai-api-messages';
-import { reactive, ref, onMounted, watch } from 'vue';
+import { reactive, ref, onMounted, watch, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCoreStore } from '@/store/core';
 import { useAppStore } from '@/store/app';
@@ -255,6 +274,25 @@ const props = defineProps<{
   authorizationData: AuthorizationData;
   redirect: boolean
 }>();
+// TODO add stepper to support multiple top level access needs
+const accessNeed = computed(() => props.authorizationData.accessNeedGroup.needs[0])
+
+const alternativeLang = ref(props.authorizationData.accessNeedGroup.lang)
+const langLoading = ref(false)
+
+watch(accessNeed, (accessNeed) => {
+  if (accessNeed) {
+    langLoading.value = false
+  }
+})
+
+watch(alternativeLang, (selectedLang) => {
+  langLoading.value = true
+  appStore.getAuthoriaztion(
+    props.application?.id ?? props.agent!.id,
+    props.application ? AgentType.Application : AgentType.SocialAgent,
+    selectedLang)
+})
 
 type PropagatingScope = 'none' | 'all';
 type Scope = PropagatingScope | 'some';
@@ -450,9 +488,6 @@ function statsForRegistration(registrationId: string): number {
     return dataInstances.filter((dataInstance) => dataInstance.selected).length;
   }
 }
-
-// TODO add stepper to support multiple top level access needs
-const accessNeed = props.authorizationData.accessNeedGroup.needs[0];
 
 const loadingAuthorize = ref(false);
 const loadingDeny = ref(false);

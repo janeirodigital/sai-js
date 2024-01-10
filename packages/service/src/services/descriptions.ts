@@ -16,7 +16,6 @@ import {
   Authorization,
   AccessAuthorization,
   AccessNeed,
-  AccessNeedGroup,
   AgentType,
   GrantedAuthorization,
   DataOwner,
@@ -24,23 +23,28 @@ import {
   DataInstance
 } from '@janeirodigital/sai-api-messages';
 
-const formatAccessNeed = (accessNeed: ReadableAccessNeed, descriptionsLang: string): AccessNeed => {
+const formatAccessNeed = async (accessNeed: ReadableAccessNeed, descriptionsLang: string): Promise<AccessNeed> => {
+  const description = await accessNeed.getDescription(descriptionsLang);
+  const shapeTreeDescription = await accessNeed.shapeTree.getDescription(descriptionsLang);
+
   const formatted = {
     id: accessNeed.iri,
-    label: accessNeed.descriptions[descriptionsLang].label,
-    description: accessNeed.descriptions[descriptionsLang].definition,
+    label: description.label,
+    description: description.definition,
     required: accessNeed.required,
     access: accessNeed.accessMode,
     shapeTree: {
       id: accessNeed.shapeTree.iri,
-      label: accessNeed.shapeTree.descriptions[descriptionsLang]!.label
+      label: shapeTreeDescription.label
     }
   } as AccessNeed;
   if (accessNeed.inheritsFromNeed) {
     formatted.parent = accessNeed.inheritsFromNeed;
   }
   if (accessNeed.children) {
-    formatted.children = accessNeed.children.map((child) => formatAccessNeed(child, descriptionsLang));
+    formatted.children = await Promise.all(
+      accessNeed.children.map((child) => formatAccessNeed(child, descriptionsLang))
+    );
   }
   return formatted;
 };
@@ -101,13 +105,13 @@ async function findSocialAgentDataRegistrations(
  * Get the descriptions for the requested language. If the descriptions for the language are not found
  * `null` will be returned.
  * @param applicationIri application's profile document IRI
- * @param descriptionsLang XSD language requested, e.g.: "en", "es", "i-navajo".
+ * @param preferredLang XSD language requested, e.g.: "en", "es", "i-navajo".
  * @param saiSession Authoirization Agent from `@janeirodigital/interop-authorization-agent`
  */
 export const getDescriptions = async (
   agentIri: string,
   agentType: AgentType,
-  descriptionsLang: string,
+  preferredLang: string,
   saiSession: AuthorizationAgent
 ): Promise<AuthorizationData | null> => {
   let accessNeedGroupIri: string;
@@ -122,7 +126,7 @@ export const getDescriptions = async (
     if (!accessNeedGroupIri) return null;
   } else throw new Error('wrong agent type');
 
-  const accessNeedGroup = await saiSession.factory.readable.accessNeedGroup(accessNeedGroupIri, descriptionsLang);
+  const accessNeedGroup = await saiSession.factory.readable.accessNeedGroup(accessNeedGroupIri, preferredLang);
 
   const dataOwners: DataOwner[] = [
     {
@@ -148,6 +152,11 @@ export const getDescriptions = async (
       }
     }
   }
+  const descriptionLanguages = [...accessNeedGroup.reliableDescriptionLanguages];
+  const descriptionsLang = accessNeedGroup.reliableDescriptionLanguages.has(preferredLang)
+    ? preferredLang
+    : descriptionLanguages[0];
+  const descriptions = await accessNeedGroup.getDescription(descriptionsLang);
 
   return {
     // TODO if the id is the unique id of something then it should not be its own id. It should refer by a different name,
@@ -156,10 +165,12 @@ export const getDescriptions = async (
     agentType,
     accessNeedGroup: {
       id: accessNeedGroup.iri,
-      label: accessNeedGroup.descriptions[descriptionsLang].label!,
-      description: accessNeedGroup.descriptions[descriptionsLang].definition,
-      needs: accessNeedGroup.accessNeeds.map((need) => formatAccessNeed(need, descriptionsLang))
-    } as AccessNeedGroup,
+      label: descriptions.label,
+      description: descriptions.definition,
+      needs: await Promise.all(accessNeedGroup.accessNeeds.map((need) => formatAccessNeed(need, descriptionsLang))),
+      descriptionLanguages,
+      lang: descriptionsLang
+    },
     dataOwners
   };
 };

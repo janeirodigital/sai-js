@@ -18,7 +18,7 @@ PREFIX interop: <http://www.w3.org/ns/solid/interop#>
   a interop:AccessNeedDescription ;
   interop:inAccessDescriptionSet <> ;
   interop:hasAccessNeed <./access-needs#need-project> ;
-  skos:prefLabel "Access to Projects is essential for Projectron to perform its core function of Project Management"@en .
+  skos:prefLabel "Access to Projects is essential for Projectron to perform its core function of Project Management."@en .
 
 <#en-need-task>
   a interop:AccessNeedDescription ;
