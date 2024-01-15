@@ -1,13 +1,17 @@
 module.exports = {
   root: true,
-  parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
+  parser: 'vue-eslint-parser',
+  parserOptions: {
+    parser: '@typescript-eslint/parser',
+  },
+  plugins: ['@typescript-eslint', 'eslint-plugin-vue'],
   extends: [
+    'plugin:vue/vue3-recommended',
     'eslint:recommended',
     'airbnb-base',
     'plugin:monorepo/recommended',
     'plugin:@typescript-eslint/recommended',
-    'prettier'
+    'prettier',
   ],
   ignorePatterns: ['*.d.ts'],
   rules: {
@@ -20,13 +24,19 @@ module.exports = {
     'dot-notation': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     'no-shadow': 'off',
-    '@typescript-eslint/no-shadow': 'warn',
+    '@typescript-eslint/no-shadow': 'warn'
   },
   overrides: [
     {
       files: ['*-test.ts'],
       rules: {
         'import/first': 'off'
+      }
+    },
+    {
+      files: ['*.vue'],
+      rules: {
+        'vue/multi-word-component-names': 'off'
       }
     }
   ],
