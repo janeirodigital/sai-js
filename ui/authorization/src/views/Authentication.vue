@@ -8,7 +8,7 @@
         </v-form>
       </v-card-item>
       <v-card-item v-else>
-        <v-btn @click="loginBackend" block class="mt-2">{{ $t('connect-server') }}</v-btn>
+        <v-btn block class="mt-2" @click="loginBackend">{{ $t('connect-server') }}</v-btn>
       </v-card-item>
     </v-card>
   </v-main>
@@ -17,6 +17,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { useCoreStore } from '@/store/core';
+
 const coreStore = useCoreStore();
 
 const defaultOidcIssuer = import.meta.env.VITE_DEFAULT_OIDC_ISSUER;

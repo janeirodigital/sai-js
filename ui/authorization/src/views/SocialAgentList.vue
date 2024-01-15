@@ -1,10 +1,3 @@
-<style>
-#add {
-  position: absolute;
-  bottom: 60px;
-  left: calc(50% - 24px);
-}
-</style>
 <template>
   <v-sheet>
     <v-card
@@ -26,8 +19,8 @@
         >
           {{ $t('access') }}
           <template
-            v-slot:append
             v-if="agent.accessNeedGroup && !agent.accessGrant"
+            #append
           >
             <v-badge
               inline
@@ -77,12 +70,11 @@
     </v-bottom-sheet>
   </v-sheet>
 </template>
-
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useAppStore } from '@/store/app';
 import { useRouter } from 'vue-router';
 import { Invitation } from '@janeirodigital/sai-api-messages';
+import { useAppStore } from '@/store/app';
 
 const router = useRouter() 
 const appStore = useAppStore()
@@ -107,3 +99,11 @@ function shareAvaliable() {
 }
 
 </script>
+
+<style>
+#add {
+  position: absolute;
+  bottom: 60px;
+  left: calc(50% - 24px);
+}
+</style>

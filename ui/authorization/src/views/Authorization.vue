@@ -5,12 +5,12 @@
             && (agent || appStore.application)"
       :application="appStore.application"
       :agent="agent"
-      :authorizationData="appStore.authorizationData"
+      :authorization-data="appStore.authorizationData"
       :redirect="route.query.redirect !== 'false'"
     ></AuthorizeApp>
     <ShareResource
       v-if="!route.query.webid && clientId && appStore.resource"
-      :applicationId="clientId"
+      :application-id="clientId"
       :resource="appStore.resource"
       :social-agents="appStore.socialAgentList"
     ></ShareResource>
@@ -20,10 +20,10 @@
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { AgentType } from '@janeirodigital/sai-api-messages';
 import { useAppStore } from '@/store/app';
 import AuthorizeApp from '@/components/AuthorizeApp.vue';
 import ShareResource from '@/components/ShareResource.vue';
-import { AgentType } from '@janeirodigital/sai-api-messages';
 
 const appStore = useAppStore();
 
@@ -34,11 +34,11 @@ const resourceId = ref<string | undefined>();
 
 watch(
   () => [route.query.client_id, route.query.resource],
-  ([client_id, resource]) => {
+  ([cId, resource]) => {
     if (route.name !== 'authorization') return
     if (route.query.webid) return;
-    if (!client_id || Array.isArray(client_id)) throw new Error('one client_id is required');
-    clientId.value = client_id;
+    if (!cId || Array.isArray(cId)) throw new Error('one client_id is required');
+    clientId.value = cId;
     if (resource) {
       if (Array.isArray(resource)) throw new Error('only one resource is allowed');
       resourceId.value = resource;
@@ -82,7 +82,5 @@ watch(
   { immediate: true }
 );
 
-const agent = computed(() => {
-  return appStore.socialAgentList.find((a) => a.id === agentId.value);
-});
+const agent = computed(() => appStore.socialAgentList.find((a) => a.id === agentId.value));
 </script>

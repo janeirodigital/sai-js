@@ -1,16 +1,3 @@
-<style>
-#panel-hell .v-expansion-panel-text__wrapper {
-  padding: 8px 0px 16px;
-}
-
-#panel-hell .v-expansion-panel-title {
-  padding: 16px 16px;
-}
-
-span.label {
-  padding-left: 6px;
-}
-</style>
 <template>
   <v-card
     v-if="application"
@@ -27,7 +14,7 @@ span.label {
         color="info"
         icon="mdi-translate"
       >
-    <template v-slot:append>
+    <template #append>
       <template v-if="descriptionLanguages.length === 1">
         {{ descriptionLanguages[0].title }}
       </template>
@@ -40,7 +27,7 @@ span.label {
       </template>
     </template>
   </v-alert>
-  <v-skeleton-loader type="card@2" v-if="langLoading"></v-skeleton-loader>
+  <v-skeleton-loader v-if="langLoading" type="card@2"></v-skeleton-loader>
   <v-card v-else>
     <v-card-text>
       <v-list-item lines="three" @click="toggleSelect(accessNeed.id)">
@@ -51,7 +38,7 @@ span.label {
         <v-list-item-subtitle>
           {{ accessNeed.label }}
         </v-list-item-subtitle>
-        <template v-slot:append>
+        <template #append>
           <v-list-item-action end>
             <v-checkbox-btn
               :model-value="isSelected(accessNeed.id)"
@@ -63,9 +50,9 @@ span.label {
       </v-list-item>
       <v-list>
         <v-list-item
-          class="ml-3"
           v-for="child in accessNeed.children"
           :key="child.id"
+          class="ml-3"
           lines="three"
           @click="toggleSelect(accessNeed.id, child.id)"
         >
@@ -76,7 +63,7 @@ span.label {
           <v-list-item-subtitle>
             {{ child.label }}
           </v-list-item-subtitle>
-          <template v-slot:append>
+          <template #append>
             <v-list-item-action end>
               <v-checkbox-btn
                 :model-value="isSelected(accessNeed.id, child.id)"
@@ -87,12 +74,12 @@ span.label {
           </template>
         </v-list-item>
       </v-list>
-      <v-expansion-panels id="panel-hell" variant="popout" v-model="panelsOpened">
+      <v-expansion-panels id="panel-hell" v-model="panelsOpened" variant="popout">
         <v-expansion-panel value="top">
           <v-expansion-panel-title class="d-flex flex-row">
             <span class="flex-grow-1">{{ topLevelScope === 'all' ? $t('all-data') : $t('selected-data') }}</span>
             <v-chip color="agent" label>{{ props.authorizationData.dataOwners.length }}</v-chip>
-            <template v-slot:actions>
+            <template #actions>
               <v-badge color="agent" :content="statsForTopLevel()" :model-value="topLevelScope === 'some'">
                 <v-checkbox-btn
                   disabled
@@ -125,7 +112,7 @@ span.label {
                     <span class="label flex-grow-1">{{ agent.label }}</span>
                   </template>
                   <v-chip color="primary" label>{{ agent.dataRegistrations.length }}</v-chip>
-                  <template v-slot:actions>
+                  <template #actions>
                     <v-badge
                       color="primary"
                       :content="statsForAgent(agent.id)"
@@ -143,11 +130,11 @@ span.label {
                 <v-expansion-panel-text>
                   <v-btn-toggle
                     :model-value="agentsIndex[agent.id].scope"
-                    @update:model-value="agentScopeChanged(agent.id, $event)"
                     rounded="false"
                     variant="outlined"
                     mandatory
                     class="d-flex flex-row"
+                    @update:model-value="agentScopeChanged(agent.id, $event)"
                   >
                     <v-btn class="flex-grow-1" icon="mdi-checkbox-blank-outline" value="none"></v-btn>
                     <v-btn class="flex-grow-1" icon="mdi-minus-box-outline" value="some"></v-btn>
@@ -163,7 +150,7 @@ span.label {
                         <v-icon color="primary" icon="mdi-hexagon-outline"></v-icon>
                         <span class="label flex-grow-1">{{ registration.label }}</span>
                         <v-chip color="secondary" label>{{ registration.count }}</v-chip>
-                        <template v-slot:actions>
+                        <template #actions>
                           <v-badge
                             color="secondary"
                             :content="statsForRegistration(registration.id)"
@@ -181,11 +168,11 @@ span.label {
                       <v-expansion-panel-text>
                         <v-btn-toggle
                           :model-value="registrationsIndex[registration.id].scope"
-                          @update:model-value="registrationScopeChanged(agent.id, registration.id, $event)"
                           rounded="false"
                           variant="outlined"
                           mandatory
                           class="d-flex flex-row"
+                          @update:model-value="registrationScopeChanged(agent.id, registration.id, $event)"
                         >
                           <v-btn class="flex-grow-1" icon="mdi-checkbox-blank-outline" value="none"></v-btn>
                           <v-btn class="flex-grow-1" icon="mdi-minus-box-outline" value="some"></v-btn>
@@ -203,7 +190,7 @@ span.label {
                                 <v-icon color="secondary" icon="mdi-star-three-points-outline"></v-icon>
                                 {{ dataInstance.label }}
                               </v-list-item-title>
-                              <template v-slot:append>
+                              <template #append>
                                 <v-list-item-action v-if="dataInstancesIndex[dataInstance.id]">
                                   <v-checkbox-btn
                                     v-model="dataInstancesIndex[dataInstance.id].selected"
@@ -242,9 +229,9 @@ span.label {
     </div>
   </v-card>
 </template>
-
 <script lang="ts" setup>
 import locale from 'locale-codes'
+import { VExpansionPanel } from 'vuetify/lib/components/index.mjs';
 import {
   Scopes,
   AccessModes,
@@ -262,7 +249,6 @@ import { reactive, ref, onMounted, watch, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCoreStore } from '@/store/core';
 import { useAppStore } from '@/store/app';
-import { VExpansionPanel } from 'vuetify/lib/components/index.mjs';
 
 const router = useRouter()
 
@@ -281,14 +267,11 @@ const accessNeed = computed(() => props.authorizationData.accessNeedGroup.needs[
 const alternativeLang = ref(props.authorizationData.accessNeedGroup.lang)
 const langLoading = ref(false)
 const descriptionLanguages = computed(() => 
-  props.authorizationData.accessNeedGroup.descriptionLanguages.map((lang) => {
-    return {
-      title: locale.getByTag(lang)?.local || lang,
-      value: lang
-    }
-  })
+  props.authorizationData.accessNeedGroup.descriptionLanguages.map(lang => ({
+    title: locale.getByTag(lang)?.local || lang,
+    value: lang
+  }))
 )
-
 
 watch(accessNeed, (accessNeed) => {
   if (accessNeed) {
@@ -389,6 +372,12 @@ function findRegistrationDataInstances(registrationId: string): SelectableDataIn
 const panelsOpened = ref<string[]>([]);
 const topLevelScope = ref<Scope>('all');
 
+function setScopeForAgents(scope: PropagatingScope): void {
+  for (const agent of Object.values(agentsIndex)) {
+    agent.scope = scope;
+  }
+}
+
 // TODO: make propagation independent of DOM
 onMounted(() => {
   // set default to current user
@@ -407,9 +396,10 @@ watch(topLevelScope, (newScope) => {
   }
 });
 
-function setScopeForAgents(scope: PropagatingScope): void {
-  for (const agent of Object.values(agentsIndex)) {
-    agent.scope = scope;
+function setScopeForAgentRegistrations(agentId: string, scope: PropagatingScope): void {
+  const registrations = findAgentRegistrations(agentId);
+  for (const registration of registrations) {
+    registration.scope = scope;
   }
 }
 
@@ -418,23 +408,6 @@ function agentScopeChanged(agentId: string, scope: Scope) {
     setScopeForAgentRegistrations(agentId, scope);
   }
   agentsIndex[agentId].scope = scope;
-}
-
-function setScopeForAgentRegistrations(agentId: string, scope: PropagatingScope): void {
-  const registrations = findAgentRegistrations(agentId);
-  for (const registration of registrations) {
-    registration.scope = scope;
-  }
-}
-
-function registrationScopeChanged(agentId: string, registrationId: string, scope: Scope) {
-  if (scope !== 'some') {
-    setSelectedForRegistrationInstances(registrationId, scope === 'all');
-  } else if (!appStore.loadedDataInstances[registrationId]) {
-    const previousScope = registrationsIndex[registrationId].scope;
-    loadDataInstances(agentId, registrationId, previousScope === 'all');
-  }
-  registrationsIndex[registrationId].scope = scope;
 }
 
 async function loadDataInstances(agentId: string, registrationId: string, selected: boolean): Promise<void> {
@@ -451,6 +424,16 @@ function setSelectedForRegistrationInstances(registrationId: string, selected: b
   }
 }
 
+function registrationScopeChanged(agentId: string, registrationId: string, scope: Scope) {
+  if (scope !== 'some') {
+    setSelectedForRegistrationInstances(registrationId, scope === 'all');
+  } else if (!appStore.loadedDataInstances[registrationId]) {
+    const previousScope = registrationsIndex[registrationId].scope;
+    loadDataInstances(agentId, registrationId, previousScope === 'all');
+  }
+  registrationsIndex[registrationId].scope = scope;
+}
+
 function toggleOneInstance(instanceId: string) {
   const instance = dataInstancesIndex[instanceId];
   const registration = registrationsIndex[instance.registration];
@@ -460,43 +443,39 @@ function toggleOneInstance(instanceId: string) {
   }
 }
 
-function statsForTopLevel(): number {
-  if (topLevelScope.value === 'none') {
+function statsForRegistration(registrationId: string): number {
+  const registration = registrationsIndex[registrationId];
+  if (registration.scope === 'none') {
     return 0;
-  } else {
-    const agents = Object.values(agentsIndex);
-    if (topLevelScope.value === 'all') {
-      return agents.length;
-    } else {
-      return agents.filter((agent) => statsForAgent(agent.id)).length;
-    }
-  }
+  } 
+  if (registration.scope === 'all') {
+    return registration.count;
+  } 
+  const dataInstances = findRegistrationDataInstances(registration.id);
+  return dataInstances.filter((dataInstance) => dataInstance.selected).length;
 }
 
 function statsForAgent(agentId: string): number {
   const agent = agentsIndex[agentId];
   if (agent.scope === 'none') {
     return 0;
-  } else {
-    const registrations = findAgentRegistrations(agentId);
-    if (agent.scope === 'all') {
-      return registrations.length;
-    } else {
-      return registrations.filter((registration) => statsForRegistration(registration.id)).length;
-    }
-  }
+  } 
+  const registrations = findAgentRegistrations(agentId);
+  if (agent.scope === 'all') {
+    return registrations.length;
+  } 
+  return registrations.filter((registration) => statsForRegistration(registration.id)).length;
 }
 
-function statsForRegistration(registrationId: string): number {
-  const registration = registrationsIndex[registrationId];
-  if (registration.scope === 'none') {
+function statsForTopLevel(): number {
+  if (topLevelScope.value === 'none') {
     return 0;
-  } else if (registration.scope === 'all') {
-    return registration.count;
-  } else {
-    const dataInstances = findRegistrationDataInstances(registration.id);
-    return dataInstances.filter((dataInstance) => dataInstance.selected).length;
-  }
+  } 
+  const agents = Object.values(agentsIndex);
+  if (topLevelScope.value === 'all') {
+    return agents.length;
+  } 
+  return agents.filter((agent) => statsForAgent(agent.id)).length;
 }
 
 const loadingAuthorize = ref(false);
@@ -515,9 +494,9 @@ const selection = reactive({
 });
 
 function toggleSelect(needId: string, childId?: string): void {
-  const need = selection.needs.find((n) => n.id == needId)!;
+  const need = selection.needs.find((n) => n.id === needId)!;
   if (childId) {
-    const child = need.children?.find((n) => n.id == childId)!;
+    const child = need.children!.find((n) => n.id === childId)!;
     if (child.required) return;
     child.selected = !child.selected;
   } else {
@@ -527,21 +506,21 @@ function toggleSelect(needId: string, childId?: string): void {
 }
 
 function isSelected(needId: string, childId?: string): boolean {
-  const need = selection.needs.find((n) => n.id == needId)!;
+  const need = selection.needs.find((n) => n.id === needId)!;
   if (childId) {
-    const child = need.children?.find((n) => n.id == childId)!;
+    const child = need.children!.find((n) => n.id === childId)!;
     return child.selected;
-  } else {
+  } 
     return need.selected;
-  }
+  
 }
 
 function chooseIcon(access: string[]): string {
   if (access.includes(AccessModes.Update)) {
     return 'mdi-square-edit-outline';
-  } else {
+  } 
     return 'mdi-euey-outline';
-  }
+  
 }
 
 // TODO throw error if required need is not satisfied
@@ -654,3 +633,17 @@ watch(
   }
 );
 </script>
+
+<style>
+#panel-hell .v-expansion-panel-text__wrapper {
+  padding: 8px 0px 16px;
+}
+
+#panel-hell .v-expansion-panel-title {
+  padding: 16px 16px;
+}
+
+span.label {
+  padding-left: 6px;
+}
+</style>

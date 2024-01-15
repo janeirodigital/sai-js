@@ -6,7 +6,7 @@
       icon="mdi-bell-cog-outline"
       v-bind="$ta('notifications-alert')"
     >
-      <template v-slot:append>
+      <template #append>
         <v-btn
           color="secondary"
           :loading="enableNotificationsLoading"
@@ -46,6 +46,7 @@
 import { ref } from 'vue'
 import { useCoreStore } from '@/store/core';
 import { useAppStore } from '@/store/app';
+
 const coreStore = useCoreStore()
 const appStore = useAppStore()
 

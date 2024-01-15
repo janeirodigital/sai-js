@@ -10,7 +10,7 @@
             {{ child.shapeTree.label }}
             <v-badge color="secondary" :content="child.count" inline></v-badge>
           </v-list-item-title>
-          <template v-slot:append>
+          <template #append>
             <v-list-item-action>
               <AccessModeSelector
                 add
@@ -29,7 +29,7 @@
           :title="agent.label"
           @click="toggleAgent(agent.id)"
         >
-          <template v-slot:append>
+          <template #append>
             <v-list-item-action end>
               <v-checkbox-btn :model-value="selectedAgents.has(agent.id)" @click.prevent></v-checkbox-btn>
             </v-list-item-action>
@@ -39,7 +39,7 @@
       <v-list>
         <v-list-subheader>{{ $t('peers-with-access') }}</v-list-subheader>
         <v-list-item v-for="agent of existingGrantees" :key="agent.id" :title="agent.label" :value="agent.id">
-          <template v-slot:append>
+          <template #append>
             <v-list-item-action end>
               <v-btn
                 icon="mdi-arrow-right-thick"
@@ -84,9 +84,9 @@ const shareData: ShareAuthorizationModes = reactive({
 
 const loading = ref(false);
 
-const valid = computed(() => Boolean(shareData.accessMode.length && selectedAgents.size));
-
 const selectedAgents = reactive<Set<string>>(new Set());
+
+const valid = computed(() => Boolean(shareData.accessMode.length && selectedAgents.size));
 
 function toggleAgent(id: string) {
   if (selectedAgents.has(id)) {
@@ -96,13 +96,9 @@ function toggleAgent(id: string) {
   }
 }
 
-const existingGrantees = computed(() => {
-  return props.socialAgents.filter((agent) => props.resource.accessGrantedTo.includes(agent.id));
-});
+const existingGrantees = computed(() => props.socialAgents.filter((agent) => props.resource.accessGrantedTo.includes(agent.id)));
 
-const potentialGrantees = computed(() => {
-  return props.socialAgents.filter((agent) => !props.resource.accessGrantedTo.includes(agent.id));
-});
+const potentialGrantees = computed(() => props.socialAgents.filter((agent) => !props.resource.accessGrantedTo.includes(agent.id)));
 
 function chooseAccessMode(value: string): string[] {
   switch (value) {

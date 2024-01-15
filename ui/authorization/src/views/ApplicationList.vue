@@ -1,9 +1,3 @@
-<style>
-  #add-button {
-    display: block;
-    margin: 16px auto 0;
-  }
-</style>
 <template>
   <v-container>
     <v-list>
@@ -12,8 +6,8 @@
         :key="application.id" :prepend-avatar="application.logo"
         :title="application.name">
         <template
-          v-slot:append
           v-if="application.callbackEndpoint"
+          #append
         >
           <a :href="application.callbackEndpoint" target="_blank">
             <v-icon
@@ -31,10 +25,10 @@
       <v-icon icon="mdi-plus"></v-icon>{{  $t('add-application') }}
     </v-btn>
     <v-dialog
+      v-model="addDialog"
       persistent
       fullscreen
       width="100vw"
-      v-model="addDialog"
     >
       <v-card>
         <v-card-title>{{ $t('add-application') }}</v-card-title>
@@ -61,11 +55,10 @@
     </v-dialog>
   </v-container>
 </template>
-
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useAppStore } from '@/store/app';
 import { useRouter } from 'vue-router';
+import { useAppStore } from '@/store/app';
 
 const router = useRouter()
 
@@ -84,3 +77,10 @@ function addApplication() {
 }
 
 </script>
+
+<style>
+  #add-button {
+    display: block;
+    margin: 16px auto 0;
+  }
+</style>

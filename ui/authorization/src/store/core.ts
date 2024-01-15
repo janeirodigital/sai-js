@@ -28,7 +28,7 @@ export const useCoreStore = defineStore('core', () => {
   const userId = ref<string | null>(null);
   const isBackendLoggedIn = ref(false);
   const redirectUrlForBackend = ref('');
-  const availableLanguages = ref(import.meta.env.VITE_LANGUAGES.split(','));
+  const availableLanguages = ref<string[]>(import.meta.env.VITE_LANGUAGES.split(','));
   const lang = ref(localStorage.getItem('lang') ?? defaultLang(availableLanguages.value));
   const pushSubscription = ref<PushSubscription | null>(null);
 

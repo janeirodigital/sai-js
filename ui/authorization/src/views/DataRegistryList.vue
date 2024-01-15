@@ -1,8 +1,3 @@
-<style>
-span.label {
-  padding-left: 6px;
-}
-</style>
 <template>
   <v-container>
     <v-card v-if="appStore.socialAgentList">
@@ -29,8 +24,8 @@ span.label {
           <v-expansion-panels>
           <v-expansion-panel 
             v-for="registration in registry.registrations" 
-            :title="registration.label"
             :key="registration.id"
+            :title="registration.label"
             @click="appStore.listDataInstances(route.query.agent as string, registration.id)"
             >
             <v-expansion-panel-text>
@@ -64,7 +59,7 @@ span.label {
       <v-card-title v-else>{{ $t('access-requested') }}</v-card-title>
     </v-card>
 
-    <v-dialog :modelValue="appListDialog">
+    <v-dialog :model-value="appListDialog">
       <v-list>
         <v-list-item
           v-for="application in appStore.applicationList"
@@ -77,12 +72,11 @@ span.label {
     </v-dialog>
   </v-container>
 </template>
-
 <script lang="ts" setup>
-import { useCoreStore } from '@/store/core';
-import { useAppStore } from '@/store/app';
 import { useRoute } from 'vue-router';
 import { computed, ref, watch } from 'vue';
+import { useCoreStore } from '@/store/core';
+import { useAppStore } from '@/store/app';
 
 const appStore = useAppStore()
 const coreStore = useCoreStore()
@@ -98,13 +92,9 @@ function requestAccess(applicationId: string) {
   appListDialog.value = false  
 }
 
-const agent = computed(() => {
-  return appStore.socialAgentList.find((a) => a.id === route.query.agent);
-});
+const agent = computed(() => appStore.socialAgentList.find((a) => a.id === route.query.agent));
 
-const hasData = computed(() => {
-  return !!appStore.dataRegistryList[route.query.agent as string]?.length
-});
+const hasData = computed(() => !!appStore.dataRegistryList[route.query.agent as string]?.length);
 
 watch(
   () => route.query.agent,
@@ -117,3 +107,9 @@ watch(
 );
 
 </script>
+
+<style>
+span.label {
+  padding-left: 6px;
+}
+</style>
