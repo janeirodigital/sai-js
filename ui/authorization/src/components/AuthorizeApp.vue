@@ -28,13 +28,13 @@ span.label {
         icon="mdi-translate"
       >
     <template v-slot:append>
-      <template v-if="authorizationData.accessNeedGroup.descriptionLanguages.length === 1">
-        {{ authorizationData.accessNeedGroup.lang }}
+      <template v-if="descriptionLanguages.length === 1">
+        {{ descriptionLanguages[0].title }}
       </template>
       <template v-else>
         <v-select
           v-model="alternativeLang"
-          :items="authorizationData.accessNeedGroup.descriptionLanguages"
+          :items="descriptionLanguages"
           :disabled="langLoading"
         ></v-select>
       </template>
@@ -244,6 +244,7 @@ span.label {
 </template>
 
 <script lang="ts" setup>
+import locale from 'locale-codes'
 import {
   Scopes,
   AccessModes,
@@ -279,6 +280,15 @@ const accessNeed = computed(() => props.authorizationData.accessNeedGroup.needs[
 
 const alternativeLang = ref(props.authorizationData.accessNeedGroup.lang)
 const langLoading = ref(false)
+const descriptionLanguages = computed(() => 
+  props.authorizationData.accessNeedGroup.descriptionLanguages.map((lang) => {
+    return {
+      title: locale.getByTag(lang)?.local || lang,
+      value: lang
+    }
+  })
+)
+
 
 watch(accessNeed, (accessNeed) => {
   if (accessNeed) {
