@@ -19,24 +19,30 @@ export class OidcError extends Error {
   }
 }
 
+function defaultLang(availableLanguages: string[]): string {
+  const lang = navigator.language.split('-')[0];
+  return availableLanguages.includes(lang) ? lang : 'en';
+}
+
 export const useCoreStore = defineStore('core', () => {
   const userId = ref<string | null>(null);
   const isBackendLoggedIn = ref(false);
   const redirectUrlForBackend = ref('');
-  const lang = ref('en');
-  const availableLanguages = ref(['en', 'pl']);
+  const availableLanguages = ref(import.meta.env.VITE_LANGUAGES.split(','));
+  const lang = ref(localStorage.getItem('lang') ?? defaultLang(availableLanguages.value));
   const pushSubscription = ref<PushSubscription | null>(null);
 
-  watch(lang, async (newLang) => {
-    localStorage.setItem('lang', newLang);
-    const newMessages = await import(`@/locales/${newLang}.ftl`);
-    const newBundle = new FluentBundle(newLang);
-    newBundle.addResource(newMessages.default);
-    fluent.bundles = [newBundle];
-  });
-
-  const restoredLang = localStorage.getItem('lang');
-  if (restoredLang) lang.value = restoredLang;
+  watch(
+    lang,
+    async (newLang) => {
+      localStorage.setItem('lang', newLang);
+      const newMessages = await import(`@/locales/${newLang}.ftl`);
+      const newBundle = new FluentBundle(newLang);
+      newBundle.addResource(newMessages.default);
+      fluent.bundles = [newBundle];
+    },
+    { immediate: true }
+  );
 
   async function login(oidcIssuer: string) {
     const options = {
