@@ -1,36 +1,12 @@
-<style>
-.left-enter-active,
-.left-leave-active,
-.right-enter-active,
-.right-leave-active {
-  position: absolute;
-  transition: left 0.25s linear;
-  width: 100vw;
-}
-.left-enter-to,
-.left-leave-from,
-.right-enter-to,
-.right-leave-from {
-  left: 0;
-}
-.left-leave-to,
-.right-enter-from {
-  left: -100vw;
-}
-.left-enter-from,
-.right-leave-to {
-  left: 100vw;
-}
-</style>
 <template>
   <v-app-bar color="primary">
     <v-app-bar-title>
       {{ title }}
     </v-app-bar-title>
-    <template v-slot:prepend v-if="icon">
+    <template v-if="icon" #prepend>
       <v-btn :icon="icon" @click="navigateUp"> </v-btn>
     </template>
-    <template v-slot:append v-if="route.query.project">
+    <template v-if="route.query.project" #append>
       <v-btn icon="mdi-share-variant" @click="shareProject"> </v-btn>
     </template>
   </v-app-bar>
@@ -45,30 +21,19 @@
   <v-snackbar v-model="showSnackbar" color="info">
     <v-icon icon="mdi-share-variant"></v-icon>
     Data from new peer - <strong>{{ newAgent?.label }}</strong>
-    <template v-slot:actions>
+    <template #actions>
       <v-btn color="white" variant="outlined" @click="showAgent()"> Show </v-btn>
     </template>
   </v-snackbar>
 </template>
-
 <script lang="ts" setup>
-import { Agent } from '@/models';
-import { useAppStore } from '@/store/app';
 import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { Agent } from '@/models';
+import { useAppStore } from '@/store/app';
+
 const router = useRouter();
 const route = useRoute();
-
-const title = computed(() =>
-  route.query.agent
-    ? route.query.project
-      ? appStore.currentProject?.label
-      : appStore.currentAgent?.label
-    : 'Vuejectron'
-);
-const icon = computed(() =>
-  route.query.agent ? (route.query.project ? 'mdi-account-details' : 'mdi-account-convert') : null
-);
 
 const appStore = useAppStore();
 appStore.watchSai();
@@ -79,6 +44,20 @@ if (route.query.project) {
 
 const showSnackbar = ref(false);
 const newAgent = ref<Agent>();
+
+const title = computed(() => {
+  if (route.query.agent) {
+    return route.query.project ? appStore.currentProject?.label : appStore.currentAgent?.label;
+  }
+  return 'Vuejectron';
+})
+
+const icon = computed(() => {
+  if (route.query.agent) {
+    return route.query.project ? 'mdi-account-details' : 'mdi-account-convert';
+  }
+  return null;
+});
 
 function showAgent() {
   showSnackbar.value = false;
@@ -114,3 +93,28 @@ watch(newAgent, (agent) => {
   }
 });
 </script>
+
+<style>
+.left-enter-active,
+.left-leave-active,
+.right-enter-active,
+.right-leave-active {
+  position: absolute;
+  transition: left 0.25s linear;
+  width: 100vw;
+}
+.left-enter-to,
+.left-leave-from,
+.right-enter-to,
+.right-leave-from {
+  left: 0;
+}
+.left-leave-to,
+.right-enter-from {
+  left: -100vw;
+}
+.left-enter-from,
+.right-leave-to {
+  left: 100vw;
+}
+</style>

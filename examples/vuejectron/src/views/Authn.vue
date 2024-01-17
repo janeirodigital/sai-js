@@ -7,7 +7,7 @@
       </v-form>
     </v-card-item>
     <v-card-item v-else>
-      <v-btn @click="requestAuthorization" block class="mt-2">Request Authorization</v-btn>
+      <v-btn block class="mt-2" @click="requestAuthorization">Request Authorization</v-btn>
     </v-card-item>
   </v-card>
   <v-card v-else>
@@ -21,12 +21,13 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { useCoreStore } from '@/store/core';
+
 const store = useCoreStore();
 const hasError = computed(() => !!store.saiError)
 
 const defaultOidcIssuer = import.meta.env.VITE_DEFAULT_OIDC_ISSUER;
 const oidcIssuer = ref('');
-const userId = store.userId;
+const {userId} = store;
 
 // will redirect to OIDC issuer
 async function login() {

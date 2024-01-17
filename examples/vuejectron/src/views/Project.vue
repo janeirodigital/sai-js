@@ -6,10 +6,10 @@
         <v-btn
           v-if="appStore.currentProject.canAddTasks"
           size="small"
-          @click="newTask"
           color="surface-variant"
           variant="text"
           icon="mdi-plus"
+          @click="newTask"
         ></v-btn>
       </h3>
       <v-list>
@@ -19,19 +19,19 @@
             <v-card-actions>
               <v-btn
                 v-if="task.canUpdate"
-                @click="editTask(task)"
                 size="small"
                 color="surface-variant"
                 variant="text"
                 icon="mdi-square-edit-outline"
+                @click="editTask(task)"
               ></v-btn>
               <v-btn
                 v-if="task.canDelete"
-                @click="deleteTask(task)"
                 size="small"
                 color="surface-variant"
                 variant="text"
                 icon="mdi-delete-outline"
+                @click="deleteTask(task)"
               ></v-btn>
             </v-card-actions>
           </v-card>
@@ -42,10 +42,10 @@
         <v-btn
           v-if="appStore.currentProject.canAddFiles"
           size="small"
-          @click="upload?.click()"
           color="surface-variant"
           variant="text"
           icon="mdi-plus"
+          @click="upload?.click()"
         ></v-btn>
       </h3>
       <v-list>
@@ -67,7 +67,7 @@
         @save="updateTask"
       ></input-dialog>
       <a ref="download" style="visibility: hidden"></a>
-      <input ref="upload" @change="uploadFile($event)" type="file" style="visibility: hidden" />
+      <input ref="upload" type="file" style="visibility: hidden" @change="uploadFile($event)" />
     </div>
   </v-main>
 </template>
@@ -97,17 +97,17 @@ const selectedTask = ref<Task | null>(null);
 
 const appStore = useAppStore();
 
-const imageUrls = computedAsync(async () => await Promise.all(appStore.images.map((image) => sai.dataUrl(image.id))));
+const imageUrls = computedAsync(async () => Promise.all(appStore.images.map((image) => sai.dataUrl(image.id))));
 
 watch(
   () => route.query.project,
   async (project) => {
     if (project && route.query.registration) {
       appStore.setCurrentProject(route.query.registration as string, project as string);
-      appStore.loadTasks(project as string); //TODO
+      appStore.loadTasks(project as string); // TODO
 
-      appStore.loadFiles(project as string); //TODO
-      appStore.loadImages(project as string); //TODO
+      appStore.loadFiles(project as string); // TODO
+      appStore.loadImages(project as string); // TODO
     }
   },
   { immediate: true }
@@ -118,8 +118,6 @@ async function downloadFile(file: FileInstance) {
     download.value.download = file.filename ?? 'file';
     download.value.href = await sai.dataUrl(file.id);
     download.value.click();
-  } else {
-    console.log('download!');
   }
 }
 
@@ -127,17 +125,15 @@ function updateTask(label: string) {
   if (selectedTask.value) {
     appStore.updateTask({ ...selectedTask.value, label });
     selectedTask.value = null;
-  } else {
-    if (label && appStore.currentProject) {
+  } else if (label && appStore.currentProject) {
       const task = { id: 'DRAFT', label, project: appStore.currentProject.id, owner: appStore.currentProject.owner };
       appStore.updateTask(task);
     }
-  }
   dialog.value = false;
 }
 
 function deleteTask(task: Task) {
-  if (confirm('Are you sure to delete')) {
+  if (window.confirm('Are you sure to delete')) {
     appStore.deleteTask(task);
   }
 }
@@ -156,7 +152,6 @@ function uploadFile(event: Event) {
   const blob = target.files?.item(0);
   if (blob && appStore.currentProject) {
     const file = { id: 'DRAFT', project: appStore.currentProject.id, owner: appStore.currentProject.owner };
-    console.log(appStore.updateFile);
     appStore.updateFile(file, blob);
   }
 }
