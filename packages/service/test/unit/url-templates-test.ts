@@ -1,4 +1,3 @@
-import { executionAsyncId } from 'async_hooks';
 import {
   encodeWebId,
   decodeWebId,

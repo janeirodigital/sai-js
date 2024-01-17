@@ -3,15 +3,12 @@ import { InMemoryStorage } from '@inrupt/solid-client-authn-node';
 import { DelegatedGrantsProcessor, IDelegatedGrantsJob } from '../../../src';
 
 import { SessionManager } from '../../../src/session-manager';
-jest.mock('../../../src/session-manager', () => {
-  return {
-    SessionManager: jest.fn(() => {
-      return {
-        getSaiSession: jest.fn()
-      };
-    })
-  };
-});
+
+jest.mock('../../../src/session-manager', () => ({
+  SessionManager: jest.fn(() => ({
+    getSaiSession: jest.fn()
+  }))
+}));
 
 const sessionManager = jest.mocked(new SessionManager(new InMemoryStorage()));
 const webId = 'https://alice.example';
@@ -23,7 +20,7 @@ const mockedUpdateDG = jest.fn();
 const saiSessionMock = {
   updateDelegatedGrants: mockedUpdateDG
 } as unknown as AuthorizationAgent;
-sessionManager.getSaiSession.mockImplementation(async (webid: string) => saiSessionMock);
+sessionManager.getSaiSession.mockImplementation(async () => saiSessionMock);
 
 beforeEach(() => {
   sessionManager.getSaiSession.mockClear();

@@ -4,30 +4,22 @@ import { InMemoryStorage } from '@inrupt/solid-client-authn-node';
 import type { NotificationChannel } from '@solid-notifications/types';
 import { ReciprocalRegistrationsProcessor, IReciprocalRegistrationsJob, webhookTargetUrl } from '../../../src';
 
-import { SubscriptionClient } from '@solid-notifications/subscription';
 const mockedSubscribe = jest.fn();
-jest.mock('@solid-notifications/subscription', () => {
-  return {
-    SubscriptionClient: jest.fn(() => {
-      return {
-        subscribe: mockedSubscribe
-      };
-    })
-  };
-});
+jest.mock('@solid-notifications/subscription', () => ({
+  SubscriptionClient: jest.fn(() => ({
+    subscribe: mockedSubscribe
+  }))
+}));
 
 import { SessionManager } from '../../../src/session-manager';
-jest.mock('../../../src/session-manager', () => {
-  return {
-    SessionManager: jest.fn(() => {
-      return {
-        getWebhookSubscription: jest.fn(),
-        setWebhookSubscription: jest.fn(),
-        getSaiSession: jest.fn()
-      };
-    })
-  };
-});
+
+jest.mock('../../../src/session-manager', () => ({
+  SessionManager: jest.fn(() => ({
+    getWebhookSubscription: jest.fn(),
+    setWebhookSubscription: jest.fn(),
+    getSaiSession: jest.fn()
+  }))
+}));
 
 const sessionManager = jest.mocked(new SessionManager(new InMemoryStorage()));
 const webId = 'https://alice.example';
@@ -46,7 +38,7 @@ const mockedRegistrationWithReciprocial = {
 };
 
 const mockedRegistrationWithoutReciprocal = {
-  discoverAndUpdateReciprocal: jest.fn(console.log)
+  discoverAndUpdateReciprocal: jest.fn()
 };
 
 beforeEach(() => {
@@ -84,9 +76,7 @@ describe('webhook subscription', () => {
   });
 
   test('does not try to subscribe if already subscribed', async () => {
-    sessionManager.getWebhookSubscription.mockImplementation(async () => {
-      return {} as unknown as NotificationChannel;
-    });
+    sessionManager.getWebhookSubscription.mockImplementation(async () => ({}) as unknown as NotificationChannel);
     await processor.processorFunction(job);
     expect(sessionManager.getWebhookSubscription).toBeCalledWith(webId, peerWebId);
     expect(mockedSubscribe).not.toBeCalled();
@@ -98,9 +88,7 @@ describe('webhook subscription', () => {
       type: NOTIFY.WebhookChannel2023.value,
       topic: 'https://some.example/something'
     };
-    sessionManager.getWebhookSubscription.mockImplementationOnce(async () => {
-      return undefined;
-    });
+    sessionManager.getWebhookSubscription.mockImplementationOnce(async () => undefined);
     mockedSubscribe.mockImplementationOnce(async () => subsciption);
     await processor.processorFunction(job);
     expect(mockedSubscribe).toBeCalledWith(

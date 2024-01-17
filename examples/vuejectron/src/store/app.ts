@@ -16,25 +16,27 @@ export const useAppStore = defineStore('app', () => {
   const currentAgent = ref<Agent>();
   const currentProject = ref<Project>();
 
+  async function loadAgents(force = false): Promise<void> {
+    if (force || !agents.value.length) {
+      const sai = useSai(coreStore.userId);
+      agents.value = await sai.getAgents();
+    }
+  }
+
   // DO NOT AWAIT! (infinite loop)
   async function watchSai(): Promise<void> {
     const sai = useSai(coreStore.userId);
     const stream = await sai.getStream();
     if (stream.locked) return;
     const reader = stream.getReader();
+    // eslint-disable-next-line no-constant-condition
     while (true) {
+      // eslint-disable-next-line no-await-in-loop
       const { done, value } = await reader.read();
       if (done) {
         break;
       }
       if (value.type === 'GRANT') loadAgents(true);
-    }
-  }
-
-  async function loadAgents(force = false): Promise<void> {
-    if (force || !agents.value.length) {
-      const sai = useSai(coreStore.userId);
-      agents.value = await sai.getAgents();
     }
   }
 

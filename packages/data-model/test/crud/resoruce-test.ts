@@ -1,8 +1,5 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'jest-rdf';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory, Store } from 'n3';
@@ -29,10 +26,10 @@ class CRUDTestResource extends CRUDResource {
 
   public static async build(
     iri: string,
-    factory: ApplicationFactory,
-    data?: { beep: string }
+    applicationFactory: ApplicationFactory,
+    resourceData?: { beep: string }
   ): Promise<CRUDTestResource> {
-    const instance = new CRUDTestResource(iri, factory, data);
+    const instance = new CRUDTestResource(iri, applicationFactory, resourceData);
     await instance.bootstrap();
     return instance;
   }

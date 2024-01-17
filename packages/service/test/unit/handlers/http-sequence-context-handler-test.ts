@@ -22,10 +22,12 @@ describe('HttpSequenceContextHandler', () => {
 
   test('executes context handlers in the same order as passed in the constructors', (done) => {
     const firstHandler = {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       handle: jest.fn().mockImplementation((ctx: any) => of({ ...ctx, pristine: false, first: true }))
     };
 
     const secondHandler = {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       handle: jest.fn().mockImplementation((ctx: any) => of({ ...ctx, pristine: true, second: true }))
     };
 
@@ -41,14 +43,16 @@ describe('HttpSequenceContextHandler', () => {
 
   test('aborts if any handler throws', (done) => {
     const firstHandler = {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       handle: jest.fn().mockImplementation((ctx: any) => of({ ...ctx, pristine: false, first: true }))
     };
     const secondHandler = {
-      handle: jest.fn().mockImplementation((ctx: any) => {
+      handle: jest.fn().mockImplementation(() => {
         throw new BadRequestHttpError();
       })
     };
     const thirdHandler = {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       handle: jest.fn().mockImplementation((ctx: any) => of({ ...ctx, pristine: false, third: true }))
     };
     const seqHandler = new HttpSequenceContextHandler([firstHandler, secondHandler, thirdHandler]);

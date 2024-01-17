@@ -83,8 +83,8 @@ export const useAppStore = defineStore('app', () => {
     application.value = await backend.getApplication(applicationId);
   }
 
-  async function listDataRegistries(agentId: string, lang = 'en') {
-    const dataRegistries = await backend.listDataRegistires(agentId, lang);
+  async function listDataRegistries(agentId: string, preferedLang = 'en') {
+    const dataRegistries = await backend.listDataRegistires(agentId, preferedLang);
     dataRegistryList[agentId] = [...dataRegistries];
   }
 

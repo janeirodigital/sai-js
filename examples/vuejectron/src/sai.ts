@@ -1,8 +1,8 @@
 import { getDefaultSession } from '@inrupt/solid-client-authn-browser';
 import { Application, SaiEvent } from '@janeirodigital/interop-application';
-import { Agent, Project, Registration, Task, FileInstance, ImageInstance } from '@/models';
 import { ACL, RDFS, buildNamespace } from '@janeirodigital/interop-utils';
 import type { DataInstance } from '@janeirodigital/interop-data-model';
+import { Agent, Project, Registration, Task, FileInstance, ImageInstance } from '@/models';
 
 const cache: { [key: string]: DataInstance } = {};
 const ownerIndex: { [key: string]: string } = {};
@@ -70,33 +70,6 @@ let webId: string;
 
 const authnFetch = getDefaultSession().fetch;
 
-export function useSai(userId: string | null) {
-  if (saiSession) {
-    if (saiSession.webId !== webId) throw new Error('WebId mismatch!');
-  } else {
-    if (!userId) throw new Error('no user id');
-    webId = userId;
-  }
-
-  return {
-    getStream,
-    isAuthorized,
-    getAuthorizationRedirectUri,
-    share,
-    getAgents,
-    getProjects,
-    getTasks,
-    updateTask,
-    deleteTask,
-    getFiles,
-    updateFile,
-    getImages,
-    dataUrl,
-    update,
-    getAccessModes
-  };
-}
-
 async function ensureSaiSession(): Promise<Application> {
   if (saiSession) return saiSession;
   const deps = { fetch: authnFetch, randomUUID: crypto.randomUUID.bind(crypto) };
@@ -159,6 +132,7 @@ async function getProjects(
       canCreate: registration.grant.accessMode.includes(ACL.Create.value)
     });
     projects[registration.iri] = [];
+    // eslint-disable-next-line no-await-in-loop
     for await (const dataInstance of registration.dataInstances) {
       cache[dataInstance.iri] = dataInstance;
       ownerIndex[dataInstance.iri] = ownerId;
@@ -279,8 +253,35 @@ async function update(iri: string, blob?: File) {
 }
 
 async function dataUrl(url: string): Promise<string> {
-  const fetch = getDefaultSession().fetch;
+  const { fetch } = getDefaultSession();
   return fetch(url)
     .then((response) => response.blob())
     .then((blb) => URL.createObjectURL(blb));
+}
+
+export function useSai(userId: string | null) {
+  if (saiSession) {
+    if (saiSession.webId !== webId) throw new Error('WebId mismatch!');
+  } else {
+    if (!userId) throw new Error('no user id');
+    webId = userId;
+  }
+
+  return {
+    getStream,
+    isAuthorized,
+    getAuthorizationRedirectUri,
+    share,
+    getAgents,
+    getProjects,
+    getTasks,
+    updateTask,
+    deleteTask,
+    getFiles,
+    updateFile,
+    getImages,
+    dataUrl,
+    update,
+    getAccessModes
+  };
 }

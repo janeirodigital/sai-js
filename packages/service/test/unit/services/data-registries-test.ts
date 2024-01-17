@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
 import { type Mocked } from 'jest-mock';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';

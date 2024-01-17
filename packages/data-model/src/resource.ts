@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { INTEROP, getAllMatchingQuads, getOneMatchingQuad, RdfFetch } from '@janeirodigital/interop-utils';
 import { DatasetCore, NamedNode, Quad, Term } from '@rdfjs/types';
 import { DataFactory, Store } from 'n3';

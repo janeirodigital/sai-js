@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest, test, expect } from '@jest/globals';
 import { Session } from '@inrupt/solid-client-authn-node';
 import { agentRedirectUrl, webId2agentUrl } from '../../../src';

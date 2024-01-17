@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
 import { type AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { type CRUDSocialAgentRegistration } from '@janeirodigital/interop-data-model';

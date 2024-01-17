@@ -1,28 +1,20 @@
 import { jest } from '@jest/globals';
 import {
-  AuthnContextHandler,
-  AuthenticatedAuthnContext,
-  UnauthenticatedAuthnContext,
-  AuthnContext
-} from '../../../src';
-
-import { createSolidTokenVerifier, SolidAccessTokenPayload } from '@solid/access-token-verifier';
-
-jest.mock('@solid/access-token-verifier', () => {
-  return {
-    createSolidTokenVerifier: jest.fn()
-  };
-});
-
-const mockedCreateSolidTokenVerifier = jest.mocked(createSolidTokenVerifier);
-
-import {
   BadRequestHttpError,
   HttpError,
   HttpHandlerContext,
   HttpHandlerRequest,
   UnauthorizedHttpError
 } from '@digita-ai/handlersjs-http';
+import { createSolidTokenVerifier, SolidAccessTokenPayload } from '@solid/access-token-verifier';
+
+import { AuthnContextHandler, AuthnContext } from '../../../src';
+
+jest.mock('@solid/access-token-verifier', () => ({
+  createSolidTokenVerifier: jest.fn()
+}));
+
+const mockedCreateSolidTokenVerifier = jest.mocked(createSolidTokenVerifier);
 
 const url = '/some/';
 
@@ -104,11 +96,12 @@ describe('Malformatted request', () => {
     const authorization = 'DPoP some-token';
     const dpopProof = 'some-proof';
 
-    mockedCreateSolidTokenVerifier.mockImplementation(() => {
-      return async function verifier() {
-        return Promise.reject(new Error());
-      };
-    });
+    mockedCreateSolidTokenVerifier.mockImplementation(
+      () =>
+        async function verifier() {
+          return Promise.reject(new Error());
+        }
+    );
 
     const request = {
       url,

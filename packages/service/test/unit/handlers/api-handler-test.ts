@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest, describe, beforeEach, test, expect } from '@jest/globals';
 import { Session } from '@inrupt/solid-client-authn-node';
 import { BadRequestHttpError, HttpError, HttpHandlerRequest, HttpHandlerResponse } from '@digita-ai/handlersjs-http';

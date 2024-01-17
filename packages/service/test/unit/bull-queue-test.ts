@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { jest } from '@jest/globals';
 import { Queue } from 'bullmq';
 

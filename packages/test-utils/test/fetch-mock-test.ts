@@ -1,6 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { DataFactory, Store } from 'n3';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'jest-rdf';
 import { statelessFetch, createStatefulFetch, createFetch } from '../src/fetch-mock';
 

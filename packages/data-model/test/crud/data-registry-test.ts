@@ -1,18 +1,10 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'jest-rdf';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory } from 'n3';
 import { INTEROP } from '@janeirodigital/interop-utils';
-import {
-  AuthorizationAgentFactory,
-  ReadableDataRegistration,
-  CRUDDataRegistration,
-  DataRegistrationData
-} from '../../src';
+import { AuthorizationAgentFactory, ReadableDataRegistration, CRUDDataRegistration } from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
@@ -53,12 +45,12 @@ describe('createRegistration', () => {
     const localFactory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
     const updateMock = jest.fn();
     localFactory.crud.dataRegistration = jest.fn(
-      () => ({ update: updateMock } as unknown as Promise<CRUDDataRegistration>)
+      () => ({ update: updateMock }) as unknown as Promise<CRUDDataRegistration>
     );
 
     const otherShapeTree = 'https://solidshapes.example/tree/Other';
     const dataRegistry = await localFactory.crud.dataRegistry(snippetIri);
-    const registration = await dataRegistry.createRegistration(otherShapeTree);
+    await dataRegistry.createRegistration(otherShapeTree);
 
     expect(updateMock).toBeCalled();
   });

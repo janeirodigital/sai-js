@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { jest } from '@jest/globals';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { addSocialAgent, getSocialAgents } from '../../../src/services/social-agents';

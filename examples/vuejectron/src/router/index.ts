@@ -1,7 +1,16 @@
 // Composables
 import { h } from 'vue';
-import { useCoreStore } from '@/store/core';
 import { createRouter, createWebHistory } from 'vue-router';
+import { useCoreStore } from '@/store/core';
+
+async function handleRedirect() {
+  const coreStore = useCoreStore();
+  await coreStore.handleRedirect(window.location.href);
+  const restoreUrl = localStorage.getItem('restorePath');
+  localStorage.removeItem('restorePath');
+  const defaultRoute = { name: 'agent', query: { agent: coreStore.userId } };
+  return restoreUrl || defaultRoute;
+}
 
 const routes = [
   {
@@ -51,6 +60,7 @@ const router = createRouter({
   routes
 });
 
+/* eslint-disable consistent-return */
 router.beforeEach(async (to) => {
   if (to.name === 'redirect') return;
   const coreStore = useCoreStore();
@@ -65,15 +75,6 @@ router.beforeEach(async (to) => {
   }
 });
 
-async function handleRedirect() {
-  const coreStore = useCoreStore();
-  await coreStore.handleRedirect(window.location.href);
-  const restoreUrl = localStorage.getItem('restorePath');
-  localStorage.removeItem('restorePath');
-  const defaultRoute = { name: 'agent', query: { agent: coreStore.userId } };
-  return restoreUrl ? restoreUrl : defaultRoute;
-}
-
 router.afterEach((to, from) => {
   let direction = 'none';
 
@@ -84,7 +85,7 @@ router.afterEach((to, from) => {
   if ((from.name === 'agent' && to.name === 'dashboard') || (from.name === 'project' && to.name === 'agent')) {
     direction = 'right';
   }
-
+  // eslint-disable-next-line no-param-reassign
   to.meta.transition = direction;
 });
 

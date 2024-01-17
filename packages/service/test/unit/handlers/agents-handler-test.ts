@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
 
 import { InMemoryStorage } from '@inrupt/solid-client-authn-node';
@@ -115,13 +114,14 @@ describe('authenticated request', () => {
       url: aliceAgentUrl
     } as unknown as HttpHandlerRequest;
 
-    const authn = {
-      authenticated: true,
-      webId: bobWebId,
-      clientId
-    };
-
-    const ctx = { request, authn } as AuthenticatedAuthnContext;
+    const ctx = {
+      request,
+      authn: {
+        authenticated: true,
+        webId: bobWebId,
+        clientId
+      }
+    } as AuthenticatedAuthnContext;
 
     agentsHandler.handle(ctx).subscribe((response) => {
       expect(manager.getSaiSession).toBeCalledWith(aliceWebId);

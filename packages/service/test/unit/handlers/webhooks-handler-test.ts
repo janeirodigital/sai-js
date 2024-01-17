@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { beforeEach, test, expect } from '@jest/globals';
 import { BadRequestHttpError, HttpError, HttpHandlerRequest, UnauthorizedHttpError } from '@digita-ai/handlersjs-http';
 

@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest, beforeEach, describe, test, expect } from '@jest/globals';
 import type { AuthorizationAgent, NestedDataAuthorizationData } from '@janeirodigital/interop-authorization-agent';
 import {
@@ -77,7 +76,7 @@ describe('getDescriptions', () => {
           definition: 'definition for tasks'
         }
       },
-      getDescription: jest.fn(async (lang: string) => childAccessNeed.descriptions[lang]),
+      getDescription: jest.fn(async (preferredLang: string) => childAccessNeed.descriptions[preferredLang]),
       required: true,
       accessMode: [ACL.Read],
       shapeTree: {
@@ -87,7 +86,7 @@ describe('getDescriptions', () => {
             label: 'Tasks'
           }
         },
-        getDescription: jest.fn(async (lang: string) => childAccessNeed.shapeTree.descriptions[lang])
+        getDescription: jest.fn(async (preferredLang: string) => childAccessNeed.shapeTree.descriptions[preferredLang])
       }
     } as unknown as ReadableAccessNeed;
     const accessNeed = {
@@ -98,7 +97,7 @@ describe('getDescriptions', () => {
           definition: 'definition for projects'
         }
       },
-      getDescription: jest.fn(async (lang: string) => accessNeed.descriptions[lang]),
+      getDescription: jest.fn(async (preferredLang: string) => accessNeed.descriptions[preferredLang]),
       required: true,
       accessMode: [ACL.Read],
       shapeTree: {
@@ -108,7 +107,7 @@ describe('getDescriptions', () => {
             label: 'Projects'
           }
         },
-        getDescription: jest.fn(async (lang: string) => accessNeed.shapeTree.descriptions[lang])
+        getDescription: jest.fn(async (preferredLang: string) => accessNeed.shapeTree.descriptions[preferredLang])
       },
       children: [childAccessNeed]
     } as unknown as ReadableAccessNeed;
@@ -122,7 +121,7 @@ describe('getDescriptions', () => {
         }
       },
       reliableDescriptionLanguages: new Set([lang]),
-      getDescription: jest.fn(async (lang: string) => accessNeedGroup.descriptions[lang]),
+      getDescription: jest.fn(async (preferredLang: string) => accessNeedGroup.descriptions[preferredLang]),
       accessNeeds: [accessNeed]
     } as unknown as ReadableAccessNeedGroup;
     saiSession.factory.readable.clientIdDocument.mockResolvedValueOnce({

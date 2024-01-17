@@ -1,8 +1,8 @@
 import { jest, describe, test, expect } from '@jest/globals';
 import { AgentWithAccess, AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { ReadableClientIdDocument, ReadableDataInstance } from '@janeirodigital/interop-data-model';
-import { getResource, shareResource } from '../../../src/services';
 import { ShareAuthorization } from '@janeirodigital/sai-api-messages';
+import { getResource, shareResource } from '../../../src/services';
 
 describe('getResource', () => {
   test('sucessful response', async () => {

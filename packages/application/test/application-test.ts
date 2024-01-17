@@ -1,7 +1,5 @@
 import { randomUUID } from 'crypto';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest, describe, test, expect } from '@jest/globals';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { statelessFetch } from '@janeirodigital/interop-test-utils';
 import { ReadableApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
 import { RdfResponse } from '@janeirodigital/interop-utils';

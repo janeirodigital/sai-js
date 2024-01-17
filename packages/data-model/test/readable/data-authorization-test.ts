@@ -1,12 +1,9 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'jest-rdf';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
-import { INTEROP } from '@janeirodigital/interop-utils';
-import { getAllMatchingQuads, getOneMatchingQuad } from '@janeirodigital/interop-utils';
+import { INTEROP, getAllMatchingQuads } from '@janeirodigital/interop-utils';
 import { DataFactory } from 'n3';
 import { randomUUID } from 'crypto';
-import { AuthorizationAgentFactory, DataGrant, ImmutableDataGrant } from '../../src';
+import { AuthorizationAgentFactory } from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';

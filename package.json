@@ -31,7 +31,8 @@
     "build": "pnpx turbo run build",
     "test": "pnpx turbo run test",
     "dev": "pnpm --filter '@janeirodigital/sai-server' redis && pnpx turbo run dev",
-    "watch": "./node_modules/.bin/turbowatch turbowatch.ts"
+    "watch": "./node_modules/.bin/turbowatch turbowatch.ts",
+    "lint": "eslint --config .eslintrc.js"
   },
   "volta": {
     "node": "20.7.0"

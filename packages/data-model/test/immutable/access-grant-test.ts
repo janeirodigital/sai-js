@@ -1,9 +1,6 @@
 import { DataFactory } from 'n3';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'jest-rdf';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { INTEROP, ACL } from '@janeirodigital/interop-utils';
 import { randomUUID } from 'crypto';

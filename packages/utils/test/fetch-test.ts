@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
 import { fetchWrapper, parseTurtle } from '../src';
 
@@ -34,8 +33,8 @@ describe('fetchWrapper', () => {
     const mock = jest.fn(fetchMock);
     const responseMock = {
       text: async () => snippet,
-      headers: { get: (_) => 'text/turtle' }
-    } as Response;
+      headers: { get: () => 'text/turtle' }
+    } as unknown as Response;
     responseMock.clone = () => ({ ...responseMock });
     mock.mockReturnValueOnce(Promise.resolve(responseMock));
     const rdfFetch = fetchWrapper(mock);
@@ -64,8 +63,8 @@ describe('fetchWrapper', () => {
     const mock = jest.fn(fetchMock);
     const responseMock = {
       text: async () => snippet,
-      headers: { get: (_) => 'text/shex' }
-    } as Response;
+      headers: { get: () => 'text/shex' }
+    } as unknown as Response;
     responseMock.clone = () => ({ ...responseMock });
     mock.mockReturnValueOnce(Promise.resolve(responseMock));
     const rdfFetch = fetchWrapper(mock);
@@ -77,8 +76,8 @@ describe('fetchWrapper', () => {
     const mock = jest.fn(fetchMock);
     const responseMock = {
       text: async () => snippet,
-      headers: { get: (_) => 'text/turtle; charset=UTF-8' }
-    } as Response;
+      headers: { get: () => 'text/turtle; charset=UTF-8' }
+    } as unknown as Response;
     responseMock.clone = () => ({ ...responseMock });
     mock.mockReturnValueOnce(Promise.resolve(responseMock));
     const rdfFetch = fetchWrapper(mock);
@@ -95,8 +94,8 @@ describe('fetchWrapper', () => {
     const responseMock = {
       url: iri,
       text: async () => snippet,
-      headers: { get: (_) => 'text/turtle' }
-    } as Response;
+      headers: { get: () => 'text/turtle' }
+    } as unknown as Response;
     responseMock.clone = () => ({ ...responseMock });
     mock.mockReturnValueOnce(Promise.resolve(responseMock));
     const rdfFetch = fetchWrapper(mock);
@@ -119,7 +118,7 @@ describe('fetchWrapper', () => {
     expect(mock.mock.calls[0][0]).toBe('https://some.iri');
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const headers = mock.mock.calls[0][1].headers as any;
-    for (const headerName in initHeaders) {
+    for (const headerName of Object.keys(initHeaders)) {
       expect(headers[headerName]).toStrictEqual(initHeaders[headerName]);
     }
   });

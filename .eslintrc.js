@@ -18,13 +18,14 @@ module.exports = {
     'import/extensions': 'off',
     'import/no-unresolved': 'off',
     'import/prefer-default-export': 'off',
+    'import/no-extraneous-dependencies': 'off',
     'no-restricted-syntax': 'off',
     'no-useless-constructor': 'off',
     'no-empty-function': ['error', { 'allow': ['constructors'] }],
     'dot-notation': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     'no-shadow': 'off',
-    '@typescript-eslint/no-shadow': 'warn'
+    '@typescript-eslint/no-shadow': 'warn',
   },
   overrides: [
     {

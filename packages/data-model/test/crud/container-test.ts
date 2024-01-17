@@ -1,10 +1,7 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from '@jest/globals';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'jest-rdf';
 import { randomUUID } from 'crypto';
 import { DataFactory, Store } from 'n3';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { insertPatch, RdfResponse } from '@janeirodigital/interop-utils';
 

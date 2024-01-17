@@ -1,14 +1,15 @@
 import { jest } from '@jest/globals';
 import type { PushSubscription } from 'web-push';
-import { InMemoryStorage, IStorage, Session } from '@inrupt/solid-client-authn-node';
+import { InMemoryStorage, IStorage, Session, getSessionFromStorage } from '@inrupt/solid-client-authn-node';
 import type { NotificationChannel } from '@solid-notifications/types';
 
 import { NOTIFY } from '@janeirodigital/interop-utils';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
+
 jest.mock('@janeirodigital/interop-authorization-agent');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MockedAuthorizationAgent = AuthorizationAgent as jest.MockedFunction<any>;
 
-import { getSessionFromStorage } from '@inrupt/solid-client-authn-node';
 jest.mock('@inrupt/solid-client-authn-node', () => {
   const originalModule = jest.requireActual('@inrupt/solid-client-authn-node') as object;
 
@@ -17,6 +18,7 @@ jest.mock('@inrupt/solid-client-authn-node', () => {
     getSessionFromStorage: jest.fn()
   };
 });
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockedGetSessionFromStorage = getSessionFromStorage as jest.MockedFunction<any>;
 
 import { SessionManager } from '../../src/session-manager';
@@ -41,15 +43,14 @@ describe('getSaiSession', () => {
   test('creates sai session', async () => {
     const oidcSession = {
       info: { webId, sessionId: webId, isLoggedIn: true },
+      // eslint-disable-next-line no-empty-function
       fetch: () => {}
     } as unknown as Session;
 
-    mockedGetSessionFromStorage.mockImplementationOnce((webId: string, iStorage: Storage) => {
-      return oidcSession;
-    });
+    mockedGetSessionFromStorage.mockImplementationOnce(() => oidcSession);
     const authAgent = {} as unknown as AuthorizationAgent;
     MockedAuthorizationAgent.build.mockImplementationOnce(
-      (webid: string, agentid: string, dependencies: { fetch: Function }) => {
+      (webid: string, agentid: string, dependencies: { fetch: typeof oidcSession.fetch }) => {
         expect(webid).toBe(webId);
         expect(agentid).toBe(webId2agentUrl(webId));
         expect(dependencies.fetch).toBe(oidcSession.fetch);
@@ -58,10 +59,10 @@ describe('getSaiSession', () => {
       }
     );
 
-    const saiSession = (await manager.getSaiSession(webId)) as AuthorizationAgent;
+    const saiSession = await manager.getSaiSession(webId);
     expect(saiSession).toBe(authAgent);
 
-    const cachedSession = (await manager.getSaiSession(webId)) as AuthorizationAgent;
+    const cachedSession = await manager.getSaiSession(webId);
     expect(cachedSession).toBe(authAgent);
   });
 });
@@ -70,17 +71,17 @@ describe('getOidcSession', () => {
   test('should return existing oidc session', async () => {
     const oidcSession = {
       info: { webId },
+      // eslint-disable-next-line no-empty-function
       fetch: () => {}
     } as unknown as Session;
 
-    mockedGetSessionFromStorage.mockImplementationOnce((webId: string, iStorage: Storage) => {
-      return oidcSession;
-    });
+    mockedGetSessionFromStorage.mockImplementationOnce(() => oidcSession);
     expect(await manager.getOidcSession(webId)).toBe(oidcSession);
   });
 
   test('should return a new oidc session if none exist', async () => {
-    mockedGetSessionFromStorage.mockImplementationOnce((webId: string, IStorage: Storage): any => undefined);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockedGetSessionFromStorage.mockImplementationOnce((): any => undefined);
 
     const session = await manager.getOidcSession(webId);
     expect(session).toBeTruthy();

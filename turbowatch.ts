@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { watch } from 'turbowatch';
 import path from 'node:path';
 
