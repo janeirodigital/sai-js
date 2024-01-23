@@ -54,3 +54,11 @@ A pair of reciprocal social agent registrations can be also used as a private ch
 - FRONTEND_URL - compatible frontend (e.g. [SAI Authorization Agent Web](https://github.com/janeirodigital/sai-impl-web)).
 - FRONTEND_AUTHORIZATION_URL - to be advertised as `interop:hasAuthorizationRedirectEndpoint`, apps will redirect to it providing their `client_id` in query parameters.
 - VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, PUSH_NOTIFICATION_EMAIL - used by [web-push](https://www.npmjs.com/package/web-push) module to send Push Notifications to the frontend.
+
+## Funding
+
+This project is funded through the [NGI Zero Entrust Fund](https://nlnet.nl/entrust), a fund established by [NLnet](https://nlnet.nl) with financial support from the European Commission's [Next Generation Internet](https://ngi.eu) program. Learn more at the [NLnet project page](https://nlnet.nl/project/SolidInterop3).
+
+[<img src="https://nlnet.nl/logo/banner.png" alt="NLnet foundation logo" width="20%" />](https://nlnet.nl)
+
+[<img src="https://nlnet.nl/image/logos/NGI0Entrust_tag.svg" alt="NGI Zero Entrust Logo" width="20%" />](https://nlnet.nl/entrust)
