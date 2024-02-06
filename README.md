@@ -34,7 +34,7 @@ corepack prepare pnpm@latest --activate
 
 ### Github packages
 
-- generate [github token](https://github.com/settings/tokens) ( only `packages:read` scope)
+- generate a [classic github token](https://github.com/settings/tokens/new) (tick only `read:packages` scope)
 - Modify `~/.npmrc` ([per-user config file](https://docs.npmjs.com/cli/v7/configuring-npm/npmrc#per-user-config-file))
   and add line `//npm.pkg.github.com/:_authToken=` and the generated token.
 
