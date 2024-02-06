@@ -59,7 +59,7 @@ It will run following:
 Run from [packages/css-solid-fixture](https://github.com/janeirodigital/sai-js/tree/main/packages/css-storage-fixture).
 Used for solid storage instances and solid-oidc provider.
 
-Available on http://localhost:3000, default demo account is `alice@example.org` with `password`.
+Available on http://localhost:3000, default demo account is `alice@acme.example` with `password`.
 
 #### Authorization Agent
 
