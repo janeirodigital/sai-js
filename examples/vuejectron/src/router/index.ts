@@ -5,7 +5,13 @@ import { useCoreStore } from '@/store/core';
 
 async function handleRedirect() {
   const coreStore = useCoreStore();
-  await coreStore.handleRedirect(window.location.href);
+  try {
+    await coreStore.handleRedirect(window.location.href);
+  } catch (err) {
+    console.error('handleRedirect', err);
+    return { name: 'login' };
+  }
+
   const restoreUrl = localStorage.getItem('restorePath');
   localStorage.removeItem('restorePath');
   const defaultRoute = { name: 'agent', query: { agent: coreStore.userId } };

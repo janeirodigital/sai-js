@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@fluent/bundle": "^0.18.0",
-    "@inrupt/solid-client-authn-browser": "^1.17.4",
+    "@inrupt/solid-client-authn-browser": "^2.0.0",
     "@janeirodigital/sai-api-messages": "^1.0.0-rc.23",
     "@mdi/font": "7.3.67",
     "fluent-vue": "^3.5.0",

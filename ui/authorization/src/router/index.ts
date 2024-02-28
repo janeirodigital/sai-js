@@ -8,6 +8,7 @@ async function handleRedirect() {
   try {
     await coreStore.handleRedirect(window.location.href);
   } catch (err) {
+    console.error('handleRedirect', err);
     if (err instanceof OidcError) {
       return { name: 'login' };
     }
@@ -63,15 +64,13 @@ const routes = [
       {
         path: '/login',
         name: 'login',
-        component: () => import(/* webpackChunkName: "authn" */ '@/views/Authentication.vue'),
-        meta: { public: true }
+        component: () => import(/* webpackChunkName: "authn" */ '@/views/Authentication.vue')
       },
       {
         path: '/redirect',
         name: 'redirect',
         beforeEnter: handleRedirect,
-        component: h('div'), // empty component
-        meta: { public: true }
+        component: h('div') // empty component
       }
     ]
   }
@@ -83,16 +82,16 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
-  if (to.name === 'redirect' || to.name === 'login') return undefined;
+  if (['redirect', 'login'].includes(to.name as string)) return undefined;
+
   const coreStore = useCoreStore();
+
   await coreStore.restoreOidcSession(to);
 
-  if (!to.meta.public) {
-    if (!coreStore.userId || !coreStore.isBackendLoggedIn) {
-      return {
-        name: 'login'
-      };
-    }
+  if (!coreStore.userId || !coreStore.isBackendLoggedIn) {
+    return {
+      name: 'login'
+    };
   }
   return undefined;
 });

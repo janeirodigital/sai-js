@@ -81,8 +81,8 @@ importers:
   examples/vuejectron:
     dependencies:
       '@inrupt/solid-client-authn-browser':
-        specifier: ^1.17.4
-        version: 1.17.4
+        specifier: ^2.0.0
+        version: 2.0.0
       '@janeirodigital/interop-application':
         specifier: ^1.0.0-rc.23
         version: link:../../packages/application
@@ -237,8 +237,8 @@ importers:
   packages/interfaces:
     dependencies:
       '@inrupt/solid-client-authn-node':
-        specifier: ^1.17.5
-        version: 1.17.5
+        specifier: ^2.0.0
+        version: 2.0.0
       '@janeirodigital/interop-authorization-agent':
         specifier: ^1.0.0-rc.23
         version: link:../authorization-agent
@@ -268,8 +268,8 @@ importers:
         specifier: ^0.19.3
         version: 0.19.3
       '@inrupt/solid-client-authn-node':
-        specifier: ^1.17.5
-        version: 1.17.5
+        specifier: ^2.0.0
+        version: 2.0.0
       '@janeirodigital/interop-authorization-agent':
         specifier: ^1.0.0-rc.23
         version: link:../authorization-agent
@@ -320,8 +320,8 @@ importers:
         version: 17.7.2
     devDependencies:
       '@inrupt/solid-client-authn-core':
-        specifier: ^1.17.3
-        version: 1.17.3
+        specifier: ^2.0.0
+        version: 2.0.0
       '@rdfjs/types':
         specifier: ^1.1.0
         version: 1.1.0
@@ -382,8 +382,8 @@ importers:
         specifier: ^0.18.0
         version: 0.18.0
       '@inrupt/solid-client-authn-browser':
-        specifier: ^1.17.4
-        version: 1.17.4
+        specifier: ^2.0.0
+        version: 2.0.0
       '@janeirodigital/sai-api-messages':
         specifier: ^1.0.0-rc.23
         version: link:../../packages/api-messages
@@ -3968,10 +3968,6 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@fastify/busboy@2.0.0:
-    resolution: {integrity: sha512-JUFJad5lv7jxj926GPgymrWQxxjPYuJNiNjNMzqT+HiuP6Vl3dk5xzG+8sTX96np0ZAluvaMzPsjhHZ5rNuNQQ==}
-    engines: {node: '>=14'}
-
   /@fluent/bundle@0.18.0:
     resolution: {integrity: sha512-8Wfwu9q8F9g2FNnv82g6Ch/E1AW1wwljsUOolH5NEtdJdv0sZTuWvfCM7c3teB9dzNaJA8rn4khpidpozHWYEA==}
     engines: {node: '>=14.0.0', npm: '>=7.0.0'}
@@ -4011,16 +4007,13 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
-  /@inrupt/oidc-client-ext@1.17.4:
-    resolution: {integrity: sha512-IlpsGmuYzFkEtaOFAFgN0C9s6PXkq8fmFcbeuxE1877r5arcHIxX+7VQCZQMqyQLleBOEae+cHMbRAwKDQByew==}
+  /@inrupt/oidc-client-ext@2.0.0:
+    resolution: {integrity: sha512-SYkesE26mXXIyNInq1XwEZd97yfk0nj3xXbreEmPX8pqbOi6fHhACKrg33KHTVTMuZIe1D+xJs5QA0GhxLf+eg==}
     dependencies:
       '@inrupt/oidc-client': 1.11.6
-      '@inrupt/solid-client-authn-core': 1.17.4
-      '@inrupt/universal-fetch': 1.0.3
-      jose: 4.15.4
+      '@inrupt/solid-client-authn-core': 2.0.0
+      jose: 5.2.2
       uuid: 9.0.1
-    transitivePeerDependencies:
-      - encoding
     dev: false
 
   /@inrupt/oidc-client@1.11.6:
@@ -4033,76 +4026,33 @@ packages:
       serialize-javascript: 4.0.0
     dev: false
 
-  /@inrupt/solid-client-authn-browser@1.17.4:
-    resolution: {integrity: sha512-Bf1N5vt0NEO/xP9nSaQb67y/O46mx3Qzgx/7QQslyrn8mZ7I/dCmzsd5oY+FnwZD9FHhyFfqaScsebB6/rhxNA==}
+  /@inrupt/solid-client-authn-browser@2.0.0:
+    resolution: {integrity: sha512-Y+BczY8T2Xpfp2Obd3IAvlF91UCEgQMed2+9LM6FCBkVkk03CqbFL80ebO7mYd6woVVlIeC+8IB2UrRlNHqlkA==}
     dependencies:
-      '@inrupt/oidc-client-ext': 1.17.4
-      '@inrupt/solid-client-authn-core': 1.17.4
-      '@inrupt/universal-fetch': 1.0.3
+      '@inrupt/oidc-client-ext': 2.0.0
+      '@inrupt/solid-client-authn-core': 2.0.0
       events: 3.3.0
-      jose: 4.15.4
+      jose: 5.2.2
       uuid: 9.0.1
-    transitivePeerDependencies:
-      - encoding
     dev: false
 
-  /@inrupt/solid-client-authn-core@1.17.3:
-    resolution: {integrity: sha512-UuHLFChd+0155EwYgdQJN6mP7fpnT4UFnWZT0+gDAbudUkUI0dKp6HKisWkJAK+KY1wDZ5HCQmCKBpjtiPXuyA==}
-    engines: {node: ^16.0.0 || ^18.0.0 || ^20.0.0}
+  /@inrupt/solid-client-authn-core@2.0.0:
+    resolution: {integrity: sha512-qM+E9I5u2DFlsfyoXossx8w0vKv8p+rXH98K9RUauJImpygQ3I3Ra6hSB2bwA1PdPQd5ttNg236oKe1sTT6Hqw==}
+    engines: {node: ^18.0.0 || ^20.0.0}
     dependencies:
-      '@inrupt/universal-fetch': 1.0.3
       events: 3.3.0
-      jose: 4.15.1
+      jose: 5.2.2
       uuid: 9.0.1
-    transitivePeerDependencies:
-      - encoding
-    dev: true
 
-  /@inrupt/solid-client-authn-core@1.17.4:
-    resolution: {integrity: sha512-9N5douZKnsPEqqcrtE3FAlTugAsMWffcOZYIrV+Wd0iRsMS7ZFoUcg4cN03hCZjpMC7MIqa/PLsfOl944rno3w==}
-    engines: {node: ^16.0.0 || ^18.0.0 || ^20.0.0}
+  /@inrupt/solid-client-authn-node@2.0.0:
+    resolution: {integrity: sha512-S1vGRodX0MSAKR3B6tm4qUvMhGv0sMcFjYyhVil7isoRI/7ei5QTpm+081RTWe6/cv4WI6UiHER3YIG15uwhhg==}
+    engines: {node: ^18.0.0 || ^20.0.0}
     dependencies:
-      '@inrupt/universal-fetch': 1.0.3
-      events: 3.3.0
-      jose: 4.15.4
+      '@inrupt/solid-client-authn-core': 2.0.0
+      jose: 5.2.2
+      openid-client: 5.6.4
       uuid: 9.0.1
-    transitivePeerDependencies:
-      - encoding
     dev: false
-
-  /@inrupt/solid-client-authn-core@1.17.5:
-    resolution: {integrity: sha512-g3WShcPAqGuarPYlw12vUCo+et4elQLI+WYcHkCHGLuQQFF73r2iTicuKpkydQdIrZ5AZgxhwr315jmkx/vcFQ==}
-    engines: {node: ^16.0.0 || ^18.0.0 || ^20.0.0}
-    dependencies:
-      '@inrupt/universal-fetch': 1.0.3
-      events: 3.3.0
-      jose: 4.15.4
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@inrupt/solid-client-authn-node@1.17.5:
-    resolution: {integrity: sha512-lY2H/Uwy4vemKr2uvQ76e1QbiWZ6oevLzqh3K3JHwRLSh1CSLBNSfNKRiTTWNHOfPBGhBuwL5amA5yl4y208rQ==}
-    engines: {node: ^16.0.0 || ^18.0.0 || ^20.0.0}
-    dependencies:
-      '@inrupt/solid-client-authn-core': 1.17.5
-      '@inrupt/universal-fetch': 1.0.3
-      jose: 4.15.4
-      openid-client: 5.5.0
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@inrupt/universal-fetch@1.0.3:
-    resolution: {integrity: sha512-AP/nMOuuKvR2YoQkdS77ntuuq5ZYDGStI8Uirp1MCsyPSoBLyNnRjMLjlGqIlaC+5Xp7TYZJ9z/Kl2uUEpXUFw==}
-    engines: {node: ^14.17.0 || ^16.0.0 || ^18.0.0 || ^20.0.0}
-    dependencies:
-      node-fetch: 2.7.0
-      undici: 5.25.3
-    transitivePeerDependencies:
-      - encoding
 
   /@ioredis/commands@1.2.0:
     resolution: {integrity: sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==}
@@ -8586,6 +8536,7 @@ packages:
 
   /jose@4.15.1:
     resolution: {integrity: sha512-CinpaEMmwb/59YG0N6SC3DY1imdTU5iNl08HPWR7NdyxACPeFuQbqjaocEjCDGq04KbnxSqQu702vL3ZTvKe5w==}
+    dev: false
 
   /jose@4.15.4:
     resolution: {integrity: sha512-W+oqK4H+r5sITxfxpSU+MMdr/YSWGvgZMQDIsNoBDGGy4i7GBPTtvFKibQzW06n3U3TqHjhvBJsirShsEJ6eeQ==}
@@ -8594,6 +8545,9 @@ packages:
   /jose@5.1.0:
     resolution: {integrity: sha512-H+RVqxA6apaJ0rcQYupKYhos7uosAiF42gUcWZiwhICWMphDULFj/CRr1R0tV/JCv9DEeJaSyYYpc9luHHNT4g==}
     dev: false
+
+  /jose@5.2.2:
+    resolution: {integrity: sha512-/WByRr4jDcsKlvMd1dRJnPfS1GVO3WuKyaurJ/vvXcOaUQO8rnNObCQMlv/5uCceVQIq5Q4WLF44ohsdiTohdg==}
 
   /joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
@@ -9415,8 +9369,8 @@ packages:
     resolution: {integrity: sha512-Fvw+Jemq5fjjyWz6CpKx6w9s7xxqo3+JCyM0WXWeCSOboZ8ABkyvP8ID4CZuChA/wxSx+XSJmdOm8rGVyJ1hdQ==}
     dev: false
 
-  /openid-client@5.5.0:
-    resolution: {integrity: sha512-Y7Xl8BgsrkzWLHkVDYuroM67hi96xITyEDSkmWaGUiNX6CkcXC3XyQGdv5aWZ6dukVKBFVQCADi9gCavOmU14w==}
+  /openid-client@5.6.4:
+    resolution: {integrity: sha512-T1h3B10BRPKfcObdBklX639tVz+xh34O7GjofqrqiAQdm7eHsQ00ih18x6wuJ/E6FxdtS2u3FmUGPDeEcMwzNA==}
     dependencies:
       jose: 4.15.4
       lru-cache: 6.0.0
@@ -11132,12 +11086,6 @@ packages:
 
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
-
-  /undici@5.25.3:
-    resolution: {integrity: sha512-7lmhlz3K1+IKB6IUjkdzV2l0jKY8/0KguEMdEpzzXCug5pEGIp3DxUg0DEN65DrVoxHiRKpPORC/qzX+UglSkQ==}
-    engines: {node: '>=14.0'}
-    dependencies:
-      '@fastify/busboy': 2.0.0
 
   /unicode-canonical-property-names-ecmascript@2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}

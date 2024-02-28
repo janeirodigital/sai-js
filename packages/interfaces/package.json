@@ -13,7 +13,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@inrupt/solid-client-authn-node": "^1.17.5",
+    "@inrupt/solid-client-authn-node": "^2.0.0",
     "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.23"
   },
   "devDependencies": {
