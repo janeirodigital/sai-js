@@ -1,4 +1,4 @@
-import { OIDC } from '@janeirodigital/interop-utils';
+import { OIDC, parseJsonld } from '@janeirodigital/interop-utils';
 import { InteropFactory } from '..';
 import { ReadableResource } from './resource';
 
@@ -27,5 +27,12 @@ export class ReadableClientIdDocument extends ReadableResource {
     const instance = new ReadableClientIdDocument(iri, factory);
     await instance.bootstrap();
     return instance;
+  }
+
+  protected async fetchData(): Promise<void> {
+    const response = await this.fetch.raw(this.iri, {
+      headers: { Accept: 'application/ld+json' }
+    });
+    this.dataset = await parseJsonld(await response.text(), response.url);
   }
 }
