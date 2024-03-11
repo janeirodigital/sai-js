@@ -1,3 +1,5 @@
+import { Task as LdoTask } from '../ldo/Task$.typings';
+
 export interface Agent {
   id: string;
   label: string;
@@ -23,7 +25,7 @@ export interface Registration {
 
 export interface Task {
   id: string;
-  label: string;
+  data: LdoTask;
   project: string;
   owner: string;
   canUpdate?: boolean;

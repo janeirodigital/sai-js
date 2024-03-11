@@ -4,7 +4,7 @@
       <h3>
         Tasks
         <v-btn
-          v-if="appStore.currentProject.canAddTasks"
+          v-if="appStore.canAddTasks(appStore.currentProject['@id']!)"
           size="small"
           color="surface-variant"
           variant="text"
@@ -13,12 +13,12 @@
         ></v-btn>
       </h3>
       <v-list>
-        <v-list-item v-for="task in appStore.tasks" :key="task.id">
+        <v-list-item v-for="task in appStore.ldoTasks[appStore.currentProject['@id']!]" :key="task['@id']">
           <v-card>
             <v-card-title>{{ task.label }}</v-card-title>
             <v-card-actions>
               <v-btn
-                v-if="task.canUpdate"
+                v-if="appStore.canUpdate(task['@id']!)"
                 size="small"
                 color="surface-variant"
                 variant="text"
@@ -26,7 +26,7 @@
                 @click="editTask(task)"
               ></v-btn>
               <v-btn
-                v-if="task.canDelete"
+                v-if="appStore.canDelete(task['@id']!)"
                 size="small"
                 color="surface-variant"
                 variant="text"
@@ -40,7 +40,7 @@
       <h3>
         Files
         <v-btn
-          v-if="appStore.currentProject.canAddFiles"
+          v-if="appStore.canAddTasks(appStore.currentProject['@id']!)"
           size="small"
           color="surface-variant"
           variant="text"
@@ -78,17 +78,14 @@ import { useRoute } from 'vue-router';
 import { computedAsync } from '@vueuse/core';
 
 import { useAppStore } from '@/store/app';
-import { useSai } from '@/sai';
-import { useCoreStore } from '@/store/core';
-import { FileInstance, Task } from '@/models';
+import { FileInstance } from '@/models';
 
 import InputDialog from '@/components/InputDialog.vue';
+import { Task } from '../../ldo/Task$.typings'
+
 
 const download = ref<HTMLAnchorElement>();
 const upload = ref<HTMLInputElement>();
-
-const coreStore = useCoreStore();
-const sai = useSai(coreStore.userId);
 
 const route = useRoute();
 const dialog = ref(false);
@@ -97,7 +94,7 @@ const selectedTask = ref<Task | null>(null);
 
 const appStore = useAppStore();
 
-const imageUrls = computedAsync(async () => Promise.all(appStore.images.map((image) => sai.dataUrl(image.id))));
+const imageUrls = computedAsync(async () => Promise.all(appStore.images.map((image) => appStore.dataUrl(image.id))));
 
 watch(
   () => route.query.project,
@@ -116,19 +113,22 @@ watch(
 async function downloadFile(file: FileInstance) {
   if (download.value) {
     download.value.download = file.filename ?? 'file';
-    download.value.href = await sai.dataUrl(file.id);
+    download.value.href = await appStore.dataUrl(file.id);
     download.value.click();
   }
 }
 
-function updateTask(label: string) {
+async function updateTask(label: string) {
+  let cTask: Task
   if (selectedTask.value) {
-    appStore.updateTask({ ...selectedTask.value, label });
-    selectedTask.value = null;
-  } else if (label && appStore.currentProject) {
-      const task = { id: 'DRAFT', label, project: appStore.currentProject.id, owner: appStore.currentProject.owner };
-      appStore.updateTask(task);
-    }
+    cTask = appStore.changeData(selectedTask.value);
+  } else {
+    const newTask = await appStore.draftTask(appStore.currentProject!['@id']!)
+    cTask = appStore.changeData(newTask);
+  }
+  cTask.label = label;
+  appStore.updateTask(cTask);
+  selectedTask.value = null;
   dialog.value = false;
 }
 
@@ -151,8 +151,9 @@ function uploadFile(event: Event) {
   const target = event.target as HTMLInputElement;
   const blob = target.files?.item(0);
   if (blob && appStore.currentProject) {
-    const file = { id: 'DRAFT', project: appStore.currentProject.id, owner: appStore.currentProject.owner };
-    appStore.updateFile(file, blob);
+    // TODO LDO
+    // const file = { id: 'DRAFT', project: appStore.currentProject.id, owner: appStore.currentProject.owner };
+    // appStore.updateFile(file, blob);
   }
 }
 </script>

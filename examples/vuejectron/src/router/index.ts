@@ -2,6 +2,7 @@
 import { h } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { useCoreStore } from '@/store/core';
+import { useAppStore } from '@/store/app';
 
 async function handleRedirect() {
   const coreStore = useCoreStore();
@@ -70,10 +71,11 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   if (to.name === 'redirect') return;
   const coreStore = useCoreStore();
+  const appStore = useAppStore();
   await coreStore.restoreOidcSession(to);
 
   if (!to.meta.public) {
-    if (!coreStore.userId || !coreStore.isAuthorized) {
+    if (!coreStore.userId || !(await appStore.checkAuthoriztion())) {
       return {
         name: 'login'
       };

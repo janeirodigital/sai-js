@@ -76,7 +76,7 @@ function navigateUp() {
 
 function shareProject() {
   if (appStore.currentProject) {
-    appStore.shareProject(appStore.currentProject.id);
+    appStore.shareProject(appStore.currentProject['@id']!);
   }
 }
 

@@ -7,9 +7,9 @@
       >
       <h3>{{ registration.label }}</h3>
       <v-list>
-        <v-list-item v-for="project in appStore.projects[registration.id]" :key="project.id">
+        <v-list-item v-for="project in appStore.ldoProjects[registration.id]" :key="project['@id']">
           <router-link
-            :to="{ name: 'project', query: { ...route.query, registration: registration.id, project: project.id } }"
+            :to="{ name: 'project', query: { ...route.query, registration: registration.id, project: project['@id'] } }"
           >
             {{ project.label }}
           </router-link>

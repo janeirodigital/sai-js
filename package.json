@@ -34,7 +34,7 @@
     "build": "turbo run build",
     "test": "turbo run test",
     "clean": "turbo run clean",
-    "dev": "pnpm --filter '@janeirodigital/sai-server' redis && pnpx turbo run dev",
+    "dev": "pnpm --filter '@janeirodigital/sai-server' redis && turbo run dev",
     "watch": "./node_modules/.bin/turbowatch turbowatch.ts",
     "lint": "eslint --config .eslintrc.js"
   },

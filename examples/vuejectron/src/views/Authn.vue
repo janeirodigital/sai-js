@@ -1,6 +1,6 @@
 <template>
   <v-card v-if="!hasError">
-    <v-card-item v-if="!userId">
+    <v-card-item v-if="!store.userId">
       <v-form @submit.prevent="login">
         <v-text-field v-model="oidcIssuer" :placeholder="defaultOidcIssuer" label="OIDC issuer"></v-text-field>
         <v-btn type="submit" block class="mt-2">Login</v-btn>
@@ -13,7 +13,7 @@
   <v-card v-else>
     <v-alert
       type="error"
-      :title="store.saiError"
+      :title="appStore.saiError"
     ></v-alert>
   </v-card>
 </template>
@@ -21,13 +21,14 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { useCoreStore } from '@/store/core';
+import { useAppStore } from '@/store/app';
 
 const store = useCoreStore();
-const hasError = computed(() => !!store.saiError)
+const appStore = useAppStore();
+const hasError = computed(() => !!appStore.saiError)
 
 const defaultOidcIssuer = import.meta.env.VITE_DEFAULT_OIDC_ISSUER;
 const oidcIssuer = ref('');
-const {userId} = store;
 
 // will redirect to OIDC issuer
 async function login() {
@@ -36,6 +37,6 @@ async function login() {
 
 // will redirect to authorization agent
 async function requestAuthorization() {
-  return store.authorize();
+  return appStore.authorize();
 }
 </script>
