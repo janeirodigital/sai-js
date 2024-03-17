@@ -30,6 +30,33 @@ export default defineConfig({
       filename: 'sw.js',
       devOptions: {
         enabled: true
+      },
+      manifest: {
+        name: 'SAI Authorization',
+        short_name: 'SAI',
+        start_url: '/',
+        display: 'standalone',
+        icons: [
+          {
+            src: 'solid.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'solid.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ],
+        share_target: {
+          action: '/invitation',
+          method: 'GET',
+          params: {
+            title: 'title',
+            text: 'text',
+            url: 'url'
+          }
+        }
       }
     }),
     SFCFluentPlugin({

@@ -31,7 +31,7 @@
   </v-sheet>
 </template>
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useFluent } from 'fluent-vue'
 import { useAppStore } from '@/store/app';
@@ -47,6 +47,8 @@ const note = ref('')
 const loading = ref(false)
 
 const valid = computed(() => label.value && (route.query.direction === 'accept' ? capabilityUrl.value : true))
+
+watch(() => route.query.text, (text) => { if (text) capabilityUrl.value = text as string }, { immediate: true })
 
 const rules = {
   required: (value: string) => !!value || $t('required')
