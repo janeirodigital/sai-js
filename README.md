@@ -80,6 +80,11 @@ Run from [examples/vuejectron](https://github.com/janeirodigital/sai-js/tree/mai
 Available on http://localhost:4500 , requires signup and authorization.
 Dev config uses local CSS as default provider when input left empty.
 
+## Localization
+
+The translation project for all relevant components is available at https://hosted.weblate.org/projects/sai/
+Courtesy of [Weblate Libre hosting](https://weblate.org/en/hosting/#libre).
+
 ## Funding
 
 This project is funded through the [NGI Zero Entrust Fund](https://nlnet.nl/entrust), a fund established by [NLnet](https://nlnet.nl) with financial support from the European Commission's [Next Generation Internet](https://ngi.eu) program. Learn more at the [NLnet project page](https://nlnet.nl/project/SolidInterop3).
