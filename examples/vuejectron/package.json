@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@inrupt/solid-client-authn-browser": "^2.0.0",
-    "@janeirodigital/interop-application": "^1.0.0-rc.23",
-    "@janeirodigital/interop-utils": "^1.0.0-rc.23",
-    "@janeirodigital/interop-data-model": "^1.0.0-rc.23",
+    "@janeirodigital/interop-application": "^1.0.0-rc.24",
+    "@janeirodigital/interop-utils": "^1.0.0-rc.24",
+    "@janeirodigital/interop-data-model": "^1.0.0-rc.24",
     "@mdi/font": "7.3.67",
     "@vueuse/core": "^10.5.0",
     "core-js": "^3.33.0",

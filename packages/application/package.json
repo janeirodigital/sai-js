@@ -1,6 +1,6 @@
 {
   "name": "@janeirodigital/interop-application",
-  "version": "1.0.0-rc.23",
+  "version": "1.0.0-rc.24",
   "description": "Top-level module for applications confirming to Solid Application Interoperability specification",
   "contributors": [
     {
@@ -21,40 +21,39 @@
     "url": "https://github.com/janeirodigital/sai-js.git"
   },
   "license": "MIT",
-  "type": "module",
-  "main": "dist/cjs/index.js",
-  "module": "dist/mjs/index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "files": [
     "dist/",
     "src/"
   ],
-  "exports": {
-    ".": {
-      "import": "./dist/mjs/index.js",
-      "require": "./dist/cjs/index.js"
-    }
-  },
   "directories": {
     "lib": "src",
     "test": "test"
   },
   "scripts": {
-    "build": "pnpm run build:cjs && pnpm run build:mjs && sh fixup.sh",
-    "build:cjs": "tsc -b tsconfig-cjs.json",
-    "build:mjs": "tsc -b tsconfig-mjs.json",
+    "build": "rollup --config rollup.config.mjs",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "clean": "rimraf dist tsconfig.tsbuildinfo",
     "publish": "pnpm run clean && pnpm run build"
   },
   "dependencies": {
-    "@janeirodigital/interop-data-model": "^1.0.0-rc.23",
-    "@janeirodigital/interop-utils": "^1.0.0-rc.23",
-    "@solid-notifications/subscription": "^0.1.0",
+    "@janeirodigital/interop-data-model": "^1.0.0-rc.24",
+    "@janeirodigital/interop-utils": "^1.0.0-rc.24",
+    "@solid-notifications/subscription": "^0.1.2",
     "n3": "^1.17.1"
   },
   "devDependencies": {
-    "@janeirodigital/interop-test-utils": "^1.0.0-rc.23",
-    "@solid-notifications/types": "^0.1.0",
+    "@janeirodigital/interop-test-utils": "^1.0.0-rc.24",
+    "@solid-notifications/types": "^0.1.2",
     "@rdfjs/types": "^1.1.0"
   }
 }

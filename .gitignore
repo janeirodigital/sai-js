@@ -6,6 +6,7 @@ dist/
 dev-dist/
 packages/*/coverage
 tsconfig.tsbuildinfo
+.rollup.cache
 
 # CSS internals
 packages/css-storage-fixture/.internal/idp

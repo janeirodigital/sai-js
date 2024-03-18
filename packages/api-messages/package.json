@@ -1,20 +1,22 @@
 {
   "name": "@janeirodigital/sai-api-messages",
-  "version": "1.0.0-rc.23",
+  "version": "1.0.0-rc.24",
   "description": "",
-  "type": "module",
-  "main": "dist/cjs/index.js",
-  "module": "dist/mjs/index.js",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
-    "build": "pnpm run build:cjs && pnpm run build:mjs && sh fixup.sh",
-    "build:cjs": "tsc -b tsconfig-cjs.json",
-    "build:mjs": "tsc -b tsconfig-mjs.json",
-    "clean": "rm -rf dist/",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
+    "build": "rollup --config rollup.config.mjs",
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "publish": "pnpm run clean && pnpm run build"
-  },
-  "author": "",
-  "license": "MIT"
+  }
 }

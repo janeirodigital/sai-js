@@ -1,5 +1,5 @@
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
-module.exports = {
+const config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testRegex: '/test/.*-test.ts$',
@@ -8,3 +8,5 @@ module.exports = {
   coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
   setupFilesAfterEnv: ['./setup-jest.js']
 };
+
+export default config

@@ -1,6 +1,6 @@
 {
   "name": "@janeirodigital/sai-server-interfaces",
-  "version": "1.0.0-rc.23",
+  "version": "1.0.0-rc.24",
   "description": "",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
@@ -14,10 +14,10 @@
   "license": "MIT",
   "dependencies": {
     "@inrupt/solid-client-authn-node": "^2.0.0",
-    "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.23"
+    "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.24"
   },
   "devDependencies": {
-    "@solid-notifications/types": "^0.1.0",
+    "@solid-notifications/types": "^0.1.2",
     "@types/web-push": "^3.6.1",
     "bullmq": "^4.12.4",
     "web-push": "^3.6.6"
