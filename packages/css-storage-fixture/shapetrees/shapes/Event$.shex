@@ -1,0 +1,11 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX shex: <http://www.w3.org/ns/shex>
+PREFIX schema: <https://schema.org/>
+PREFIX solidshapes: <http://localhost:3000/shapetrees/shapes/>
+
+solidshapes:Event {
+  a [ schema:Event ] ;
+  schema:name xsd:string ;
+  schema:startDate xsd:dateTime ;
+  schema:attendee IRI * // shex:reference solidshapes:Role
+}
