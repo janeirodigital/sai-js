@@ -5,12 +5,16 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "lint": "eslint . --fix --ignore-path .gitignore"
+    "lint": "eslint . --fix --ignore-path .gitignore",
+    "build:ldo": "ldo build --input ./shapes --output ./ldo"
   },
   "dependencies": {
+    "@fontsource/preahvihear": "^5.0.19",
+    "@ldo/cli": "0.0.1-alpha.24",
+    "@ldo/ldo": "0.0.1-alpha.24",
+    "@ldo/solid": "0.0.1-alpha.24",
     "@mdi/font": "6.2.95",
     "core-js": "^3.34.0",
-    "roboto-fontface": "*",
     "vue": "^3.4.21",
     "vuetify": "^3.5.8"
   },
@@ -29,9 +33,6 @@
     "pinia": "^2.1.7",
     "sass": "^1.71.1",
     "typescript": "^5.4.2",
-    "unplugin-auto-import": "^0.17.5",
-    "unplugin-fonts": "^1.1.1",
-    "unplugin-vue-components": "^0.26.0",
     "unplugin-vue-router": "^0.8.4",
     "vite": "^5.1.5",
     "vite-plugin-vue-layouts": "^0.11.0",
