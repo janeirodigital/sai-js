@@ -2,13 +2,19 @@
   <v-container
     v-if="store.events.length"
   >
+    <v-btn
+      color="primary"
+      :to="{ name: 'form' }"
+    >
+      Create Event
+    </v-btn>
     <v-card
       v-for="event of store.events"
       @click="showDetails(event)"
       :key="event['@id']"
       :title="event.name">
       <v-card-subtitle>
-        {{ store.getAgent(event)?.name }} -
+        {{ store.organizations.find(o => o['@id'] === store.getAgent(event))?.label }} -
         {{ store.getPod(event)?.name }}
       </v-card-subtitle>
       <v-card-text>
@@ -30,6 +36,8 @@
 
   const router = useRouter()
   const store = useAppStore()
+
+  store.loadOrganizations()
   store.loadEvents()
 
   function showDetails(event: Event) {

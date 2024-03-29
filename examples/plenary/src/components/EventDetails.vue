@@ -3,30 +3,31 @@
     v-if="event && event.name"
     :title="event.name">
     <v-card-subtitle>
-      {{ store.getAgent(event)?.name }} -
+      {{ store.organizations.find(o => o['@id'] === store.getAgent(event!))?.label }} -
       {{ store.getPod(event)?.name }}
     </v-card-subtitle>
     <v-card-text>
       {{ store.formatDateTime(event.startDate) }}
       <v-alert
-        v-if="!presenceSet()"
+        v-if="store.haveDetailsLoaded(event) && !store.isPresenceSet(event)"
         color="blue"
       >
         <v-list-item
+          v-if="store.user"
           class="me"
-          :key="store.user.id"
-          :title="store.user.name"
-          :prependAvatar="store.fakeAvatar(store.user.id)"
+          :key="store.user['@id']!"
+          :title="store.user.label"
+          :prependAvatar="store.fakeAvatar(store.user['@id']!)"
         >
           <template
             #append
           >
             <v-btn
-              @click="absent()"
+              @click="store.absent(event)"
               icon="mdi-minus-circle-outline"
             ></v-btn>
             <v-btn
-              @click="present()"
+              @click="store.present(event)"
               icon="mdi-plus-circle-outline"
             ></v-btn>
           </template>
@@ -35,7 +36,7 @@
       <h3>Chair</h3>
       <v-list-item
         v-if="event.chair && event.chair.agent"
-        :class="{ me: isMe(event.chair['@id']!)}"
+        :class="{ me: store.isMe(event.chair.agent)}"
         :key="event.chair['@id']"
         :title="event.chair.agent.label"
         :prependAvatar="store.fakeAvatar(event.chair.agent['@id']!)"
@@ -48,17 +49,17 @@
       <h3>Scribe</h3>
       <v-list-item
         v-if="event.scribe && event.scribe.agent"
-        :class="{ me: isMe(event.scribe['@id']!)}"
+        :class="{ me: store.isMe(event.scribe.agent)}"
         :key="event.scribe['@id']!"
         :title="event.scribe?.agent.label"
         :prependAvatar="store.fakeAvatar(event.scribe?.agent['@id']!)"
       >
         <template
-          v-if="isChair()"
+          v-if="store.amIChair(event)"
           #append
         >
           <v-btn
-            @click="removeScribe()"
+            @click="store.removeScribe(event)"
             icon="mdi-close-circle-outline"
           ></v-btn>
         </template>
@@ -73,36 +74,27 @@
       >
         <v-list-item
           v-for="attendee of event.attendee"
-          :class="{ me: isMe(attendee['@id']!)}"
+          :class="{ me: store.isMe(attendee.agent)}"
           :key="attendee['@id']"
           :title="attendee.agent.label"
           :prependAvatar="store.fakeAvatar(attendee?.agent['@id']!)"
         >
           <template
-            v-if="isChair() && !event.scribe"
+            v-if="store.amIChair(event) && !event.scribe"
             #append
           >
             <v-btn
-              @click="setScribe(attendee)"
+              @click="store.setScribe(event, attendee)"
               icon="mdi-circle-edit-outline"
             ></v-btn>
           </template>
           <template
-            v-else-if="isChair()"
+            v-else-if="store.amIChair(event) || store.isMe(attendee.agent)"
             #append
           >
             <v-btn
-              @click="setAbsent(attendee)"
+              @click="store.setAbsent(event, attendee)"
               icon="mdi-minus-circle-outline"
-            ></v-btn>
-          </template>
-          <template
-            v-else-if="isMe(attendee)"
-            #append
-          >
-            <v-btn
-              @click="unsetPresence()"
-              icon="mdi-close-circle-outline"
             ></v-btn>
           </template>
         </v-list-item>
@@ -117,27 +109,18 @@
       >
         <v-list-item
           v-for="absentee of event.absentee"
-          :class="{ me: isMe(absentee['@id']!)}"
+          :class="{ me: store.isMe(absentee.agent)}"
           :key="absentee['@id']"
           :title="absentee?.agent?.label"
           :prependAvatar="store.fakeAvatar(absentee?.agent['@id']!)"
         >
           <template
-            v-if="isChair()"
+            v-if="store.amIChair(event) || store.isMe(absentee.agent)"
             #append
           >
             <v-btn
-              @click="setPresent(absentee)"
+              @click="store.setPresent(event, absentee)"
               icon="mdi-plus-circle-outline"
-            ></v-btn>
-          </template>
-          <template
-            v-else-if="isMe(absentee)"
-            #append
-          >
-            <v-btn
-              @click="unsetPresence()"
-              icon="mdi-close-circle-outline"
             ></v-btn>
           </template>
         </v-list-item>
@@ -151,97 +134,23 @@
 </template>
 
 <script setup lang="ts">
+  import { computed, watchEffect } from 'vue';
   import { useRoute } from 'vue-router'
   import { useAppStore } from '../stores/app'
-  import { computed, watchEffect } from 'vue';
 
   const route = useRoute()
   const store = useAppStore()
-  store.loadEvents()
+
   const event = computed(() => store.events.find(e => e['@id'] === route.query.event))
+
   watchEffect(() => {
     if (!event.value) return
     store.loadDetails(event.value)
   }) 
-  
-  function removeScribe() {
-    if (event.value && event.value.scribe) {
-      if (!event.value.attendee) {
-        event.value.attendee = []
-      }
-      event.value.attendee.unshift(event.value.scribe)
-      delete event.value.scribe
-    }
-  }
 
-  function presenceSet() {
-    if (!event.value) return
-    return store.user.id === event.value.chair['@id']
-      || store.user.id === event.value.scribe?.['@id']
-      || event.value.attendee?.find(a => store.user.id === a['@id'])
-      || event.value.absentee?.find(a => store.user.id === a['@id'])
-  }
+  store.loadOrganizations()
+  store.loadEvents()
 
-  function unsetPresence() {
-    if (!event.value) return
-    if (event.value.attendee?.find(a => store.user.id === a['@id'])) {
-      event.value.attendee = event.value.attendee?.filter(a => store.user.id !== a['@id'])
-    }
-    if (event.value.absentee?.find(a => store.user.id === a['@id'])) {
-      event.value.absentee = event.value.absentee?.filter(a => store.user.id !== a['@id'])
-    }
-  }
-
-  function present() {
-    if (!event.value) return
-    if (!event.value.attendee) {
-      event.value.attendee = []
-    }
-    // event.value.attendee.unshift(store.user)
-  }
-
-  function absent() {
-    if (!event.value) return
-    if (!event.value.absentee) {
-      event.value.absentee = []
-    }
-    // event.value.absentee.unshift(store.user)
-  }
-
-  function isMe(id: string) {
-    return store.user.id === id
-  }
-  
-  function isChair() {
-    return store.user.id === event.value?.chair['@id']
-  }
-
-  function setScribe(agent) {
-    if (!event.value) return
-    event.value.scribe = agent
-      if (!event.value.attendee) {
-        event.value.attendee = []
-      }
-    event.value.attendee = event.value.attendee.filter(a => a['@id'] !== agent.id)
-  }
-
-  function setPresent(agent) {
-    if (!event.value) return
-    if (!event.value.attendee) {
-      event.value.attendee = []
-    }
-    event.value.attendee.unshift(agent)
-    event.value.absentee = event.value.absentee?.filter(a => a['@id'] !== agent.id)
-  }
-
-  function setAbsent(agent) {
-    if (!event.value) return
-    if (!event.value.absentee) {
-      event.value.absentee = []
-    }
-    event.value.absentee.unshift(agent)
-    event.value.attendee = event.value.attendee?.filter(a => a['@id'] !== agent.id)
-  }
 </script>
 
 <style>

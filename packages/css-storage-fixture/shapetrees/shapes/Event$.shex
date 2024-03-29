@@ -32,3 +32,10 @@ solidshapes:Person {
   a [ foaf:Person ] ;
   rdfs:label xsd:string
 }
+
+#solidshapes:Organization IRI {
+solidshapes:Organization {
+  a [ foaf:Organization ] ;
+  rdfs:label xsd:string ;
+  schema:member @solidshapes:Person *
+}
