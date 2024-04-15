@@ -8,7 +8,8 @@ import {
   discoverAuthorizationAgent,
   discoverAgentRegistration,
   discoverAuthorizationRedirectEndpoint,
-  NOTIFY
+  NOTIFY,
+  discoverWebPushService
 } from '@janeirodigital/interop-utils';
 
 interface ApplicationDependencies {
@@ -37,6 +38,8 @@ export class Application {
 
   authorizationRedirectEndpoint: string;
 
+  webPushService?: {id: string, vapidPublicKey: string};
+
   registrationIri: string;
 
   // TODO rename
@@ -55,6 +58,11 @@ export class Application {
     this.authorizationAgentIri = await discoverAuthorizationAgent(this.webId, this.fetch);
     this.registrationIri = await discoverAgentRegistration(this.authorizationAgentIri, this.rawFetch);
     this.authorizationRedirectEndpoint = await discoverAuthorizationRedirectEndpoint(
+      this.authorizationAgentIri,
+      this.rawFetch
+    );
+    // TODO: avoid double fetch
+    this.webPushService = await discoverWebPushService(
       this.authorizationAgentIri,
       this.rawFetch
     );
@@ -87,6 +95,29 @@ export class Application {
         this.writeableStream.getWriter().write({ type: 'GRANT' });
       }
     };
+  }
+
+  async subscribeViaPush(subscription: PushSubscription, topic: string): Promise<void> {
+    if (!this.webPushService) throw new Error('Web Push Service not found');
+    const channel = {
+      "@context": [
+        "https://www.w3.org/ns/solid/notifications-context/v1"
+      ],
+      type: "WebPushChannel2023",
+      topic,
+      sentTo: subscription.endpoint,
+      keys: subscription.toJSON()['keys']
+    };
+    const response = await this.fetch(this.webPushService.id, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/ld+json'
+      },
+      body: JSON.stringify(channel)
+    });
+    if (!response.ok) {
+      throw new Error('Failed to subscribe via push');
+    }
   }
 
   get authorizationRedirectUri(): string {

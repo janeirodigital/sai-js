@@ -17,9 +17,12 @@ export function webId2agentUrl(webId: string): string {
   return `${baseUrl}/agents/${encoded}`;
 }
 
+export function agentUrl2encodedWebId(agentUrl: string): string {
+  return agentUrl.split('/').at(-1)!;
+}
+
 export function agentUrl2webId(agentUrl: string): string {
-  const encoded = agentUrl.split('/').at(-1)!;
-  return decodeWebId(encoded);
+  return decodeWebId(agentUrl2encodedWebId(agentUrl));
 }
 
 export function agentRedirectUrl(agentUrl: string): string {

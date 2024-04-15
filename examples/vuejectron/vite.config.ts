@@ -5,6 +5,7 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 // Utilities
 import { defineConfig } from 'vite';
 import { fileURLToPath, URL } from 'node:url';
+import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,7 +19,20 @@ export default defineConfig({
       styles: {
         configFile: 'src/styles/settings.scss'
       }
-    })
+    }),
+    // https://vite-pwa-org.netlify.app/
+    VitePWA({
+      registerType: 'autoUpdate',
+      strategies: 'injectManifest',
+      injectManifest: {
+        injectionPoint: undefined
+      },
+      srcDir: 'src',
+      filename: 'sw.js',
+      devOptions: {
+        enabled: true
+      }
+    }),
   ],
   define: { 'process.env': {} },
   resolve: {

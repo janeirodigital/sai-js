@@ -57,10 +57,45 @@ export const useAppStore = defineStore('app', () => {
   const currentAgent = ref<Agent>();
   const currentProject = ref<Project>();
   const saiError = ref<string | undefined>();
+  const pushSubscription = ref<PushSubscription | null>(null);
   
   let solidLdoDataset: SolidLdoDataset
   const ldoProjects = ref<Record<RegistrationId, Project[]>>({});
   const ldoTasks = ref<Record<ProjectId, Task[]>>({});
+
+
+  async function getPushSubscription() {
+    const registration = await navigator.serviceWorker.ready;
+    const subscription = await registration.pushManager.getSubscription();
+    if (subscription) {
+      pushSubscription.value = subscription;
+    }
+  }
+
+  async function enableNotifications() {
+    const session = await ensureSaiSession();
+    if (!session.webPushService) {
+      return null
+    } 
+    const result = await Notification.requestPermission();
+    if (result === 'granted') {
+      const registration = await navigator.serviceWorker.ready;
+      let subscription = await registration.pushManager.getSubscription();
+      if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: session.webPushService?.vapidPublicKey
+        });
+      }
+      pushSubscription.value = subscription;
+    }
+    return result;
+  }
+
+  async function subscribeViaPush(): Promise<void> {
+    const session = await ensureSaiSession();
+    await session.subscribeViaPush(pushSubscription.value!, session.registrationIri);
+  }
 
   async function loadAgents(force = false): Promise<void> {
     if (force || !agents.value.length) {
@@ -457,6 +492,10 @@ export const useAppStore = defineStore('app', () => {
 
 
   return {
+    pushSubscription,
+    getPushSubscription,
+    enableNotifications,
+    subscribeViaPush,
     agents,
     currentAgent,
     currentProject,

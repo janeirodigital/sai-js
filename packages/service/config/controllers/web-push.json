@@ -1,0 +1,30 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@janeirodigital/sai-server/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-core/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/handlersjs-http/^0.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:solid:authorization-agent:controller:WebPush",
+      "@type": "HttpHandlerController",
+      "label": "WebPush Controller",
+      "routes": [
+        {
+          "@type": "HttpHandlerRoute",
+          "path": "/agents/:encodedWebId/webpush",
+          "operations": [
+            {
+              "@type": "HttpHandlerOperation",
+              "method": "POST",
+              "publish": false
+            }
+          ],
+          "handler": {
+            "@type": "WebPushHandler"
+          }
+        }
+      ]
+    }
+  ]
+}

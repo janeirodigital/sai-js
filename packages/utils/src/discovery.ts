@@ -2,7 +2,7 @@
 
 import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
-import { INTEROP } from './namespaces';
+import { INTEROP, NOTIFY } from './namespaces';
 import { getOneMatchingQuad } from './match';
 import { getAgentRegistrationIri } from './link-header';
 import { RdfFetch, WhatwgFetch } from './fetch';
@@ -50,3 +50,18 @@ export async function discoverAuthorizationRedirectEndpoint(
   const doc = await parseJsonld(await authzAgentDocumentResponse.text(), authzAgentDocumentResponse.url);
   return getOneMatchingQuad(doc, null, INTEROP.hasAuthorizationRedirectEndpoint)!.object.value;
 }
+
+export async function discoverWebPushService(
+  authorizationAgentIri: string,
+  fetch: WhatwgFetch
+): Promise<{id: string, vapidPublicKey: string}> {
+  const authzAgentDocumentResponse = await fetch(authorizationAgentIri, {
+    headers: { Accept: 'application/ld+json' }
+  });
+  const doc = await parseJsonld(await authzAgentDocumentResponse.text(), authzAgentDocumentResponse.url);
+  return {
+    id: getOneMatchingQuad(doc, null, INTEROP.pushService)!.object.value, 
+    vapidPublicKey: getOneMatchingQuad(doc, null, NOTIFY.vapidPublicKey)!.object.value
+  };
+}
+

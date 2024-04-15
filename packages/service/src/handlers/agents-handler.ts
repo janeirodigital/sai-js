@@ -4,21 +4,28 @@ import { HttpHandler, HttpHandlerResponse } from '@digita-ai/handlersjs-http';
 import { INTEROP } from '@janeirodigital/interop-utils';
 import type { ISessionManager } from '@janeirodigital/sai-server-interfaces';
 import type { AuthnContext } from '../models/http-solid-context';
-import { agentRedirectUrl, agentUrl2webId } from '../url-templates';
+import { agentRedirectUrl, agentUrl2encodedWebId, agentUrl2webId } from '../url-templates';
 
 function clientIdDocument(agentUrl: string) {
   return {
     '@context': [
       'https://www.w3.org/ns/solid/oidc-context.jsonld',
+      'https://www.w3.org/ns/solid/notifications-context/v1',
       {
-        interop: 'http://www.w3.org/ns/solid/interop#'
-      }
+        interop: 'http://www.w3.org/ns/solid/interop#',
+        notify: 'http://www.w3.org/ns/solid/notifications#'
+      },
     ],
     client_id: agentUrl,
     client_name: 'Solid Authorization Agent',
     redirect_uris: [agentRedirectUrl(agentUrl)],
     grant_types: ['refresh_token', 'authorization_code'],
-    'interop:hasAuthorizationRedirectEndpoint': process.env.FRONTEND_AUTHORIZATION_URL!
+    'interop:hasAuthorizationRedirectEndpoint': process.env.FRONTEND_AUTHORIZATION_URL!,
+    'interop:pushService': {
+      'id': `${process.env.BASE_URL}/agents/${agentUrl2encodedWebId(agentUrl)}/webpush`,
+      "channelType": 'notify:WebPushChannel2023',
+      "notify:vapidPublicKey": process.env.VAPID_PUBLIC_KEY!,
+    }
   };
 }
 
