@@ -14,7 +14,7 @@ function clientIdDocument(agentUrl: string) {
       {
         interop: 'http://www.w3.org/ns/solid/interop#',
         notify: 'http://www.w3.org/ns/solid/notifications#'
-      },
+      }
     ],
     client_id: agentUrl,
     client_name: 'Solid Authorization Agent',
@@ -22,9 +22,9 @@ function clientIdDocument(agentUrl: string) {
     grant_types: ['refresh_token', 'authorization_code'],
     'interop:hasAuthorizationRedirectEndpoint': process.env.FRONTEND_AUTHORIZATION_URL!,
     'interop:pushService': {
-      'id': `${process.env.BASE_URL}/agents/${agentUrl2encodedWebId(agentUrl)}/webpush`,
-      "channelType": 'notify:WebPushChannel2023',
-      "notify:vapidPublicKey": process.env.VAPID_PUBLIC_KEY!,
+      id: `${process.env.BASE_URL}/agents/${agentUrl2encodedWebId(agentUrl)}/webpush`,
+      channelType: 'notify:WebPushChannel2023',
+      'notify:vapidPublicKey': process.env.VAPID_PUBLIC_KEY!
     }
   };
 }

@@ -6,21 +6,13 @@
   ],
   "@graph": [
     {
-      "@id": "urn:solid:authorization-agent:controller:WebPush",
+      "@id": "urn:solid:authorization-agent:controller:WebPushWebhooks",
       "@type": "HttpHandlerController",
-      "label": "WebPush Controller",
-      "preResponseHandler": {
-        "@type": "HttpSequenceContextHandler",
-        "contextHandlers": [
-          {
-            "@type": "AuthnContextHandler"
-          }
-        ]
-      },
+      "label": "WebPushWebhooks Controller",
       "routes": [
         {
           "@type": "HttpHandlerRoute",
-          "path": "/agents/:encodedWebId/webpush",
+          "path": "/agents/:encodedWebId/webhook-push/:encodedApplicationId",
           "operations": [
             {
               "@type": "HttpHandlerOperation",
@@ -29,7 +21,7 @@
             }
           ],
           "handler": {
-            "@type": "WebPushHandler",
+            "@type": "WebPushWebhooksHandler",
             "sessionManager": { "@id": "urn:ssv:SessionManager" }
           }
         }

@@ -1,15 +1,23 @@
 import 'dotenv/config';
 
+function encodeBase64(str: string): string {
+  return Buffer.from(str).toString('base64');
+}
+
+function decodeBase64(encoded: string): string {
+  return Buffer.from(encoded, 'base64').toString('ascii');
+}
+
 export const baseUrl: string = process.env.BASE_URL!;
 
 export const frontendUrl: string = process.env.FRONTEND_URL!;
 
 export function encodeWebId(webId: string): string {
-  return Buffer.from(webId).toString('base64');
+  return encodeBase64(webId);
 }
 
 export function decodeWebId(encoded: string): string {
-  return Buffer.from(encoded, 'base64').toString('ascii');
+  return decodeBase64(encoded);
 }
 
 export function webId2agentUrl(webId: string): string {
@@ -31,6 +39,10 @@ export function agentRedirectUrl(agentUrl: string): string {
 
 export function webhookTargetUrl(webId: string, peerWebId: string): string {
   return `${baseUrl}/agents/${encodeWebId(webId)}/webhook/${encodeWebId(peerWebId)}`;
+}
+
+export function webhookPushUrl(webId: string, applicationId: string): string {
+  return `${baseUrl}/agents/${encodeWebId(webId)}/webhook-push/${encodeBase64(applicationId)}`;
 }
 
 export function invitationCapabilityUrl(webId: string, uuid: string): string {

@@ -11,6 +11,7 @@ export * from './handlers/api-handler';
 export * from './handlers/webhooks-handler';
 export * from './handlers/invitations-handler';
 export * from './handlers/web-push-handler';
+export * from './handlers/web-push-webhooks-handler';
 
 // Models
 export * from './models/http-solid-context';

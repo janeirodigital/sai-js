@@ -8,6 +8,14 @@ import { webId2agentUrl } from './url-templates';
 
 type WebId = string;
 
+type PushChannelInfo = {
+  sendTo: string;
+  keys: {
+    auth: string;
+    p256dh: string;
+  };
+};
+
 const cache = new Map<WebId, AuthorizationAgent>();
 
 const prefixes = {
@@ -65,7 +73,7 @@ export class SessionManager implements ISessionManager {
     const duplicate = existing.find((existingSubscription) => existingSubscription.endpoint === subscription.endpoint);
     if (duplicate) return;
 
-    await this.storage.set(key, JSON.stringify([subscription, ...existing]));
+    return this.storage.set(key, JSON.stringify([subscription, ...existing]));
   }
 
   async getWebhookSubscription(webId: string, peerWebId: string): Promise<NotificationChannel | undefined> {
@@ -74,8 +82,34 @@ export class SessionManager implements ISessionManager {
     return value ? (JSON.parse(value) as NotificationChannel) : undefined;
   }
 
-  async setWebhookSubscription(webId: string, peerWebId: string, subscription: NotificationChannel): Promise<void> {
+  setWebhookSubscription(webId: string, peerWebId: string, subscription: NotificationChannel): Promise<void> {
     const key = `${prefixes.webhook}${webId}:${peerWebId}`;
     return this.storage.set(key, JSON.stringify(subscription));
+  }
+
+  async getWebhookPushSubscription(webId: string, applicationId: string): Promise<PushChannelInfo[]> {
+    const key = `${prefixes.push}${webId}:${applicationId}`;
+    const value = await this.storage.get(key);
+
+    return value ? (JSON.parse(value) as PushChannelInfo[]) : [];
+  }
+
+  async addWebhookPushSubscription(webId: string, applicationId: string, pushChannel: PushChannelInfo): Promise<void> {
+    const key = `${prefixes.push}${webId}:${applicationId}`;
+    const existing = await this.getWebhookPushSubscription(webId, applicationId);
+    const duplicate = existing.find((existingSubscription) => existingSubscription.sendTo === pushChannel.sendTo);
+    if (duplicate) return;
+
+    return this.storage.set(key, JSON.stringify([pushChannel, ...existing]));
+  }
+
+  async addWebhookPushTopic(webId: string, applicationId: string, topic: string): Promise<boolean> {
+    const key = `${prefixes.push}${webId}:${applicationId}:${topic}`;
+    const existing = await this.storage.get(key);
+
+    if (existing) return false;
+
+    await this.storage.set(key, 'true');
+    return true;
   }
 }

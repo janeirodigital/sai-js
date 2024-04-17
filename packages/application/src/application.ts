@@ -38,14 +38,18 @@ export class Application {
 
   authorizationRedirectEndpoint: string;
 
-  webPushService?: {id: string, vapidPublicKey: string};
+  webPushService?: { id: string; vapidPublicKey: string };
 
   registrationIri: string;
 
   // TODO rename
   hasApplicationRegistration?: ReadableApplicationRegistration;
 
-  constructor(public webId: string, public applicationId: string, dependencies: ApplicationDependencies) {
+  constructor(
+    public webId: string,
+    public applicationId: string,
+    dependencies: ApplicationDependencies
+  ) {
     this.rawFetch = dependencies.fetch;
     this.fetch = fetchWrapper(this.rawFetch);
     this.factory = new ApplicationFactory({ fetch: this.fetch, randomUUID: dependencies.randomUUID });
@@ -62,10 +66,7 @@ export class Application {
       this.rawFetch
     );
     // TODO: avoid double fetch
-    this.webPushService = await discoverWebPushService(
-      this.authorizationAgentIri,
-      this.rawFetch
-    );
+    this.webPushService = await discoverWebPushService(this.authorizationAgentIri, this.rawFetch);
     if (!this.registrationIri) return;
     await this.buildRegistration();
     await this.subscribeToRegistration();
@@ -100,13 +101,19 @@ export class Application {
   async subscribeViaPush(subscription: PushSubscription, topic: string): Promise<void> {
     if (!this.webPushService) throw new Error('Web Push Service not found');
     const channel = {
-      "@context": [
-        "https://www.w3.org/ns/solid/notifications-context/v1"
+      '@context': [
+        'https://www.w3.org/ns/solid/notifications-context/v1',
+        {
+          notify: 'http://www.w3.org/ns/solid/notifications#'
+        }
       ],
-      type: "WebPushChannel2023",
+      type: 'notify:WebPushChannel2023',
       topic,
-      sentTo: subscription.endpoint,
-      keys: subscription.toJSON()['keys']
+      sendTo: subscription.endpoint,
+      'notify:keys': {
+        'notify:auth': subscription.toJSON()['keys']['auth'],
+        'notify:p256dh': subscription.toJSON()['keys']['p256dh']
+      }
     };
     const response = await this.fetch(this.webPushService.id, {
       method: 'POST',

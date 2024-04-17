@@ -10,7 +10,8 @@
     "./controllers/api.json",
     "./controllers/webhooks.json",
     "./controllers/invitations.json",
-    "./controllers/web-push.json"
+    "./controllers/web-push.json",
+    "./controllers/web-push-webhooks.json"
   ],
   "@graph": [
     {
@@ -35,6 +36,7 @@
                 { "@id": "urn:solid:authorization-agent:controller:API" },
                 { "@id": "urn:solid:authorization-agent:controller:Webhooks" },
                 { "@id": "urn:solid:authorization-agent:controller:WebPush" },
+                { "@id": "urn:solid:authorization-agent:controller:WebPushWebhooks" },
                 { "@id": "urn:solid:authorization-agent:controller:Invitations" }
               ]
             }

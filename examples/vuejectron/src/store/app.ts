@@ -5,7 +5,7 @@ import { Agent, FileInstance, ImageInstance, Registration } from '@/models';
 import { useCoreStore } from './core';
 import { LdoBase } from '@ldo/ldo';
 import { DataInstance } from '@janeirodigital/interop-data-model';
-import { changeData as ldoChangeData, commitData, createSolidLdoDataset, type SolidLdoDataset } from "@ldo/solid"
+import { changeData as ldoChangeData, commitData, createSolidLdoDataset, type SolidLdoDataset } from '@ldo/solid';
 
 import { getDefaultSession } from '@inrupt/solid-client-authn-browser';
 import { Application, SaiEvent } from '@janeirodigital/interop-application';
@@ -32,22 +32,22 @@ type AgentId = string;
 type ProjectId = string;
 
 type ProjectInfo = {
-  instance: DataInstance
-  registration: RegistrationId
-  agent: AgentId
-}
+  instance: DataInstance;
+  registration: RegistrationId;
+  agent: AgentId;
+};
 
 type ProjectChildInfo = {
-  instance: DataInstance
-  agent: AgentId
-  project: ProjectId
-}
+  instance: DataInstance;
+  agent: AgentId;
+  project: ProjectId;
+};
 
 export const useAppStore = defineStore('app', () => {
-  const projectInstances: Record<string, ProjectInfo> = {}
-  const taskInstances: Record<string, ProjectChildInfo> = {}
-  const imageInstances: Record<string, ProjectChildInfo> = {}
-  const fileInstances: Record<string, ProjectChildInfo> = {}
+  const projectInstances: Record<string, ProjectInfo> = {};
+  const taskInstances: Record<string, ProjectChildInfo> = {};
+  const imageInstances: Record<string, ProjectChildInfo> = {};
+  const fileInstances: Record<string, ProjectChildInfo> = {};
   const coreStore = useCoreStore();
   const agents = ref<Agent[]>([]);
   const registrations = ref<Record<AgentId, Registration[]>>({});
@@ -58,11 +58,10 @@ export const useAppStore = defineStore('app', () => {
   const currentProject = ref<Project>();
   const saiError = ref<string | undefined>();
   const pushSubscription = ref<PushSubscription | null>(null);
-  
-  let solidLdoDataset: SolidLdoDataset
+
+  let solidLdoDataset: SolidLdoDataset;
   const ldoProjects = ref<Record<RegistrationId, Project[]>>({});
   const ldoTasks = ref<Record<ProjectId, Task[]>>({});
-
 
   async function getPushSubscription() {
     const registration = await navigator.serviceWorker.ready;
@@ -75,8 +74,8 @@ export const useAppStore = defineStore('app', () => {
   async function enableNotifications() {
     const session = await ensureSaiSession();
     if (!session.webPushService) {
-      return null
-    } 
+      return null;
+    }
     const result = await Notification.requestPermission();
     if (result === 'granted') {
       const registration = await navigator.serviceWorker.ready;
@@ -94,7 +93,10 @@ export const useAppStore = defineStore('app', () => {
 
   async function subscribeViaPush(): Promise<void> {
     const session = await ensureSaiSession();
-    await session.subscribeViaPush(pushSubscription.value!, session.registrationIri);
+    await session.subscribeViaPush(
+      pushSubscription.value!,
+      'http://localhost:3000/alice-work/dataRegistry/tasks/task-b'
+    );
   }
 
   async function loadAgents(force = false): Promise<void> {
@@ -121,7 +123,7 @@ export const useAppStore = defineStore('app', () => {
 
   async function loadProjects(ownerId: string): Promise<void> {
     if (registrations.value[ownerId]) return;
-    
+
     const session = await ensureSaiSession();
     const user = session.dataOwners.find((agent) => agent.iri === ownerId);
     if (!user) {
@@ -144,17 +146,15 @@ export const useAppStore = defineStore('app', () => {
           instance: dataInstance,
           agent: ownerId,
           registration: registration.iri
-        }
+        };
         ownerIndex[dataInstance.iri] = ownerId;
-        
-        // @ldo-solid
-        const ldoResource = solidLdoDataset.getResource(dataInstance.iri)
-        const readResult = await ldoResource.read()
-        if (readResult.isError) throw readResult
 
-        const ldoSolidProject = solidLdoDataset
-          .usingType(ProjectShapeType)
-          .fromSubject(dataInstance.iri)
+        // @ldo-solid
+        const ldoResource = solidLdoDataset.getResource(dataInstance.iri);
+        const readResult = await ldoResource.read();
+        if (readResult.isError) throw readResult;
+
+        const ldoSolidProject = solidLdoDataset.usingType(ProjectShapeType).fromSubject(dataInstance.iri);
         ldoOwnerProjects[registration.iri].push(ldoSolidProject);
       }
     }
@@ -175,42 +175,38 @@ export const useAppStore = defineStore('app', () => {
         instance: dataInstance,
         agent: project.agent,
         project: projectId
-      }
+      };
 
       // @ldo-solid
-      const ldoResource = solidLdoDataset.getResource(dataInstance.iri)
-      const readResult = await ldoResource.read()
-      if (readResult.isError) throw readResult
+      const ldoResource = solidLdoDataset.getResource(dataInstance.iri);
+      const readResult = await ldoResource.read();
+      if (readResult.isError) throw readResult;
 
-      const ldoSolidTask = solidLdoDataset
-        .usingType(TaskShapeType)
-        .fromSubject(dataInstance.iri)
+      const ldoSolidTask = solidLdoDataset.usingType(TaskShapeType).fromSubject(dataInstance.iri);
       ldoProjectTasks.push(ldoSolidTask);
     }
 
-    ldoTasks.value[projectId] = ldoProjectTasks
+    ldoTasks.value[projectId] = ldoProjectTasks;
   }
-  
+
   async function draftTask(projectId: string): Promise<Task> {
-    const projectInfo = projectInstances[projectId]
-    const newTaskInstance = await projectInfo.instance.newChildDataInstance(shapeTrees.task)
+    const projectInfo = projectInstances[projectId];
+    const newTaskInstance = await projectInfo.instance.newChildDataInstance(shapeTrees.task);
     taskInstances[newTaskInstance.iri] = {
       instance: newTaskInstance,
       agent: projectInfo.agent,
       project: projectInfo.instance.iri
-    }
-    const ldoSolidTask = solidLdoDataset
-      .usingType(TaskShapeType)
-      .fromSubject(newTaskInstance.iri)
+    };
+    const ldoSolidTask = solidLdoDataset.usingType(TaskShapeType).fromSubject(newTaskInstance.iri);
     ldoTasks.value[projectId].push(ldoSolidTask);
-    return ldoSolidTask
+    return ldoSolidTask;
     // return solidLdoDataset.createData(TaskShapeType, newTaskInstance.iri, ldoResource)
   }
 
   async function updateTask(task: Task) {
     await ensureSaiSession();
-    if (!task['@id']) throw task
-    const info = getProjectChildInfo(task['@id'])
+    if (!task['@id']) throw task;
+    const info = getProjectChildInfo(task['@id']);
     const project = projectInstances[info.project];
     if (!project) {
       throw new Error(`project not found ${info.project}`);
@@ -220,33 +216,32 @@ export const useAppStore = defineStore('app', () => {
       throw new Error(`Data Instance not found for: ${task['@id']}`);
     }
 
-    const ldoProject = ldoProjects.value[project.registration]
-      .find(p => p['@id'] === project.instance.iri)
-    if (!ldoProject) throw new Error(`ldo project not found: ${project.instance.iri}`)
-    const isDraft = !ldoProject.hasTask?.find(t => t['@id'] === task['@id'])
+    const ldoProject = ldoProjects.value[project.registration].find((p) => p['@id'] === project.instance.iri);
+    if (!ldoProject) throw new Error(`ldo project not found: ${project.instance.iri}`);
+    const isDraft = !ldoProject.hasTask?.find((t) => t['@id'] === task['@id']);
     if (isDraft) {
       // add reference to new task
-      const cProject = changeData(ldoProject)
-      if (!cProject.hasTask) cProject.hasTask = []
-      cProject.hasTask.push({ '@id': task['@id'] })
-      const result = await commitData(cProject)
-      if (result.isError) throw result
+      const cProject = changeData(ldoProject);
+      if (!cProject.hasTask) cProject.hasTask = [];
+      cProject.hasTask.push({ '@id': task['@id'] });
+      const result = await commitData(cProject);
+      if (result.isError) throw result;
     }
-    const result = await commitData(task)
-    if (result.isError) throw result
+    const result = await commitData(task);
+    if (result.isError) throw result;
 
     const indexToUpdate = ldoTasks.value[info.project].findIndex((t) => t['@id'] === task['@id']);
-    if (indexToUpdate === -1) throw new Error(`task not found: ${task['@id']}`)
+    if (indexToUpdate === -1) throw new Error(`task not found: ${task['@id']}`);
     // trigger effects
     const same = ldoTasks.value[info.project][indexToUpdate];
-    delete ldoTasks.value[info.project][indexToUpdate]
-    ldoTasks.value[info.project][indexToUpdate] = same
+    delete ldoTasks.value[info.project][indexToUpdate];
+    ldoTasks.value[info.project][indexToUpdate] = same;
   }
 
   async function deleteTask(task: Task) {
     await ensureSaiSession();
-    if (!task['@id']) throw task
-    const info = getProjectChildInfo(task['@id'])
+    if (!task['@id']) throw task;
+    const info = getProjectChildInfo(task['@id']);
     const toDelete = tasks.value[info.project].find((t) => t['@id'] === task['@id']);
     if (!toDelete) {
       throw new Error(`task not found: ${task['@id']}`);
@@ -280,17 +275,17 @@ export const useAppStore = defineStore('app', () => {
       if (!project) {
         throw new Error(`project not found ${file.project}`);
       }
-  
+
       instance = await project.instance.newChildDataInstance(shapeTrees.file);
       instance.replaceValue(NFO.fileName, blob.name);
       instance.replaceValue(AWOL.type, blob.type);
-      fileInstances[instance.iri] ={
+      fileInstances[instance.iri] = {
         instance,
         agent: project.agent,
         project: project.instance.iri
-      }
+      };
     }
-  
+
     const updated = instance2File(instance, file.project, file.owner);
 
     if (file.id === 'DRAFT') {
@@ -322,52 +317,50 @@ export const useAppStore = defineStore('app', () => {
     share(projectId);
   }
 
-
   function changeData<Type extends LdoBase>(input: Type): Type {
     const resource = solidLdoDataset.getResource(input['@id']);
     return ldoChangeData(input, resource);
-
   }
 
   function getProjectChildInfo(id: string): ProjectChildInfo {
-    return taskInstances[id] || imageInstances[id] || fileInstances[id]
+    return taskInstances[id] || imageInstances[id] || fileInstances[id];
   }
-  
+
   function getInfo(id: string): ProjectInfo | ProjectChildInfo {
-    return projectInstances[id] || getProjectChildInfo(id)
+    return projectInstances[id] || getProjectChildInfo(id);
   }
 
   function canUpdate(id: string): boolean {
-    const info = getInfo(id)
-    return info.instance.accessMode.includes(ACL.Update.value)
+    const info = getInfo(id);
+    return info.instance.accessMode.includes(ACL.Update.value);
   }
-  
+
   function canDelete(id: string): boolean {
-    const info = getInfo(id)
-    return info.instance.accessMode.includes(ACL.Delete.value)
+    const info = getInfo(id);
+    return info.instance.accessMode.includes(ACL.Delete.value);
   }
 
   function canAddTasks(id: string): boolean {
-    const info = projectInstances[id]
-    return info.instance.findChildGrant(shapeTrees.task)?.accessMode.includes(ACL.Create.value)
+    const info = projectInstances[id];
+    return info.instance.findChildGrant(shapeTrees.task)?.accessMode.includes(ACL.Create.value);
   }
 
   function canAddImages(id: string): boolean {
-    const info = projectInstances[id]
-    return info.instance.findChildGrant(shapeTrees.image)?.accessMode.includes(ACL.Create.value)
+    const info = projectInstances[id];
+    return info.instance.findChildGrant(shapeTrees.image)?.accessMode.includes(ACL.Create.value);
   }
 
   function canAddFiles(id: string): boolean {
-    const info = projectInstances[id]
-    return info.instance.findChildGrant(shapeTrees.file)?.accessMode.includes(ACL.Create.value)
+    const info = projectInstances[id];
+    return info.instance.findChildGrant(shapeTrees.file)?.accessMode.includes(ACL.Create.value);
   }
 
   function getAgentId(id: string): string {
-    return getInfo(id).agent
+    return getInfo(id).agent;
   }
 
   function getRegistrationId(id: string): string {
-    return projectInstances[id].registration
+    return projectInstances[id].registration;
   }
 
   function instance2File(instance: DataInstance, project: string, owner: string): FileInstance {
@@ -375,7 +368,7 @@ export const useAppStore = defineStore('app', () => {
       id: instance.iri,
       filename: instance.getObject(NFO.fileName)?.value,
       project,
-      owner,
+      owner
     };
   }
 
@@ -403,9 +396,9 @@ export const useAppStore = defineStore('app', () => {
         saiError.value = err.message;
         if (err.response) console.error(err.response);
       }
-      throw err
+      throw err;
     }
-    solidLdoDataset = createSolidLdoDataset({ fetch: authnFetch})
+    solidLdoDataset = createSolidLdoDataset({ fetch: authnFetch });
     return saiSession;
   }
 
@@ -457,7 +450,7 @@ export const useAppStore = defineStore('app', () => {
         instance,
         agent: project.agent,
         project: project.instance.iri
-      }
+      };
       files.push(instance2File(instance, projectId, ownerIndex[projectId]));
     }
 
@@ -476,7 +469,7 @@ export const useAppStore = defineStore('app', () => {
         instance,
         agent: project.agent,
         project: project.instance.iri
-      }
+      };
       images.push(instance2File(instance, projectId, ownerIndex[projectId]));
     }
 
@@ -489,7 +482,6 @@ export const useAppStore = defineStore('app', () => {
       .then((response) => response.blob())
       .then((blb) => URL.createObjectURL(blb));
   }
-
 
   return {
     pushSubscription,
