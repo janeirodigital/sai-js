@@ -29,7 +29,22 @@
             }
           ],
           "handler": {
-            "@type": "WebPushHandler",
+            "@type": "WebPushSubscribeHandler",
+            "sessionManager": { "@id": "urn:ssv:SessionManager" }
+          }
+        },
+        {
+          "@type": "HttpHandlerRoute",
+          "path": "/agents/:encodedWebId/webpush/:encodedTopic",
+          "operations": [
+            {
+              "@type": "HttpHandlerOperation",
+              "method": "DELETE",
+              "publish": false
+            }
+          ],
+          "handler": {
+            "@type": "WebPushUnsubscribeHandler",
             "sessionManager": { "@id": "urn:ssv:SessionManager" }
           }
         }

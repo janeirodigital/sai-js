@@ -98,7 +98,7 @@ export class Application {
     };
   }
 
-  async subscribeViaPush(subscription: PushSubscription, topic: string): Promise<void> {
+  async subscribeViaPush(subscription: PushSubscription, topic: string): Promise<NotificationChannel> {
     if (!this.webPushService) throw new Error('Web Push Service not found');
     const channel = {
       '@context': [
@@ -125,6 +125,12 @@ export class Application {
     if (!response.ok) {
       throw new Error('Failed to subscribe via push');
     }
+    return response.json()
+  }
+
+  async unsubscribeFromPush(topic: string, channelId: string): Promise<boolean> {
+    const response = await this.rawFetch(channelId, { method: 'DELETE'})
+    return (response.ok)
   }
 
   get authorizationRedirectUri(): string {

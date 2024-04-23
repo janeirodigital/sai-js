@@ -10,7 +10,8 @@ export * from './handlers/authn-context-handler';
 export * from './handlers/api-handler';
 export * from './handlers/webhooks-handler';
 export * from './handlers/invitations-handler';
-export * from './handlers/web-push-handler';
+export * from './handlers/web-push-subscribe-handler';
+export * from './handlers/web-push-unsubscribe-handler';
 export * from './handlers/web-push-webhooks-handler';
 
 // Models

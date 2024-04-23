@@ -8,7 +8,7 @@ import { webId2agentUrl } from './url-templates';
 
 type WebId = string;
 
-type PushChannelInfo = {
+type PushSubscriptionInfo = {
   sendTo: string;
   keys: {
     auth: string;
@@ -87,14 +87,14 @@ export class SessionManager implements ISessionManager {
     return this.storage.set(key, JSON.stringify(subscription));
   }
 
-  async getWebhookPushSubscription(webId: string, applicationId: string): Promise<PushChannelInfo[]> {
+  async getWebhookPushSubscription(webId: string, applicationId: string): Promise<PushSubscriptionInfo[]> {
     const key = `${prefixes.push}${webId}:${applicationId}`;
     const value = await this.storage.get(key);
 
-    return value ? (JSON.parse(value) as PushChannelInfo[]) : [];
+    return value ? (JSON.parse(value) as PushSubscriptionInfo[]) : [];
   }
 
-  async addWebhookPushSubscription(webId: string, applicationId: string, pushChannel: PushChannelInfo): Promise<void> {
+  async addWebhookPushSubscription(webId: string, applicationId: string, pushChannel: PushSubscriptionInfo): Promise<void> {
     const key = `${prefixes.push}${webId}:${applicationId}`;
     const existing = await this.getWebhookPushSubscription(webId, applicationId);
     const duplicate = existing.find((existingSubscription) => existingSubscription.sendTo === pushChannel.sendTo);
@@ -103,13 +103,21 @@ export class SessionManager implements ISessionManager {
     return this.storage.set(key, JSON.stringify([pushChannel, ...existing]));
   }
 
-  async addWebhookPushTopic(webId: string, applicationId: string, topic: string): Promise<boolean> {
+  async getWebhookPushTopic(webId: string, applicationId: string, topic: string): Promise<NotificationChannel> {
+    const key = `${prefixes.push}${webId}:${applicationId}:${topic}`;
+    const value = await this.storage.get(key);
+    return value ? (JSON.parse(value) as NotificationChannel) : undefined;
+  }
+
+  async addWebhookPushTopic(webId: string, applicationId: string, topic: string, channel: NotificationChannel): Promise<void> {
     const key = `${prefixes.push}${webId}:${applicationId}:${topic}`;
     const existing = await this.storage.get(key);
+    if (existing) return;
+    return this.storage.set(key, JSON.stringify(channel));
+  }
 
-    if (existing) return false;
-
-    await this.storage.set(key, 'true');
-    return true;
+  async deleteWebhookPushTopic(webId: string, applicationId: string, topic: string): Promise<void> {
+    const key = `${prefixes.push}${webId}:${applicationId}:${topic}`;
+    return this.storage.delete(key);
   }
 }

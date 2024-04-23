@@ -1,6 +1,7 @@
 // Utilities
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { useStorage } from '@vueuse/core'
 import { Agent, FileInstance, ImageInstance, Registration } from '@/models';
 import { useCoreStore } from './core';
 import { LdoBase } from '@ldo/ldo';
@@ -44,6 +45,7 @@ type ProjectChildInfo = {
 };
 
 export const useAppStore = defineStore('app', () => {
+  const subscriptions = useStorage<Map<string, string>>('subscriptions', new Map())
   const projectInstances: Record<string, ProjectInfo> = {};
   const taskInstances: Record<string, ProjectChildInfo> = {};
   const imageInstances: Record<string, ProjectChildInfo> = {};
@@ -64,6 +66,7 @@ export const useAppStore = defineStore('app', () => {
   const ldoTasks = ref<Record<ProjectId, Task[]>>({});
 
   async function getPushSubscription() {
+    if (pushSubscription.value) return
     const registration = await navigator.serviceWorker.ready;
     const subscription = await registration.pushManager.getSubscription();
     if (subscription) {
@@ -91,12 +94,35 @@ export const useAppStore = defineStore('app', () => {
     return result;
   }
 
-  async function subscribeViaPush(): Promise<void> {
+  async function subscribeViaPush(id: string): Promise<void> {
     const session = await ensureSaiSession();
-    await session.subscribeViaPush(
-      pushSubscription.value!,
-      'http://localhost:3000/alice-work/dataRegistry/tasks/task-b'
-    );
+    await getPushSubscription()
+    const channel = await session.subscribeViaPush(pushSubscription.value!, id);
+    const info = getInfo(id) as ProjectInfo
+    const project = ldoProjects.value[info.registration].find(p => p['@id'] === id)
+    // also all the tasks
+    // @ts-expect-error
+    const taskChannels = await Promise.all(project?.hasTask.map(task => session.subscribeViaPush(pushSubscription.value!, task['@id']))) as NotificationChanel[]
+    subscriptions.value.set(id, channel.id)
+    for (const taskChannel of taskChannels) {
+      subscriptions.value.set(taskChannel.topic, taskChannel.id)
+    }
+  }
+
+  async function unsubscribeViaPush(id: string): Promise<void> {
+    const session = await ensureSaiSession(); 
+    const channelId = subscriptions.value.get(id)
+    if (!channelId) throw new Error('channel not found')
+    const response = await session.rawFetch(channelId, { method: 'DELETE'})
+    if (!response.ok) throw new Error('failed to unsubscribe')
+    const info = getInfo(id) as ProjectInfo
+    const project = ldoProjects.value[info.registration].find(p => p['@id'] === id)
+    // @ts-expect-error
+    const result = await Promise.all(project?.hasTask.map(task => session.unsubscribeFromPush(task['@id'], subscriptions.value.get(task['@id'])))) as boolean[]
+    if (result.includes(false)) throw new Error('failed to unsubscribe some of the tasks')
+    subscriptions.value.delete(id)
+    // @ts-expect-error
+    project?.hasTask.forEach(task => subscriptions.value.delete(task['@id']))
   }
 
   async function loadAgents(force = false): Promise<void> {
@@ -485,9 +511,11 @@ export const useAppStore = defineStore('app', () => {
 
   return {
     pushSubscription,
+    subscriptions,
     getPushSubscription,
     enableNotifications,
     subscribeViaPush,
+    unsubscribeViaPush,
     agents,
     currentAgent,
     currentProject,

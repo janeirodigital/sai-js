@@ -1,6 +1,5 @@
 <template>
   <v-main>
-    <v-btn @click="appStore.subscribeViaPush">Test</v-btn>
     <v-alert
       v-if="!appStore.pushSubscription"
       color="warning"

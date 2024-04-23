@@ -1,13 +1,13 @@
 /* eslint-disable class-methods-use-this */
 
 import { from, Observable } from 'rxjs';
+import webpush from 'web-push';
 import { HttpHandler, HttpHandlerResponse, HttpHandlerContext } from '@digita-ai/handlersjs-http';
 import { getLogger } from '@digita-ai/handlersjs-logging';
 import { validateContentType } from '../utils/http-validators';
 import { decodeWebId } from '../url-templates';
 import { SessionManager } from '../session-manager';
 import 'dotenv/config';
-import webpush from 'web-push';
 
 export class WebPushWebhooksHandler extends HttpHandler {
   private logger = getLogger();
@@ -23,7 +23,6 @@ export class WebPushWebhooksHandler extends HttpHandler {
 
     const webId = decodeWebId(context.request.parameters!.encodedWebId);
     const applicationId = decodeWebId(context.request.parameters!.encodedApplicationId);
-    const body = JSON.parse(context.request.body);
 
     webpush.setVapidDetails(
       process.env.PUSH_NOTIFICATION_EMAIL!,
@@ -33,14 +32,9 @@ export class WebPushWebhooksHandler extends HttpHandler {
 
     // TODO: i18n
     const notificationPayload = {
-      notification: {
-        title: 'SAI update',
-        body: `data changed`,
-        data: body
-      }
+      notification: JSON.parse(context.request.body)
     };
     const subscriptions = await this.sessionManager.getWebhookPushSubscription(webId, applicationId);
-    console.log('subscriptions', subscriptions);
 
     try {
       await Promise.all(

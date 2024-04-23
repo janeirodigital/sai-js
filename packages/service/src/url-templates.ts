@@ -1,10 +1,10 @@
 import 'dotenv/config';
 
-function encodeBase64(str: string): string {
+export function encodeBase64(str: string): string {
   return Buffer.from(str).toString('base64');
 }
 
-function decodeBase64(encoded: string): string {
+export function decodeBase64(encoded: string): string {
   return Buffer.from(encoded, 'base64').toString('ascii');
 }
 
@@ -43,6 +43,10 @@ export function webhookTargetUrl(webId: string, peerWebId: string): string {
 
 export function webhookPushUrl(webId: string, applicationId: string): string {
   return `${baseUrl}/agents/${encodeWebId(webId)}/webhook-push/${encodeBase64(applicationId)}`;
+}
+
+export function webPushUnsubscribeUrl(webId: string, topic: string): string {
+  return `${baseUrl}/agents/${encodeWebId(webId)}/webpush/${encodeBase64(topic)}`;
 }
 
 export function invitationCapabilityUrl(webId: string, uuid: string): string {

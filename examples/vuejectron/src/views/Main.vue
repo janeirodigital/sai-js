@@ -7,7 +7,9 @@
       <v-btn :icon="icon" @click="navigateUp"> </v-btn>
     </template>
     <template v-if="route.query.project" #append>
-      <v-btn icon="mdi-share-variant" @click="shareProject"> </v-btn>
+      <v-btn v-if="!appStore.subscriptions.has(route.query.project as string)" icon="mdi-bell-ring-outline" @click="subscribeToProject"></v-btn>
+      <v-btn v-else icon="mdi-bell-off-outline" @click="unsubscribeFromProject"></v-btn>
+      <v-btn icon="mdi-share-variant" @click="shareProject"></v-btn>
     </template>
   </v-app-bar>
 
@@ -71,6 +73,18 @@ function navigateUp() {
     router.push({ name: 'agent', query: { agent: route.query.agent } });
   } else {
     router.push({ name: 'dashboard' });
+  }
+}
+
+function subscribeToProject() {
+  if (appStore.currentProject) {
+    appStore.subscribeViaPush(appStore.currentProject['@id']!);
+  }
+}
+
+function unsubscribeFromProject() {
+  if (appStore.currentProject) {
+    appStore.unsubscribeViaPush(appStore.currentProject['@id']!);
   }
 }
 

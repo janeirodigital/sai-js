@@ -2,21 +2,22 @@
 
 import { from, Observable } from 'rxjs';
 import { HttpHandler, HttpHandlerResponse, ForbiddenHttpError } from '@digita-ai/handlersjs-http';
+import { getOneMatchingQuad, NOTIFY, parseJsonld } from '@janeirodigital/interop-utils';
+import { SubscriptionClient } from '@solid-notifications/subscription';
 import { getLogger } from '@digita-ai/handlersjs-logging';
 import { validateContentType } from '../utils/http-validators';
-import { decodeWebId, webhookPushUrl } from '../url-templates';
-import { getOneMatchingQuad, NOTIFY, parseJsonld } from '@janeirodigital/interop-utils';
+import { decodeWebId, webhookPushUrl, webPushUnsubscribeUrl } from '../url-templates';
 import { SessionManager } from '../session-manager';
-import { SubscriptionClient } from '@solid-notifications/subscription';
 import { AuthenticatedAuthnContext } from '../models/http-solid-context';
 
-export class WebPushHandler extends HttpHandler {
+export class WebPushSubscribeHandler extends HttpHandler {
   private logger = getLogger();
 
   constructor(private sessionManager: SessionManager) {
     super();
-    this.logger.info('WebPushHandler::constructor');
+    this.logger.info('WebPushSubscribeHandler::constructor');
   }
+
   // TODO: validate channel info
   async handleAsync(context: AuthenticatedAuthnContext): Promise<HttpHandlerResponse> {
     validateContentType(context, 'application/ld+json');
@@ -27,7 +28,7 @@ export class WebPushHandler extends HttpHandler {
     }
     const requestedChannel = await parseJsonld(context.request.body);
 
-    const pushChannelInfo = {
+    const pushSubscriptionInfo = {
       sendTo: getOneMatchingQuad(requestedChannel, null, NOTIFY.sendTo)!.object.value,
       keys: {
         auth: getOneMatchingQuad(requestedChannel, null, NOTIFY.auth)!.object.value,
@@ -35,20 +36,40 @@ export class WebPushHandler extends HttpHandler {
       }
     };
 
-    await this.sessionManager.addWebhookPushSubscription(webId, applicationId, pushChannelInfo);
+    await this.sessionManager.addWebhookPushSubscription(webId, applicationId, pushSubscriptionInfo);
     const topic = getOneMatchingQuad(requestedChannel, null, NOTIFY.topic)!.object.value;
 
-    if (await this.sessionManager.addWebhookPushTopic(webId, applicationId, topic)) {
-      const saiSession = await this.sessionManager.getSaiSession(webId);
-      const subscriptionClient = new SubscriptionClient(saiSession.rawFetch as typeof fetch); // TODO: remove as
-      await subscriptionClient.subscribe(topic, NOTIFY.WebhookChannel2023.value, webhookPushUrl(webId, applicationId));
+    const webPushChannel = {
+      '@context': [
+        'https://www.w3.org/ns/solid/notifications-context/v1',
+        {
+          notify: 'http://www.w3.org/ns/solid/notifications#'
+        }
+      ],
+      id: webPushUnsubscribeUrl(webId, topic),
+      type: 'notify:WebPushChannel2023',
+      topic,
+      sendTo: pushSubscriptionInfo.sendTo,
     }
 
-    return { body: {}, status: 200, headers: {} };
+    if (!await this.sessionManager.getWebhookPushTopic(webId, applicationId, topic)) {
+      const saiSession = await this.sessionManager.getSaiSession(webId);
+      const subscriptionClient = new SubscriptionClient(saiSession.rawFetch as typeof fetch); // TODO: remove as
+      const webhookChannel = await subscriptionClient.subscribe(topic, NOTIFY.WebhookChannel2023.value, webhookPushUrl(webId, applicationId));
+      await this.sessionManager.addWebhookPushTopic(webId, applicationId, topic, webhookChannel)
+      return { body: webPushChannel, status: 201, headers: {
+        'content-type': 'application/ld+json'
+      } };
+    }
+
+    return { body: webPushChannel, status: 200, headers: {
+      'content-type': 'application/ld+json'
+    } };
+
   }
 
   handle(context: AuthenticatedAuthnContext): Observable<HttpHandlerResponse> {
-    this.logger.info('WebPushHandler::handle');
+    this.logger.info('WebPushSubscribeHandler::handle');
     return from(this.handleAsync(context));
   }
 }
