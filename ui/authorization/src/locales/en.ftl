@@ -24,6 +24,7 @@ settings = Settings
 # Settings
 
 language = Language
+help-translating = Help to translate!
 
 # Authorization
 access = Access

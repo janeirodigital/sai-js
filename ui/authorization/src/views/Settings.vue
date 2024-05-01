@@ -9,6 +9,11 @@
         ></v-select>
       </template>
     </v-list-item>
+    <v-list-item id="translation">
+      <a href="https://hosted.weblate.org/projects/sai/" target="_blank">
+        {{ $t('help-translating') }}
+      </a>
+    </v-list-item>
   </v-list>
 </template>
 
@@ -27,3 +32,8 @@ const languages = computed(() =>
 )
 
 </script>
+<style scoped>
+  #translation {
+    text-align: right;
+  }
+</style>

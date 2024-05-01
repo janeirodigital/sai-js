@@ -12,7 +12,7 @@ sign-in-input =
   .label = OIDC serwer
 
 # Dashboard
-enable = Aktywój
+enable = Aktywuj
 notifications-alert =
  .title = Powiadomienia
  .text = Aktualnie nieaktywne
@@ -24,10 +24,11 @@ settings = Ustawienia
 # Settings
 
 language = Język
+help-translating = Pomóż w tłumaczeniu!
 
 # Authorization
 access = Dostęp
-authorize = Udostępnij
+authorize = Zautoryzuj
 deny = Odmów
 
 all-data = Wszystkie dane
