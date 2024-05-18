@@ -16,6 +16,59 @@ If you plan to use your application in production please ask the specification e
 on the [public chatroom](https://gitter.im/solid/data-interoperability-panel)
 about the stability of the data model.
 
+## Overview
+
+```mermaid
+flowchart TB
+
+  subgraph Resource Owners
+    Alice["👩 Alice"]
+    ACME["🏢 ACME"]
+    Bob["👨 Bob"]
+  end
+
+  subgraph Resource Servers
+    AlHome["☁️ Home"]
+    AlWork["☁️ Work"]
+    AcRnd["☁️ R&D"]
+    AcHr["☁️ HR"]
+  end
+
+  subgraph Scopes
+    AlHProjects("🗄️ Projects")
+    AlHTasks("🗄️ Tasks")
+    AlWCalendars("🗄️ Calendars")
+    AcRProjects("🗄️ Projects")
+    AcRTasks("🗄️ Tasks")
+    AcHProjects("🗄️ Projects")
+    AcHTasks("🗄️ Tasks")
+  end
+
+  subgraph Resources
+    AlHP1("📄 P1")
+    AlHP2("📄 P1")
+    AlHT1("📄 T1")
+    AlHT2("📄 T2")
+  end
+
+  Alice -- :storage --> AlHome
+  Alice -- :storage --> AlWork
+  ACME -- :storage --> AcRnd
+  ACME -- :storage --> AcHr
+
+  AlHome -- :hosts --> AlHProjects
+  AlHome -- :hosts --> AlHTasks
+  AlWork -- :hosts --> AlWCalendars
+  AcRnd -- :hosts --> AcRProjects
+  AcRnd -- :hosts --> AcRTasks
+  AcHr -- :hosts --> AcHProjects
+  AcHr -- :hosts --> AcHTasks
+  AlHProjects -- :contains --> AlHP1
+  AlHProjects -- :contains --> AlHP2
+  AlHTasks -- :contains --> AlHT1
+  AlHTasks -- :contains --> AlHT2
+```
+
 ## Example
 
 ```ts

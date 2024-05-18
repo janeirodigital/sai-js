@@ -1,15 +1,15 @@
 <template>
   <v-main>
-    <template v-if="appStore.currentAgent && appStore.registrations[appStore.currentAgent.id]">
+    <template v-if="appStore.currentAgent && appStore.resourceServers[appStore.currentAgent.id]">
       <div
-        v-for="registration in appStore.registrations[appStore.currentAgent.id]"
-        :key="registration.id"
+        v-for="resourceServer in appStore.resourceServers[appStore.currentAgent.id]"
+        :key="resourceServer.id"
       >
-      <h3>{{ registration.label }}</h3>
+      <h3>{{ resourceServer.label }}</h3>
       <v-list>
-        <v-list-item v-for="project in appStore.ldoProjects[registration.id]" :key="project['@id']">
+        <v-list-item v-for="project in appStore.projectsFor(resourceServer.id)" :key="project['@id']">
           <router-link
-            :to="{ name: 'project', query: { ...route.query, registration: registration.id, project: project['@id'] } }"
+            :to="{ name: 'project', query: { ...route.query, resourceServer: resourceServer.id, project: project['@id'] } }"
           >
             {{ project.label }}
           </router-link>

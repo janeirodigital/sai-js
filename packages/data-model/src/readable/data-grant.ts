@@ -40,6 +40,11 @@ export abstract class AbstractDataGrant extends ReadableResource {
     return this.getObject('hasDataRegistration').value;
   }
 
+  public iriForNew(): string {
+    // TODO find a way to replace with Container#iri
+    return `${this.hasDataRegistration}${this.factory.randomUUID()}`;
+  }
+
   /*
    * @remarks
    * This method returns Data Instance with no dataset, it should be
@@ -48,9 +53,7 @@ export abstract class AbstractDataGrant extends ReadableResource {
    * @returns new DataInstance with IRI based on prefix from ReadableDataRegistration
    */
   public static async newDataInstance(sourceGrant: DataGrant, parent?: DataInstance): Promise<DataInstance> {
-    // TODO find a way to replace with Container#iri
-    const iri = `${sourceGrant.hasDataRegistration}${sourceGrant.factory.randomUUID()}`;
-    return DataInstance.build(iri, sourceGrant, sourceGrant.factory, parent, true);
+    return DataInstance.build(sourceGrant.iriForNew(), sourceGrant, sourceGrant.factory, parent, true);
   }
 
   @Memoize()

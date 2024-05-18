@@ -4,7 +4,7 @@ import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { INTEROP, NOTIFY } from './namespaces';
 import { getOneMatchingQuad } from './match';
-import { getAgentRegistrationIri } from './link-header';
+import { getAgentRegistrationIri, getDescriptionResource } from './link-header';
 import { RdfFetch, WhatwgFetch } from './fetch';
 import { parseJsonld } from './jsonld-parser';
 
@@ -20,6 +20,12 @@ export class RequestError extends Error {
 export class AgentRegistrationDiscoveryError extends RequestError {
   constructor(public response: Response) {
     super('Agent Registration Discovery request failed', response);
+  }
+}
+
+export class DescriptionResourceDiscoveryError extends RequestError {
+  constructor(public response: Response) {
+    super('Discovery Resource Discovery request failed', response);
   }
 }
 
@@ -40,6 +46,17 @@ export async function discoverAgentRegistration(
   return getAgentRegistrationIri(linkHeader);
 }
 
+export async function discoverDescriptionResource(
+  resourceIri: string,
+  fetch: WhatwgFetch
+): Promise<string | undefined> {
+  const response = await fetch(resourceIri, { method: 'HEAD' });
+  if (!response.ok) throw new DescriptionResourceDiscoveryError(response);
+  const linkHeader = response.headers.get('Link');
+  if (!linkHeader) return undefined;
+  return getDescriptionResource(linkHeader);
+}
+
 export async function discoverAuthorizationRedirectEndpoint(
   authorizationAgentIri: string,
   fetch: WhatwgFetch
@@ -54,14 +71,13 @@ export async function discoverAuthorizationRedirectEndpoint(
 export async function discoverWebPushService(
   authorizationAgentIri: string,
   fetch: WhatwgFetch
-): Promise<{id: string, vapidPublicKey: string}> {
+): Promise<{ id: string; vapidPublicKey: string }> {
   const authzAgentDocumentResponse = await fetch(authorizationAgentIri, {
     headers: { Accept: 'application/ld+json' }
   });
   const doc = await parseJsonld(await authzAgentDocumentResponse.text(), authzAgentDocumentResponse.url);
   return {
-    id: getOneMatchingQuad(doc, null, INTEROP.pushService)!.object.value, 
+    id: getOneMatchingQuad(doc, null, INTEROP.pushService)!.object.value,
     vapidPublicKey: getOneMatchingQuad(doc, null, NOTIFY.vapidPublicKey)!.object.value
   };
 }
-

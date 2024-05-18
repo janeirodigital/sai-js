@@ -2,11 +2,12 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX solidshapes: <http://localhost:3000/shapetrees/shapes/>
 PREFIX pm: <https://vocab.example/project-management/>
+PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
+PREFIX ma: <http://www.w3.org/ns/ma-ont#>
 
-solidshapes:Project {
-  a [ pm:Project ] ;
+solidshapes:File {
+  a [ pm:File ] ;
   rdfs:label xsd:string ;
-  pm:hasTask IRI * ;
-  pm:hasImage IRI * ;
-  pm:hasFile IRI *
+  nfo:fileName xsd:string ;
+  ma:format xsd:string
 }

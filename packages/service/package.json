@@ -19,7 +19,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "start": "node dist/componentsMain.js",
-    "redis:create": "docker run --name sai-redis -p 6379:6379 -d redis",
+    "redis:create": "docker run --name sai-redis -p 6379:6379 -d redis:7.2.4",
     "redis:delete": "docker rm -f sai-redis",
     "redis": "pnpm redis:delete && pnpm redis:create",
     "debug": "pnpm run build && node --inspect dist/componentsMain.js",
