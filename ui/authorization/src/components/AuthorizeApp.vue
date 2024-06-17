@@ -135,12 +135,12 @@
             </v-btn-toggle>
             <v-expansion-panels variant="popout">
               <v-expansion-panel
-                v-for="agent in props.authorizationData.dataOwners"
-                :key="agent.id"
+                v-for="owner in props.authorizationData.dataOwners"
+                :key="owner.id"
                 :disabled="topLevelScope !== 'some'"
               >
                 <v-expansion-panel-title class="d-flex flex-row">
-                  <template v-if="agent.id === coreStore.userId">
+                  <template v-if="owner.id === coreStore.userId">
                     <v-icon
                       color="agent"
                       icon="mdi-account-circle"
@@ -152,24 +152,24 @@
                       color="agent"
                       icon="mdi-account-circle-outline"
                     />
-                    <span class="label flex-grow-1">{{ agent.label }}</span>
+                    <span class="label flex-grow-1">{{ owner.label }}</span>
                   </template>
                   <v-chip
                     color="primary"
                     label
                   >
-                    {{ agent.dataRegistrations.length }}
+                    {{ owner.dataRegistrations.length }}
                   </v-chip>
                   <template #actions>
                     <v-badge
                       color="primary"
-                      :content="statsForAgent(agent.id)"
-                      :model-value="agentsIndex[agent.id].scope === 'some'"
+                      :content="statsForAgent(owner.id)"
+                      :model-value="agentsIndex[owner.id].scope === 'some'"
                     >
                       <v-checkbox-btn
                         disabled
-                        :indeterminate="agentsIndex[agent.id].scope === 'some'"
-                        :model-value="agentsIndex[agent.id].scope === 'all'"
+                        :indeterminate="agentsIndex[owner.id].scope === 'some'"
+                        :model-value="agentsIndex[owner.id].scope === 'all'"
                         @click.prevent
                       />
                     </v-badge>
@@ -177,12 +177,12 @@
                 </v-expansion-panel-title>
                 <v-expansion-panel-text>
                   <v-btn-toggle
-                    :model-value="agentsIndex[agent.id].scope"
+                    :model-value="agentsIndex[owner.id].scope"
                     rounded="false"
                     variant="outlined"
                     mandatory
                     class="d-flex flex-row"
-                    @update:model-value="agentScopeChanged(agent.id, $event)"
+                    @update:model-value="agentScopeChanged(owner.id, $event)"
                   >
                     <v-btn
                       class="flex-grow-1"
@@ -202,9 +202,9 @@
                   </v-btn-toggle>
                   <v-expansion-panels variant="popout">
                     <v-expansion-panel
-                      v-for="registration in agent.dataRegistrations"
+                      v-for="registration in owner.dataRegistrations"
                       :key="registration.id"
-                      :disabled="agentsIndex[agent.id].scope !== 'some'"
+                      :disabled="agentsIndex[owner.id].scope !== 'some'"
                     >
                       <v-expansion-panel-title class="d-flex flex-row">
                         <v-icon
@@ -240,7 +240,7 @@
                           variant="outlined"
                           mandatory
                           class="d-flex flex-row"
-                          @update:model-value="registrationScopeChanged(agent.id, registration.id, $event)"
+                          @update:model-value="registrationScopeChanged(owner.id, registration.id, $event)"
                         >
                           <v-btn
                             class="flex-grow-1"
@@ -366,8 +366,8 @@ const descriptionLanguages = computed(() =>
   }))
 )
 
-watch(accessNeed, (accessNeed) => {
-  if (accessNeed) {
+watch(accessNeed, (need) => {
+  if (need) {
     langLoading.value = false
   }
 })
@@ -617,14 +617,14 @@ function chooseIcon(access: string[]): string {
 }
 
 // TODO throw error if required need is not satisfied
-function createDataAuthorizations(accessNeed: AccessNeed, parent?: AccessNeed): DataAuthorization[] {
-  if (!parent && !isSelected(accessNeed.id)) return [];
-  if (parent && !isSelected(parent.id, accessNeed.id)) return [];
+function createDataAuthorizations(need: AccessNeed, parent?: AccessNeed): DataAuthorization[] {
+  if (!parent && !isSelected(need.id)) return [];
+  if (parent && !isSelected(parent.id, need.id)) return [];
   const dataAuthorizations: DataAuthorization[] = [];
   const accessNeedAuthorization = {
-    accessNeed: accessNeed.id
+    accessNeed: need.id
   } as Partial<DataAuthorization>;
-  if (accessNeed.parent) {
+  if (need.parent) {
     dataAuthorizations.push({
       ...accessNeedAuthorization,
       scope: Scopes.Inherited
@@ -670,8 +670,8 @@ function createDataAuthorizations(accessNeed: AccessNeed, parent?: AccessNeed): 
     }
   }
   let children: DataAuthorization[] = [];
-  if (accessNeed.children) {
-    children = accessNeed.children.flatMap((childAccessNeed) => createDataAuthorizations(childAccessNeed, accessNeed));
+  if (need.children) {
+    children = need.children.flatMap((childAccessNeed) => createDataAuthorizations(childAccessNeed, need));
   }
   return [...dataAuthorizations, ...children];
 }
@@ -693,8 +693,8 @@ function authorize(granted = true) {
     if (granted) {
       authorization = {
         ...baseAuthorization,
-        dataAuthorizations: props.authorizationData.accessNeedGroup.needs.flatMap((accessNeed) =>
-          createDataAuthorizations(accessNeed)
+        dataAuthorizations: props.authorizationData.accessNeedGroup.needs.flatMap((need) =>
+          createDataAuthorizations(need)
         ),
         granted: true
       };

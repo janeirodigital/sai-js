@@ -166,8 +166,8 @@ async function updateTask(label: string) {
   if (selectedTask.value) {
     cTask = appStore.changeData(selectedTask.value);
   } else {
-    const newTask = await appStore.draftTask(appStore.currentProject!['@id']!)
-    cTask = appStore.changeData(newTask);
+    const createdTask = await appStore.draftTask(appStore.currentProject!['@id']!)
+    cTask = appStore.changeData(createdTask);
   }
   cTask.label = label;
   appStore.updateTask(cTask);

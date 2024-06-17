@@ -288,8 +288,8 @@ describe('addSocialAgent', () => {
         expect(response.body.type).toBe(ResponseMessageTypes.SOCIAL_AGENT_RESPONSE);
         expect(response.body.payload).toBe(socialAgent);
 
-        const { webId, label, note } = request.body;
-        expect(mocked.addSocialAgent).toBeCalledWith(saiSession, { webId, label, note });
+        const { webId: agentId, label, note } = request.body;
+        expect(mocked.addSocialAgent).toBeCalledWith(saiSession, { webId: agentId, label, note });
         done();
       }
     });

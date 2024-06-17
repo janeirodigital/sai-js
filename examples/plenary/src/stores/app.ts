@@ -103,8 +103,8 @@ export const useAppStore = defineStore('app', () => {
         if (readContainerResult.isError) throw readContainerResult;
         if (container.type !== 'container') throw 'not a container';
         for (const child of container.children()) {
-          const readContainerResult = await container.read();
-          if (readContainerResult.isError) throw readContainerResult;
+          const readChildContainerResult = await container.read();
+          if (readChildContainerResult.isError) throw readChildContainerResult;
           await loadResource(child.uri);
           const event = dataset.usingType(EventShapeType).fromSubject(child.uri);
           index[event['@id']!] = {
@@ -125,9 +125,9 @@ export const useAppStore = defineStore('app', () => {
   // trigger vue reactivty
   // TODO: integrate vue reactivity into LDO proxies
   function triggerEvent(event: Event): void {
-    const index = events.value.indexOf(event);
-    delete events.value[index];
-    events.value[index] = cloneEvent(event);
+    const eventIndex = events.value.indexOf(event);
+    delete events.value[eventIndex];
+    events.value[eventIndex] = cloneEvent(event);
   }
 
   async function createPresence(event: Event, agent: Person): Promise<Role> {

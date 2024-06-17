@@ -67,7 +67,7 @@ export const useAppStore = defineStore('app', () => {
 
   async function loadAgents(force = false): Promise<void> {
     if (agents.value.length && !force) return;
-    const session = await ensureSaiSession();
+    await ensureSaiSession();
     const profiles = await Promise.all(
       [...session.resourceOwners()].map((owner) => session.factory.readable.webIdProfile(owner))
     );
