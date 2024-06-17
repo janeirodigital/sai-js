@@ -5,17 +5,20 @@
         v-for="resourceServer in appStore.resourceServers[appStore.currentAgent.id]"
         :key="resourceServer.id"
       >
-      <h3>{{ resourceServer.label }}</h3>
-      <v-list>
-        <v-list-item v-for="project in appStore.projectsFor(resourceServer.id)" :key="project['@id']">
-          <router-link
-            :to="{ name: 'project', query: { ...route.query, resourceServer: resourceServer.id, project: project['@id'] } }"
+        <h3>{{ resourceServer.label }}</h3>
+        <v-list>
+          <v-list-item
+            v-for="project in appStore.projectsFor(resourceServer.id)"
+            :key="project['@id']"
           >
-            {{ project.label }}
-          </router-link>
-        </v-list-item>
-      </v-list>
-    </div>
+            <router-link
+              :to="{ name: 'project', query: { ...route.query, resourceServer: resourceServer.id, project: project['@id'] } }"
+            >
+              {{ project.label }}
+            </router-link>
+          </v-list-item>
+        </v-list>
+      </div>
     </template>
   </v-main>
 </template>

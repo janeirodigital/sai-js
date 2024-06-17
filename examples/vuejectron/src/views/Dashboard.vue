@@ -12,11 +12,16 @@
           color="secondary"
           :loading="enableNotificationsLoading"
           @click="enableNotifications"
-        >Enable</v-btn>
+        >
+          Enable
+        </v-btn>
       </template>
     </v-alert>
     <v-list>
-      <v-list-item v-for="agent in appStore.agents" :key="agent.id">
+      <v-list-item
+        v-for="agent in appStore.agents"
+        :key="agent.id"
+      >
         <router-link :to="{ name: 'agent', query: { agent: agent.id } }">
           {{ agent.label }}
         </router-link>

@@ -48,7 +48,6 @@ export class CRUDResource extends ReadableResource {
     this.updatedAt = new Date();
   }
 
-  // eslint-disable-next-line consistent-return
   get registeredAt(): Date | undefined {
     const object = this.getObject('registeredAt');
     if (object) {
@@ -67,7 +66,6 @@ export class CRUDResource extends ReadableResource {
     );
   }
 
-  // eslint-disable-next-line consistent-return
   get updatedAt(): Date | undefined {
     const object = this.getObject('updatedAt');
     if (object) {

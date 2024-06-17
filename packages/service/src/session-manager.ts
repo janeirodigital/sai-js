@@ -25,7 +25,7 @@ const prefixes = {
 
 async function buildSaiSession(oidcSession: Session, clientId: string): Promise<AuthorizationAgent> {
   // TODO handle if (!oidcSession.info.isLoggedIn)
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
   const webId = oidcSession.info.webId!;
   return AuthorizationAgent.build(webId, clientId, {
     fetch: oidcSession.fetch,
@@ -94,7 +94,11 @@ export class SessionManager implements ISessionManager {
     return value ? (JSON.parse(value) as PushSubscriptionInfo[]) : [];
   }
 
-  async addWebhookPushSubscription(webId: string, applicationId: string, pushChannel: PushSubscriptionInfo): Promise<void> {
+  async addWebhookPushSubscription(
+    webId: string,
+    applicationId: string,
+    pushChannel: PushSubscriptionInfo
+  ): Promise<void> {
     const key = `${prefixes.push}${webId}:${applicationId}`;
     const existing = await this.getWebhookPushSubscription(webId, applicationId);
     const duplicate = existing.find((existingSubscription) => existingSubscription.sendTo === pushChannel.sendTo);
@@ -109,7 +113,12 @@ export class SessionManager implements ISessionManager {
     return value ? (JSON.parse(value) as NotificationChannel) : undefined;
   }
 
-  async addWebhookPushTopic(webId: string, applicationId: string, topic: string, channel: NotificationChannel): Promise<void> {
+  async addWebhookPushTopic(
+    webId: string,
+    applicationId: string,
+    topic: string,
+    channel: NotificationChannel
+  ): Promise<void> {
     const key = `${prefixes.push}${webId}:${applicationId}:${topic}`;
     const existing = await this.storage.get(key);
     if (existing) return;

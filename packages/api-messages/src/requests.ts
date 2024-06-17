@@ -1,5 +1,3 @@
-/* eslint-disable max-classes-per-file */
-
 import { IRI } from './index';
 import { AgentType, Authorization, ShareAuthorization } from './payloads';
 

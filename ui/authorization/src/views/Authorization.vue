@@ -2,18 +2,18 @@
   <v-main>
     <AuthorizeApp
       v-if="!route.query.resource && appStore.authorizationData
-            && (agent || appStore.application)"
+        && (agent || appStore.application)"
       :application="appStore.application"
       :agent="agent"
       :authorization-data="appStore.authorizationData"
       :redirect="route.query.redirect !== 'false'"
-    ></AuthorizeApp>
+    />
     <ShareResource
       v-if="!route.query.webid && clientId && appStore.resource"
       :application-id="clientId"
       :resource="appStore.resource"
       :social-agents="appStore.socialAgentList"
-    ></ShareResource>
+    />
   </v-main>
 </template>
 

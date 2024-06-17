@@ -1,11 +1,18 @@
 <template>
   <v-container class="fill-height">
     <v-responsive class="align-center text-center fill-height">
-      <v-img height="300" src="@/assets/logo.svg" />
+      <v-img
+        height="300"
+        src="@/assets/logo.svg"
+      />
 
-      <div class="text-body-2 font-weight-light mb-n1">Welcome to</div>
+      <div class="text-body-2 font-weight-light mb-n1">
+        Welcome to
+      </div>
 
-      <h1 class="text-h2 font-weight-bold">Vuetify</h1>
+      <h1 class="text-h2 font-weight-bold">
+        Vuetify
+      </h1>
 
       <div class="py-14" />
 
@@ -18,7 +25,11 @@
             target="_blank"
             variant="text"
           >
-            <v-icon icon="mdi-view-dashboard" size="large" start />
+            <v-icon
+              icon="mdi-view-dashboard"
+              size="large"
+              start
+            />
 
             Components
           </v-btn>
@@ -34,7 +45,11 @@
             target="_blank"
             variant="flat"
           >
-            <v-icon icon="mdi-speedometer" size="large" start />
+            <v-icon
+              icon="mdi-speedometer"
+              size="large"
+              start
+            />
 
             Get Started
           </v-btn>
@@ -48,7 +63,11 @@
             target="_blank"
             variant="text"
           >
-            <v-icon icon="mdi-account-group" size="large" start />
+            <v-icon
+              icon="mdi-account-group"
+              size="large"
+              start
+            />
 
             Community
           </v-btn>

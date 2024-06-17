@@ -8,7 +8,6 @@ import { ReadableShapeTree } from './shape-tree';
 export class ReadableAccessNeed extends ReadableResource {
   shapeTree: ReadableShapeTree;
 
-  // eslint-disable-next-line no-use-before-define
   children: ReadableAccessNeed[] = [];
 
   public descriptions: { [key: string]: ReadableAccessNeedDescription } = {};

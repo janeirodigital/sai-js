@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-
 import { from, Observable } from 'rxjs';
 import { HttpHandler, HttpHandlerResponse, ForbiddenHttpError, NotFoundHttpError } from '@digita-ai/handlersjs-http';
 import { getLogger } from '@digita-ai/handlersjs-logging';
@@ -23,14 +21,14 @@ export class WebPushUnsubscribeHandler extends HttpHandler {
       throw new ForbiddenHttpError('wrong authorization agent');
     }
 
-    const topic = decodeBase64(context.request.parameters.encodedTopic)
-    const webhookChannel = await this.sessionManager.getWebhookPushTopic(webId, applicationId, topic)
-    if (!webhookChannel) throw new NotFoundHttpError()
+    const topic = decodeBase64(context.request.parameters.encodedTopic);
+    const webhookChannel = await this.sessionManager.getWebhookPushTopic(webId, applicationId, topic);
+    if (!webhookChannel) throw new NotFoundHttpError();
 
     const saiSession = await this.sessionManager.getSaiSession(webId);
-    const response = await saiSession.rawFetch(webhookChannel.id, { method: 'DELETE' })
+    const response = await saiSession.rawFetch(webhookChannel.id, { method: 'DELETE' });
     if (!response.ok) return { status: 502, headers: {} };
-    await this.sessionManager.deleteWebhookPushTopic(webId, applicationId, topic)
+    await this.sessionManager.deleteWebhookPushTopic(webId, applicationId, topic);
     return { status: 204, headers: {} };
   }
 

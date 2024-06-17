@@ -16,10 +16,6 @@ class OidcError extends Error {
 
 export const useCoreStore = defineStore('core', () => {
   const userId = ref<string | null>(null);
-  const isAuthorized = ref(false);
-  const saiError = ref<string | undefined>();
-  const authorizationRedirectUri = ref<string | null>(null);
-
 
   async function login(oidcIssuer: string) {
     const options = {

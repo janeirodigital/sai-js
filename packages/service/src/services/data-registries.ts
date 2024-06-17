@@ -33,7 +33,6 @@ const buildDataRegistryForGrant = async (
 ): Promise<DataRegistry> => {
   const registrations: DataRegistration[] = [];
   for (const dataGrant of dataGrants) {
-    // eslint-disable-next-line no-await-in-loop
     const shapeTree = await saiSession.factory.readable.shapeTree(dataGrant.registeredShapeTree, descriptionsLang);
     registrations.push({
       id: dataGrant.hasDataRegistration,

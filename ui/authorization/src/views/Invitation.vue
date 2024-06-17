@@ -8,23 +8,25 @@
             v-model="capabilityUrl"
             v-bind="$ta('invitation-link-input')"
             :rules="[rules.required]"
-          ></v-text-field>
+          />
           <v-text-field
             v-model="label"
             v-bind="$ta('invitation-label-input')"
             :rules="[rules.required]"
-          ></v-text-field>
+          />
           <v-text-field
             v-model="note"
             v-bind="$ta('invitation-note-input')"
-          ></v-text-field>
+          />
           <v-btn
             type="submit"
             block
             class="mt-2"
             :loading="loading"
             :disabled="!valid"
-          >{{route.query.direction === 'create' ? $t('create-invitation') : $t('accept-invitation') }}</v-btn>
+          >
+            {{ route.query.direction === 'create' ? $t('create-invitation') : $t('accept-invitation') }}
+          </v-btn>
         </v-form>
       </v-card-item>
     </v-card>

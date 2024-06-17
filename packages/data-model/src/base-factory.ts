@@ -54,7 +54,6 @@ export class BaseFactory {
     this.readable = this.readableFactory();
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   protected readableFactory(): BaseReadableFactory {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;

@@ -21,7 +21,6 @@ beforeEach(() => {
 
 describe('constructor', () => {
   test('creates bull worker', () => {
-    // eslint-disable-next-line no-new
     new BullWorker(queueName, processor, {});
     expect(MockedWorker).toBeCalledWith(queueName, expect.any(Function), { autorun: false, connection: {} });
   });

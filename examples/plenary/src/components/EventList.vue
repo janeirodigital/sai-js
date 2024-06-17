@@ -10,9 +10,10 @@
     </v-btn>
     <v-card
       v-for="event of store.events"
-      @click="showDetails(event)"
       :key="event['@id']"
-      :title="event.name">
+      :title="event.name"
+      @click="showDetails(event)"
+    >
       <v-card-subtitle>
         {{ store.organizations.find(o => o['@id'] === store.getAgent(event))?.label }} -
         {{ store.getPod(event)?.name }}
@@ -25,8 +26,7 @@
   <v-skeleton-loader
     v-else
     type="list-item-three-line@3"
-  ></v-skeleton-loader>
-
+  />
 </template>
 
 <script setup lang="ts">

@@ -59,7 +59,6 @@ async function common(url: string, options?: RequestInit, state?: { [key: string
 function addState(state: { [key: string]: string }): WhatwgFetch {
   return async function statefulFetch(url: string, options?: RequestInit): Promise<Response> {
     if (options?.method === 'PUT') {
-      // eslint-disable-next-line no-param-reassign
       state[url] = options.body as string;
       const response = { ok: true } as Response;
       response.clone = () => ({ ...response });

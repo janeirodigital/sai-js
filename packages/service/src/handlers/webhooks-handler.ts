@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-
 import { from, Observable } from 'rxjs';
 import { HttpHandler, HttpHandlerResponse, HttpHandlerContext } from '@digita-ai/handlersjs-http';
 import { getLogger } from '@digita-ai/handlersjs-logging';

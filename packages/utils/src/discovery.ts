@@ -1,5 +1,3 @@
-/* eslint-disable max-classes-per-file */
-
 import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { INTEROP, NOTIFY } from './namespaces';

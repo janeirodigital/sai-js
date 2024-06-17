@@ -67,7 +67,6 @@ const router = createRouter({
   routes
 });
 
-/* eslint-disable consistent-return */
 router.beforeEach(async (to) => {
   if (to.name === 'redirect') return;
   const coreStore = useCoreStore();
@@ -93,7 +92,7 @@ router.afterEach((to, from) => {
   if ((from.name === 'agent' && to.name === 'dashboard') || (from.name === 'project' && to.name === 'agent')) {
     direction = 'right';
   }
-  // eslint-disable-next-line no-param-reassign
+
   to.meta.transition = direction;
 });
 

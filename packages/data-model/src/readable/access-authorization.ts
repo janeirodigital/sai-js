@@ -115,7 +115,6 @@ export class ReadableAccessAuthorization extends ReadableResource {
       }
       for (const dataAuthorization of regularAuthorizations) {
         dataGrants.push(
-          // eslint-disable-next-line no-await-in-loop
           ...(await dataAuthorization.generateDataGrants(dataRegistries, agentRegistry, granteeRegistration))
         );
       }

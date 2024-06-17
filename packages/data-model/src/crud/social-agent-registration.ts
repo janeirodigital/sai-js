@@ -19,7 +19,6 @@ export type SocialAgentRegistrationData = AgentRegistrationData & ClassData;
 export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
   data?: SocialAgentRegistrationData;
 
-  // eslint-disable-next-line no-use-before-define
   reciprocalRegistration?: CRUDSocialAgentRegistration;
 
   reciprocal: boolean;

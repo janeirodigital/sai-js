@@ -6,7 +6,7 @@
         <v-select
           v-model="coreStore.lang"
           :items="languages"
-        ></v-select>
+        />
       </template>
     </v-list-item>
     <v-list-item id="translation">

@@ -11,10 +11,12 @@
           color="secondary"
           :loading="enableNotificationsLoading"
           @click="enableNotifications"
-        >{{ $t('enable') }}</v-btn>
+        >
+          {{ $t('enable') }}
+        </v-btn>
       </template>
     </v-alert>
-    <router-view></router-view>
+    <router-view />
   </v-main>
   <v-bottom-navigation>
     <v-btn :to="{name: 'application-list'}">
@@ -39,7 +41,7 @@
 
       <span>{{ $t('settings') }}</span>
     </v-btn>
-</v-bottom-navigation>
+  </v-bottom-navigation>
 </template>
 
 <script lang="ts" setup>

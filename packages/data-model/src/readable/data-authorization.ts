@@ -15,7 +15,6 @@ import { ReadableResource, SelectedFromRegistryDataGrant } from '.';
 export class ReadableDataAuthorization extends ReadableResource {
   factory: AuthorizationAgentFactory;
 
-  // eslint-disable-next-line no-use-before-define
   hasInheritingAuthorization: ReadableDataAuthorization[];
 
   async inheritingAuthorizations(): Promise<ReadableDataAuthorization[]> {
@@ -114,17 +113,14 @@ export class ReadableDataAuthorization extends ReadableResource {
     for await (const agentRegistration of agentRegistry.socialAgentRegistrations) {
       // data onwer is specified but it is not their registration
       if (this.dataOwner && this.dataOwner !== agentRegistration.registeredAgent) {
-        // eslint-disable-next-line no-continue
         continue;
       }
       // don't create delegated data grants for data owned by the grantee (registeredAgent)
       if (this.grantee === agentRegistration.registeredAgent) {
-        // eslint-disable-next-line no-continue
         continue;
       }
       const accessGrantIri = agentRegistration.reciprocalRegistration?.hasAccessGrant;
 
-      // eslint-disable-next-line no-continue
       if (!accessGrantIri) continue;
 
       const accessGrant = await this.factory.readable.accessGrant(accessGrantIri);
@@ -214,7 +210,7 @@ export class ReadableDataAuthorization extends ReadableResource {
     // FIXME handle each data registry independently
     for (const dataRegistry of dataRegistries) {
       // const dataRegistrations = dataRegistriesArr.flat();
-      // eslint-disable-next-line no-await-in-loop
+
       const dataRegistrations = await asyncIterableToArray(dataRegistry.registrations);
 
       let matchingRegistration: ReadableDataRegistration;
@@ -228,7 +224,7 @@ export class ReadableDataAuthorization extends ReadableResource {
           (registration) => registration.registeredShapeTree === this.registeredShapeTree
         );
       }
-      // eslint-disable-next-line no-continue
+
       if (!matchingRegistration) continue;
 
       // create source grant

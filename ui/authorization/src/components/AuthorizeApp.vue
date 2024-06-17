@@ -2,18 +2,18 @@
   <v-card
     v-if="application"
     :title="application.name"
-    :prepend-avatar="application.logo">
-  </v-card>
+    :prepend-avatar="application.logo"
+  />
   <v-card
     v-if="agent"
     :title="agent.label"
     :subtitle="agent.note"
-  ></v-card>
+  />
   <v-alert
-        v-if="coreStore.lang !== authorizationData.accessNeedGroup.lang"
-        color="info"
-        icon="mdi-translate"
-      >
+    v-if="coreStore.lang !== authorizationData.accessNeedGroup.lang"
+    color="info"
+    icon="mdi-translate"
+  >
     <template #append>
       <template v-if="descriptionLanguages.length === 1">
         {{ descriptionLanguages[0].title }}
@@ -23,16 +23,22 @@
           v-model="alternativeLang"
           :items="descriptionLanguages"
           :disabled="langLoading"
-        ></v-select>
+        />
       </template>
     </template>
   </v-alert>
-  <v-skeleton-loader v-if="langLoading" type="card@2"></v-skeleton-loader>
+  <v-skeleton-loader
+    v-if="langLoading"
+    type="card@2"
+  />
   <v-card v-else>
     <v-card-text>
-      <v-list-item lines="three" @click="toggleSelect(accessNeed.id)">
+      <v-list-item
+        lines="three"
+        @click="toggleSelect(accessNeed.id)"
+      >
         <v-list-item-title>
-          <v-icon :icon="chooseIcon(accessNeed.access)"></v-icon>
+          <v-icon :icon="chooseIcon(accessNeed.access)" />
           {{ accessNeed.shapeTree.label }}
         </v-list-item-title>
         <v-list-item-subtitle>
@@ -44,7 +50,7 @@
               :model-value="isSelected(accessNeed.id)"
               :disabled="accessNeed.required"
               @click.prevent
-            ></v-checkbox-btn>
+            />
           </v-list-item-action>
         </template>
       </v-list-item>
@@ -57,7 +63,7 @@
           @click="toggleSelect(accessNeed.id, child.id)"
         >
           <v-list-item-title>
-            <v-icon :icon="chooseIcon(child.access)"></v-icon>
+            <v-icon :icon="chooseIcon(child.access)" />
             {{ child.shapeTree.label }}
           </v-list-item-title>
           <v-list-item-subtitle>
@@ -69,32 +75,63 @@
                 :model-value="isSelected(accessNeed.id, child.id)"
                 :disabled="child.required"
                 @click.prevent
-              ></v-checkbox-btn>
+              />
             </v-list-item-action>
           </template>
         </v-list-item>
       </v-list>
-      <v-expansion-panels id="panel-hell" v-model="panelsOpened" variant="popout">
+      <v-expansion-panels
+        id="panel-hell"
+        v-model="panelsOpened"
+        variant="popout"
+      >
         <v-expansion-panel value="top">
           <v-expansion-panel-title class="d-flex flex-row">
             <span class="flex-grow-1">{{ topLevelScope === 'all' ? $t('all-data') : $t('selected-data') }}</span>
-            <v-chip color="agent" label>{{ props.authorizationData.dataOwners.length }}</v-chip>
+            <v-chip
+              color="agent"
+              label
+            >
+              {{ props.authorizationData.dataOwners.length }}
+            </v-chip>
             <template #actions>
-              <v-badge color="agent" :content="statsForTopLevel()" :model-value="topLevelScope === 'some'">
+              <v-badge
+                color="agent"
+                :content="statsForTopLevel()"
+                :model-value="topLevelScope === 'some'"
+              >
                 <v-checkbox-btn
                   disabled
                   :indeterminate="topLevelScope === 'some'"
                   :model-value="topLevelScope === 'all'"
                   @click.prevent
-                ></v-checkbox-btn>
+                />
               </v-badge>
             </template>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
-            <v-btn-toggle v-model="topLevelScope" rounded="false" variant="outlined" mandatory class="d-flex flex-row">
-              <v-btn class="flex-grow-1" icon="mdi-checkbox-blank-outline" value="none"></v-btn>
-              <v-btn class="flex-grow-1" icon="mdi-minus-box-outline" value="some"></v-btn>
-              <v-btn class="flex-grow-1" icon="mdi-checkbox-outline" value="all"></v-btn>
+            <v-btn-toggle
+              v-model="topLevelScope"
+              rounded="false"
+              variant="outlined"
+              mandatory
+              class="d-flex flex-row"
+            >
+              <v-btn
+                class="flex-grow-1"
+                icon="mdi-checkbox-blank-outline"
+                value="none"
+              />
+              <v-btn
+                class="flex-grow-1"
+                icon="mdi-minus-box-outline"
+                value="some"
+              />
+              <v-btn
+                class="flex-grow-1"
+                icon="mdi-checkbox-outline"
+                value="all"
+              />
             </v-btn-toggle>
             <v-expansion-panels variant="popout">
               <v-expansion-panel
@@ -104,14 +141,25 @@
               >
                 <v-expansion-panel-title class="d-flex flex-row">
                   <template v-if="agent.id === coreStore.userId">
-                    <v-icon color="agent" icon="mdi-account-circle"></v-icon>
+                    <v-icon
+                      color="agent"
+                      icon="mdi-account-circle"
+                    />
                     <span class="label flex-grow-1">Me</span>
                   </template>
                   <template v-else>
-                    <v-icon color="agent" icon="mdi-account-circle-outline"></v-icon>
+                    <v-icon
+                      color="agent"
+                      icon="mdi-account-circle-outline"
+                    />
                     <span class="label flex-grow-1">{{ agent.label }}</span>
                   </template>
-                  <v-chip color="primary" label>{{ agent.dataRegistrations.length }}</v-chip>
+                  <v-chip
+                    color="primary"
+                    label
+                  >
+                    {{ agent.dataRegistrations.length }}
+                  </v-chip>
                   <template #actions>
                     <v-badge
                       color="primary"
@@ -123,7 +171,7 @@
                         :indeterminate="agentsIndex[agent.id].scope === 'some'"
                         :model-value="agentsIndex[agent.id].scope === 'all'"
                         @click.prevent
-                      ></v-checkbox-btn>
+                      />
                     </v-badge>
                   </template>
                 </v-expansion-panel-title>
@@ -136,9 +184,21 @@
                     class="d-flex flex-row"
                     @update:model-value="agentScopeChanged(agent.id, $event)"
                   >
-                    <v-btn class="flex-grow-1" icon="mdi-checkbox-blank-outline" value="none"></v-btn>
-                    <v-btn class="flex-grow-1" icon="mdi-minus-box-outline" value="some"></v-btn>
-                    <v-btn class="flex-grow-1" icon="mdi-checkbox-outline" value="all"></v-btn>
+                    <v-btn
+                      class="flex-grow-1"
+                      icon="mdi-checkbox-blank-outline"
+                      value="none"
+                    />
+                    <v-btn
+                      class="flex-grow-1"
+                      icon="mdi-minus-box-outline"
+                      value="some"
+                    />
+                    <v-btn
+                      class="flex-grow-1"
+                      icon="mdi-checkbox-outline"
+                      value="all"
+                    />
                   </v-btn-toggle>
                   <v-expansion-panels variant="popout">
                     <v-expansion-panel
@@ -147,9 +207,17 @@
                       :disabled="agentsIndex[agent.id].scope !== 'some'"
                     >
                       <v-expansion-panel-title class="d-flex flex-row">
-                        <v-icon color="primary" icon="mdi-hexagon-outline"></v-icon>
+                        <v-icon
+                          color="primary"
+                          icon="mdi-hexagon-outline"
+                        />
                         <span class="label flex-grow-1">{{ registration.label }}</span>
-                        <v-chip color="secondary" label>{{ registration.count }}</v-chip>
+                        <v-chip
+                          color="secondary"
+                          label
+                        >
+                          {{ registration.count }}
+                        </v-chip>
                         <template #actions>
                           <v-badge
                             color="secondary"
@@ -161,7 +229,7 @@
                               :indeterminate="registrationsIndex[registration.id].scope === 'some'"
                               :model-value="registrationsIndex[registration.id].scope === 'all'"
                               @click.prevent
-                            ></v-checkbox-btn>
+                            />
                           </v-badge>
                         </template>
                       </v-expansion-panel-title>
@@ -174,9 +242,21 @@
                           class="d-flex flex-row"
                           @update:model-value="registrationScopeChanged(agent.id, registration.id, $event)"
                         >
-                          <v-btn class="flex-grow-1" icon="mdi-checkbox-blank-outline" value="none"></v-btn>
-                          <v-btn class="flex-grow-1" icon="mdi-minus-box-outline" value="some"></v-btn>
-                          <v-btn class="flex-grow-1" icon="mdi-checkbox-outline" value="all"></v-btn>
+                          <v-btn
+                            class="flex-grow-1"
+                            icon="mdi-checkbox-blank-outline"
+                            value="none"
+                          />
+                          <v-btn
+                            class="flex-grow-1"
+                            icon="mdi-minus-box-outline"
+                            value="some"
+                          />
+                          <v-btn
+                            class="flex-grow-1"
+                            icon="mdi-checkbox-outline"
+                            value="all"
+                          />
                         </v-btn-toggle>
                         <template v-if="registrationsIndex[registration.id].scope === 'some'">
                           <v-list v-if="appStore.loadedDataInstances[registration.id]">
@@ -187,7 +267,10 @@
                               @click="toggleOneInstance(dataInstance.id)"
                             >
                               <v-list-item-title>
-                                <v-icon color="secondary" icon="mdi-star-three-points-outline"></v-icon>
+                                <v-icon
+                                  color="secondary"
+                                  icon="mdi-star-three-points-outline"
+                                />
                                 {{ dataInstance.label }}
                               </v-list-item-title>
                               <template #append>
@@ -196,12 +279,15 @@
                                     v-model="dataInstancesIndex[dataInstance.id].selected"
                                     :disabled="registrationsIndex[registration.id].scope !== 'some'"
                                     @click.prevent
-                                  ></v-checkbox-btn>
+                                  />
                                 </v-list-item-action>
                               </template>
                             </v-list-item>
                           </v-list>
-                          <v-skeleton-loader v-else type="list-item@2"></v-skeleton-loader>
+                          <v-skeleton-loader
+                            v-else
+                            type="list-item@2"
+                          />
                         </template>
                       </v-expansion-panel-text>
                     </v-expansion-panel>
@@ -214,9 +300,15 @@
       </v-expansion-panels>
     </v-card-text>
     <div class="px-2 d-flex justify-space-between">
-      <v-btn color="error" variant="tonal" :loading="loadingDeny" :disabled="loadingAuthorize" @click="authorize(false)"
-        >{{ $t('deny') }}</v-btn
+      <v-btn
+        color="error"
+        variant="tonal"
+        :loading="loadingDeny"
+        :disabled="loadingAuthorize"
+        @click="authorize(false)"
       >
+        {{ $t('deny') }}
+      </v-btn>
       <v-btn
         color="success"
         variant="flat"
@@ -224,8 +316,9 @@
         :loading="loadingAuthorize"
         :disabled="loadingDeny || statsForTopLevel() === 0"
         @click="authorize()"
-        >{{ $t('authorize')}}</v-btn
       >
+        {{ $t('authorize') }}
+      </v-btn>
     </div>
   </v-card>
 </template>

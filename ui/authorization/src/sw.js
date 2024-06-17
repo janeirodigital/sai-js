@@ -15,5 +15,4 @@ self.addEventListener('push', (event) => {
 });
 
 // TODO: handle messages from clients
-self.addEventListener('message', () => {
-})
+// self.addEventListener('message', () => {})

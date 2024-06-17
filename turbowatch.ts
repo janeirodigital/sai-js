@@ -9,7 +9,7 @@ function npmName(pkgName: string) {
 }
 
 // TODO watch service componentjs configs
-/* eslint-disable no-void */
+
 const packages = ['utils', 'data-model', 'application', 'authorization-agent', 'api-messages'];
 for (const pkgName of packages) {
   void watch({
@@ -26,7 +26,6 @@ for (const pkgName of packages) {
   });
 }
 
-/* eslint-disable no-void */
 void watch({
   project: path.join(__dirname, 'packages/service'),
   triggers: [

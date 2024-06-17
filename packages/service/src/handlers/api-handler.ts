@@ -100,11 +100,10 @@ export class ApiHandler extends HttpHandler {
           headers: {}
         };
       case RequestMessageTypes.ADD_SOCIAL_AGENT_REQUEST: {
-        // eslint-disable-next-line no-case-declarations
         const { webId, label, note } = body;
-        // eslint-disable-next-line no-case-declarations
+
         const socialAgent = await addSocialAgent(saiSession, { webId, label, note });
-        // eslint-disable-next-line no-case-declarations
+
         const jobData: IReciprocalRegistrationsJobData = {
           webId: saiSession.webId,
           registeredAgent: socialAgent.id

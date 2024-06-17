@@ -56,7 +56,6 @@ async function findUserDataRegistrations(
   const dataRegistrations: DataRegistration[] = [];
   for (const dataRegistry of saiSession.registrySet.hasDataRegistry) {
     for (const accessNeed of accessNeedGroup.accessNeeds) {
-      // eslint-disable-next-line no-await-in-loop
       const dataRegistration = await saiSession.findDataRegistration(dataRegistry.iri, accessNeed.shapeTree.iri);
       if (dataRegistration)
         dataRegistrations.push({
@@ -92,8 +91,7 @@ async function findSocialAgentDataRegistrations(
           count: dataGrant.hasDataInstance
             ? // @ts-ignore
               dataGrant.hasDataInstance.length
-            : // eslint-disable-next-line no-await-in-loop
-              (await saiSession.factory.readable.dataRegistration(dataGrant.hasDataRegistration)).contains.length
+            : (await saiSession.factory.readable.dataRegistration(dataGrant.hasDataRegistration)).contains.length
         });
       }
     }
@@ -184,7 +182,6 @@ export const listDataInstances = async (
   if (agentId === saiSession.webId) {
     const dataRegistration = await saiSession.factory.readable.dataRegistration(registrationId);
     for (const dataInstanceIri of dataRegistration.contains) {
-      // eslint-disable-next-line no-await-in-loop
       const dataInstance = await saiSession.factory.readable.dataInstance(dataInstanceIri);
       dataInstances.push({
         id: dataInstance.iri,
@@ -202,7 +199,7 @@ export const listDataInstances = async (
     for (const dataGrant of socialAgentRegistration.accessGrant.hasDataGrant) {
       if (dataGrant.hasDataRegistration === registrationId) {
         // TODO: optimize not to create crud data instances
-        // eslint-disable-next-line no-await-in-loop
+
         for await (const instance of dataGrant.getDataInstanceIterator()) {
           const dataInstance = await saiSession.factory.readable.dataInstance(instance.iri);
           dataInstances.push({

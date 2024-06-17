@@ -7,10 +7,23 @@
     :disabled="disabled"
     @update:model-value="(selected) => $emit('selected', selected)"
   >
-    <v-btn icon="mdi-cancel" value="none"></v-btn>
-    <v-btn icon="mdi-eye-outline" value="view"></v-btn>
-    <v-btn icon="mdi-square-edit-outline" value="edit"></v-btn>
-    <v-btn v-if="props.add" icon="mdi-plus-box-outline" value="add"></v-btn>
+    <v-btn
+      icon="mdi-cancel"
+      value="none"
+    />
+    <v-btn
+      icon="mdi-eye-outline"
+      value="view"
+    />
+    <v-btn
+      icon="mdi-square-edit-outline"
+      value="edit"
+    />
+    <v-btn
+      v-if="props.add"
+      icon="mdi-plus-box-outline"
+      value="add"
+    />
   </v-btn-toggle>
 </template>
 

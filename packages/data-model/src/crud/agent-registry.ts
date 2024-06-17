@@ -52,7 +52,6 @@ export class CRUDAgentRegistry extends CRUDContainer {
     };
   }
 
-  // eslint-disable-next-line consistent-return
   public async findApplicationRegistration(registeredAgent: string): Promise<CRUDApplicationRegistration | undefined> {
     for await (const registration of this.applicationRegistrations) {
       if (registration.registeredAgent === registeredAgent) {
@@ -61,7 +60,6 @@ export class CRUDAgentRegistry extends CRUDContainer {
     }
   }
 
-  // eslint-disable-next-line consistent-return
   public async findSocialAgentRegistration(registeredAgent: string): Promise<CRUDSocialAgentRegistration | undefined> {
     for await (const registration of this.socialAgentRegistrations) {
       if (registration.registeredAgent === registeredAgent) {
@@ -70,7 +68,6 @@ export class CRUDAgentRegistry extends CRUDContainer {
     }
   }
 
-  // eslint-disable-next-line consistent-return
   public async findSocialAgentInvitation(capabilityUrl: string): Promise<CRUDSocialAgentInvitation | undefined> {
     for await (const invitation of this.socialAgentInvitations) {
       if (invitation.capabilityUrl === capabilityUrl) {
@@ -79,7 +76,6 @@ export class CRUDAgentRegistry extends CRUDContainer {
     }
   }
 
-  // eslint-disable-next-line consistent-return
   public async findRegistration(
     iri: string
   ): Promise<CRUDApplicationRegistration | CRUDSocialAgentRegistration | undefined> {

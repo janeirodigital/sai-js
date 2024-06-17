@@ -3,12 +3,28 @@
     <v-card>
       <v-card-item v-if="!coreStore.userId">
         <v-form @submit.prevent="login">
-          <v-text-field v-bind="$ta('sign-in-input')" v-model="oidcIssuer" :placeholder="defaultOidcIssuer"></v-text-field>
-          <v-btn type="submit" block class="mt-2">{{ $t('sign-in') }}</v-btn>
+          <v-text-field
+            v-bind="$ta('sign-in-input')"
+            v-model="oidcIssuer"
+            :placeholder="defaultOidcIssuer"
+          />
+          <v-btn
+            type="submit"
+            block
+            class="mt-2"
+          >
+            {{ $t('sign-in') }}
+          </v-btn>
         </v-form>
       </v-card-item>
       <v-card-item v-else>
-        <v-btn block class="mt-2" @click="loginBackend">{{ $t('connect-server') }}</v-btn>
+        <v-btn
+          block
+          class="mt-2"
+          @click="loginBackend"
+        >
+          {{ $t('connect-server') }}
+        </v-btn>
       </v-card-item>
     </v-card>
   </v-main>

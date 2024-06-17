@@ -1,4 +1,3 @@
-/* eslint-disable  consistent-return, no-await-in-loop, no-continue, spaced-comment, no-throw-literal */
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { LdoBase } from '@ldo/ldo';

@@ -81,7 +81,6 @@ export class AuthorizationAgentFactory extends BaseFactory {
     this.crud = this.crudFactory();
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   private crudFactory(): CRUDFactory {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;
@@ -94,7 +93,7 @@ export class AuthorizationAgentFactory extends BaseFactory {
       },
       socialAgentRegistration: async function socialAgentRegistration(
         iri: string,
-        // eslint-disable-next-line default-param-last
+
         reciprocal = false,
         data?: SocialAgentRegistrationData
       ): Promise<CRUDSocialAgentRegistration> {
@@ -127,7 +126,6 @@ export class AuthorizationAgentFactory extends BaseFactory {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   private immutableFactory(): ImmutableFactory {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;
@@ -153,7 +151,6 @@ export class AuthorizationAgentFactory extends BaseFactory {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   protected readableFactory() {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this;

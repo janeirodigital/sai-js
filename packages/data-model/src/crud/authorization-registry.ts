@@ -29,7 +29,6 @@ export class CRUDAuthorizationRegistry extends CRUDContainer {
     };
   }
 
-  // eslint-disable-next-line consistent-return
   async findAuthorization(agentIri: string): Promise<ReadableAccessAuthorization | void> {
     for await (const authorization of this.accessAuthorizations) {
       if (authorization.grantee === agentIri) {

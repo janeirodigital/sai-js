@@ -20,7 +20,6 @@ type ArrayData = {
 };
 
 type InverseArrayData = {
-  // eslint-disable-next-line no-use-before-define
   hasInheritingGrant?: ImmutableDataGrant[];
 };
 

@@ -14,7 +14,6 @@ export abstract class InheritableDataGrant extends AbstractDataGrant {
 
   protected async bootstrap(): Promise<void> {
     for (const inheritingGrantIri of this.hasInheritingGrantIriList) {
-      // eslint-disable-next-line no-await-in-loop
       const inheritingGrant = (await this.factory.readable.dataGrant(inheritingGrantIri)) as InheritedDataGrant;
       inheritingGrant.inheritsFromGrant = this as unknown as AllFromRegistryDataGrant | SelectedFromRegistryDataGrant;
       this.hasInheritingGrant.add(inheritingGrant);

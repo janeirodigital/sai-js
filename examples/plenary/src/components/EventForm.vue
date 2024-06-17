@@ -1,18 +1,18 @@
 <template>
   <v-form>
     <v-text-field
+      v-model="eventName"
       label="Name"
       :rules="[required]"
-      v-model="eventName"
-    ></v-text-field>
+    />
     <v-select
       v-if="eventName" 
-      label="Organization"
       v-model="organizationId"
+      label="Organization"
       :items="store.organizations"
       item-title="label"
       item-value="@id"
-    ></v-select>
+    />
     <v-list-item
       v-if="pods?.length === 1"
     >
@@ -20,20 +20,20 @@
     </v-list-item>
     <v-select
       v-else-if="pods?.length > 1"
-      label="Pod"
       v-model="podId"
+      label="Pod"
       :items="pods"
       item-title="name"
       item-value="id"
-    ></v-select>
+    />
     <v-select
       v-if="organization && podId"
-      label="Chair"
       v-model="chairId"
+      label="Chair"
       :items="organization.member"
       item-title="label"
       item-value="@id"
-    ></v-select>
+    />
     <v-text-field
       v-if="chairId"
       :model-value="store.formatDate(startDate)"
@@ -53,7 +53,7 @@
           v-model="startDate"
           title="Start Date"
           :min="minDate()"
-        ></v-date-picker>
+        />
       </v-dialog>
     </v-text-field>
     <v-text-field
@@ -75,13 +75,13 @@
           v-model="startTime"
           format="24h"
           title="Start Time"
-        ></v-time-picker>
+        />
       </v-dialog>
     </v-text-field>
     <v-btn
-      @click="create"
       :disabled="!(eventName && organizationId && podId && chairId && dateTime)"
       color="primary"
+      @click="create"
     >
       Create
     </v-btn>

@@ -11,7 +11,6 @@ import { ReadableResource, ApplicationFactory, DataGrant, InheritedDataGrant, Re
 export class DataInstance extends ReadableResource {
   dataGrant: DataGrant;
 
-  // eslint-disable-next-line no-use-before-define
   parent: DataInstance;
 
   draft: boolean;

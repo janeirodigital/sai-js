@@ -180,7 +180,7 @@ export class AuthorizationAgent {
       const rAccessGrant = await accessGrant.store();
 
       // link to new access grant and update agent registration
-      // eslint-disable-next-line no-param-reassign
+
       await agentRegistration.setAccessGrant(rAccessGrant.iri);
     }
   }
@@ -217,7 +217,7 @@ export class AuthorizationAgent {
       const dataAuthorization = (
         await asyncIterableToArray<ReadableDataAuthorization>(accessAuthorization.dataAuthorizations)
       ).find((autorization) => autorization.registeredShapeTree === shapeTree);
-      // eslint-disable-next-line no-continue
+
       if (!dataAuthorization) continue;
 
       switch (dataAuthorization.scopeOfAuthorization) {

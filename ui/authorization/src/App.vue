@@ -2,7 +2,10 @@
   <Suspense>
     <router-view />
     <template #fallback>
-      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+      <v-progress-circular
+        indeterminate
+        color="primary"
+      />
     </template>
   </Suspense>
 </template>
@@ -20,7 +23,7 @@ const mq = window.matchMedia('(prefers-color-scheme: dark)');
 
 toggleDark(mq.matches);
 
-mq.addEventListener('change', (e) => {
+mq.addEventListener('change', () => {
   toggleDark(mq.matches);
 });
 </script>

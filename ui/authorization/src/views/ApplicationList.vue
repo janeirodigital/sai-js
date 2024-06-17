@@ -3,16 +3,21 @@
     <v-list>
       <v-list-item
         v-for="application in appStore.applicationList"
-        :key="application.id" :prepend-avatar="application.logo"
-        :title="application.name">
+        :key="application.id"
+        :prepend-avatar="application.logo"
+        :title="application.name"
+      >
         <template
           v-if="application.callbackEndpoint"
           #append
         >
-          <a :href="application.callbackEndpoint" target="_blank">
+          <a
+            :href="application.callbackEndpoint"
+            target="_blank"
+          >
             <v-icon
               icon="mdi-open-in-new"
-            ></v-icon>
+            />
           </a>
         </template>
       </v-list-item>
@@ -22,7 +27,7 @@
       color="primary"
       @click="addDialog = true"
     >
-      <v-icon icon="mdi-plus"></v-icon>{{  $t('add-application') }}
+      <v-icon icon="mdi-plus" />{{ $t('add-application') }}
     </v-btn>
     <v-dialog
       v-model="addDialog"
@@ -36,20 +41,24 @@
           <v-text-field
             v-model="addClientId"
             v-bind:="$ta('add-application-input')"
-          ></v-text-field>
+          />
         </v-card-text>
         <v-card-actions>
           <v-btn
             color="warning"
             variant="tonal"
             @click="addDialog = false"
-          >{{ $t('cancel') }}</v-btn>
-          <v-spacer></v-spacer>
+          >
+            {{ $t('cancel') }}
+          </v-btn>
+          <v-spacer />
           <v-btn
             color="primary"
             :disabled="!addClientId"
             @click="addApplication"
-          >{{ $t('next') }}</v-btn>
+          >
+            {{ $t('next') }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

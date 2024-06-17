@@ -5,13 +5,15 @@
       :key="agent.id"
       :title="agent.label"
       :subtitle="agent.note"
-      >
+    >
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-btn 
           prepend-icon="mdi-hexagon-multiple-outline"
           :to="{name: 'data-registry-list', query: {agent: agent.id}}"
-        >{{ $t('data') }}</v-btn>
+        >
+          {{ $t('data') }}
+        </v-btn>
         <v-btn 
           :disabled="!agent.accessNeedGroup"
           prepend-icon="mdi-security"
@@ -26,8 +28,7 @@
               inline
               color="warning"
               icon="mdi-bell-ring-outline"
-            ></v-badge>
-
+            />
           </template>
         </v-btn>
       </v-card-actions>
@@ -37,35 +38,43 @@
       :key="invitation.id"
       :title="invitation.label"
       :subtitle="invitation.note"
-      >
+    >
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-btn 
           prepend-icon="mdi-content-copy"
           @click="copyCapabilityUrl(invitation)"
-        >{{ $t('copy-link') }}</v-btn>
+        >
+          {{ $t('copy-link') }}
+        </v-btn>
         <v-btn
           v-if="shareAvaliable()"
           prepend-icon="mdi-email-fast-outline"
           @click="webShareUrl(invitation)"
-        >{{ $t('send-link') }}</v-btn>
+        >
+          {{ $t('send-link') }}
+        </v-btn>
       </v-card-actions>
     </v-card>
     <v-btn
       id="add"
       icon="mdi-plus-circle-outline"
       @click="showAdd=true"
-    ></v-btn>
+    />
     <v-bottom-sheet v-model="showAdd">
       <v-list>
         <v-list-item
           prepend-icon="mdi-account-arrow-right"
           @click="router.push( { name: 'invitation', query: { direction: 'create'}})"
-        >{{ $t('create-invitation') }}</v-list-item>
+        >
+          {{ $t('create-invitation') }}
+        </v-list-item>
         <v-list-item
           prepend-icon="mdi-account-arrow-left"
           @click="router.push( { name: 'invitation', query: { direction: 'accept'}})"
-        >{{ $t('accept-invitation') }}</v-list-item>
+        >
+          {{ $t('accept-invitation') }}
+        </v-list-item>
       </v-list>
     </v-bottom-sheet>
   </v-sheet>

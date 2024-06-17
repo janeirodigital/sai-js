@@ -42,11 +42,11 @@
   "lint-staged": {
     "*.ts": [
       "prettier --write",
-      "eslint --config .eslintrc.js",
+      "eslint",
       "git add"
     ],
     "*.vue": [
-      "eslint --config .eslintrc.js",
+      "eslint",
       "git add"
     ]
   }

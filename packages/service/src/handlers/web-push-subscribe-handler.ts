@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-
 import { from, Observable } from 'rxjs';
 import { HttpHandler, HttpHandlerResponse, ForbiddenHttpError } from '@digita-ai/handlersjs-http';
 import { getOneMatchingQuad, NOTIFY, parseJsonld } from '@janeirodigital/interop-utils';
@@ -49,23 +47,34 @@ export class WebPushSubscribeHandler extends HttpHandler {
       id: webPushUnsubscribeUrl(webId, topic),
       type: 'notify:WebPushChannel2023',
       topic,
-      sendTo: pushSubscriptionInfo.sendTo,
-    }
+      sendTo: pushSubscriptionInfo.sendTo
+    };
 
-    if (!await this.sessionManager.getWebhookPushTopic(webId, applicationId, topic)) {
+    if (!(await this.sessionManager.getWebhookPushTopic(webId, applicationId, topic))) {
       const saiSession = await this.sessionManager.getSaiSession(webId);
       const subscriptionClient = new SubscriptionClient(saiSession.rawFetch as typeof fetch); // TODO: remove as
-      const webhookChannel = await subscriptionClient.subscribe(topic, NOTIFY.WebhookChannel2023.value, webhookPushUrl(webId, applicationId));
-      await this.sessionManager.addWebhookPushTopic(webId, applicationId, topic, webhookChannel)
-      return { body: webPushChannel, status: 201, headers: {
-        'content-type': 'application/ld+json'
-      } };
+      const webhookChannel = await subscriptionClient.subscribe(
+        topic,
+        NOTIFY.WebhookChannel2023.value,
+        webhookPushUrl(webId, applicationId)
+      );
+      await this.sessionManager.addWebhookPushTopic(webId, applicationId, topic, webhookChannel);
+      return {
+        body: webPushChannel,
+        status: 201,
+        headers: {
+          'content-type': 'application/ld+json'
+        }
+      };
     }
 
-    return { body: webPushChannel, status: 200, headers: {
-      'content-type': 'application/ld+json'
-    } };
-
+    return {
+      body: webPushChannel,
+      status: 200,
+      headers: {
+        'content-type': 'application/ld+json'
+      }
+    };
   }
 
   handle(context: AuthenticatedAuthnContext): Observable<HttpHandlerResponse> {

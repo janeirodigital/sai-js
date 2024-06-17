@@ -9,7 +9,6 @@ export class ReadableAccessGrant extends ReadableResource {
   private async buildDataGrants(): Promise<void> {
     const grantIriList = this.getObjectsArray(INTEROP.hasDataGrant).map((object) => object.value);
     for (const grantIri of grantIriList) {
-      // eslint-disable-next-line no-await-in-loop
       this.hasDataGrant.push(await this.factory.readable.dataGrant(grantIri));
     }
   }

@@ -102,7 +102,7 @@ describe('delete', () => {
   test('should remove reference from parent if a child', async () => {
     const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
     let taskToDelete;
-    // eslint-disable-next-line
+
     for await (const task of dataInstance.getChildInstancesIterator(taskShapeTree)) {
       taskToDelete = task;
       break;
@@ -191,7 +191,7 @@ test('updateAddingChildReference', async () => {
 test('updateRemovingChildReference', async () => {
   const dataInstance = await DataInstance.build(snippetIri, defaultDataGrant, factory);
   let taskToDelete;
-  // eslint-disable-next-line
+
   for await (const task of dataInstance.getChildInstancesIterator(taskShapeTree)) {
     taskToDelete = task;
     break;

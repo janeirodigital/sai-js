@@ -10,10 +10,13 @@
           variant="text"
           icon="mdi-plus"
           @click="newTask"
-        ></v-btn>
+        />
       </h3>
       <v-list>
-        <v-list-item v-for="task of (appStore.currentProject.hasTask as Task[])" :key="task['@id']">
+        <v-list-item
+          v-for="task of (appStore.currentProject.hasTask as Task[])"
+          :key="task['@id']"
+        >
           <v-card v-if="task.label">
             <v-card-title>{{ task.label }}</v-card-title>
             <v-card-actions>
@@ -24,7 +27,7 @@
                 variant="text"
                 icon="mdi-square-edit-outline"
                 @click="editTask(task)"
-              ></v-btn>
+              />
               <v-btn
                 v-if="appStore.canDelete(task['@id']!)"
                 size="small"
@@ -32,7 +35,7 @@
                 variant="text"
                 icon="mdi-delete-outline"
                 @click="deleteTask(task)"
-              ></v-btn>
+              />
             </v-card-actions>
           </v-card>
         </v-list-item>
@@ -46,12 +49,19 @@
           variant="text"
           icon="mdi-plus"
           @click="fileUpload?.click()"
-        ></v-btn>
+        />
       </h3>
       <v-list>
-        <v-list-item v-for="file of files" :key="file['@id']">
-            {{ file.fileName }}
-            <v-btn icon="mdi-download" variant="plain" @click="downloadFile(file)"></v-btn>
+        <v-list-item
+          v-for="file of files"
+          :key="file['@id']"
+        >
+          {{ file.fileName }}
+          <v-btn
+            icon="mdi-download"
+            variant="plain"
+            @click="downloadFile(file)"
+          />
         </v-list-item>
       </v-list>
       <h3>
@@ -63,12 +73,17 @@
           variant="text"
           icon="mdi-plus"
           @click="imageUpload?.click()"
-        ></v-btn>
-
+        />
       </h3>
       <v-list>
-        <v-list-item v-for="(dataUrl, index) in imageUrls" :key="index">
-          <img :src="dataUrl" style="width: 100%;">
+        <v-list-item
+          v-for="(dataUrl, index) in imageUrls"
+          :key="index"
+        >
+          <img
+            :src="dataUrl"
+            style="width: 100%;"
+          >
         </v-list-item>
       </v-list>
       <input-dialog
@@ -76,10 +91,23 @@
         :dialog="dialog"
         @cancel="dialog = false"
         @save="updateTask"
-      ></input-dialog>
-      <a ref="download" style="visibility: hidden"></a>
-      <input ref="fileUpload" type="file" style="visibility: hidden" @change="appStore.uploadFile($event)" />
-      <input ref="imageUpload" type="file" style="visibility: hidden" @change="appStore.uploadImage($event)" />
+      />
+      <a
+        ref="download"
+        style="visibility: hidden"
+      />
+      <input
+        ref="fileUpload"
+        type="file"
+        style="visibility: hidden"
+        @change="appStore.uploadFile($event)"
+      >
+      <input
+        ref="imageUpload"
+        type="file"
+        style="visibility: hidden"
+        @change="appStore.uploadImage($event)"
+      >
     </div>
   </v-main>
 </template>
@@ -107,7 +135,7 @@ const selectedTask = ref<Task | null>(null);
 
 const appStore = useAppStore();
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+ 
 const imageUrls = computedAsync(async () => Promise.all(appStore.currentProject?.hasImage?.map(({ '@id': id }) => appStore.dataUrl(id)) || []));
 
 const files = computed(() => appStore.currentProject?.hasFile?.map(({ '@id': id }) => appStore.getFileObject(id)) || [])

@@ -3,13 +3,33 @@
     <v-app-bar-title>
       {{ title }}
     </v-app-bar-title>
-    <template v-if="icon" #prepend>
-      <v-btn :icon="icon" @click="navigateUp"> </v-btn>
+    <template
+      v-if="icon"
+      #prepend
+    >
+      <v-btn
+        :icon="icon"
+        @click="navigateUp"
+      />
     </template>
-    <template v-if="route.query.project" #append>
-      <v-btn v-if="!appStore.subscriptions.has(route.query.project as string)" icon="mdi-bell-ring-outline" @click="subscribeToProject"></v-btn>
-      <v-btn v-else icon="mdi-bell-off-outline" @click="unsubscribeFromProject"></v-btn>
-      <v-btn icon="mdi-share-variant" @click="shareProject"></v-btn>
+    <template
+      v-if="route.query.project"
+      #append
+    >
+      <v-btn
+        v-if="!appStore.subscriptions.has(route.query.project as string)"
+        icon="mdi-bell-ring-outline"
+        @click="subscribeToProject"
+      />
+      <v-btn
+        v-else
+        icon="mdi-bell-off-outline"
+        @click="unsubscribeFromProject"
+      />
+      <v-btn
+        icon="mdi-share-variant"
+        @click="shareProject"
+      />
     </template>
   </v-app-bar>
 
@@ -20,11 +40,20 @@
       </transition>
     </router-view>
   </v-container>
-  <v-snackbar v-model="showSnackbar" color="info">
-    <v-icon icon="mdi-share-variant"></v-icon>
+  <v-snackbar
+    v-model="showSnackbar"
+    color="info"
+  >
+    <v-icon icon="mdi-share-variant" />
     Data from new peer - <strong>{{ newAgent?.label }}</strong>
     <template #actions>
-      <v-btn color="white" variant="outlined" @click="showAgent()"> Show </v-btn>
+      <v-btn
+        color="white"
+        variant="outlined"
+        @click="showAgent()"
+      >
+        Show
+      </v-btn>
     </template>
   </v-snackbar>
 </template>

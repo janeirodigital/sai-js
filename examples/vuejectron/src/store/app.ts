@@ -1,5 +1,3 @@
-/* eslint-disable no-continue, no-await-in-loop */
-
 import { ref, shallowRef, triggerRef } from 'vue';
 import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
@@ -100,7 +98,7 @@ export const useAppStore = defineStore('app', () => {
         canCreate: session.canCreate(resourceServer, scope)
       });
       const serverProjects: Project[] = [];
-      // eslint-disable-next-line no-await-in-loop
+
       for await (const projectId of await session.resources(resourceServer, scope)) {
         // @ldo-solid
         const ldoResource = solidLdoDataset.getResource(projectId);
@@ -346,9 +344,8 @@ export const useAppStore = defineStore('app', () => {
     const stream = await getStream();
     if (stream.locked) return;
     const reader = stream.getReader();
-    // eslint-disable-next-line no-constant-condition
+
     while (true) {
-      // eslint-disable-next-line no-await-in-loop
       const { done, value } = await reader.read();
       if (done) {
         break;

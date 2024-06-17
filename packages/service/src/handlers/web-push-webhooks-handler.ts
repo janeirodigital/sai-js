@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-
 import { from, Observable } from 'rxjs';
 import webpush from 'web-push';
 import { HttpHandler, HttpHandlerResponse, HttpHandlerContext } from '@digita-ai/handlersjs-http';
