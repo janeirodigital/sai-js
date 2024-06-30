@@ -1,3 +1,4 @@
+import { describe, test, expect, beforeAll } from 'vitest';
 import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { getOneMatchingQuad, getAllMatchingQuads, parseTurtle } from '../src';

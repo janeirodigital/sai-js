@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals';
+import { vi, describe, test, expect } from 'vitest';
 import { fetchWrapper, parseTurtle } from '../src';
 
 const snippet = `<https://acme.example/4d594c61-7cff-484a-a1d2-1f353ee4e1e7> a <http://www.w3.org/ns/solid/interop#DataRegistration>;
@@ -19,7 +19,7 @@ async function fetchMock(input: RequestInfo, init?: RequestInit): Promise<Respon
 
 describe('fetchWrapper', () => {
   test('should set Accept header on GET', async () => {
-    const mock = jest.fn(fetchMock);
+    const mock = vi.fn(fetchMock);
     const rdfFetch = fetchWrapper(mock);
     await rdfFetch('https://some.iri');
 
@@ -30,7 +30,7 @@ describe('fetchWrapper', () => {
   });
 
   test('should set dataset on response', async () => {
-    const mock = jest.fn(fetchMock);
+    const mock = vi.fn(fetchMock);
     const responseMock = {
       text: async () => snippet,
       headers: { get: () => 'text/turtle' }
@@ -47,7 +47,7 @@ describe('fetchWrapper', () => {
 
   test('should process RequestInit on PUT', async () => {
     const dataset = await parseTurtle(snippet);
-    const mock = jest.fn(fetchMock);
+    const mock = vi.fn(fetchMock);
     const rdfFetch = fetchWrapper(mock);
     await rdfFetch('https://some.iri', { method: 'PUT', dataset, headers: { 'If-Match': '12345' } });
 
@@ -60,7 +60,7 @@ describe('fetchWrapper', () => {
   });
 
   test('should throw if dataset called when different Content-Type', async () => {
-    const mock = jest.fn(fetchMock);
+    const mock = vi.fn(fetchMock);
     const responseMock = {
       text: async () => snippet,
       headers: { get: () => 'text/shex' }
@@ -73,7 +73,7 @@ describe('fetchWrapper', () => {
   });
 
   test('should handle Content-Type header with paramter', async () => {
-    const mock = jest.fn(fetchMock);
+    const mock = vi.fn(fetchMock);
     const responseMock = {
       text: async () => snippet,
       headers: { get: () => 'text/turtle; charset=UTF-8' }
@@ -90,7 +90,7 @@ describe('fetchWrapper', () => {
 
   test('should set default graph as graph name when parsing turtle', async () => {
     const iri = 'https://some.iri';
-    const mock = jest.fn(fetchMock);
+    const mock = vi.fn(fetchMock);
     const responseMock = {
       url: iri,
       text: async () => snippet,
@@ -107,7 +107,7 @@ describe('fetchWrapper', () => {
   });
 
   test('should forward the headers', async () => {
-    const mock = jest.fn(fetchMock);
+    const mock = vi.fn(fetchMock);
     const rdfFetch = fetchWrapper(mock);
     const initHeaders: { [key: string]: string } = {
       'Some-Header-1': 'some value 1',

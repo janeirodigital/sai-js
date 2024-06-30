@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals';
+import { vi, describe, test, expect, Mock } from 'vitest';
 import { DataFactory, Store } from 'n3';
 import {
   RdfResponse,
@@ -11,12 +11,11 @@ import {
   AgentRegistrationDiscoveryError,
   DescriptionResourceDiscoveryError
 } from '../src';
-import type { RdfFetch, WhatwgFetch } from '../src';
 
 const webId = 'https://alice.example/#id';
 const authorizationAgentIri = 'https://auth.alice.example/';
-const rdfFetch = jest.fn<RdfFetch>();
-const statelessFetch = jest.fn<WhatwgFetch>();
+const rdfFetch: Mock<[], Promise<RdfResponse>> = vi.fn();
+const statelessFetch: Mock<[], Promise<Response>> = vi.fn();
 
 describe('discoverAuthorizationAgent', () => {
   test('should discover Authorization Agent from the WebID document', async () => {
@@ -47,7 +46,7 @@ describe('discoverAgentRegistration', () => {
     statelessFetch.mockResolvedValueOnce({
       ok: true,
       headers: { get: (name: string): string | null => (name === 'Link' ? linkString : null) }
-    } as unknown as RdfResponse);
+    } as unknown as Response);
     const iri = await discoverAgentRegistration(authorizationAgentIri, statelessFetch);
     expect(iri).toBe(agentRegistrationIri);
   });

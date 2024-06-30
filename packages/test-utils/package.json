@@ -34,11 +34,12 @@
   },
   "scripts": {
     "build": "tsc -b . && cp ./src/data.json ./dist/data.json",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test": "NODE_ENV=vitest vitest run --coverage",
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@janeirodigital/interop-utils": "^1.0.0-rc.24"
+    "@janeirodigital/interop-utils": "^1.0.0-rc.24",
+    "n3": "^1.17.1"
   },
   "devDependencies": {
     "@rdfjs/types": "^1.1.0",

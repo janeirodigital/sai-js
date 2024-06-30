@@ -1,3 +1,4 @@
+import { test, expect } from 'vitest';
 import { parseJsonld } from '../src';
 
 const snippet = `

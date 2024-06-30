@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import { DataFactory, Store } from 'n3';
 import { parseTurtle, serializeTurtle } from '../src';
 

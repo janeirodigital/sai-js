@@ -1,6 +1,6 @@
+import { describe, test, expect } from 'vitest';
 import { DataFactory, Store } from 'n3';
-import 'jest-rdf';
-import { statelessFetch, createStatefulFetch, createFetch } from '../src/fetch-mock';
+import { statelessFetch, createStatefulFetch, createFetch } from '../src';
 
 describe('common', () => {
   test('should strip fragment', async () => {

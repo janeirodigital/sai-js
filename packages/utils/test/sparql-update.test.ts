@@ -1,3 +1,4 @@
+import { test, expect } from 'vitest';
 import { insertPatch, deletePatch, parseTurtle, serializeTurtle } from '../src';
 
 const snippet = `

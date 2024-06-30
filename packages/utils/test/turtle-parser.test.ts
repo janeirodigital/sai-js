@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import { parseTurtle } from '../src';
 
 const snippet = `
