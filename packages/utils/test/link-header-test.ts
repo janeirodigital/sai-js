@@ -1,4 +1,9 @@
-import { getAgentRegistrationIri, targetDataRegistrationLink } from '../src';
+import {
+  getAgentRegistrationIri,
+  getDescriptionResource,
+  getStorageDescription,
+  targetDataRegistrationLink
+} from '../src';
 
 describe('getAgentRegistrationIri', () => {
   const linkHeaderText = `
@@ -11,6 +16,30 @@ describe('getAgentRegistrationIri', () => {
     expect(getAgentRegistrationIri(linkHeaderText)).toBe(
       'https://auth.alice.example/bcf22534-0187-4ae4-b88f-fe0f9fa96659'
     );
+  });
+});
+
+describe('getDescriptionResource', () => {
+  const descriptionResourceIri = 'https://some.iri/.meta';
+  const linkHeaderText = `
+    <${descriptionResourceIri}>;
+    rel="describedby"
+  `;
+
+  test('should match correct description resource iri', () => {
+    expect(getDescriptionResource(linkHeaderText)).toBe(descriptionResourceIri);
+  });
+});
+
+describe('getStorageDescription', () => {
+  const storageDescriptionIri = 'https://some.iri/.desc';
+  const linkHeaderText = `
+    <${storageDescriptionIri}>;
+    rel="http://www.w3.org/ns/solid/terms#storageDescription"
+  `;
+
+  test('should match correct description resource iri', () => {
+    expect(getStorageDescription(linkHeaderText)).toBe(storageDescriptionIri);
   });
 });
 

@@ -309,8 +309,8 @@ importers:
   packages/css-storage-fixture:
     dependencies:
       '@solid/community-server':
-        specifier: ^7.0.1
-        version: 7.0.1
+        specifier: ^7.1.0
+        version: 7.1.0
 
   packages/data-model:
     dependencies:
@@ -2560,8 +2560,11 @@ packages:
   '@solid/access-token-verifier@2.0.5':
     resolution: {integrity: sha512-YsoMmEk7pN6tlCHcDm5iLa9ZYvTYvuk3SX5cz18XW1qYmM46znEGnXz94vm7DIa7DcTLGi9suMw7M5pRs2xOLw==}
 
-  '@solid/community-server@7.0.1':
-    resolution: {integrity: sha512-cfXo5EoJwN7m1QGJk5Q/AGW0vTTcCds1YF0hYQYft/egCeSayldWEM8GoNu6tWrpYpqoCFPvfoYU0PDpiyTlpw==}
+  '@solid/access-token-verifier@2.1.0':
+    resolution: {integrity: sha512-79u92GD1SBTxjYghg2ta6cfoBNZ5ljz/9zE6RmXUypTXW7oI18DTWiSrEjWwI4njW+OMh+4ih+sAR6AkI1IFxg==}
+
+  '@solid/community-server@7.1.0':
+    resolution: {integrity: sha512-ux6qIDB3xnsVKiOlHbs48gb6H5jxY77eo7F6x9/4T93dMAvDQn79LDWXztYx+v6Zu1vvQhFFuqMK4uFyE9fAbA==}
     engines: {node: '>=18.0'}
     hasBin: true
 
@@ -2728,6 +2731,9 @@ packages:
   '@types/n3@1.16.2':
     resolution: {integrity: sha512-Qe341EXScwNQdBgCcDQN1ejslB1kznTnzs/4Acv/K7P58BXaYqy3Q56xEPOnM7BhQW5r8ADW7njtlxWyaJy6AA==}
 
+  '@types/n3@1.16.4':
+    resolution: {integrity: sha512-6PmHRYCCdjbbBV2UVC/HjtL6/5Orx9ku2CQjuojucuHvNvPmnm6+02B18YGhHfvU25qmX2jPXyYPHsMNkn+w2w==}
+
   '@types/node@10.17.60':
     resolution: {integrity: sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw==}
 
@@ -2796,9 +2802,6 @@ packages:
 
   '@types/spark-md5@3.0.2':
     resolution: {integrity: sha512-82E/lVRaqelV9qmRzzJ1PKTpyrpnT7mwdneKNJB9hUtypZDMggloDfFUCIqRRx3lYRxteCwXSq9c+W71Vf0QnQ==}
-
-  '@types/sparqljs@3.1.5':
-    resolution: {integrity: sha512-P10UkHXg2DmvB/WZLUOAn9GrjJhQuz/qgEKGs9rolMXzMwIbw7xGM5e68VzjX1zuQcyXzKkcESJjW1BPVQHt7Q==}
 
   '@types/sparqljs@3.1.8':
     resolution: {integrity: sha512-A9cCkdFzMMYeY1oyd+yxqc0DEyrKnq/M5rPZ/xgGrRhlHglNt0JXw+uh9JsS0IbIOdWKXiqwD2Bn2wGhpSCrYA==}
@@ -4911,9 +4914,6 @@ packages:
   jose@4.15.4:
     resolution: {integrity: sha512-W+oqK4H+r5sITxfxpSU+MMdr/YSWGvgZMQDIsNoBDGGy4i7GBPTtvFKibQzW06n3U3TqHjhvBJsirShsEJ6eeQ==}
 
-  jose@5.1.0:
-    resolution: {integrity: sha512-H+RVqxA6apaJ0rcQYupKYhos7uosAiF42gUcWZiwhICWMphDULFj/CRr1R0tV/JCv9DEeJaSyYYpc9luHHNT4g==}
-
   jose@5.2.2:
     resolution: {integrity: sha512-/WByRr4jDcsKlvMd1dRJnPfS1GVO3WuKyaurJ/vvXcOaUQO8rnNObCQMlv/5uCceVQIq5Q4WLF44ohsdiTohdg==}
 
@@ -5343,8 +5343,8 @@ packages:
     resolution: {integrity: sha512-ma6oU4Sk0qOoKEAymVoTvk8EdXEobdS7m/mAGhDJ8Rouugho48crHBORAmy5BoOcv8wraPM6xumapQp5hl4iIQ==}
     engines: {node: '>=6.0.0'}
 
-  nodemailer@6.9.7:
-    resolution: {integrity: sha512-rUtR77ksqex/eZRLmQ21LKVH5nAAsVicAtAYudK7JgwenEDZ0UIQ1adUGqErz7sMkWYxWTTU1aeP2Jga6WQyJw==}
+  nodemailer@6.9.14:
+    resolution: {integrity: sha512-Dobp/ebDKBvz91sbtRKhcznLThrKxKt97GI2FAlAyy+fk19j73Uz3sBXolVtmcXjaorivqsbbbjDY+Jkt4/bQA==}
     engines: {node: '>=6.0.0'}
 
   normalize-path@3.0.0:
@@ -5377,9 +5377,6 @@ packages:
   object-hash@3.0.0:
     resolution: {integrity: sha512-RSn9F68PjH9HqtltsSnqYC1XXoWe9Bju5+213R98cNGttag9q9yAOTzdbsqvIa7aNm5WffBZFpWYr2aWrklWAw==}
     engines: {node: '>= 6'}
-
-  object-inspect@1.12.3:
-    resolution: {integrity: sha512-geUvdk7c+eizMNUDkRpW1wJwgfOiOeHbxBR/hLXK1aT6zmVSO0jsQcs7fj6MGw89jC/cjGfLcNOrtMYtGqm81g==}
 
   object-inspect@1.13.1:
     resolution: {integrity: sha512-5qoj1RUiKOMsCCNLV1CBiPYE10sziTsnmNxkAI/rZhiD63CF7IqdFGC/XzjWjpSgLf0LxXX3bDFIh0E18f6UhQ==}
@@ -5697,6 +5694,7 @@ packages:
 
   rdf-js@4.0.2:
     resolution: {integrity: sha512-ApvlFa/WsQh8LpPK/6hctQwG06Z9ztQQGWVtrcrf9L6+sejHNXLPOqL+w7q3hF+iL0C4sv3AX1PUtGkLNzyZ0Q==}
+    deprecated: Use @types/rdf-js instead. See https://github.com/rdfjs/types?tab=readme-ov-file#what-about-typesrdf-js
 
   rdf-literal@1.3.1:
     resolution: {integrity: sha512-+o/PGOfJchyay9Rjrvi/oveRJACnt2WFO3LhEvtPlsRD1tFmwVUCMU+s33FtQprMo+z1ohFrv/yfEQ6Eym4KgQ==}
@@ -8716,7 +8714,7 @@ snapshots:
       '@comunica/context-entries': 2.8.2
       '@comunica/core': 2.8.2
       '@comunica/types': 2.8.2
-      jsonld-context-parser: 2.3.1
+      jsonld-context-parser: 2.4.0
       jsonld-streaming-parser: 3.2.1
       stream-to-string: 1.2.1
     transitivePeerDependencies:
@@ -9171,7 +9169,7 @@ snapshots:
       '@comunica/core': 2.8.2
       '@comunica/types': 2.8.2
       '@rdfjs/types': 1.1.0
-      jsonld-context-parser: 2.3.1
+      jsonld-context-parser: 2.4.0
       sparqlalgebrajs: 4.3.0
     transitivePeerDependencies:
       - encoding
@@ -9203,7 +9201,7 @@ snapshots:
   '@comunica/logger-pretty@2.8.2':
     dependencies:
       '@comunica/types': 2.8.2
-      object-inspect: 1.12.3
+      object-inspect: 1.13.1
       process: 0.11.10
 
   '@comunica/logger-void@2.8.2':
@@ -10322,13 +10320,23 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@solid/community-server@7.0.1':
+  '@solid/access-token-verifier@2.1.0':
+    dependencies:
+      jose: 5.2.2
+      lru-cache: 6.0.0
+      n3: 1.17.2
+      node-fetch: 2.7.0
+      ts-guards: 0.5.1
+    transitivePeerDependencies:
+      - encoding
+
+  '@solid/community-server@7.1.0':
     dependencies:
       '@comunica/context-entries': 2.8.2
       '@comunica/query-sparql': 2.9.0
       '@rdfjs/types': 1.1.0
       '@solid/access-control-policy': 0.1.3
-      '@solid/access-token-verifier': 2.0.5
+      '@solid/access-token-verifier': 2.1.0
       '@types/async-lock': 1.4.0
       '@types/bcryptjs': 2.4.4
       '@types/cookie': 0.5.4
@@ -10338,7 +10346,7 @@ snapshots:
       '@types/fs-extra': 11.0.2
       '@types/lodash.orderby': 4.6.7
       '@types/mime-types': 2.1.2
-      '@types/n3': 1.16.2
+      '@types/n3': 1.16.4
       '@types/node': 18.18.9
       '@types/nodemailer': 6.4.11
       '@types/oidc-provider': 8.4.2
@@ -10371,8 +10379,8 @@ snapshots:
       lodash.orderby: 4.6.0
       marked: 9.1.5
       mime-types: 2.1.35
-      n3: 1.17.1
-      nodemailer: 6.9.7
+      n3: 1.17.2
+      nodemailer: 6.9.14
       oidc-provider: 8.4.1
       proper-lockfile: 4.1.2
       pump: 3.0.0
@@ -10600,6 +10608,11 @@ snapshots:
       '@rdfjs/types': 1.1.0
       '@types/node': 20.11.30
 
+  '@types/n3@1.16.4':
+    dependencies:
+      '@rdfjs/types': 1.1.0
+      '@types/node': 20.11.30
+
   '@types/node@10.17.60': {}
 
   '@types/node@16.18.55': {}
@@ -10676,10 +10689,6 @@ snapshots:
   '@types/shexj@2.1.7': {}
 
   '@types/spark-md5@3.0.2': {}
-
-  '@types/sparqljs@3.1.5':
-    dependencies:
-      rdf-js: 4.0.2
 
   '@types/sparqljs@3.1.8':
     dependencies:
@@ -10894,7 +10903,7 @@ snapshots:
       debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.5.4
+      semver: 7.6.0
       ts-api-utils: 1.0.3(typescript@5.2.2)
     optionalDependencies:
       typescript: 5.2.2
@@ -10940,7 +10949,7 @@ snapshots:
       '@typescript-eslint/types': 6.8.0
       '@typescript-eslint/typescript-estree': 6.8.0(typescript@5.2.2)
       eslint: 8.51.0
-      semver: 7.5.4
+      semver: 7.6.0
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -11594,7 +11603,7 @@ snapshots:
       '@types/http-cache-semantics': 4.0.2
       get-stream: 6.0.1
       http-cache-semantics: 4.1.1
-      keyv: 4.5.3
+      keyv: 4.5.4
       mimic-response: 4.0.0
       normalize-url: 8.0.0
       responselike: 3.0.0
@@ -12491,7 +12500,7 @@ snapshots:
       cross-fetch: 3.1.8
       is-stream: 2.0.1
       minimist: 1.2.8
-      n3: 1.17.1
+      n3: 1.17.2
       rdf-string: 1.6.3
       readable-web-to-node-stream: 3.0.2
       sparqljs: 3.7.1
@@ -13469,8 +13478,6 @@ snapshots:
 
   jose@4.15.4: {}
 
-  jose@5.1.0: {}
-
   jose@5.2.2: {}
 
   joycon@3.1.1: {}
@@ -13931,7 +13938,7 @@ snapshots:
 
   node-version@1.2.0: {}
 
-  nodemailer@6.9.7: {}
+  nodemailer@6.9.14: {}
 
   normalize-path@3.0.0: {}
 
@@ -13954,8 +13961,6 @@ snapshots:
   object-hash@2.2.0: {}
 
   object-hash@3.0.0: {}
-
-  object-inspect@1.12.3: {}
 
   object-inspect@1.13.1: {}
 
@@ -13994,7 +13999,7 @@ snapshots:
       debug: 4.3.4
       eta: 3.1.1
       got: 13.0.0
-      jose: 5.1.0
+      jose: 5.2.2
       jsesc: 3.0.2
       koa: 2.14.2
       nanoid: 5.0.3
@@ -14426,7 +14431,7 @@ snapshots:
   rdf-streaming-store@1.1.0:
     dependencies:
       '@rdfjs/types': 1.1.0
-      '@types/n3': 1.16.2
+      '@types/n3': 1.16.4
       '@types/readable-stream': 2.3.15
       n3: 1.17.2
       rdf-string: 1.6.3
@@ -14829,7 +14834,7 @@ snapshots:
   sparqlalgebrajs@4.3.0:
     dependencies:
       '@rdfjs/types': 1.1.0
-      '@types/sparqljs': 3.1.5
+      '@types/sparqljs': 3.1.8
       fast-deep-equal: 3.1.3
       minimist: 1.2.8
       rdf-data-factory: 1.1.2

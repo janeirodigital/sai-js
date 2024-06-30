@@ -69,13 +69,16 @@ export async function discoverAuthorizationRedirectEndpoint(
 export async function discoverWebPushService(
   authorizationAgentIri: string,
   fetch: WhatwgFetch
-): Promise<{ id: string; vapidPublicKey: string }> {
+): Promise<{ id: string; vapidPublicKey: string } | undefined> {
   const authzAgentDocumentResponse = await fetch(authorizationAgentIri, {
     headers: { Accept: 'application/ld+json' }
   });
   const doc = await parseJsonld(await authzAgentDocumentResponse.text(), authzAgentDocumentResponse.url);
+  const serviceQuad = getOneMatchingQuad(doc, null, INTEROP.pushService);
+  const publicKeyQuad = getOneMatchingQuad(doc, null, NOTIFY.vapidPublicKey);
+  if (!serviceQuad || !publicKeyQuad) return;
   return {
-    id: getOneMatchingQuad(doc, null, INTEROP.pushService)!.object.value,
-    vapidPublicKey: getOneMatchingQuad(doc, null, NOTIFY.vapidPublicKey)!.object.value
+    id: serviceQuad.object.value,
+    vapidPublicKey: publicKeyQuad.object.value
   };
 }

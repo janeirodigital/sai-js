@@ -83,3 +83,36 @@ describe('discovery helpers', () => {
     );
   });
 });
+
+describe('describe discovery', () => {
+  const mocked = jest.fn(statelessFetch);
+  const responseMock = {
+    ok: true,
+    headers: { get: (name: string): string | null => (name === 'Link' ? linkString : null) }
+  } as unknown as RdfResponse;
+  responseMock.clone = () => ({ ...responseMock });
+
+  describe('resourceOwners', () => {
+    test('should return set of owenrs', async () => {
+      const resourceOwners = new Set([
+        'https://alice.example/#id',
+        'https://acme.example/#corp',
+        'https://omni.example/#corp'
+      ]);
+      mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
+      const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
+      expect(app.resourceOwners()).toEqual(resourceOwners);
+    });
+  });
+
+  describe('resourceServers', () => {
+    test.skip('should return set of resource servers', async () => {
+      const resourceOwner = 'https://alice.example/#id';
+      const shapeTree = 'https://solidshapes.example/trees/Project';
+      const resourceServers = new Set([]);
+      mocked.mockResolvedValueOnce(await statelessFetch(webId)).mockResolvedValueOnce(responseMock);
+      const app = await Application.build(webId, applicationId, { fetch: mocked, randomUUID });
+      expect(app.resourceServers(resourceOwner, shapeTree)).toEqual(resourceServers);
+    });
+  });
+});

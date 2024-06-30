@@ -5,7 +5,11 @@ import {
   discoverAuthorizationAgent,
   discoverAgentRegistration,
   discoverAuthorizationRedirectEndpoint,
-  INTEROP
+  INTEROP,
+  discoverDescriptionResource,
+  discoverWebPushService,
+  AgentRegistrationDiscoveryError,
+  DescriptionResourceDiscoveryError
 } from '../src';
 import type { RdfFetch, WhatwgFetch } from '../src';
 
@@ -56,6 +60,50 @@ describe('discoverAgentRegistration', () => {
     const iri = await discoverAgentRegistration(authorizationAgentIri, statelessFetch);
     expect(iri).toBeUndefined();
   });
+
+  test('should throw error if the request fails', async () => {
+    const iri = 'https://some.iri';
+    statelessFetch.mockResolvedValueOnce({
+      ok: false
+    } as unknown as RdfResponse);
+    expect(discoverAgentRegistration(iri, statelessFetch)).rejects.toThrowError(AgentRegistrationDiscoveryError);
+  });
+});
+
+describe('discoverDescriptionResource', () => {
+  const resourceIri = 'https://some.iri/';
+
+  test('should discover Description Resource from link header ', async () => {
+    const descriptionResourceIri = resourceIri + '.meta';
+
+    const linkString = `
+      <${descriptionResourceIri}>;
+      rel="describedby"
+    `;
+    statelessFetch.mockResolvedValueOnce({
+      ok: true,
+      headers: { get: (name: string): string | null => (name === 'Link' ? linkString : null) }
+    } as unknown as RdfResponse);
+    const iri = await discoverDescriptionResource(resourceIri, statelessFetch);
+    expect(iri).toBe(descriptionResourceIri);
+  });
+
+  test('should return undefined if no link header ', async () => {
+    statelessFetch.mockResolvedValueOnce({
+      ok: true,
+      headers: { get: (): undefined => undefined }
+    } as unknown as RdfResponse);
+    const iri = await discoverDescriptionResource(resourceIri, statelessFetch);
+    expect(iri).toBeUndefined();
+  });
+
+  test('should throw error if the request fails', async () => {
+    const iri = 'https://some.iri';
+    statelessFetch.mockResolvedValueOnce({
+      ok: false
+    } as unknown as RdfResponse);
+    expect(discoverDescriptionResource(iri, statelessFetch)).rejects.toThrowError(DescriptionResourceDiscoveryError);
+  });
 });
 
 describe('discoverAuthorizationRedirectEndpoint', () => {
@@ -71,5 +119,40 @@ describe('discoverAuthorizationRedirectEndpoint', () => {
     } as unknown as Response);
     const iri = await discoverAuthorizationRedirectEndpoint(authorizationAgentIri, statelessFetch);
     expect(iri).toBe(authorizationRedirectUri);
+  });
+});
+
+describe('discoverWebPushService', () => {
+  test('should discover web push service from Client ID document', async () => {
+    const pushServiceIri = 'https://some.iri/push';
+    const publicKey = '79911832617685422231316786426001';
+    statelessFetch.mockResolvedValueOnce({
+      text: async () => `
+        {
+          "@context": {
+            "interop": "http://www.w3.org/ns/solid/interop#",
+            "notify": "http://www.w3.org/ns/solid/notifications#"
+          },
+          "interop:pushService": { "@id": "${pushServiceIri}" },
+          "notify:vapidPublicKey": "${publicKey}"
+        }
+      `
+    } as unknown as Response);
+    // @ts-ignore
+    const { id, vapidPublicKey } = await discoverWebPushService(authorizationAgentIri, statelessFetch);
+    expect(id).toBe(pushServiceIri);
+    expect(vapidPublicKey).toBe(publicKey);
+  });
+  test('returns undefined if service not found', async () => {
+    statelessFetch.mockResolvedValueOnce({
+      text: async () => `
+        {
+          "@context": { "interop": "http://www.w3.org/ns/solid/interop#" },
+          "interop:hasAuthorizationRedirectEndpoint": "https://auth.example/redirect"
+        }
+      `
+    } as unknown as Response);
+    // @ts-ignore
+    expect(await discoverWebPushService(authorizationAgentIri, statelessFetch)).toBeUndefined();
   });
 });
