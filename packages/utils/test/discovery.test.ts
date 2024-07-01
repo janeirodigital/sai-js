@@ -1,5 +1,6 @@
-import { vi, describe, test, expect, Mock } from 'vitest';
+import { vi, describe, test, expect, beforeAll, afterAll, Mock } from 'vitest';
 import { DataFactory, Store } from 'n3';
+import { SolidTestUtils } from '@janeirodigital/css-test-utils';
 import {
   RdfResponse,
   discoverAuthorizationAgent,
@@ -9,8 +10,15 @@ import {
   discoverDescriptionResource,
   discoverWebPushService,
   AgentRegistrationDiscoveryError,
-  DescriptionResourceDiscoveryError
+  DescriptionResourceDiscoveryError,
+  discoverStorageDescription
 } from '../src';
+
+vi.setConfig({ testTimeout: 20_000, hookTimeout: 20_000 });
+
+const stu = new SolidTestUtils('http://localhost:3001/alice/profile/card#me', 'alice@acme.example', 'password');
+beforeAll(async () => stu.beforeAll());
+afterAll(async () => stu.afterAll());
 
 const webId = 'https://alice.example/#id';
 const authorizationAgentIri = 'https://auth.alice.example/';
@@ -85,6 +93,34 @@ describe('discoverDescriptionResource', () => {
     } as unknown as RdfResponse);
     const iri = await discoverDescriptionResource(resourceIri, statelessFetch);
     expect(iri).toBe(descriptionResourceIri);
+  });
+
+  test('should return undefined if no link header ', async () => {
+    statelessFetch.mockResolvedValueOnce({
+      ok: true,
+      headers: { get: (): undefined => undefined }
+    } as unknown as RdfResponse);
+    const iri = await discoverDescriptionResource(resourceIri, statelessFetch);
+    expect(iri).toBeUndefined();
+  });
+
+  test('should throw error if the request fails', async () => {
+    const iri = 'https://some.iri';
+    statelessFetch.mockResolvedValueOnce({
+      ok: false
+    } as unknown as RdfResponse);
+    expect(discoverDescriptionResource(iri, statelessFetch)).rejects.toThrowError(DescriptionResourceDiscoveryError);
+  });
+});
+
+describe('discoverDescriptionResource', () => {
+  const resourceIri = 'http://localhost:3001/alice/profile/card';
+
+  test('should discover Storage Description from link header ', async () => {
+    const storageDescriptionIri = 'http://localhost:3001/alice/.well-known/solid';
+
+    const iri = await discoverStorageDescription(resourceIri, stu.authFetch);
+    expect(iri).toBe(storageDescriptionIri);
   });
 
   test('should return undefined if no link header ', async () => {

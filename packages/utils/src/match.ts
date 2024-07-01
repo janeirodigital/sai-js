@@ -1,4 +1,5 @@
 import { Term, Quad, DatasetCore } from '@rdfjs/types';
+import { RDF, SPACE } from './namespaces';
 
 /**
  *
@@ -26,3 +27,6 @@ export const getAllMatchingQuads = (
   object?: Term,
   graph?: Term
 ): Array<Quad> => [...dataset.match(subject, predicate, object, graph)];
+
+export const getStorageRoot = (dataset: DatasetCore): string =>
+  getOneMatchingQuad(dataset, null, RDF.type, SPACE.Storage).subject.value;

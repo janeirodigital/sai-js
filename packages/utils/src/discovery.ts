@@ -2,7 +2,7 @@ import { DatasetCore } from '@rdfjs/types';
 import { DataFactory } from 'n3';
 import { INTEROP, NOTIFY } from './namespaces';
 import { getOneMatchingQuad } from './match';
-import { getAgentRegistrationIri, getDescriptionResource } from './link-header';
+import { getAgentRegistrationIri, getDescriptionResource, getStorageDescription } from './link-header';
 import { RdfFetch, WhatwgFetch } from './fetch';
 import { parseJsonld } from './jsonld-parser';
 
@@ -17,13 +17,19 @@ export class RequestError extends Error {
 
 export class AgentRegistrationDiscoveryError extends RequestError {
   constructor(public response: Response) {
-    super('Agent Registration Discovery request failed', response);
+    super('Discovery: Agent Registration - request failed', response);
   }
 }
 
 export class DescriptionResourceDiscoveryError extends RequestError {
   constructor(public response: Response) {
-    super('Discovery Resource Discovery request failed', response);
+    super('Discovery: Resource Description - request failed', response);
+  }
+}
+
+export class StorageDescriptionDiscoveryError extends RequestError {
+  constructor(public response: Response) {
+    super('Discovery: Storage Description - request failed', response);
   }
 }
 
@@ -53,6 +59,14 @@ export async function discoverDescriptionResource(
   const linkHeader = response.headers.get('Link');
   if (!linkHeader) return undefined;
   return getDescriptionResource(linkHeader);
+}
+
+export async function discoverStorageDescription(resourceIri: string, fetch: WhatwgFetch): Promise<string | undefined> {
+  const response = await fetch(resourceIri, { method: 'HEAD' });
+  if (!response.ok) throw new StorageDescriptionDiscoveryError(response);
+  const linkHeader = response.headers.get('Link');
+  if (!linkHeader) return undefined;
+  return getStorageDescription(linkHeader);
 }
 
 export async function discoverAuthorizationRedirectEndpoint(

@@ -303,6 +303,15 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
 
+  packages/css-test-utils:
+    dependencies:
+      '@inrupt/solid-client-authn-core':
+        specifier: ^2.0.0
+        version: 2.0.0
+      '@solid/community-server':
+        specifier: ^7.1.0
+        version: 7.1.0
+
   packages/data-model:
     dependencies:
       '@janeirodigital/interop-utils':
@@ -462,6 +471,9 @@ importers:
         specifier: ^1.17.1
         version: 1.17.1
     devDependencies:
+      '@janeirodigital/css-test-utils':
+        specifier: ^1.0.0-rc.24
+        version: link:../css-test-utils
       '@rdfjs/types':
         specifier: ^1.1.0
         version: 1.1.0
@@ -9672,7 +9684,7 @@ snapshots:
     dependencies:
       jose: 4.15.1
       lru-cache: 6.0.0
-      n3: 1.17.1
+      n3: 1.17.2
       node-fetch: 2.7.0
       ts-guards: 0.5.1
     transitivePeerDependencies:
