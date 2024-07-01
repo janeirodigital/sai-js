@@ -25,6 +25,7 @@ const saiSession = {
     hasDataRegistry: [
       {
         iri: 'https://rnd.acme.example/data/',
+        storageIri: async () => 'https://rnd.acme.example/',
         registrations: [
           {
             iri: 'https://rnd.acme.example/data/projects/',
@@ -40,6 +41,7 @@ const saiSession = {
       },
       {
         iri: 'https://hr.acme.example/data/',
+        storageIri: async () => 'https://hr.acme.example/',
         registrations: [
           {
             iri: 'https://hr.acme.example/data/projects/',
@@ -64,6 +66,7 @@ describe('owned data', () => {
     expect(result).toEqual([
       {
         id: 'https://rnd.acme.example/data/',
+        label: 'https://rnd.acme.example/',
         registrations: [
           {
             id: 'https://rnd.acme.example/data/projects/',
@@ -83,6 +86,7 @@ describe('owned data', () => {
       },
       {
         id: 'https://hr.acme.example/data/',
+        label: 'https://hr.acme.example/',
         registrations: [
           {
             id: 'https://hr.acme.example/data/projects/',

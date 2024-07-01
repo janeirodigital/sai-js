@@ -1,13 +1,12 @@
 import { DataFactory } from 'n3';
-import { INTEROP, RDF, SPACE, getOneMatchingQuad } from '@janeirodigital/interop-utils';
+import { DatasetCore } from '@rdfjs/types';
+import { INTEROP, RDF, SPACE, getOneMatchingQuad, getStorageDescription } from '@janeirodigital/interop-utils';
 import { ReadableDataRegistration } from '../readable';
 import { AuthorizationAgentFactory } from '..';
 import { CRUDContainer, CRUDDataRegistration } from '.';
 
 export class CRUDDataRegistry extends CRUDContainer {
   factory: AuthorizationAgentFactory;
-
-  storageIri: string;
 
   get hasDataRegistration(): string[] {
     return this.getObjectsArray('hasDataRegistration').map((obj) => obj.value);
@@ -47,10 +46,23 @@ export class CRUDDataRegistry extends CRUDContainer {
     return dataRegistration;
   }
 
+  private async fetchStorageDescription(): Promise<DatasetCore> {
+    // @ts-ignore
+    const response = await this.fetch.raw(this.iri, {
+      method: 'HEAD'
+    });
+    console.log(response.headers.get('Link'));
+    const storageDescriptionIri = getStorageDescription(response.headers.get('Link'));
+    return this.fetch(storageDescriptionIri).then((res) => res.dataset());
+  }
+
+  public async storageIri(): Promise<string> {
+    const storageDescription = await this.fetchStorageDescription();
+    return getOneMatchingQuad(storageDescription, null, RDF.type, SPACE.Storage).subject.value;
+  }
+
   async bootstrap(): Promise<void> {
     await this.fetchData();
-    const storageDescription = await this.fetchStorageDescription();
-    this.storageIri = getOneMatchingQuad(storageDescription, null, RDF.type, SPACE.Storage).subject.value;
   }
 
   static async build(iri: string, factory: AuthorizationAgentFactory): Promise<CRUDDataRegistry> {

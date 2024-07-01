@@ -20,7 +20,7 @@ const buildDataRegistry = async (
   }
   return {
     id: registry.iri,
-    label: registry.storageIri,
+    label: await registry.storageIri(),
     registrations
   };
 };
