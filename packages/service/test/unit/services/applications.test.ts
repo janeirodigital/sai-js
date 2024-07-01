@@ -1,3 +1,4 @@
+import { test, expect } from 'vitest';
 import type { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { getApplications, getUnregisteredApplicationProfile } from '../../../src/services/applications';
 

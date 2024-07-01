@@ -1,19 +1,19 @@
-import { jest } from '@jest/globals';
-import { IProcessor } from '@janeirodigital/sai-server-interfaces';
+import { vi, describe, test, expect, beforeEach, MockedClass } from 'vitest';
+import type { IProcessor } from '@janeirodigital/sai-server-interfaces';
 import { Worker } from 'bullmq';
 import { BullWorker } from '../../src';
 
-jest.mock('bullmq', () => ({
-  Worker: jest.fn()
+vi.mock('bullmq', () => ({
+  Worker: vi.fn()
 }));
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const MockedWorker = Worker as jest.MockedFunction<any>;
+const MockedWorker = Worker as MockedClass<any>;
 
-const workerMock = { run: jest.fn() };
+const workerMock = { run: vi.fn() };
 MockedWorker.mockImplementation(() => workerMock);
 
 const queueName = 'test-queue';
-const processor = { processorFunction: jest.fn() } as unknown as IProcessor;
+const processor = { processorFunction: vi.fn() } as unknown as IProcessor;
 
 beforeEach(() => {
   workerMock.run.mockReset();

@@ -1,5 +1,4 @@
-import { jest } from '@jest/globals';
-
+import { vi, describe, test, expect, beforeEach } from 'vitest';
 import { InMemoryStorage } from '@inrupt/solid-client-authn-node';
 import { HttpHandlerRequest } from '@digita-ai/handlersjs-http';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
@@ -15,13 +14,13 @@ import {
   encodeWebId
 } from '../../../src';
 
-jest.mock('../../../src/session-manager', () => {
-  const originalModule = jest.requireActual('../../../src/session-manager') as object;
+vi.mock('../../../src/session-manager', async (originalModule) => {
+  const mod = (await originalModule()) as object;
 
   return {
-    ...originalModule,
-    SessionManager: jest.fn(() => ({
-      getSaiSession: jest.fn()
+    ...mod,
+    SessionManager: vi.fn(() => ({
+      getSaiSession: vi.fn()
     }))
   };
 });
@@ -29,7 +28,7 @@ jest.mock('../../../src/session-manager', () => {
 const aliceWebId = 'https://alice.example';
 const aliceAgentUrl = webId2agentUrl(aliceWebId);
 
-const manager = jest.mocked(new SessionManager(new InMemoryStorage()));
+const manager = vi.mocked(new SessionManager(new InMemoryStorage()));
 let agentsHandler: AgentsHandler;
 
 beforeEach(() => {
@@ -38,7 +37,7 @@ beforeEach(() => {
 });
 
 describe('unauthenticated request', () => {
-  test('should contain valid Client ID Document', (done) => {
+  test('should contain valid Client ID Document', async () => {
     const request = {
       headers: {},
       url: aliceAgentUrl
@@ -48,11 +47,13 @@ describe('unauthenticated request', () => {
     };
     const ctx = { request, authn } as UnauthenticatedAuthnContext;
 
-    agentsHandler.handle(ctx).subscribe((response) => {
-      expect(response.body.client_id).toContain(encodeWebId(aliceWebId));
-      expect(response.body.redirect_uris).toContain(agentRedirectUrl(aliceAgentUrl));
-      expect(response.body.grant_types).toEqual(expect.arrayContaining(['authorization_code', 'refresh_token']));
-      done();
+    await new Promise<void>((done) => {
+      agentsHandler.handle(ctx).subscribe((response) => {
+        expect(response.body.client_id).toContain(encodeWebId(aliceWebId));
+        expect(response.body.redirect_uris).toContain(agentRedirectUrl(aliceAgentUrl));
+        expect(response.body.grant_types).toEqual(expect.arrayContaining(['authorization_code', 'refresh_token']));
+        done();
+      });
     });
   });
 });
@@ -66,7 +67,7 @@ describe('authenticated request', () => {
     clientId
   };
 
-  test('application registration discovery', (done) => {
+  test('application registration discovery', async () => {
     const applicationRegistrationIri = 'https://some.example/application-registration';
 
     manager.getSaiSession.mockImplementation(
@@ -86,16 +87,18 @@ describe('authenticated request', () => {
 
     const ctx = { request, authn } as AuthenticatedAuthnContext;
 
-    agentsHandler.handle(ctx).subscribe((response) => {
-      expect(manager.getSaiSession).toBeCalledWith(aliceWebId);
-      expect(response.headers.Link).toBe(
-        `<${clientId}>; anchor="${applicationRegistrationIri}"; rel="${INTEROP.registeredAgent.value}"`
-      );
-      done();
+    await new Promise<void>((done) => {
+      agentsHandler.handle(ctx).subscribe((response) => {
+        expect(manager.getSaiSession).toBeCalledWith(aliceWebId);
+        expect(response.headers.Link).toBe(
+          `<${clientId}>; anchor="${applicationRegistrationIri}"; rel="${INTEROP.registeredAgent.value}"`
+        );
+        done();
+      });
     });
   });
 
-  test('social agent registration discovery', (done) => {
+  test('social agent registration discovery', async () => {
     const bobWebId = 'https://bob.example/';
     const socialAgentRegistrationIri = 'https://some.example/application-registration';
 
@@ -123,12 +126,14 @@ describe('authenticated request', () => {
       }
     } as AuthenticatedAuthnContext;
 
-    agentsHandler.handle(ctx).subscribe((response) => {
-      expect(manager.getSaiSession).toBeCalledWith(aliceWebId);
-      expect(response.headers.Link).toBe(
-        `<${bobWebId}>; anchor="${socialAgentRegistrationIri}"; rel="${INTEROP.registeredAgent.value}"`
-      );
-      done();
+    await new Promise<void>((done) => {
+      agentsHandler.handle(ctx).subscribe((response) => {
+        expect(manager.getSaiSession).toBeCalledWith(aliceWebId);
+        expect(response.headers.Link).toBe(
+          `<${bobWebId}>; anchor="${socialAgentRegistrationIri}"; rel="${INTEROP.registeredAgent.value}"`
+        );
+        done();
+      });
     });
   });
 });

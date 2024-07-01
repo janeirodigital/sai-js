@@ -1,5 +1,4 @@
-import { jest } from '@jest/globals';
-import { type Mocked } from 'jest-mock';
+import { vi, describe, test, expect, Mocked } from 'vitest';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { type CRUDSocialAgentRegistration } from '@janeirodigital/interop-data-model';
 import { getDataRegistries } from '../../../src/services/data-registries';
@@ -14,7 +13,7 @@ const saiSession = {
   webId: aliceId,
   factory: {
     readable: {
-      shapeTree: jest.fn((iri: string) => {
+      shapeTree: vi.fn((iri: string) => {
         if (iri.includes('Project')) {
           return { descriptions: { en: { label: 'Projects' } } };
         }
@@ -56,7 +55,7 @@ const saiSession = {
       }
     ]
   },
-  findSocialAgentRegistration: jest.fn()
+  findSocialAgentRegistration: vi.fn()
 } as unknown as Mocked<AuthorizationAgent>;
 
 describe('owned data', () => {

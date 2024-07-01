@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals';
+import { vi, describe, test, expect, beforeEach, afterEach, MockedClass, MockedFunction } from 'vitest';
 import type { PushSubscription } from 'web-push';
 import { InMemoryStorage, IStorage, Session, getSessionFromStorage } from '@inrupt/solid-client-authn-node';
 import type { NotificationChannel } from '@solid-notifications/types';
@@ -6,20 +6,19 @@ import type { NotificationChannel } from '@solid-notifications/types';
 import { NOTIFY } from '@janeirodigital/interop-utils';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 
-jest.mock('@janeirodigital/interop-authorization-agent');
+vi.mock('@janeirodigital/interop-authorization-agent');
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const MockedAuthorizationAgent = AuthorizationAgent as jest.MockedFunction<any>;
+const MockedAuthorizationAgent = AuthorizationAgent as MockedClass<any>;
 
-jest.mock('@inrupt/solid-client-authn-node', () => {
-  const originalModule = jest.requireActual('@inrupt/solid-client-authn-node') as object;
-
+vi.mock('@inrupt/solid-client-authn-node', async (importOriginal) => {
+  const original = (await importOriginal()) as object;
   return {
-    ...originalModule,
-    getSessionFromStorage: jest.fn()
+    ...original,
+    getSessionFromStorage: vi.fn()
   };
 });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockedGetSessionFromStorage = getSessionFromStorage as jest.MockedFunction<any>;
+const mockedGetSessionFromStorage = getSessionFromStorage as MockedFunction<any>;
 
 import { SessionManager } from '../../src/session-manager';
 import { webId2agentUrl } from '../../src/url-templates';
@@ -30,13 +29,14 @@ let storage: IStorage;
 const webId = 'https://alice.example';
 
 beforeEach(() => {
+  vi;
   storage = new InMemoryStorage();
   manager = new SessionManager(storage);
   mockedGetSessionFromStorage.mockReset();
 });
 
 afterEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 describe('getSaiSession', () => {

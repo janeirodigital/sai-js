@@ -1,16 +1,15 @@
-import { jest } from '@jest/globals';
+import { vi, describe, test, expect, beforeEach, MockedClass } from 'vitest';
 import { Queue } from 'bullmq';
-
 import { BullQueue } from '../../src';
 
-jest.mock('bullmq', () => ({
-  Queue: jest.fn()
+vi.mock('bullmq', () => ({
+  Queue: vi.fn()
 }));
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-const MockedQueue = Queue as jest.MockedFunction<any>;
+const MockedQueue = Queue as MockedClass<any>;
 
-const queueMock = { add: jest.fn() };
+const queueMock = { add: vi.fn() };
 MockedQueue.mockImplementation(() => queueMock);
 
 const jobName = 'test-job';

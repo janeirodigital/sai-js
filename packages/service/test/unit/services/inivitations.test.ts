@@ -1,5 +1,4 @@
-import { jest } from '@jest/globals';
-import { type Mocked } from 'jest-mock';
+import { vi, describe, test, expect, Mocked } from 'vitest';
 import { Invitation } from '@janeirodigital/sai-api-messages';
 import { type AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import type { CRUDSocialAgentInvitation, CRUDSocialAgentRegistration } from '@janeirodigital/interop-data-model';
@@ -48,14 +47,17 @@ describe('getSocialAgentInvitations', () => {
 });
 
 describe('createInvitation', () => {
-  const saiSession = {
-    webId,
-    registrySet: {
-      hasAgentRegistry: {
-        addSocialAgentInvitation: jest.fn()
+  const saiSession = vi.mocked(
+    {
+      webId,
+      registrySet: {
+        hasAgentRegistry: {
+          addSocialAgentInvitation: vi.fn()
+        }
       }
-    }
-  } as unknown as Mocked<AuthorizationAgent>;
+    } as unknown as AuthorizationAgent,
+    true
+  );
 
   test('creates invitation', async () => {
     const invitationBase = {
@@ -83,17 +85,20 @@ describe('createInvitation', () => {
 });
 
 describe('acceptInvitation', () => {
-  const saiSession = {
-    fetch: {
-      raw: jest.fn()
-    },
-    findSocialAgentRegistration: jest.fn(),
-    registrySet: {
-      hasAgentRegistry: {
-        addSocialAgentRegistration: jest.fn()
+  const saiSession = vi.mocked(
+    {
+      fetch: {
+        raw: vi.fn()
+      },
+      findSocialAgentRegistration: vi.fn(),
+      registrySet: {
+        hasAgentRegistry: {
+          addSocialAgentRegistration: vi.fn()
+        }
       }
-    }
-  } as unknown as Mocked<AuthorizationAgent>;
+    } as unknown as AuthorizationAgent,
+    true
+  );
   const invitation = {
     capabilityUrl: 'https://auth.alice/example/invitation/secret-yori',
     label: 'Alice',
@@ -123,7 +128,7 @@ describe('acceptInvitation', () => {
       label: 'Alice',
       registeredAt: new Date('2023-12-27T19:30:01.822Z'),
       reciprocalRegistration: 'https://alice.example/agents/bob',
-      discoverAndUpdateReciprocal: jest.fn()
+      discoverAndUpdateReciprocal: vi.fn()
     } as unknown as CRUDSocialAgentRegistration;
     saiSession.findSocialAgentRegistration.mockResolvedValueOnce(socialAgentRegistration);
     const result = await acceptInvitation(saiSession, invitation);
@@ -147,7 +152,7 @@ describe('acceptInvitation', () => {
       registeredAgent: aliceId,
       label: 'Alice',
       registeredAt: new Date('2023-12-27T19:30:01.822Z'),
-      discoverAndUpdateReciprocal: jest.fn()
+      discoverAndUpdateReciprocal: vi.fn()
     } as unknown as CRUDSocialAgentRegistration;
     saiSession.findSocialAgentRegistration.mockResolvedValueOnce(undefined);
     saiSession.registrySet.hasAgentRegistry.addSocialAgentRegistration.mockResolvedValueOnce(socialAgentRegistration);

@@ -12,11 +12,9 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "@inrupt/solid-client-authn-node": "^2.0.0",
-    "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.24"
-  },
   "devDependencies": {
+    "@inrupt/solid-client-authn-node": "^2.0.0",
+    "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.24",
     "@solid-notifications/types": "^0.1.2",
     "@types/web-push": "^3.6.1",
     "bullmq": "^4.12.4",

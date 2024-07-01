@@ -1,8 +1,9 @@
+import { vi, test, expect } from 'vitest';
 import webpush, { PushSubscription } from 'web-push';
 import { CRUDSocialAgentRegistration } from '@janeirodigital/interop-data-model';
 import { sendWebPush } from '../../../src/services/web-push';
 
-jest.mock('web-push');
+vi.mock('web-push');
 
 const webId = 'https://alice.example';
 

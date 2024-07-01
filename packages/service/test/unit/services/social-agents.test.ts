@@ -1,9 +1,9 @@
-import { jest } from '@jest/globals';
+import { vi, describe, test, beforeEach, expect } from 'vitest';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { addSocialAgent, getSocialAgents } from '../../../src/services/social-agents';
 
-const findSocialAgentRegistration = jest.fn();
-const addSocialAgentRegistration = jest.fn();
+const findSocialAgentRegistration = vi.fn();
+const addSocialAgentRegistration = vi.fn();
 const saiSession = {
   findSocialAgentRegistration,
   registrySet: { hasAgentRegistry: { addSocialAgentRegistration } },

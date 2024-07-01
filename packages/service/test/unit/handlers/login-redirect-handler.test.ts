@@ -1,4 +1,4 @@
-import { jest, beforeEach, test, expect } from '@jest/globals';
+import { vi, test, expect, beforeEach } from 'vitest';
 import { InMemoryStorage, Session } from '@inrupt/solid-client-authn-node';
 import { HttpHandlerContext, HttpHandlerRequest } from '@digita-ai/handlersjs-http';
 
@@ -8,15 +8,15 @@ import { LoginRedirectHandler, frontendUrl, baseUrl, encodeWebId } from '../../.
 
 import { SessionManager } from '../../../src/session-manager';
 
-jest.mock('../../../src/session-manager', () => ({
-  SessionManager: jest.fn(() => ({
-    getOidcSession: jest.fn(),
-    getSaiSession: jest.fn()
+vi.mock('../../../src/session-manager', () => ({
+  SessionManager: vi.fn(() => ({
+    getOidcSession: vi.fn(),
+    getSaiSession: vi.fn()
   }))
 }));
 
 let loginRedirectHandler: LoginRedirectHandler;
-const manager = jest.mocked(new SessionManager(new InMemoryStorage()));
+const manager = vi.mocked(new SessionManager(new InMemoryStorage()));
 const queue = new MockedQueue('reciprocal-registrations');
 
 const aliceWebId = 'https://alice.example';
@@ -27,7 +27,7 @@ beforeEach(() => {
   manager.getOidcSession.mockReset();
 });
 
-test('redirects to frontend after handing a valid redirect', (done) => {
+test('redirects to frontend after handing a valid redirect', async () => {
   const pathname = '/agents/123/redirect';
   const search = 'code=some-code&state=some-state';
   const request = {
@@ -37,7 +37,7 @@ test('redirects to frontend after handing a valid redirect', (done) => {
   } as unknown as HttpHandlerRequest;
   const ctx = { request } as HttpHandlerContext;
 
-  const handleIncomingRedirectMock = jest.fn(async (completeUrl) => {
+  const handleIncomingRedirectMock = vi.fn(async (completeUrl) => {
     expect(completeUrl).toContain(request.url.pathname + request.url.search);
   });
 
@@ -59,11 +59,13 @@ test('redirects to frontend after handing a valid redirect', (done) => {
     } as unknown as AuthorizationAgent;
   });
 
-  loginRedirectHandler.handle(ctx).subscribe((response) => {
-    expect(manager.getOidcSession).toBeCalledTimes(1);
-    expect(handleIncomingRedirectMock).toBeCalledTimes(1);
-    expect(response.status).toBe(302);
-    expect(response.headers.location).toBe(frontendUrl);
-    done();
+  await new Promise<void>((done) => {
+    loginRedirectHandler.handle(ctx).subscribe((response) => {
+      expect(manager.getOidcSession).toBeCalledTimes(1);
+      expect(handleIncomingRedirectMock).toBeCalledTimes(1);
+      expect(response.status).toBe(302);
+      expect(response.headers.location).toBe(frontendUrl);
+      done();
+    });
   });
 });

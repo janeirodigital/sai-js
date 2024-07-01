@@ -27,7 +27,7 @@
     "build:components": "componentsjs-generator -s dist -c dist/components -r ssv -i .componentsignore",
     "build:ts": "tsc",
     "clean": "rm -rf dist/",
-    "test": "jest test/unit",
+    "test": "NODE_ENV=vitest vitest run --coverage",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write {src,test}/**/*.ts"

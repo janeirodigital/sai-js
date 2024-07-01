@@ -1,4 +1,4 @@
-import { jest, describe, test, expect } from '@jest/globals';
+import { vi, describe, test, expect } from 'vitest';
 import { AgentWithAccess, AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { ReadableClientIdDocument, ReadableDataInstance } from '@janeirodigital/interop-data-model';
 import { ShareAuthorization } from '@janeirodigital/sai-api-messages';
@@ -34,14 +34,17 @@ describe('getResource', () => {
       children: [childInfo]
     } as unknown as ReadableDataInstance;
 
-    const saiSession = jest.mocked({
-      factory: {
-        readable: {
-          dataInstance: jest.fn()
-        }
-      },
-      findSocialAgentsWithAccess: jest.fn()
-    } as unknown as AuthorizationAgent);
+    const saiSession = vi.mocked(
+      {
+        factory: {
+          readable: {
+            dataInstance: vi.fn()
+          }
+        },
+        findSocialAgentsWithAccess: vi.fn()
+      } as unknown as AuthorizationAgent,
+      true
+    );
     saiSession.factory.readable.dataInstance.mockResolvedValueOnce(dataInstance);
     saiSession.findSocialAgentsWithAccess.mockResolvedValueOnce(agentsWithAccess);
 
@@ -71,16 +74,19 @@ describe('getResource', () => {
 
 describe('shareResource', () => {
   test('sucessful response', async () => {
-    const saiSession = jest.mocked({
-      shareDataInstance: jest.fn(),
-      generateAccessGrant: jest.fn(),
-      factory: {
-        readable: {
-          clientIdDocument: jest.fn()
-        }
-      },
-      findSocialAgentsWithAccess: jest.fn()
-    } as unknown as AuthorizationAgent);
+    const saiSession = vi.mocked(
+      {
+        shareDataInstance: vi.fn(),
+        generateAccessGrant: vi.fn(),
+        factory: {
+          readable: {
+            clientIdDocument: vi.fn()
+          }
+        },
+        findSocialAgentsWithAccess: vi.fn()
+      } as unknown as AuthorizationAgent,
+      true
+    );
 
     const clientIdDocument = {
       callbackEndpoint: 'some-endpoint'

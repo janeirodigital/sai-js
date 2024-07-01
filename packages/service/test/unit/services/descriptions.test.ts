@@ -1,4 +1,4 @@
-import { jest, beforeEach, describe, test, expect } from '@jest/globals';
+import { vi, describe, test, expect, beforeEach } from 'vitest';
 import type { AuthorizationAgent, NestedDataAuthorizationData } from '@janeirodigital/interop-authorization-agent';
 import {
   CRUDApplicationRegistration,
@@ -13,8 +13,6 @@ import { ACL, INTEROP } from '@janeirodigital/interop-utils';
 import { AgentType, Authorization } from '@janeirodigital/sai-api-messages';
 import { getDescriptions, recordAuthorization, listDataInstances } from '../../../src/services';
 
-jest.setTimeout(30000);
-
 const projectShapeTree = 'https://solidshapes.example/trees/Project';
 const webId = 'https://alice.example';
 
@@ -22,36 +20,39 @@ describe('getDescriptions', () => {
   const applicationIri = 'https://projectron.example';
   const lang = 'en';
 
-  const saiSession = jest.mocked({
-    webId,
-    registrySet: {
-      hasDataRegistry: [{ iri: 'https://home.alice.example/data/' }, { iri: 'https://work.alice.example/data/' }]
-    },
-    findDataRegistration: jest.fn(),
-    socialAgentRegistrations: [
-      {
-        registeredAgent: 'https://acme.example',
-        label: 'ACME',
-        reciprocalRegistration: {
-          accessGrant: {
-            hasDataGrant: [
-              {
-                registeredShapeTree: projectShapeTree,
-                hasDataRegistration: 'https://rnd.acme.example/data/projects/',
-                hasDataInstance: new Array(17)
-              }
-            ]
+  const saiSession = vi.mocked(
+    {
+      webId,
+      registrySet: {
+        hasDataRegistry: [{ iri: 'https://home.alice.example/data/' }, { iri: 'https://work.alice.example/data/' }]
+      },
+      findDataRegistration: vi.fn(),
+      socialAgentRegistrations: [
+        {
+          registeredAgent: 'https://acme.example',
+          label: 'ACME',
+          reciprocalRegistration: {
+            accessGrant: {
+              hasDataGrant: [
+                {
+                  registeredShapeTree: projectShapeTree,
+                  hasDataRegistration: 'https://rnd.acme.example/data/projects/',
+                  hasDataInstance: new Array(17)
+                }
+              ]
+            }
           }
         }
+      ],
+      factory: {
+        readable: {
+          clientIdDocument: vi.fn(),
+          accessNeedGroup: vi.fn()
+        }
       }
-    ],
-    factory: {
-      readable: {
-        clientIdDocument: jest.fn(),
-        accessNeedGroup: jest.fn()
-      }
-    }
-  } as unknown as AuthorizationAgent);
+    } as unknown as AuthorizationAgent,
+    true
+  );
 
   beforeEach(() => {
     saiSession.factory.readable.clientIdDocument.mockReset();
@@ -76,7 +77,7 @@ describe('getDescriptions', () => {
           definition: 'definition for tasks'
         }
       },
-      getDescription: jest.fn(async (preferredLang: string) => childAccessNeed.descriptions[preferredLang]),
+      getDescription: vi.fn(async (preferredLang: string) => childAccessNeed.descriptions[preferredLang]),
       required: true,
       accessMode: [ACL.Read],
       shapeTree: {
@@ -86,7 +87,7 @@ describe('getDescriptions', () => {
             label: 'Tasks'
           }
         },
-        getDescription: jest.fn(async (preferredLang: string) => childAccessNeed.shapeTree.descriptions[preferredLang])
+        getDescription: vi.fn(async (preferredLang: string) => childAccessNeed.shapeTree.descriptions[preferredLang])
       }
     } as unknown as ReadableAccessNeed;
     const accessNeed = {
@@ -97,7 +98,7 @@ describe('getDescriptions', () => {
           definition: 'definition for projects'
         }
       },
-      getDescription: jest.fn(async (preferredLang: string) => accessNeed.descriptions[preferredLang]),
+      getDescription: vi.fn(async (preferredLang: string) => accessNeed.descriptions[preferredLang]),
       required: true,
       accessMode: [ACL.Read],
       shapeTree: {
@@ -107,7 +108,7 @@ describe('getDescriptions', () => {
             label: 'Projects'
           }
         },
-        getDescription: jest.fn(async (preferredLang: string) => accessNeed.shapeTree.descriptions[preferredLang])
+        getDescription: vi.fn(async (preferredLang: string) => accessNeed.shapeTree.descriptions[preferredLang])
       },
       children: [childAccessNeed]
     } as unknown as ReadableAccessNeed;
@@ -121,7 +122,7 @@ describe('getDescriptions', () => {
         }
       },
       reliableDescriptionLanguages: new Set([lang]),
-      getDescription: jest.fn(async (preferredLang: string) => accessNeedGroup.descriptions[preferredLang]),
+      getDescription: vi.fn(async (preferredLang: string) => accessNeedGroup.descriptions[preferredLang]),
       accessNeeds: [accessNeed]
     } as unknown as ReadableAccessNeedGroup;
     saiSession.factory.readable.clientIdDocument.mockResolvedValueOnce({
@@ -220,15 +221,18 @@ describe('getDescriptions', () => {
 });
 
 describe('listDataInstances', () => {
-  const saiSession = jest.mocked({
-    webId,
-    factory: {
-      readable: {
-        dataRegistration: jest.fn(),
-        dataInstance: jest.fn()
+  const saiSession = vi.mocked(
+    {
+      webId,
+      factory: {
+        readable: {
+          dataRegistration: vi.fn(),
+          dataInstance: vi.fn()
+        }
       }
-    }
-  } as unknown as AuthorizationAgent);
+    } as unknown as AuthorizationAgent,
+    true
+  );
 
   beforeEach(() => {
     saiSession.factory.readable.dataRegistration.mockReset();
@@ -261,22 +265,25 @@ describe('recordAuthorization', () => {
   const clientIdDocument = {
     callbackEndpoint: 'http://some.iri'
   } as unknown as ReadableClientIdDocument;
-  const saiSession = jest.mocked({
-    recordAccessAuthorization: jest.fn(),
-    findApplicationRegistration: jest.fn(),
-    generateAccessGrant: jest.fn(),
-    registrySet: {
-      hasAgentRegistry: {
-        addApplicationRegistration: jest.fn()
+  const saiSession = vi.mocked(
+    {
+      recordAccessAuthorization: vi.fn(),
+      findApplicationRegistration: vi.fn(),
+      generateAccessGrant: vi.fn(),
+      registrySet: {
+        hasAgentRegistry: {
+          addApplicationRegistration: vi.fn()
+        }
+      },
+      factory: {
+        readable: {
+          accessNeedGroup: vi.fn(),
+          clientIdDocument: vi.fn()
+        }
       }
-    },
-    factory: {
-      readable: {
-        accessNeedGroup: jest.fn(),
-        clientIdDocument: jest.fn()
-      }
-    }
-  } as unknown as AuthorizationAgent);
+    } as unknown as AuthorizationAgent,
+    true
+  );
 
   beforeEach(() => {
     saiSession.recordAccessAuthorization.mockClear();

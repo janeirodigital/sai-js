@@ -1,6 +1,6 @@
-import { IQueue } from '@janeirodigital/sai-server-interfaces';
-import { JobsOptions, Queue } from 'bullmq';
-import { RedisConnectionInfo } from './redis-connection-info';
+import type { IQueue } from '@janeirodigital/sai-server-interfaces';
+import { type JobsOptions, Queue } from 'bullmq';
+import type { RedisConnectionInfo } from './redis-connection-info';
 
 export class BullQueue implements IQueue {
   private bull: Queue;

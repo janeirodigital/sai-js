@@ -1,35 +1,36 @@
+import { vi, describe, test, expect, beforeEach } from 'vitest';
 import { NOTIFY } from '@janeirodigital/interop-utils';
 import type { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { InMemoryStorage } from '@inrupt/solid-client-authn-node';
 import type { NotificationChannel } from '@solid-notifications/types';
 import { ReciprocalRegistrationsProcessor, IReciprocalRegistrationsJob, webhookTargetUrl } from '../../../src';
 
-const mockedSubscribe = jest.fn();
-jest.mock('@solid-notifications/subscription', () => ({
-  SubscriptionClient: jest.fn(() => ({
+const mockedSubscribe = vi.fn();
+vi.mock('@solid-notifications/subscription', () => ({
+  SubscriptionClient: vi.fn(() => ({
     subscribe: mockedSubscribe
   }))
 }));
 
 import { SessionManager } from '../../../src/session-manager';
 
-jest.mock('../../../src/session-manager', () => ({
-  SessionManager: jest.fn(() => ({
-    getWebhookSubscription: jest.fn(),
-    setWebhookSubscription: jest.fn(),
-    getSaiSession: jest.fn()
+vi.mock('../../../src/session-manager', () => ({
+  SessionManager: vi.fn(() => ({
+    getWebhookSubscription: vi.fn(),
+    setWebhookSubscription: vi.fn(),
+    getSaiSession: vi.fn()
   }))
 }));
 
-const sessionManager = jest.mocked(new SessionManager(new InMemoryStorage()));
+const sessionManager = vi.mocked(new SessionManager(new InMemoryStorage()));
 const webId = 'https://alice.example';
 const peerWebId = 'https://bob.example';
 const job: IReciprocalRegistrationsJob = { data: { webId, registeredAgent: peerWebId } };
 const processor = new ReciprocalRegistrationsProcessor(sessionManager);
 
 const saiSessionMock = {
-  rawFetch: jest.fn(),
-  findSocialAgentRegistration: jest.fn()
+  rawFetch: vi.fn(),
+  findSocialAgentRegistration: vi.fn()
 };
 sessionManager.getSaiSession.mockImplementation(async () => saiSessionMock as unknown as AuthorizationAgent);
 
@@ -38,7 +39,7 @@ const mockedRegistrationWithReciprocial = {
 };
 
 const mockedRegistrationWithoutReciprocal = {
-  discoverAndUpdateReciprocal: jest.fn()
+  discoverAndUpdateReciprocal: vi.fn()
 };
 
 beforeEach(() => {

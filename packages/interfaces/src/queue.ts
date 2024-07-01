@@ -1,4 +1,4 @@
-import { JobsOptions } from 'bullmq';
+import type { JobsOptions } from 'bullmq';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface IQueue {

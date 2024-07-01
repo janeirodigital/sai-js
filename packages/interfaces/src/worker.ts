@@ -1,4 +1,4 @@
-import { ISessionManager } from './i-session-manager';
+import type { ISessionManager } from './i-session-manager';
 
 export interface IWorker {
   run(): Promise<void>;

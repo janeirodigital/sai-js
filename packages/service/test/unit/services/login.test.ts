@@ -1,4 +1,4 @@
-import { jest, test, expect } from '@jest/globals';
+import { vi, test, expect } from 'vitest';
 import { Session } from '@inrupt/solid-client-authn-node';
 import { agentRedirectUrl, webId2agentUrl } from '../../../src';
 
@@ -11,7 +11,7 @@ const opRedirectUrl = 'https:/op.example/auth/?something';
 
 const oidcSession = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  login: jest.fn(async (loginOptions: any) => {
+  login: vi.fn(async (loginOptions: any) => {
     loginOptions.handleRedirect(opRedirectUrl);
   })
 } as unknown as Session;

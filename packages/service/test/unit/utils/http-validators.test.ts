@@ -1,4 +1,5 @@
-import { HttpHandlerContext } from '@digita-ai/handlersjs-http';
+import { describe, test, expect } from 'vitest';
+import type { HttpHandlerContext } from '@digita-ai/handlersjs-http';
 import { validateContentType } from '../../../src/utils/http-validators';
 
 describe('validateContentType', () => {

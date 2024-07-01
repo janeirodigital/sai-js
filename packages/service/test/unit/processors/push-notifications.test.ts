@@ -1,19 +1,20 @@
+import { vi, test, expect, beforeEach } from 'vitest';
 import type { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { InMemoryStorage } from '@inrupt/solid-client-authn-node';
 import { PushNotificationsProcessor } from '../../../src';
 
 import { SessionManager } from '../../../src/session-manager';
 
-jest.mock('../../../src/session-manager', () => ({
-  SessionManager: jest.fn(() => ({
-    getSaiSession: jest.fn(),
-    getPushSubscriptions: jest.fn()
+vi.mock('../../../src/session-manager', () => ({
+  SessionManager: vi.fn(() => ({
+    getSaiSession: vi.fn(),
+    getPushSubscriptions: vi.fn()
   }))
 }));
 
-const sessionManager = jest.mocked(new SessionManager(new InMemoryStorage()));
+const sessionManager = vi.mocked(new SessionManager(new InMemoryStorage()));
 
-const mockedUpdateDG = jest.fn();
+const mockedUpdateDG = vi.fn();
 const saiSessionMock = {
   updatePushNotifications: mockedUpdateDG
 } as unknown as AuthorizationAgent;

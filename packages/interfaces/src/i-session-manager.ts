@@ -1,7 +1,7 @@
 import type { PushSubscription } from 'web-push';
-import { IStorage, Session } from '@inrupt/solid-client-authn-node';
+import type { IStorage, Session } from '@inrupt/solid-client-authn-node';
 import type { NotificationChannel } from '@solid-notifications/types';
-import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
+import type { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 
 export interface ISessionManager {
   storage: IStorage; // TODO can be removed after checking if component builder still works
