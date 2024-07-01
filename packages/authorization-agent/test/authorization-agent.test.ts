@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
+import { vi, describe, test, beforeEach, expect } from 'vitest';
 import { statelessFetch, createStatefulFetch } from '@janeirodigital/interop-test-utils';
 import {
   CRUDRegistrySet,
@@ -53,7 +53,7 @@ test('have access to all the application registrations', async () => {
 
 test('should provide shortcut to find application registratons', async () => {
   const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
-  const spy = jest.spyOn(agent.registrySet.hasAgentRegistry, 'findApplicationRegistration');
+  const spy = vi.spyOn(agent.registrySet.hasAgentRegistry, 'findApplicationRegistration');
   const iri = 'https://projectron.example/#app';
   await agent.findApplicationRegistration(iri);
   expect(spy).toHaveBeenCalledTimes(1);
@@ -72,7 +72,7 @@ test('have access to all the social agent registrations', async () => {
 
 test('should provide shortcut to find social agent registratons', async () => {
   const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statelessFetch, randomUUID });
-  const spy = jest.spyOn(agent.registrySet.hasAgentRegistry, 'findSocialAgentRegistration');
+  const spy = vi.spyOn(agent.registrySet.hasAgentRegistry, 'findSocialAgentRegistration');
   const iri = 'https://alice.example/#id';
   await agent.findSocialAgentRegistration(iri);
   expect(spy).toHaveBeenCalledTimes(1);
@@ -139,7 +139,7 @@ describe('recordAccessAuthorization', () => {
       'https://auth.alice.example/5ae2442a-75f7-4d5a-ba81-df0f5033e219',
       'https://auth.alice.example/99c56d7c-6ac3-4758-b234-5e33d3984d0b'
     ];
-    agent.registrySet.hasAuthorizationRegistry.findAuthorization = jest.fn(
+    agent.registrySet.hasAuthorizationRegistry.findAuthorization = vi.fn(
       async () =>
         ({
           hasDataAuthorization: existingDataAuthorizations,
@@ -194,7 +194,7 @@ describe('recordAccessAuthorization', () => {
       matchingDataAuthorization.hasInheritingAuthorization[0].iri
     ];
 
-    agent.registrySet.hasAuthorizationRegistry.findAuthorization = jest.fn(
+    agent.registrySet.hasAuthorizationRegistry.findAuthorization = vi.fn(
       async () =>
         ({
           hasDataAuthorization: existingDataAuthorizations,
@@ -241,7 +241,7 @@ describe('recordAccessAuthorization', () => {
 
     const existingDataAuthorizations = [matchingDataAuthorization.iri];
 
-    agent.registrySet.hasAuthorizationRegistry.findAuthorization = jest.fn(
+    agent.registrySet.hasAuthorizationRegistry.findAuthorization = vi.fn(
       async () =>
         ({
           hasDataAuthorization: existingDataAuthorizations,
@@ -306,7 +306,7 @@ describe('updateDelegatedGrant', () => {
   test('should generateAccessGrant for each affected access authorization', async () => {
     const statefulFetch = createStatefulFetch();
     const agent = await AuthorizationAgent.build(webId, agentId, { fetch: statefulFetch, randomUUID });
-    const generateAccessGrantSpy = jest.spyOn(agent, 'generateAccessGrant');
+    const generateAccessGrantSpy = vi.spyOn(agent, 'generateAccessGrant');
     const dataOwnerIri = 'https://omni.example/#corp';
     await agent.updateDelegatedGrants(dataOwnerIri);
     expect(generateAccessGrantSpy).toBeCalledTimes(2);
@@ -332,7 +332,7 @@ describe('findSocialAgentsWithAccess', () => {
   beforeEach(async () => {
     const statefulFetch = createStatefulFetch();
     agent = await AuthorizationAgent.build(webId, agentId, { fetch: statefulFetch, randomUUID });
-    agent.factory.readable.dataInstance = jest.fn(async () => dataInstance);
+    agent.factory.readable.dataInstance = vi.fn(async () => dataInstance);
   });
 
   test('with scope All', async () => {
@@ -341,11 +341,9 @@ describe('findSocialAgentsWithAccess', () => {
       scopeOfAuthorization: INTEROP.All.value,
       ...authorization
     };
-    jest
-      .spyOn(agent, 'accessAuthorizations', 'get')
-      .mockReturnValue([
-        { dataAuthorizations: [allAuthorization] }
-      ] as unknown as AsyncIterable<ReadableAccessAuthorization>);
+    vi.spyOn(agent, 'accessAuthorizations', 'get').mockReturnValue([
+      { dataAuthorizations: [allAuthorization] }
+    ] as unknown as AsyncIterable<ReadableAccessAuthorization>);
 
     const result = await agent.findSocialAgentsWithAccess(dataInstance.iri);
     expect(result).toEqual(
@@ -366,7 +364,7 @@ describe('findSocialAgentsWithAccess', () => {
       dataOwner: webId,
       ...authorization
     };
-    jest.spyOn(agent, 'accessAuthorizations', 'get').mockReturnValue([
+    vi.spyOn(agent, 'accessAuthorizations', 'get').mockReturnValue([
       { dataAuthorizations: [] }, // to catch the case with no matching data authorization
       { dataAuthorizations: [allAuthorization] }
     ] as unknown as AsyncIterable<ReadableAccessAuthorization>);
@@ -391,11 +389,9 @@ describe('findSocialAgentsWithAccess', () => {
       hasDataRegistration: 'https://home.alice.example/some-registration/',
       ...authorization
     };
-    jest
-      .spyOn(agent, 'accessAuthorizations', 'get')
-      .mockReturnValue([
-        { dataAuthorizations: [allAuthorization] }
-      ] as unknown as AsyncIterable<ReadableAccessAuthorization>);
+    vi.spyOn(agent, 'accessAuthorizations', 'get').mockReturnValue([
+      { dataAuthorizations: [allAuthorization] }
+    ] as unknown as AsyncIterable<ReadableAccessAuthorization>);
 
     const result = await agent.findSocialAgentsWithAccess(dataInstance.iri);
     expect(result).toEqual(
@@ -418,11 +414,9 @@ describe('findSocialAgentsWithAccess', () => {
       hasDataInstance: [dataInstance.iri],
       ...authorization
     };
-    jest
-      .spyOn(agent, 'accessAuthorizations', 'get')
-      .mockReturnValue([
-        { dataAuthorizations: [allAuthorization] }
-      ] as unknown as AsyncIterable<ReadableAccessAuthorization>);
+    vi.spyOn(agent, 'accessAuthorizations', 'get').mockReturnValue([
+      { dataAuthorizations: [allAuthorization] }
+    ] as unknown as AsyncIterable<ReadableAccessAuthorization>);
 
     const result = await agent.findSocialAgentsWithAccess(dataInstance.iri);
     expect(result).toEqual(
@@ -442,11 +436,9 @@ describe('findSocialAgentsWithAccess', () => {
       scopeOfAuthorization: 'Invalid',
       ...authorization
     };
-    jest
-      .spyOn(agent, 'accessAuthorizations', 'get')
-      .mockReturnValue([
-        { dataAuthorizations: [allAuthorization] }
-      ] as unknown as AsyncIterable<ReadableAccessAuthorization>);
+    vi.spyOn(agent, 'accessAuthorizations', 'get').mockReturnValue([
+      { dataAuthorizations: [allAuthorization] }
+    ] as unknown as AsyncIterable<ReadableAccessAuthorization>);
 
     await expect(agent.findSocialAgentsWithAccess(dataInstance.iri)).rejects.toThrow(
       'encountered incorect Data Authorization with scope:'
@@ -490,7 +482,7 @@ describe('shareDataInstance', () => {
       ],
       agents: ['https://bob.example/#id']
     };
-    agent.findSocialAgentsWithAccess = jest.fn(async () => []);
+    agent.findSocialAgentsWithAccess = vi.fn(async () => []);
 
     const dataInstance = {
       iri: details.resource,
@@ -499,12 +491,12 @@ describe('shareDataInstance', () => {
         registeredShapeTree: shapeTree
       }
     } as ReadableDataInstance;
-    agent.factory.readable.dataInstance = jest.fn(async () => dataInstance);
+    agent.factory.readable.dataInstance = vi.fn(async () => dataInstance);
     const childDataRegistration = { iri: 'mocked' } as ReadableDataRegistration;
-    agent.findDataRegistration = jest.fn(async () => childDataRegistration);
+    agent.findDataRegistration = vi.fn(async () => childDataRegistration);
 
     const mockedAuthorization = { iri: 'also-mocked' } as ReadableAccessAuthorization;
-    const recordMock = jest.fn(async () => mockedAuthorization);
+    const recordMock = vi.fn(async () => mockedAuthorization);
 
     agent.recordAccessAuthorization = recordMock;
 
