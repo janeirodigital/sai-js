@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { jest, describe, test, expect } from '@jest/globals';
+import { vi, describe, test, expect } from 'vitest';
 import { statelessFetch } from '@janeirodigital/interop-test-utils';
 import { ReadableApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
 import { RdfResponse } from '@janeirodigital/interop-utils';
@@ -16,7 +16,7 @@ const linkString = `
 `;
 
 describe('applicatrion registration exists', () => {
-  const mocked = jest.fn(statelessFetch);
+  const mocked = vi.fn(statelessFetch);
   const responseMock = {
     ok: true,
     headers: { get: (name: string): string | null => (name === 'Link' ? linkString : null) }
@@ -40,7 +40,7 @@ describe('applicatrion registration exists', () => {
 });
 describe('discovery helpers', () => {
   const expectedRedirectUriBase = 'https://auth.example/authorize';
-  const mocked = jest.fn(statelessFetch);
+  const mocked = vi.fn(statelessFetch);
   const responseMock = { ok: true, headers: { get: (): null => null } } as unknown as RdfResponse;
   responseMock.clone = () => ({ ...responseMock });
 
@@ -85,7 +85,7 @@ describe('discovery helpers', () => {
 });
 
 describe('describe discovery', () => {
-  const mocked = jest.fn(statelessFetch);
+  const mocked = vi.fn(statelessFetch);
   const responseMock = {
     ok: true,
     headers: { get: (name: string): string | null => (name === 'Link' ? linkString : null) }
