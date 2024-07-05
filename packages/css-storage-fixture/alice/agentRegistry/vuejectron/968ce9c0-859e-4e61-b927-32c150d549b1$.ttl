@@ -1,0 +1,7 @@
+<http://localhost:3000/alice/agentRegistry/vuejectron/968ce9c0-859e-4e61-b927-32c150d549b1> a <http://www.w3.org/ns/solid/interop#DataGrant>;
+    <http://www.w3.org/ns/solid/interop#dataOwner> <http://localhost:3000/alice/profile/card#me>;
+    <http://www.w3.org/ns/solid/interop#registeredShapeTree> <http://localhost:3000/shapetrees/trees/Image>;
+    <http://www.w3.org/ns/solid/interop#hasDataRegistration> <http://localhost:3000/alice-work/dataRegistry/images/>;
+    <http://www.w3.org/ns/solid/interop#scopeOfGrant> <http://www.w3.org/ns/solid/interop#Inherited>;
+    <http://www.w3.org/ns/solid/interop#inheritsFromGrant> <http://localhost:3000/alice/agentRegistry/vuejectron/22aef5d1-1b22-4c3e-bcf5-1a6528748d8c>;
+    <http://www.w3.org/ns/solid/interop#accessMode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Create>, <http://www.w3.org/ns/auth/acl#Update>, <http://www.w3.org/ns/auth/acl#Delete>.

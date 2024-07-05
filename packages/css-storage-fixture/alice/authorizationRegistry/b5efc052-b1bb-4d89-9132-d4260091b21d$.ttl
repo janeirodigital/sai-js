@@ -1,0 +1,7 @@
+<http://localhost:3000/alice/authorizationRegistry/b5efc052-b1bb-4d89-9132-d4260091b21d> <http://www.w3.org/ns/solid/interop#grantedBy> <http://localhost:3000/alice/profile/card#me>;
+    <http://www.w3.org/ns/solid/interop#grantedWith> <http://localhost:4000/agents/aHR0cDovL2xvY2FsaG9zdDozMDAwL2FsaWNlL3Byb2ZpbGUvY2FyZCNtZQ==>;
+    <http://www.w3.org/ns/solid/interop#grantee> <http://localhost:3000/acme/projectron/vue>;
+    <http://www.w3.org/ns/solid/interop#hasAccessNeedGroup> <http://localhost:3000/acme/projectron/access-needs#need-group-pm>;
+    <http://www.w3.org/ns/solid/interop#hasDataAuthorization> <http://localhost:3000/alice/authorizationRegistry/1714650d-88fb-4726-b1a4-b275861d517d>, <http://localhost:3000/alice/authorizationRegistry/210f6b5e-3839-4118-98dd-c2ddcb072cb9>, <http://localhost:3000/alice/authorizationRegistry/f587d4a5-bccc-48c1-8743-ea4fefea92bb>, <http://localhost:3000/alice/authorizationRegistry/f7b993bb-dc6e-4732-8cb1-7641283e27a9>;
+    <http://www.w3.org/ns/solid/interop#grantedAt> "2024-07-04T02:43:20.282Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+    <http://www.w3.org/ns/solid/interop#granted> true.

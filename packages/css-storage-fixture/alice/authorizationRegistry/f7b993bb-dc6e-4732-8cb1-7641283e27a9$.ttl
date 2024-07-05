@@ -1,0 +1,7 @@
+<http://localhost:3000/alice/authorizationRegistry/f7b993bb-dc6e-4732-8cb1-7641283e27a9> <http://www.w3.org/ns/solid/interop#grantee> <http://localhost:3000/acme/projectron/vue>;
+    <http://www.w3.org/ns/solid/interop#grantedBy> <http://localhost:3000/alice/profile/card#me>;
+    <http://www.w3.org/ns/solid/interop#registeredShapeTree> <http://localhost:3000/shapetrees/trees/File>;
+    <http://www.w3.org/ns/solid/interop#scopeOfAuthorization> <http://www.w3.org/ns/solid/interop#Inherited>;
+    <http://www.w3.org/ns/solid/interop#inheritsFromAuthorization> <http://localhost:3000/alice/authorizationRegistry/1714650d-88fb-4726-b1a4-b275861d517d>;
+    <http://www.w3.org/ns/solid/interop#satisfiesAccessNeed> <http://localhost:3000/acme/projectron/access-needs#need-file>;
+    <http://www.w3.org/ns/solid/interop#accessMode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Create>, <http://www.w3.org/ns/auth/acl#Update>, <http://www.w3.org/ns/auth/acl#Delete>.
