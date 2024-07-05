@@ -96,7 +96,7 @@ export class Application {
     this.webPushService = await discoverWebPushService(this.authorizationAgentIri, this.rawFetch);
     if (!this.registrationIri) return;
     await this.buildRegistration();
-    await this.subscribeToRegistration();
+    // await this.subscribeToRegistration();
   }
 
   private async buildRegistration(): Promise<void> {
@@ -201,20 +201,20 @@ export class Application {
     return new Set(this.dataOwners.map((dataOwner) => dataOwner.iri));
   }
 
-  public resourceServers(resourceOwner: string, shapeTree: string): Set<string> {
+  public resourceServers(resourceOwner: string, scope: string): Set<string> {
     const dataOwner = this.dataOwners.find((owner) => owner.iri === resourceOwner);
-    const grants = dataOwner.issuedGrants.filter((grant) => grant.registeredShapeTree === shapeTree);
+    const grants = dataOwner.issuedGrants.filter((grant) => grant.registeredShapeTree === scope);
     return new Set(grants.map((grant) => grant.storageIri));
   }
 
-  private findGrant(storage: string, shapeTree: string): DataGrant {
+  private findGrant(storage: string, scope: string): DataGrant {
     return this.dataOwners
       .flatMap((owner) => owner.issuedGrants)
-      .find((dataGrant) => dataGrant.storageIri === storage && dataGrant.registeredShapeTree === shapeTree);
+      .find((dataGrant) => dataGrant.storageIri === storage && dataGrant.registeredShapeTree === scope);
   }
 
-  public async resources(resourceServer: string, shapeTree: string): Promise<Set<string>> {
-    const grant = this.findGrant(resourceServer, shapeTree);
+  public async resources(resourceServer: string, scope: string): Promise<Set<string>> {
+    const grant = this.findGrant(resourceServer, scope);
     let list: string[] = [];
     if (grant instanceof InheritedDataGrant) {
       throw new Error(`Cannot list instances from Inherited grants`);
@@ -229,7 +229,7 @@ export class Application {
     for (const resource of list) {
       this.parentMap.set(resource, {
         id: resource,
-        scope: shapeTree,
+        scope: scope,
         resourceServer
       });
     }
@@ -259,24 +259,25 @@ export class Application {
     return grant.accessMode.includes(ACL.Create.value);
   }
 
-  public canCreateChild(parentId: string, scope?: string): boolean {
-    const info = this.getInfo(parentId);
-    const grant = this.findGrant(info.resourceServer, scope || info.scope);
+  public canCreateChild(parentId: string, scope: string): boolean {
+    const { resourceServer } = this.parentMap.get(parentId);
+    const grant = this.findGrant(resourceServer, scope);
     return grant.accessMode.includes(ACL.Create.value);
   }
 
-  public canUpdate(id: string, scope?: string): boolean {
+  public canUpdate(id: string): boolean {
     const info = this.getInfo(id);
-    const grant = this.findGrant(info.resourceServer, scope || info.scope);
+    const grant = this.findGrant(info.resourceServer, info.scope);
     return grant.accessMode.includes(ACL.Update.value);
   }
 
-  public canDelete(id: string, scope?: string): boolean {
+  public canDelete(id: string): boolean {
     const info = this.getInfo(id);
-    const grant = this.findGrant(info.resourceServer, scope || info.scope);
+    const grant = this.findGrant(info.resourceServer, info.scope);
     return grant.accessMode.includes(ACL.Delete.value);
   }
 
+  // TODO: rename to idForNew
   public iriForNew(resourceServer: string, scope: string): string {
     const grant = this.findGrant(resourceServer, scope);
     return grant.iriForNew();

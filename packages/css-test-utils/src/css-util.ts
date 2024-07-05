@@ -9,7 +9,7 @@ export function createApp() {
     },
     config: new URL('../src/css-config.json', import.meta.url).pathname,
     shorthand: {
-      port: 3_001,
+      port: 3_000,
       loggingLevel: 'off',
       rootFilePath: new URL('../../css-storage-fixture', import.meta.url).pathname
     }
@@ -23,7 +23,7 @@ export interface ISecretData {
 
 // From https://communitysolidserver.github.io/CommunitySolidServer/7.x/usage/client-credentials/
 export async function getSecret(webId: string, email: string, password: string): Promise<ISecretData> {
-  const index = 'http://localhost:3001/.account/';
+  const index = 'http://localhost:3000/.account/';
   // First we request the account API controls to find out where we can log in
   let indexResponse = await fetch(index);
   let { controls } = await indexResponse.json();
@@ -77,7 +77,7 @@ export interface ITokenData {
 export async function refreshToken({ id, secret }: ISecretData): Promise<ITokenData> {
   const dpopKey = await generateDpopKeyPair();
   const authString = `${encodeURIComponent(id)}:${encodeURIComponent(secret)}`;
-  const tokenUrl = 'http://localhost:3001/.oidc/token';
+  const tokenUrl = 'http://localhost:3000/.oidc/token';
   const response = await fetch(tokenUrl, {
     method: 'POST',
     headers: {

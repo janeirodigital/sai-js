@@ -16,7 +16,7 @@ import {
 
 vi.setConfig({ testTimeout: 20_000, hookTimeout: 20_000 });
 
-const stu = new SolidTestUtils('http://localhost:3001/alice/profile/card#me', 'alice@acme.example', 'password');
+const stu = new SolidTestUtils('http://localhost:3000/alice/profile/card#me', 'alice@acme.example', 'password');
 beforeAll(async () => stu.beforeAll());
 afterAll(async () => stu.afterAll());
 
@@ -114,10 +114,10 @@ describe('discoverDescriptionResource', () => {
 });
 
 describe('discoverDescriptionResource', () => {
-  const resourceIri = 'http://localhost:3001/alice/profile/card';
+  const resourceIri = 'http://localhost:3000/alice/profile/card';
 
   test('should discover Storage Description from link header ', async () => {
-    const storageDescriptionIri = 'http://localhost:3001/alice/.well-known/solid';
+    const storageDescriptionIri = 'http://localhost:3000/alice/.well-known/solid';
 
     const iri = await discoverStorageDescription(resourceIri, stu.authFetch);
     expect(iri).toBe(storageDescriptionIri);
