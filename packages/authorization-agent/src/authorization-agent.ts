@@ -9,9 +9,19 @@ import {
   ReadableDataAuthorization,
   ReadableDataRegistration,
   ReadableDataInstance,
-  CRUDSocialAgentInvitation
+  CRUDSocialAgentInvitation,
+  DataGrant,
+  ReadableShapeTree
 } from '@janeirodigital/interop-data-model';
-import { INTEROP, WhatwgFetch, RdfFetch, fetchWrapper, asyncIterableToArray } from '@janeirodigital/interop-utils';
+import {
+  INTEROP,
+  WhatwgFetch,
+  RdfFetch,
+  fetchWrapper,
+  asyncIterableToArray,
+  discoverStorageDescription,
+  getStorageRoot
+} from '@janeirodigital/interop-utils';
 import {
   AccessAuthorizationStructure,
   generateAuthorization,
@@ -63,6 +73,8 @@ export class AuthorizationAgent {
   fetch: RdfFetch;
 
   webIdProfile: ReadableWebIdProfile;
+
+  ownersIndex: { [key: string]: string } = {};
 
   registrySet: CRUDRegistrySet;
 
@@ -117,6 +129,61 @@ export class AuthorizationAgent {
       }
     }
     return dataRegistration;
+  }
+
+  private async findResourceServerOwner(resourceServerId: string): Promise<string> {
+    const cached = this.ownersIndex[resourceServerId];
+    if (cached) return cached;
+    let ownerId: string;
+    for (const dataRegistry of this.registrySet.hasDataRegistry) {
+      if ((await dataRegistry.storageIri()) === resourceServerId) ownerId = this.webId;
+    }
+    if (!ownerId) {
+      for await (const socialAgentRegistration of this.socialAgentRegistrations) {
+        const grant = socialAgentRegistration?.reciprocalRegistration?.accessGrant?.hasDataGrant.find(
+          (dataGrant) => dataGrant.storageIri === resourceServerId
+        );
+        if (grant) ownerId = socialAgentRegistration.registeredAgent;
+      }
+    }
+    this.ownersIndex[resourceServerId] = ownerId;
+  }
+
+  public async findResourceOwner(resourceId: string): Promise<string> {
+    // find storage root
+    // TODO: move to utils
+    const storageDescriptionIri = await discoverStorageDescription(resourceId, this.rawFetch);
+    const storageDescriptionResponse = await this.fetch(storageDescriptionIri);
+    const storageDescription = await storageDescriptionResponse.dataset();
+    const storageRoot = getStorageRoot(storageDescription);
+
+    return this.findResourceServerOwner(storageRoot);
+  }
+
+  public async findGrantForResource(resourceId: string, ownerId: string): Promise<DataGrant> {
+    const socialAgentRegistration = await this.findSocialAgentRegistration(ownerId);
+    const dataRegistrationIri = `${resourceId.split('/').slice(0, -1).join('/')}/`;
+    return socialAgentRegistration.reciprocalRegistration.accessGrant.hasDataGrant.find(
+      (dataGtant) => dataGtant.hasDataRegistration === dataRegistrationIri
+    );
+  }
+
+  public async findDataRegistrationForResource(resourceId: string): Promise<ReadableDataRegistration> {
+    const registrationId = `${resourceId.split('/').slice(0, -1).join('/')}/`;
+    return this.factory.readable.dataRegistration(registrationId);
+  }
+
+  public async findShapeTreeForResource(resourceId: string): Promise<ReadableShapeTree> {
+    let shapeTreeId: string;
+    const ownerId = await this.findResourceOwner(resourceId);
+    if (ownerId === this.webId) {
+      const dataRegistration = await this.findDataRegistrationForResource(resourceId);
+      shapeTreeId = dataRegistration.registeredShapeTree;
+    } else {
+      const dataGrant = await this.findGrantForResource(resourceId, ownerId);
+      shapeTreeId = dataGrant.registeredShapeTree;
+    }
+    return this.factory.readable.shapeTree(shapeTreeId);
   }
 
   private async bootstrap(): Promise<void> {

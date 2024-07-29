@@ -7,13 +7,13 @@
     },
     "test": {
       "dependsOn": ["build"],
-      "inputs": ["test/**/*-test.ts"]
+      "inputs": ["test/**/*-test.ts"],
+      "cache": false
     },
     "lint": {},
     "dev": {
       "dependsOn": ["build"],
-      "cache": false,
-      "persistent": false
+      "cache": false
     },
     "clean": {
       "cache": false

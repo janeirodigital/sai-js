@@ -105,7 +105,10 @@ describe('describe discovery', () => {
       'http://localhost:3000/alice/agentRegistry/vuejectron/'
     );
     vi.spyOn(utils, 'discoverAuthorizationRedirectEndpoint').mockResolvedValueOnce('http://localhost:4000/TODO');
-    vi.spyOn(utils, 'discoverWebPushService').mockResolvedValueOnce('http://localhost:4000/TODO');
+    vi.spyOn(utils, 'discoverWebPushService').mockResolvedValueOnce({
+      id: 'http://localhost:4000/TODO',
+      vapidPublicKey: 'TODO'
+    });
   });
 
   describe('resourceOwners', () => {

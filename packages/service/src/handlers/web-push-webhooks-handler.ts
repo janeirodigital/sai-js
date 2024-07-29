@@ -6,6 +6,7 @@ import { validateContentType } from '../utils/http-validators';
 import { decodeWebId } from '../url-templates';
 import { SessionManager } from '../session-manager';
 import 'dotenv/config';
+import { getOneMatchingQuad } from '@janeirodigital/interop-utils';
 
 export class WebPushWebhooksHandler extends HttpHandler {
   private logger = getLogger();
@@ -27,10 +28,21 @@ export class WebPushWebhooksHandler extends HttpHandler {
       process.env.VAPID_PUBLIC_KEY!,
       process.env.VAPID_PRIVATE_KEY!
     );
+    const notification = JSON.parse(context.request.body);
+
+    // TODO: fallback if unable to find label
+    const saiSession = await this.sessionManager.getSaiSession(webId);
+
+    const shapeTree = await saiSession.findShapeTreeForResource(notification.object);
+
+    const response = await saiSession.fetch(notification.object);
+    const label = getOneMatchingQuad(await response.dataset(), notification.object, shapeTree.describesInstance).object
+      .value;
 
     // TODO: i18n
     const notificationPayload = {
-      notification: JSON.parse(context.request.body)
+      ...notification,
+      label
     };
     const subscriptions = await this.sessionManager.getWebhookPushSubscription(webId, applicationId);
 

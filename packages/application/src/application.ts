@@ -256,25 +256,25 @@ export class Application {
 
   public canCreate(resourceServer: string, scope: string): boolean {
     const grant = this.findGrant(resourceServer, scope);
-    return grant.accessMode.includes(ACL.Create.value);
+    return grant?.accessMode.includes(ACL.Create.value);
   }
 
   public canCreateChild(parentId: string, scope: string): boolean {
     const { resourceServer } = this.parentMap.get(parentId);
     const grant = this.findGrant(resourceServer, scope);
-    return grant.accessMode.includes(ACL.Create.value);
+    return grant?.accessMode.includes(ACL.Create.value);
   }
 
   public canUpdate(id: string): boolean {
     const info = this.getInfo(id);
     const grant = this.findGrant(info.resourceServer, info.scope);
-    return grant.accessMode.includes(ACL.Update.value);
+    return grant?.accessMode.includes(ACL.Update.value);
   }
 
   public canDelete(id: string): boolean {
     const info = this.getInfo(id);
     const grant = this.findGrant(info.resourceServer, info.scope);
-    return grant.accessMode.includes(ACL.Delete.value);
+    return grant?.accessMode.includes(ACL.Delete.value);
   }
 
   // TODO: rename to idForNew

@@ -1,2 +1,8 @@
-<http://localhost:3000/alice/agentRegistry/> <http://www.w3.org/ns/solid/interop#hasApplicationRegistration> <http://localhost:3000/alice/agentRegistry/test-client/>, <http://localhost:3000/alice/agentRegistry/vuejectron/>;
-    <http://www.w3.org/ns/solid/interop#hasSocialAgentRegistration> <http://localhost:3000/alice/agentRegistry/acme/>, <http://localhost:3000/alice/agentRegistry/bob/>, <http://localhost:3000/alice/agentRegistry/kim/>.
+<http://localhost:3000/alice/agentRegistry/>
+  <http://www.w3.org/ns/solid/interop#hasApplicationRegistration>
+    <http://localhost:3000/alice/agentRegistry/test-client/>, 
+    <http://localhost:3000/alice/agentRegistry/vuejectron/>;
+  <http://www.w3.org/ns/solid/interop#hasSocialAgentRegistration>
+    <http://localhost:3000/alice/agentRegistry/acme/>,
+    <http://localhost:3000/alice/agentRegistry/bob/>,
+    <http://localhost:3000/alice/agentRegistry/kim/>.

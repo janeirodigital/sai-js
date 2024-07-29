@@ -1,6 +1,6 @@
 import { DataFactory } from 'n3';
 import { DatasetCore } from '@rdfjs/types';
-import { INTEROP, RDF, SPACE, getOneMatchingQuad, getStorageDescription } from '@janeirodigital/interop-utils';
+import { INTEROP, RDF, SPACE, discoverStorageDescription, getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { ReadableDataRegistration } from '../readable';
 import { AuthorizationAgentFactory } from '..';
 import { CRUDContainer, CRUDDataRegistration } from '.';
@@ -47,12 +47,7 @@ export class CRUDDataRegistry extends CRUDContainer {
   }
 
   private async fetchStorageDescription(): Promise<DatasetCore> {
-    // @ts-ignore
-    const response = await this.fetch.raw(this.iri, {
-      method: 'HEAD'
-    });
-    console.log(response.headers.get('Link'));
-    const storageDescriptionIri = getStorageDescription(response.headers.get('Link'));
+    const storageDescriptionIri = await discoverStorageDescription(this.iri, this.fetch.raw);
     return this.fetch(storageDescriptionIri).then((res) => res.dataset());
   }
 
