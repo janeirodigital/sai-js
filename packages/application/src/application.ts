@@ -17,7 +17,6 @@ import {
   discoverAgentRegistration,
   discoverAuthorizationRedirectEndpoint,
   NOTIFY,
-  discoverWebPushService,
   ACL,
   discoverDescriptionResource
 } from '@janeirodigital/interop-utils';
@@ -61,8 +60,6 @@ export class Application {
 
   authorizationRedirectEndpoint: string;
 
-  webPushService?: { id: string; vapidPublicKey: string };
-
   registrationIri: string;
 
   // TODO rename
@@ -92,8 +89,6 @@ export class Application {
       this.authorizationAgentIri,
       this.rawFetch
     );
-    // TODO: avoid double fetch
-    this.webPushService = await discoverWebPushService(this.authorizationAgentIri, this.rawFetch);
     if (!this.registrationIri) return;
     await this.buildRegistration();
     // await this.subscribeToRegistration();
@@ -123,41 +118,6 @@ export class Application {
         this.writeableStream.getWriter().write({ type: 'GRANT' });
       }
     };
-  }
-
-  async subscribeViaPush(subscription: PushSubscription, topic: string): Promise<NotificationChannel> {
-    if (!this.webPushService) throw new Error('Web Push Service not found');
-    const channel = {
-      '@context': [
-        'https://www.w3.org/ns/solid/notifications-context/v1',
-        {
-          notify: 'http://www.w3.org/ns/solid/notifications#'
-        }
-      ],
-      type: 'notify:WebPushChannel2023',
-      topic,
-      sendTo: subscription.endpoint,
-      'notify:keys': {
-        'notify:auth': subscription.toJSON()['keys']['auth'],
-        'notify:p256dh': subscription.toJSON()['keys']['p256dh']
-      }
-    };
-    const response = await this.fetch(this.webPushService.id, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/ld+json'
-      },
-      body: JSON.stringify(channel)
-    });
-    if (!response.ok) {
-      throw new Error('Failed to subscribe via push');
-    }
-    return response.json();
-  }
-
-  async unsubscribeFromPush(topic: string, channelId: string): Promise<boolean> {
-    const response = await this.rawFetch(channelId, { method: 'DELETE' });
-    return response.ok;
   }
 
   get authorizationRedirectUri(): string {

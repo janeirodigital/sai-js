@@ -4,7 +4,7 @@ import { defineStore } from 'pinia';
 import { LdoBase } from '@ldo/ldo';
 import { changeData as ldoChangeData, commitData, createSolidLdoDataset, type SolidLdoDataset } from '@ldo/solid';
 import { getDefaultSession } from '@inrupt/solid-client-authn-browser';
-import { Application, SaiEvent } from '@janeirodigital/interop-application';
+import { Application, NotificationManager, SaiEvent } from '@janeirodigital/interop-application';
 import { RequestError } from '@janeirodigital/interop-utils';
 import { Agent, ResourceServer } from '@/models';
 import { useCoreStore } from './core';
@@ -36,6 +36,7 @@ export const useAppStore = defineStore('app', () => {
 
   // TODO: find a better way to ensure it was created
   let session: Application;
+  let notificationsManager: NotificationManager;
   let solidLdoDataset: SolidLdoDataset;
   const projects = ref<Project[]>([]);
 
@@ -56,6 +57,7 @@ export const useAppStore = defineStore('app', () => {
       }
       throw err;
     }
+    notificationsManager = await NotificationManager.build(authnFetch, session.authorizationAgentIri);
     solidLdoDataset = createSolidLdoDataset({ fetch: authnFetch });
     return session;
   }
@@ -365,7 +367,7 @@ export const useAppStore = defineStore('app', () => {
 
   async function enableNotifications() {
     await ensureSaiSession();
-    if (!session.webPushService) {
+    if (!notificationsManager.webPushService) {
       return null;
     }
     const result = await Notification.requestPermission();
@@ -375,7 +377,7 @@ export const useAppStore = defineStore('app', () => {
       if (!subscription) {
         subscription = await resourceServer.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: session.webPushService?.vapidPublicKey
+          applicationServerKey: notificationsManager.webPushService?.vapidPublicKey
         });
       }
       pushSubscription.value = subscription;
@@ -386,12 +388,12 @@ export const useAppStore = defineStore('app', () => {
   async function subscribeViaPush(id: string): Promise<void> {
     await ensureSaiSession();
     await getPushSubscription();
-    const channel = await session.subscribeViaPush(pushSubscription.value!, id);
+    const channel = await notificationsManager.subscribeViaPush(pushSubscription.value!, id);
     const project = projects.value.find((p) => p['@id'] === id);
     // also all the tasks
     const taskChannels = await Promise.all(
       // @ts-expect-error
-      project.hasTask.map((task) => session.subscribeViaPush(pushSubscription.value!, task['@id']))
+      project.hasTask.map((task) => notificationsManager.subscribeViaPush(pushSubscription.value!, task['@id']))
     );
     subscriptions.value.set(id, channel.id);
     for (const taskChannel of taskChannels) {
