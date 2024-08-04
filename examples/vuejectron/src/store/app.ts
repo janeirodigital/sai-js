@@ -4,8 +4,8 @@ import { defineStore } from 'pinia';
 import { LdoBase } from '@ldo/ldo';
 import { changeData as ldoChangeData, commitData, createSolidLdoDataset, type SolidLdoDataset } from '@ldo/solid';
 import { getDefaultSession } from '@inrupt/solid-client-authn-browser';
-import { Application, NotificationManager, SaiEvent } from '@janeirodigital/interop-application';
-import { RequestError } from '@janeirodigital/interop-utils';
+import { Application, NotificationManager } from '@janeirodigital/interop-application';
+import { AS, RequestError } from '@janeirodigital/interop-utils';
 import { Agent, ResourceServer } from '@/models';
 import { useCoreStore } from './core';
 import { ProjectShapeType } from '../../ldo/Project$.shapeTypes';
@@ -59,6 +59,13 @@ export const useAppStore = defineStore('app', () => {
     }
     notificationsManager = await NotificationManager.build(authnFetch, session.authorizationAgentIri);
     solidLdoDataset = createSolidLdoDataset({ fetch: authnFetch });
+    if (session.registrationIri) {
+      await notificationsManager.subscribeToResource(session.registrationIri);
+    }
+    notificationsManager.addEventListener('notification', ((event: CustomEvent) => {
+      if (event.detail.object === session.registrationIri && event.detail.type === AS.Update.value)
+        handleRegistrationChange();
+    }) as EventListener);
     return session;
   }
 
@@ -336,24 +343,9 @@ export const useAppStore = defineStore('app', () => {
       .then((blb) => URL.createObjectURL(blb));
   }
 
-  async function getStream(): Promise<ReadableStream<SaiEvent>> {
-    await ensureSaiSession();
-    return session.stream;
-  }
-
-  // DO NOT AWAIT! (infinite loop)
-  async function watchSai(): Promise<void> {
-    const stream = await getStream();
-    if (stream.locked) return;
-    const reader = stream.getReader();
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) {
-        break;
-      }
-      if (value.type === 'GRANT') loadAgents(true);
-    }
+  async function handleRegistrationChange(): Promise<void> {
+    await session.buildRegistration();
+    loadAgents(true);
   }
 
   async function getPushSubscription() {
@@ -410,7 +402,11 @@ export const useAppStore = defineStore('app', () => {
     const project = projects.value.find((p) => p['@id'] === id);
     const result = (await Promise.all(
       // @ts-expect-error
-      project?.hasTask.map((task) => session.unsubscribeFromPush(task['@id'], subscriptions.value.get(task['@id'])))
+      project?.hasTask.map((task) => {
+        const channelId = subscriptions.value.get(task['@id']);
+        if (!channelId) return false;
+        return notificationsManager.unsubscribeFromPush(task['@id'], channelId);
+      })
     )) as boolean[];
     if (result.includes(false)) throw new Error('failed to unsubscribe some of the tasks');
     subscriptions.value.delete(id);
@@ -432,7 +428,6 @@ export const useAppStore = defineStore('app', () => {
     setCurrentAgent,
     setCurrentProject,
     shareProject,
-    watchSai,
     loadAgents,
     projectsFor,
     loadProjects,
@@ -445,7 +440,6 @@ export const useAppStore = defineStore('app', () => {
     loadImages,
     changeData,
     authorize,
-    getStream,
     saiError,
     getAuthorizationRedirectUri,
     checkAuthoriztion,

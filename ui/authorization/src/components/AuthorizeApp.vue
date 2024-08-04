@@ -483,7 +483,6 @@ onMounted(() => {
 })
 
 watch(topLevelScope, (newScope) => {
-  console.log('newScope', newScope)
   if (newScope !== 'some') {
     setScopeForAgents(newScope);
   }

@@ -1,13 +1,24 @@
-import { discoverWebPushService, type WhatwgFetch } from '@janeirodigital/interop-utils';
+import {
+  AS,
+  discoverWebPushService,
+  getNotificationChannel,
+  getOneMatchingQuad,
+  parseTurtle,
+  RDF
+} from '@janeirodigital/interop-utils';
 import type { NotificationChannel } from '@solid-notifications/types';
 
-export class NotificationManager {
-  webPushService?: { id: string; vapidPublicKey: string };
+export class NotificationManager extends EventTarget {
+  public webPushService?: { id: string; vapidPublicKey: string };
+
+  private streamMap = new Map();
 
   constructor(
-    private authnFetch: WhatwgFetch,
+    private authnFetch: typeof fetch,
     private authorizationAgentIri: string
-  ) {}
+  ) {
+    super();
+  }
 
   public async subscribeViaPush(subscription: PushSubscription, topic: string): Promise<NotificationChannel> {
     if (!this.webPushService) throw new Error('Web Push Service not found');
@@ -48,9 +59,51 @@ export class NotificationManager {
     this.webPushService = await discoverWebPushService(this.authorizationAgentIri, this.authnFetch);
   }
 
-  public static async build(authnFetch: WhatwgFetch, authorizationAgentIri: string): Promise<NotificationManager> {
-    const manager = new NotificationManager(authnFetch, authorizationAgentIri);
+  public static async build(authnFetch: typeof fetch, authorizationAgentId: string): Promise<NotificationManager> {
+    const manager = new NotificationManager(authnFetch, authorizationAgentId);
     await manager.bootstrap();
     return manager;
+  }
+
+  private async handleStream(resourceId: string, receiveFrom: string): Promise<void> {
+    const response = await this.authnFetch(receiveFrom);
+    if (!response.ok) {
+      console.log('failed connecting to notification stream:', receiveFrom, response.status);
+      return;
+    }
+    if (!response.body) {
+      console.log('missing body of notification stream:', receiveFrom);
+      return;
+    }
+    this.streamMap.set(resourceId, response);
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    // discard initial notification
+    await reader.read();
+    try {
+      while (response.body.locked) {
+        const notification = await reader.read().then(({ value }) => decoder.decode(value));
+        if (!notification) continue;
+        const dataset = await parseTurtle(notification);
+        this.dispatchEvent(
+          new CustomEvent('notification', {
+            detail: {
+              type: getOneMatchingQuad(dataset, null, RDF.type)!.object.value,
+              object: getOneMatchingQuad(dataset, null, AS.object)!.object.value
+            }
+          })
+        );
+      }
+    } finally {
+      reader.releaseLock();
+      await response.body.cancel();
+    }
+  }
+
+  public async subscribeToResource(resourceId: string): Promise<void> {
+    const headResponse = await this.authnFetch(resourceId);
+    const receiveFrom = getNotificationChannel(headResponse.headers.get('link'));
+    if (!receiveFrom) console.log('Failed to discover notification chanel for:', resourceId);
+    this.handleStream(resourceId, receiveFrom);
   }
 }

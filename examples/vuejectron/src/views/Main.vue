@@ -67,7 +67,6 @@ const router = useRouter();
 const route = useRoute();
 
 const appStore = useAppStore();
-appStore.watchSai();
 await appStore.loadAgents();
 if (route.query.project) {
   await appStore.loadProjects(route.query.agent as string);
