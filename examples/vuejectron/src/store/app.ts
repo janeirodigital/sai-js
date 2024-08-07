@@ -63,9 +63,16 @@ export const useAppStore = defineStore('app', () => {
       await notificationsManager.subscribeToResource(session.registrationIri);
     }
     notificationsManager.addEventListener('notification', ((event: CustomEvent) => {
-      if (event.detail.object === session.registrationIri && event.detail.type === AS.Update.value)
+      // handle application registration
+      if (event.detail.object === session.registrationIri && event.detail.type === AS.Update.value) {
         handleRegistrationChange();
+      }
+      // handler regular resource updates
+      if (event.detail.type === AS.Update.value) {
+        handleResourceChange(event.detail.object);
+      }
     }) as EventListener);
+
     return session;
   }
 
@@ -116,10 +123,31 @@ export const useAppStore = defineStore('app', () => {
 
         const ldoSolidProject = solidLdoDataset.usingType(ProjectShapeType).fromSubject(projectId);
         serverProjects.push(ldoSolidProject);
+        // subscribe to changes
+        await notificationsManager.subscribeToResource(projectId);
       }
       projects.value = [...projects.value, ...serverProjects];
     }
     resourceServers.value[ownerId] = servers;
+  }
+
+  async function reloadProject(projectId: string): Promise<void> {
+    // @ldo-solid
+    const ldoResource = solidLdoDataset.getResource(projectId);
+    const readResult = await ldoResource.read();
+    if (readResult.isError) throw readResult;
+    await loadChildren(projectId, scopes.task);
+    await loadChildren(projectId, scopes.image);
+    await loadChildren(projectId, scopes.file);
+    triggerRef(currentProject);
+  }
+
+  async function reloadTask(taskId: string): Promise<void> {
+    // @ldo-solid
+    const ldoResource = solidLdoDataset.getResource(taskId);
+    const readResult = await ldoResource.read();
+    if (readResult.isError) throw readResult;
+    triggerRef(currentProject);
   }
 
   const propForScope = {
@@ -153,6 +181,10 @@ export const useAppStore = defineStore('app', () => {
       const readResult = await ldoResource.read();
       if (readResult.isError) throw readResult;
       session.setChildInfo(childId, scope, ldoProject['@id']!);
+      if (scope === scopes.task) {
+        // subscribe to changes
+        await notificationsManager.subscribeToResource(childId);
+      }
     }
   }
 
@@ -348,6 +380,15 @@ export const useAppStore = defineStore('app', () => {
     loadAgents(true);
   }
 
+  async function handleResourceChange(resourceId: string): Promise<void> {
+    const project = projects.value.find((p) => p['@id'] === resourceId);
+    if (project) {
+      reloadProject(resourceId);
+    } else {
+      reloadTask(resourceId);
+    }
+  }
+
   async function getPushSubscription() {
     if (pushSubscription.value) return;
     const resourceServer = await navigator.serviceWorker.ready;
@@ -403,9 +444,9 @@ export const useAppStore = defineStore('app', () => {
     const result = (await Promise.all(
       // @ts-expect-error
       project?.hasTask.map((task) => {
-        const channelId = subscriptions.value.get(task['@id']);
-        if (!channelId) return false;
-        return notificationsManager.unsubscribeFromPush(task['@id'], channelId);
+        const cId = subscriptions.value.get(task['@id']);
+        if (!cId) return false;
+        return notificationsManager.unsubscribeFromPush(task['@id'], cId);
       })
     )) as boolean[];
     if (result.includes(false)) throw new Error('failed to unsubscribe some of the tasks');

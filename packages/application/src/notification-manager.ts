@@ -11,7 +11,7 @@ import type { NotificationChannel } from '@solid-notifications/types';
 export class NotificationManager extends EventTarget {
   public webPushService?: { id: string; vapidPublicKey: string };
 
-  private streamMap = new Map();
+  private streamMap = new Map<string, Response>();
 
   constructor(
     private authnFetch: typeof fetch,
@@ -76,6 +76,7 @@ export class NotificationManager extends EventTarget {
       return;
     }
     this.streamMap.set(resourceId, response);
+    // TODO remove from map on error or close, and reconnect
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     // discard initial notification
@@ -101,6 +102,7 @@ export class NotificationManager extends EventTarget {
   }
 
   public async subscribeToResource(resourceId: string): Promise<void> {
+    if (this.streamMap.has(resourceId)) return;
     const headResponse = await this.authnFetch(resourceId);
     const receiveFrom = getNotificationChannel(headResponse.headers.get('link'));
     if (!receiveFrom) console.log('Failed to discover notification chanel for:', resourceId);

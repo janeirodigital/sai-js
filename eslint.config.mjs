@@ -5,7 +5,7 @@ import pluginVue from 'eslint-plugin-vue'
 import vueparser from 'vue-eslint-parser'
 
 export default tseslint.config(
-  { ignores: ['**/dist/', '**/src/**/*.d.ts', '**/test/**/*.d.ts'] },
+  { ignores: ['**/dist/', '**/coverage/','**/src/**/*.d.ts', '**/test/**/*.d.ts'] },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   ...pluginVue.configs['flat/recommended'],
