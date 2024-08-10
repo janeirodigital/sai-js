@@ -2,7 +2,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX schema: <https://schema.org/>
 PREFIX ex: <https://vocab.example/events/>
 
-<http://localhost:3000/acme-rnd/dataRegistry/presence/2024-03-27-kim>
+<https://acme-rnd.pod.docker/dataRegistry/presence/2024-03-27-kim>
   a schema:Role ;
   ex:agent 
-    <http://localhost:3000/kim/profile/card#me> .
+    <https://kim.pod.docker/profile/card#me> .

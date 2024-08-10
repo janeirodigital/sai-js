@@ -16,10 +16,10 @@ import { Project } from '../../ldo/Project$.typings';
 import { File as FileObject } from '../../ldo/File$.typings';
 
 const scopes = {
-  project: 'http://localhost:3000/shapetrees/trees/Project',
-  task: 'http://localhost:3000/shapetrees/trees/Task',
-  image: 'http://localhost:3000/shapetrees/trees/Image',
-  file: 'http://localhost:3000/shapetrees/trees/File'
+  project: 'https://shapetrees.pod.docker/trees/Project',
+  task: 'https://shapetrees.pod.docker/trees/Task',
+  image: 'https://shapetrees.pod.docker/trees/Image',
+  file: 'https://shapetrees.pod.docker/trees/File'
 };
 
 type AgentId = string;

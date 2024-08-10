@@ -6,13 +6,13 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 <>
     a foaf:PersonalProfileDocument;
-    foaf:maker <http://localhost:3000/bob/profile/card#me>;
-    foaf:primaryTopic <http://localhost:3000/bob/profile/card#me>.
+    foaf:maker <https://bob.pod.docker/profile/card#me>;
+    foaf:primaryTopic <https://bob.pod.docker/profile/card#me>.
 
-<http://localhost:3000/bob/profile/card#me>
+<https://bob.pod.docker/profile/card#me>
 
-    solid:oidcIssuer <http://localhost:3000/>;
+    solid:oidcIssuer <https://pod.docker/>;
     a foaf:Person ;
     rdfs:label "Bob";
-    interop:hasRegistrySet <http://localhost:3000/bob/registrySet>;
-    interop:hasAuthorizationAgent <http://localhost:4000/agents/aHR0cDovL2xvY2FsaG9zdDozMDAwL2JvYi9wcm9maWxlL2NhcmQjbWU=> .
+    interop:hasRegistrySet <https://bob.pod.docker/registrySet>;
+    interop:hasAuthorizationAgent <https://sai.docker/agents/aHR0cDovL2xvY2FsaG9zdDozMDAwL2JvYi9wcm9maWxlL2NhcmQjbWU=> .

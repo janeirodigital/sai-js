@@ -3,14 +3,14 @@
 
 <#owner>
     a acl:Authorization;
-    acl:agent <http://localhost:3000/acme/profile/card#me>;
+    acl:agent <https://acme.pod.docker/profile/card#me>;
     acl:accessTo <./>;
     acl:default <./>;
     acl:mode acl:Read, acl:Write, acl:Control .
 
 <#alice>
     a acl:Authorization;
-    acl:agent <http://localhost:3000/alice/profile/card#me>;
+    acl:agent <https://alice.pod.docker/profile/card#me>;
     acl:accessTo <./>;
     acl:default <./>;
     acl:mode acl:Read .

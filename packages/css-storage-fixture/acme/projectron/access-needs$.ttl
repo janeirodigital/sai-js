@@ -1,7 +1,7 @@
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX interop: <http://www.w3.org/ns/solid/interop#>
 PREFIX acl: <http://www.w3.org/ns/auth/acl#>
-PREFIX solidtrees: <http://localhost:3000/shapetrees/trees/>
+PREFIX solidtrees: <https://shapetrees.pod.docker/trees/>
 
 <./access-needs#need-group-pm>
   a interop:AccessNeedGroup ;

@@ -77,7 +77,7 @@ appStore.listApplications()
 const addDialog = ref(false)
 const addClientId = ref('')
 
-// http://localhost:3000/acme/projectron/vue
+// https://acme.pod.docker/projectron/vue
 function addApplication() {
   addDialog.value = false
   if (addClientId.value) {

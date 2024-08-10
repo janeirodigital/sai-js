@@ -1,12 +1,12 @@
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX pm: <https://vocab.example/project-management/>
 
-<http://localhost:3000/alice-work/dataRegistry/projects/project-a>
+<https://alice-work.pod.docker/dataRegistry/projects/project-a>
   rdfs:label "Project A" ;
   pm:hasTask
-    <http://localhost:3000/alice-work/dataRegistry/tasks/task-a> ,
-    <http://localhost:3000/alice-work/dataRegistry/tasks/task-b> ;
+    <https://alice-work.pod.docker/dataRegistry/tasks/task-a> ,
+    <https://alice-work.pod.docker/dataRegistry/tasks/task-b> ;
   pm:hasImage
-    <http://localhost:3000/alice-work/dataRegistry/images/cat> ;
+    <https://alice-work.pod.docker/dataRegistry/images/cat> ;
   pm:hasFile
-    <http://localhost:3000/alice-work/dataRegistry/files/solid-interop> .
+    <https://alice-work.pod.docker/dataRegistry/files/solid-interop> .

@@ -3,7 +3,7 @@ PREFIX shex: <http://www.w3.org/ns/shex>
 PREFIX schema: <https://schema.org/>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX solidshapes: <http://localhost:3000/shapetrees/shapes/>
+PREFIX solidshapes: <https://shapetrees.pod.docker/shapes/>
 PREFIX ex: <https://vocab.example/events/>
 
 #solidshapes:Event IRI {

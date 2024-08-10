@@ -1,0 +1,12 @@
+{
+  "@context": "https://www.w3.org/ns/solid/oidc-context.jsonld",
+  "client_id": "https://acme.pod.docker/projectron/authorization-ui",
+  "redirect_uris":[
+    "http://localhost:4200",
+    "http://localhost:4200/",
+    "http://localhost:4200/redirect",
+    "http://localhost:4200/redirect?iss=https%3A%2F%2pod.docker%2F"
+  ],
+  "grant_types": [ "authorization_code", "refresh_token"],
+  "client_name":"SAI AuthZ UI"
+}

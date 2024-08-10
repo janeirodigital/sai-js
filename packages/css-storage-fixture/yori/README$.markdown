@@ -6,7 +6,7 @@ Your pod is a **secure storage space** for your documents and data.
 You can choose to share those with other people and apps.
 
 As the owner of this pod,
-identified by <a href="http://localhost:3000/yori/profile/card#me">http://localhost:3000/yori/profile/card#me</a>,
+identified by <a href="https://yori.pod.docker/profile/card#me">https://yori.pod.docker/profile/card#me</a>,
 you have access to all of your documents.
 
 ## Working with your pod
@@ -18,7 +18,7 @@ you can open your pod in [Databrowser](https://solidos.github.io/mashlib/dist/br
 
 ## Accessing your account
 To keep track of your pods, webIDs and any other resources,
-you can [log in](http://localhost:3000/.account/) to your account.
+you can [log in](https://.account.pod.docker/) to your account.
 There you can, for example, update the owners of this pod.
 
 ## Learn more

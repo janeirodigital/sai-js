@@ -1,1 +1,1 @@
-<http://localhost:3000/alice-home/> a <http://www.w3.org/ns/pim/space#Storage>.
+<https://alice-home.pod.docker/> a <http://www.w3.org/ns/pim/space#Storage>.

@@ -1,5 +1,5 @@
 PREFIX interop: <http://www.w3.org/ns/solid/interop#>
 
-<http://localhost:3000/acme/agentRegistry/>
+<https://acme.pod.docker/agentRegistry/>
   interop:hasSocialAgentRegistration
-    <http://localhost:3000/acme/agentRegistry/alice/> .
+    <https://acme.pod.docker/agentRegistry/alice/> .

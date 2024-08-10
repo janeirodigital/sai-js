@@ -1,6 +1,6 @@
 PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
 PREFIX ma: <http://www.w3.org/ns/ma-ont#>
 
-<http://localhost:3000/alice-work/dataRegistry/images/cat>
+<https://alice-work.pod.docker/dataRegistry/images/cat>
   nfo:fileName "cat.png";
   ma:format "image/png".

@@ -1,2 +1,2 @@
-<http://localhost:3000/alice/authorizationRegistry/> a <http://www.w3.org/ns/solid/interop#AuthorizationRegistry>;
-    <http://www.w3.org/ns/solid/interop#hasAccessAuthorization> <http://localhost:3000/alice/authorizationRegistry/kim/>, <http://localhost:3000/alice/authorizationRegistry/b5efc052-b1bb-4d89-9132-d4260091b21d>.
+<https://alice.pod.docker/authorizationRegistry/> a <http://www.w3.org/ns/solid/interop#AuthorizationRegistry>;
+    <http://www.w3.org/ns/solid/interop#hasAccessAuthorization> <https://alice.pod.docker/authorizationRegistry/kim/>, <https://alice.pod.docker/authorizationRegistry/b5efc052-b1bb-4d89-9132-d4260091b21d>.

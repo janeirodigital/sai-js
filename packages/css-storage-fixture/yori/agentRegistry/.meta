@@ -1,5 +1,5 @@
 PREFIX interop: <http://www.w3.org/ns/solid/interop#>
 
-<http://localhost:3000/yori/agentRegistry/>
+<https://yori.pod.docker/agentRegistry/>
   interop:hasSocialAgentInvitation
-    <http://localhost:3000/yori/agentRegistry/alice-inv> .
+    <https://yori.pod.docker/agentRegistry/alice-inv> .

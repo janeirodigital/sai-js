@@ -1,8 +1,8 @@
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX uuid: <urn:uuid>
 PREFIX shapetrees: <http://www.w3.org/ns/shapetrees#>
-PREFIX solidshapes: <http://localhost:3000/shapetrees/shapes/>
-PREFIX solidtrees: <http://localhost:3000/shapetrees/trees/>
+PREFIX solidshapes: <https://shapetrees.pod.docker/shapes/>
+PREFIX solidtrees: <https://shapetrees.pod.docker/trees/>
 PREFIX schema: <https://schema.org/>
 
 solidtrees:Role

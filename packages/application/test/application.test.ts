@@ -10,7 +10,7 @@ import { Application } from '../src';
 
 vi.setConfig({ testTimeout: 200_000, hookTimeout: 200_000 });
 
-const aliceWebId = 'http://localhost:3000/alice/profile/card#me';
+const aliceWebId = 'https://alice.pod.docker/profile/card#me';
 const stu = new SolidTestUtils(aliceWebId, 'alice@acme.example', 'password');
 beforeAll(async () => stu.beforeAll());
 afterAll(async () => stu.afterAll());
@@ -102,11 +102,11 @@ describe('describe discovery', () => {
 
   beforeEach(() => {
     vi.spyOn(utils, 'discoverAgentRegistration').mockResolvedValueOnce(
-      'http://localhost:3000/alice/agentRegistry/vuejectron/'
+      'https://alice.pod.docker/agentRegistry/vuejectron/'
     );
-    vi.spyOn(utils, 'discoverAuthorizationRedirectEndpoint').mockResolvedValueOnce('http://localhost:4000/TODO');
+    vi.spyOn(utils, 'discoverAuthorizationRedirectEndpoint').mockResolvedValueOnce('https://sai.docker/TODO');
     vi.spyOn(utils, 'discoverWebPushService').mockResolvedValueOnce({
-      id: 'http://localhost:4000/TODO',
+      id: 'https://sai.docker/TODO',
       vapidPublicKey: 'TODO'
     });
   });
@@ -114,8 +114,8 @@ describe('describe discovery', () => {
   describe('resourceOwners', () => {
     test('should return set of owenrs', async () => {
       const resourceOwners = new Set([
-        'http://localhost:3000/acme/profile/card#me',
-        'http://localhost:3000/alice/profile/card#me'
+        'https://acme.pod.docker/profile/card#me',
+        'https://alice.pod.docker/profile/card#me'
       ]);
       const app = await Application.build(aliceWebId, applicationId, { fetch: stu.authFetch, randomUUID });
       expect(app.resourceOwners()).toEqual(resourceOwners);
@@ -124,8 +124,8 @@ describe('describe discovery', () => {
 
   describe('resourceServers', () => {
     test('should return set of resource servers', async () => {
-      const scope = 'http://localhost:3000/shapetrees/trees/Project';
-      const resourceServers = new Set(['http://localhost:3000/alice-home/', 'http://localhost:3000/alice-work/']);
+      const scope = 'https://shapetrees.pod.docker/trees/Project';
+      const resourceServers = new Set(['https://alice-home.pod.docker/', 'https://alice-work.pod.docker/']);
       const app = await Application.build(aliceWebId, applicationId, { fetch: stu.authFetch, randomUUID });
       expect(app.resourceServers(aliceWebId, scope)).toEqual(resourceServers);
     });
@@ -133,11 +133,11 @@ describe('describe discovery', () => {
 
   describe('resources', () => {
     test('should return set of resource ids', async () => {
-      const resourceServer = 'http://localhost:3000/alice-home/';
-      const scope = 'http://localhost:3000/shapetrees/trees/Project';
+      const resourceServer = 'https://alice-home.pod.docker/';
+      const scope = 'https://shapetrees.pod.docker/trees/Project';
       const resources = new Set([
-        'http://localhost:3000/alice-home/dataRegistry/projects/project-1',
-        'http://localhost:3000/alice-home/dataRegistry/projects/project-2'
+        'https://alice-home.pod.docker/dataRegistry/projects/project-1',
+        'https://alice-home.pod.docker/dataRegistry/projects/project-2'
       ]);
       const app = await Application.build(aliceWebId, applicationId, { fetch: stu.authFetch, randomUUID });
       expect(await app.resources(resourceServer, scope)).toEqual(resources);
@@ -146,11 +146,11 @@ describe('describe discovery', () => {
 
   describe('childInfo', () => {
     test('should return info for a child resource', async () => {
-      const id = 'http://localhost:3000/alice-home/dataRegistry/tasks/task-1';
-      const parent = 'http://localhost:3000/alice-home/dataRegistry/projects/project-1';
-      const scope = 'http://localhost:3000/shapetrees/trees/Task';
-      const parentScope = 'http://localhost:3000/shapetrees/trees/Project';
-      const resourceServer = 'http://localhost:3000/alice-home/';
+      const id = 'https://alice-home.pod.docker/dataRegistry/tasks/task-1';
+      const parent = 'https://alice-home.pod.docker/dataRegistry/projects/project-1';
+      const scope = 'https://shapetrees.pod.docker/trees/Task';
+      const parentScope = 'https://shapetrees.pod.docker/trees/Project';
+      const resourceServer = 'https://alice-home.pod.docker/';
       const info = {
         id,
         scope,
@@ -168,11 +168,11 @@ describe('describe discovery', () => {
 
   describe('setChildInfo', () => {
     test('should set child info in the childMap', async () => {
-      const id = 'http://localhost:3000/alice-home/dataRegistry/tasks/task-1';
-      const parent = 'http://localhost:3000/alice-home/dataRegistry/projects/project-1';
-      const scope = 'http://localhost:3000/shapetrees/trees/Task';
-      const parentScope = 'http://localhost:3000/shapetrees/trees/Project';
-      const resourceServer = 'http://localhost:3000/alice-home/';
+      const id = 'https://alice-home.pod.docker/dataRegistry/tasks/task-1';
+      const parent = 'https://alice-home.pod.docker/dataRegistry/projects/project-1';
+      const scope = 'https://shapetrees.pod.docker/trees/Task';
+      const parentScope = 'https://shapetrees.pod.docker/trees/Project';
+      const resourceServer = 'https://alice-home.pod.docker/';
       const info = {
         id,
         scope,
@@ -194,8 +194,8 @@ describe('describe discovery', () => {
 
   describe('canCreate', () => {
     test('should check if can create new resources in the scope', async () => {
-      const resourceServer = 'http://localhost:3000/alice-home/';
-      const scope = 'http://localhost:3000/shapetrees/trees/Project';
+      const resourceServer = 'https://alice-home.pod.docker/';
+      const scope = 'https://shapetrees.pod.docker/trees/Project';
       const app = await Application.build(aliceWebId, applicationId, { fetch: stu.authFetch, randomUUID });
       expect(await app.canCreate(resourceServer, scope)).toEqual(true);
     });
@@ -203,10 +203,10 @@ describe('describe discovery', () => {
 
   describe('canCreateChild', () => {
     test('should check if can create a new child for a resource', async () => {
-      const parent = 'http://localhost:3000/alice-home/dataRegistry/projects/project-1';
-      const parentScope = 'http://localhost:3000/shapetrees/trees/Project';
-      const scope = 'http://localhost:3000/shapetrees/trees/Task';
-      const resourceServer = 'http://localhost:3000/alice-home/';
+      const parent = 'https://alice-home.pod.docker/dataRegistry/projects/project-1';
+      const parentScope = 'https://shapetrees.pod.docker/trees/Project';
+      const scope = 'https://shapetrees.pod.docker/trees/Task';
+      const resourceServer = 'https://alice-home.pod.docker/';
       const app = await Application.build(aliceWebId, applicationId, { fetch: stu.authFetch, randomUUID });
 
       // populate parentMap
@@ -218,9 +218,9 @@ describe('describe discovery', () => {
 
   describe('canUpdate', () => {
     test('should check if can update the resource', async () => {
-      const id = 'http://localhost:3000/alice-home/dataRegistry/projects/project-1';
-      const resourceServer = 'http://localhost:3000/alice-home/';
-      const scope = 'http://localhost:3000/shapetrees/trees/Project';
+      const id = 'https://alice-home.pod.docker/dataRegistry/projects/project-1';
+      const resourceServer = 'https://alice-home.pod.docker/';
+      const scope = 'https://shapetrees.pod.docker/trees/Project';
       const app = await Application.build(aliceWebId, applicationId, { fetch: stu.authFetch, randomUUID });
 
       // populate parentMap
@@ -232,9 +232,9 @@ describe('describe discovery', () => {
 
   describe('canDelete', () => {
     test('should check if can delete the resource', async () => {
-      const id = 'http://localhost:3000/alice-home/dataRegistry/projects/project-1';
-      const resourceServer = 'http://localhost:3000/alice-home/';
-      const scope = 'http://localhost:3000/shapetrees/trees/Project';
+      const id = 'https://alice-home.pod.docker/dataRegistry/projects/project-1';
+      const resourceServer = 'https://alice-home.pod.docker/';
+      const scope = 'https://shapetrees.pod.docker/trees/Project';
       const app = await Application.build(aliceWebId, applicationId, { fetch: stu.authFetch, randomUUID });
 
       // populate parentMap
@@ -246,37 +246,37 @@ describe('describe discovery', () => {
 
   describe('iriForNew', () => {
     test('should mint correct id for new resource', async () => {
-      const resourceServer = 'http://localhost:3000/alice-home/';
-      const scope = 'http://localhost:3000/shapetrees/trees/Project';
+      const resourceServer = 'https://alice-home.pod.docker/';
+      const scope = 'https://shapetrees.pod.docker/trees/Project';
       const app = await Application.build(aliceWebId, applicationId, { fetch: stu.authFetch, randomUUID });
       expect(await app.iriForNew(resourceServer, scope)).toMatch(
-        'http://localhost:3000/alice-home/dataRegistry/projects/'
+        'https://alice-home.pod.docker/dataRegistry/projects/'
       );
     });
   });
 
   describe('iriForChild', () => {
     test('should mint correct id for new child for a resource', async () => {
-      const parent = 'http://localhost:3000/alice-home/dataRegistry/projects/project-1';
-      const parentScope = 'http://localhost:3000/shapetrees/trees/Project';
-      const scope = 'http://localhost:3000/shapetrees/trees/Task';
-      const resourceServer = 'http://localhost:3000/alice-home/';
+      const parent = 'https://alice-home.pod.docker/dataRegistry/projects/project-1';
+      const parentScope = 'https://shapetrees.pod.docker/trees/Project';
+      const scope = 'https://shapetrees.pod.docker/trees/Task';
+      const resourceServer = 'https://alice-home.pod.docker/';
       const app = await Application.build(aliceWebId, applicationId, { fetch: stu.authFetch, randomUUID });
 
       // populate parentMap
       await app.resources(resourceServer, parentScope);
 
-      expect(await app.iriForChild(parent, scope)).toMatch('http://localhost:3000/alice-home/dataRegistry/tasks/');
+      expect(await app.iriForChild(parent, scope)).toMatch('https://alice-home.pod.docker/dataRegistry/tasks/');
     });
   });
 
   describe('findParent', () => {
     test('should find parent resource given a child resource', async () => {
-      const id = 'http://localhost:3000/alice-home/dataRegistry/tasks/task-1';
-      const parent = 'http://localhost:3000/alice-home/dataRegistry/projects/project-1';
-      const scope = 'http://localhost:3000/shapetrees/trees/Task';
-      const parentScope = 'http://localhost:3000/shapetrees/trees/Project';
-      const resourceServer = 'http://localhost:3000/alice-home/';
+      const id = 'https://alice-home.pod.docker/dataRegistry/tasks/task-1';
+      const parent = 'https://alice-home.pod.docker/dataRegistry/projects/project-1';
+      const scope = 'https://shapetrees.pod.docker/trees/Task';
+      const parentScope = 'https://shapetrees.pod.docker/trees/Project';
+      const resourceServer = 'https://alice-home.pod.docker/';
       const app = await Application.build(aliceWebId, applicationId, { fetch: stu.authFetch, randomUUID });
 
       // populate parentMap
@@ -291,10 +291,10 @@ describe('describe discovery', () => {
 
   describe('discoverDescription', () => {
     test('should find auxiliary description resource', async () => {
-      const id = 'http://localhost:3000/alice-work/dataRegistry/images/cat';
+      const id = 'https://alice-work.pod.docker/dataRegistry/images/cat';
       const app = await Application.build(aliceWebId, applicationId, { fetch: stu.authFetch, randomUUID });
       expect(await app.discoverDescription(id)).toEqual(
-        'http://localhost:3000/alice-work/dataRegistry/images/cat.meta'
+        'https://alice-work.pod.docker/dataRegistry/images/cat.meta'
       );
     });
   });

@@ -6,16 +6,16 @@ PREFIX schema: <https://schema.org/>
 
 <>
     a foaf:PersonalProfileDocument;
-    foaf:maker <http://localhost:3000/yoyo/profile/card#me>;
-    foaf:primaryTopic <http://localhost:3000/yoyo/profile/card#me>.
+    foaf:maker <https://yoyo.pod.docker/profile/card#me>;
+    foaf:primaryTopic <https://yoyo.pod.docker/profile/card#me>.
 
-<http://localhost:3000/yoyo/profile/card#me>
+<https://yoyo.pod.docker/profile/card#me>
     
-    solid:oidcIssuer <http://localhost:3000/>;
+    solid:oidcIssuer <https://pod.docker/>;
     a schema:Organization ;
     rdfs:label "YoYo" ;
-    interop:hasAuthorizationAgent <http://localhost:4000/agents/aHR0cDovL2xvY2FsaG9zdDozMDAwL2FjbWUvcHJvZmlsZS9jYXJkI21l> ;
+    interop:hasAuthorizationAgent <https://sai.docker/agents/aHR0cDovL2xvY2FsaG9zdDozMDAwL2FjbWUvcHJvZmlsZS9jYXJkI21l> ;
     schema:member
-        <http://localhost:3000/alice/profile/card#me> ,
-        <http://localhost:3000/rob/profile/card#me> ,
-        <http://localhost:3000/yori/profile/card#me> .
+        <https://alice.pod.docker/profile/card#me> ,
+        <https://rob.pod.docker/profile/card#me> ,
+        <https://yori.pod.docker/profile/card#me> .

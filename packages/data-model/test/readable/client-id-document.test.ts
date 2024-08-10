@@ -6,7 +6,7 @@ import { AuthorizationAgentFactory } from '../../src';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
-const snippetIri = 'http://localhost:3000/acme/projectron/id';
+const snippetIri = 'https://acme.pod.docker/projectron/id';
 const snippetText = `
 {
   "@context": [
@@ -15,12 +15,12 @@ const snippetText = `
       "interop": "http://www.w3.org/ns/solid/interop#"
     }
   ]  ,
-  "client_id": "http://localhost:3000/acme/projectron/id",
+  "client_id": "https://acme.pod.docker/projectron/id",
   "client_name": "Projectron",
   "logo_uri": "https://robohash.org/https://projectron.example/?set=set3",
   "redirect_uris": ["http://localhost:4100/redirect"],
   "grant_types" : ["refresh_token","authorization_code"],
-  "interop:hasAccessNeedGroup": "http://localhost:3000/acme/projectron/access-needs#need-group-pm",
+  "interop:hasAccessNeedGroup": "https://acme.pod.docker/projectron/access-needs#need-group-pm",
   "interop:hasAuthorizationCallbackEndpoint": "http://localhost:4100"
 }
 `;
@@ -34,7 +34,7 @@ describe('getters', () => {
   test('hasAccessNeedGroup', async () => {
     const clientIdDocument = await factory.readable.clientIdDocument(snippetIri);
     expect(clientIdDocument.hasAccessNeedGroup).toBe(
-      'http://localhost:3000/acme/projectron/access-needs#need-group-pm'
+      'https://acme.pod.docker/projectron/access-needs#need-group-pm'
     );
   });
   test('callbackEndpoint', async () => {

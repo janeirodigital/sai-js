@@ -59,14 +59,14 @@ It will run following:
 Run from [packages/css-solid-fixture](https://github.com/janeirodigital/sai-js/tree/main/packages/css-storage-fixture).
 Used for solid storage instances and solid-oidc provider.
 
-Available on http://localhost:3000, default demo account is `alice@acme.example` with `password`.
+Available on http://https://pod.docker, default demo account is `alice@acme.example` with `password`.
 
 #### Authorization Agent
 
 ##### Service
 
 Run from [packages/service](https://github.com/janeirodigital/sai-js/tree/main/packages/service).
-Available on http://localhost:4000 (API only)
+Available on https://sai.docker (API only)
 
 ##### UI
 

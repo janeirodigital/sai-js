@@ -14,7 +14,7 @@
 # unless specifically authorized in other .acl resources.
 <#owner>
     a acl:Authorization;
-    acl:agent <http://localhost:3000/ale/profile/card#me>;
+    acl:agent <https://ale.pod.docker/profile/card#me>;
     # Optional owner email, to be used for account recovery:
     
     # Set the access to the root storage folder itself

@@ -1,7 +1,7 @@
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX pm: <https://vocab.example/project-management/>
 
-<http://localhost:3000/acme-rnd/dataRegistry/projects/project-a>
+<https://acme-rnd.pod.docker/dataRegistry/projects/project-a>
   rdfs:label "Project A" ;
   pm:hasTask
-    <http://localhost:3000/acme-rnd/dataRegistry/tasks/task-a> .
+    <https://acme-rnd.pod.docker/dataRegistry/tasks/task-a> .

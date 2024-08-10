@@ -14,7 +14,7 @@
 # unless specifically authorized in other .acl resources.
 <#owner>
     a acl:Authorization;
-    acl:agent <http://localhost:3000/yori/profile/card#me>;
+    acl:agent <https://yori.pod.docker/profile/card#me>;
     # Optional owner email, to be used for account recovery:
     
     # Set the access to the root storage folder itself
@@ -28,7 +28,7 @@
 # TODO: remove once moved to ACP and authorization agent generates it from Data Grants
 <#alice>
     a acl:Authorization;
-    acl:agent <http://localhost:3000/alice/profile/card#me>;
+    acl:agent <https://alice.pod.docker/profile/card#me>;
     acl:accessTo <./>;
     acl:default <./>;
     acl:mode

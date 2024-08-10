@@ -2,10 +2,10 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX interop: <http://www.w3.org/ns/solid/interop#>
 
-<http://localhost:3000/bob/agentRegistry/alice/>
+<https://bob.pod.docker/agentRegistry/alice/>
   a interop:SocialAgentRegistration;
-  interop:registeredAgent <http://localhost:3000/alice/profile/card#me> ;
+  interop:registeredAgent <https://alice.pod.docker/profile/card#me> ;
   interop:registeredAt "2020-07-12T10:36:21.000Z"^^xsd:dateTime ;
-  interop:reciprocalRegistration <http://localhost:3000/alice/agentRegistry/bob/> ;
+  interop:reciprocalRegistration <https://alice.pod.docker/agentRegistry/bob/> ;
   skos:prefLabel "Alice" ;
   skos:note "She lives near by" .

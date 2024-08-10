@@ -1,5 +1,5 @@
 PREFIX interop: <http://www.w3.org/ns/solid/interop#>
 
-<http://localhost:3000/bob/agentRegistry/>
+<https://bob.pod.docker/agentRegistry/>
   interop:hasSocialAgentRegistration
-    <http://localhost:3000/bob/agentRegistry/alice/> .
+    <https://bob.pod.docker/agentRegistry/alice/> .

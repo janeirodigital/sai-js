@@ -1,7 +1,7 @@
-<http://localhost:3000/alice/agentRegistry/vuejectron/a38bd02a-6e60-4893-8c76-dbb76691b246> a <http://www.w3.org/ns/solid/interop#DataGrant>;
-    <http://www.w3.org/ns/solid/interop#dataOwner> <http://localhost:3000/alice/profile/card#me>;
-    <http://www.w3.org/ns/solid/interop#registeredShapeTree> <http://localhost:3000/shapetrees/trees/Task>;
-    <http://www.w3.org/ns/solid/interop#hasDataRegistration> <http://localhost:3000/alice-home/dataRegistry/tasks/>;
+<https://alice.pod.docker/agentRegistry/vuejectron/a38bd02a-6e60-4893-8c76-dbb76691b246> a <http://www.w3.org/ns/solid/interop#DataGrant>;
+    <http://www.w3.org/ns/solid/interop#dataOwner> <https://alice.pod.docker/profile/card#me>;
+    <http://www.w3.org/ns/solid/interop#registeredShapeTree> <https://shapetrees.pod.docker/trees/Task>;
+    <http://www.w3.org/ns/solid/interop#hasDataRegistration> <https://alice-home.pod.docker/dataRegistry/tasks/>;
     <http://www.w3.org/ns/solid/interop#scopeOfGrant> <http://www.w3.org/ns/solid/interop#Inherited>;
-    <http://www.w3.org/ns/solid/interop#inheritsFromGrant> <http://localhost:3000/alice/agentRegistry/vuejectron/d1974379-369d-4385-977f-7c1f47023e2b>;
+    <http://www.w3.org/ns/solid/interop#inheritsFromGrant> <https://alice.pod.docker/agentRegistry/vuejectron/d1974379-369d-4385-977f-7c1f47023e2b>;
     <http://www.w3.org/ns/solid/interop#accessMode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Create>, <http://www.w3.org/ns/auth/acl#Update>, <http://www.w3.org/ns/auth/acl#Delete>.

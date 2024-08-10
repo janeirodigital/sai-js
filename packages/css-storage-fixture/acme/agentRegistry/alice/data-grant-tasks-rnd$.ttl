@@ -2,15 +2,15 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX interop: <http://www.w3.org/ns/solid/interop#>
 PREFIX acl: <http://www.w3.org/ns/auth/acl#>
 
-<http://localhost:3000/acme/agentRegistry/alice/data-grant-tasks-rnd>
+<https://acme.pod.docker/agentRegistry/alice/data-grant-tasks-rnd>
   a interop:DataGrant ;
-    interop:dataOwner <http://localhost:3000/acme/profile/card#me> ;
-    interop:grantee <http://localhost:3000/alice/profile/card#me> ;
+    interop:dataOwner <https://acme.pod.docker/profile/card#me> ;
+    interop:grantee <https://alice.pod.docker/profile/card#me> ;
     interop:grantedBy <https://dan.example/#id> ;
     interop:grantedWith <https://auth.acme.example/#agent> ;
     interop:grantedAt "2020-09-05T06:15:01Z"^^xsd:dateTime ;
-    interop:registeredShapeTree <http://localhost:3000/shapetrees/trees/Task> ;
-    interop:hasDataRegistration <http://localhost:3000/acme-rnd/dataRegistry/tasks/> ;
+    interop:registeredShapeTree <https://shapetrees.pod.docker/trees/Task> ;
+    interop:hasDataRegistration <https://acme-rnd.pod.docker/dataRegistry/tasks/> ;
     interop:scopeOfGrant interop:Inherited ;
-    interop:inheritsFromGrant <http://localhost:3000/acme/agentRegistry/alice/data-grant-projects-rnd> ;
+    interop:inheritsFromGrant <https://acme.pod.docker/agentRegistry/alice/data-grant-projects-rnd> ;
     interop:accessMode acl:Read .

@@ -10,5 +10,5 @@
 <#owner>
     a acl:Authorization;
     acl:accessTo <./README>;
-    acl:agent <http://localhost:3000/yori/profile/card#me>;
+    acl:agent <https://yori.pod.docker/profile/card#me>;
     acl:mode acl:Read, acl:Write, acl:Control.

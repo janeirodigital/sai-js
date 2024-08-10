@@ -1,6 +1,6 @@
 @prefix interop: <http://www.w3.org/ns/solid/interop#>.
 
-<http://localhost:3000/yori/registrySet>
+<https://yori.pod.docker/registrySet>
   a interop:RegistrySet;
-  interop:hasAgentRegistry <http://localhost:3000/yori/agentRegistry/> ;
-  interop:hasAuthorizationRegistry <http://localhost:3000/yori/authorizationRegistry/> .
+  interop:hasAgentRegistry <https://yori.pod.docker/agentRegistry/> ;
+  interop:hasAuthorizationRegistry <https://yori.pod.docker/authorizationRegistry/> .

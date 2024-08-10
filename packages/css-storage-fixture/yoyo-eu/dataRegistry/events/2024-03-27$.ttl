@@ -2,17 +2,17 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX schema: <https://schema.org/>
 PREFIX ex: <https://vocab.example/events/>
 
-<http://localhost:3000/yoyo-eu/dataRegistry/events/2024-03-27>
+<https://yoyo-eu.pod.docker/dataRegistry/events/2024-03-27>
   a schema:Event ;
   schema:name 'Weekly plenary' ;
   schema:startDate '2024-03-27T21:30:00-00:00'^^xsd:dateTime ;
   ex:chair 
-    <http://localhost:3000/yoyo-eu/dataRegistry/presence/2024-03-27-alice> ;
+    <https://yoyo-eu.pod.docker/dataRegistry/presence/2024-03-27-alice> ;
   ex:attendee 
-    <http://localhost:3000/yoyo-eu/dataRegistry/presence/2024-03-27-yori>,
-    <http://localhost:3000/yoyo-eu/dataRegistry/presence/2024-03-27-kim> ,
-    <http://localhost:3000/yoyo-eu/dataRegistry/presence/2024-03-27-bob> ,
-    <http://localhost:3000/yoyo-eu/dataRegistry/presence/2024-03-27-zack> ;
+    <https://yoyo-eu.pod.docker/dataRegistry/presence/2024-03-27-yori>,
+    <https://yoyo-eu.pod.docker/dataRegistry/presence/2024-03-27-kim> ,
+    <https://yoyo-eu.pod.docker/dataRegistry/presence/2024-03-27-bob> ,
+    <https://yoyo-eu.pod.docker/dataRegistry/presence/2024-03-27-zack> ;
   ex:absentee 
-    <http://localhost:3000/yoyo-eu/dataRegistry/presence/2024-03-27-ale> ,
-    <http://localhost:3000/yoyo-eu/dataRegistry/presence/2024-03-27-rob> .
+    <https://yoyo-eu.pod.docker/dataRegistry/presence/2024-03-27-ale> ,
+    <https://yoyo-eu.pod.docker/dataRegistry/presence/2024-03-27-rob> .

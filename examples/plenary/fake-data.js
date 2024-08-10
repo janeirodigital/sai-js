@@ -1,29 +1,29 @@
 export default {
   agents: [
-    'http://localhost:3000/acme/profile/card#me',
-    'http://localhost:3000/yoyo/profile/card#me'
+    'https://acme.pod.docker/profile/card#me',
+    'https://yoyo.pod.docker/profile/card#me'
   ],
   pods: {
-    'http://localhost:3000/acme/profile/card#me': [
+    'https://acme.pod.docker/profile/card#me': [
       {
-        id: 'http://localhost:3000/acme-hr/',
+        id: 'https://acme-hr.pod.docker/',
         name: 'HR'
       },
       {
-        id: 'http://localhost:3000/acme-rnd/',
+        id: 'https://acme-rnd.pod.docker/',
         name: 'RnD'
       }
     ],
-    'http://localhost:3000/yoyo/profile/card#me': [
+    'https://yoyo.pod.docker/profile/card#me': [
       {
-        id: 'http://localhost:3000/yoyo-eu/',
+        id: 'https://yoyo-eu.pod.docker/',
         name: 'EU'
       },
     ]
   },
   registrations: {
-    'http://localhost:3000/acme-hr/': 'http://localhost:3000/acme-hr/dataRegistry/events/',
-    'http://localhost:3000/acme-rnd/': 'http://localhost:3000/acme-rnd/dataRegistry/events/',
-    'http://localhost:3000/yoyo-eu/': 'http://localhost:3000/yoyo-eu/dataRegistry/events/'
+    'https://acme-hr.pod.docker/': 'https://acme-hr.pod.docker/dataRegistry/events/',
+    'https://acme-rnd.pod.docker/': 'https://acme-rnd.pod.docker/dataRegistry/events/',
+    'https://yoyo-eu.pod.docker/': 'https://yoyo-eu.pod.docker/dataRegistry/events/'
   }
 }

@@ -14,6 +14,6 @@
 # The owner has full access to the profile
 <#owner>
     a acl:Authorization;
-    acl:agent <http://localhost:3000/acme/profile/card#me>;
+    acl:agent <https://acme.pod.docker/profile/card#me>;
     acl:accessTo <./card>;
     acl:mode acl:Read, acl:Write, acl:Control.

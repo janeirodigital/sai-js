@@ -2,7 +2,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX interop: <http://www.w3.org/ns/solid/interop#>
 PREFIX oidc:  <http://www.w3.org/ns/solid/oidc#>
 
-<http://localhost:3000/alice/agentRegistry/test-client/>
+<https://alice.pod.docker/agentRegistry/test-client/>
   a interop:ApplicationRegistration;
   interop:registeredAgent <http://localhost:5000/test-client> ;
   interop:registeredAt "2020-04-04T21:11:33.000Z"^^xsd:dateTime .

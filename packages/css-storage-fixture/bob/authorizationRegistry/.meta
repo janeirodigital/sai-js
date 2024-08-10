@@ -1,7 +1,7 @@
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX interop: <http://www.w3.org/ns/solid/interop#>
 
-<http://localhost:3000/bob/authorizationRegistry/>
+<https://bob.pod.docker/authorizationRegistry/>
   a interop:AuthorizationRegistry ;
   interop:hasAccessAuthorization
-    <http://localhost:3000/bob/authorizationRegistry/kim/> .
+    <https://bob.pod.docker/authorizationRegistry/kim/> .

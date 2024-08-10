@@ -9,11 +9,11 @@ tsconfig.tsbuildinfo
 .rollup.cache
 
 # CSS internals
-packages/css-storage-fixture/.internal/idp
-packages/css-storage-fixture/.internal/locks
-packages/css-storage-fixture/.internal/forgot-password
-packages/css-storage-fixture/.internal/notifications
-packages/css-storage-fixture/.internal/accounts/cookies
+packages/css-storage-fixture/www/.internal/idp
+packages/css-storage-fixture/www/.internal/locks
+packages/css-storage-fixture/www/.internal/forgot-password
+packages/css-storage-fixture/www/.internal/notifications
+packages/css-storage-fixture/www/.internal/accounts/cookies
 
 # OS
 .DS_Store

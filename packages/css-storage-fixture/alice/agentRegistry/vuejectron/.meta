@@ -1,10 +1,10 @@
-<http://localhost:3000/alice/agentRegistry/vuejectron/> <http://www.w3.org/ns/solid/interop#registeredAgent> <http://localhost:3000/acme/projectron/vue>;
-    <http://www.w3.org/ns/solid/interop#registeredBy> "http://localhost:3000/alice/profile/card#me";
-    <http://www.w3.org/ns/solid/interop#registeredWith> "http://localhost:4000/agents/aHR0cDovL2xvY2FsaG9zdDozMDAwL2FsaWNlL3Byb2ZpbGUvY2FyZCNtZQ==";
+<https://alice.pod.docker/agentRegistry/vuejectron/> <http://www.w3.org/ns/solid/interop#registeredAgent> <https://acme.pod.docker/projectron/vue>;
+    <http://www.w3.org/ns/solid/interop#registeredBy> "https://alice.pod.docker/profile/card#me";
+    <http://www.w3.org/ns/solid/interop#registeredWith> "https://sai.docker/agents/aHR0cDovL2xvY2FsaG9zdDozMDAwL2FsaWNlL3Byb2ZpbGUvY2FyZCNtZQ==";
     <http://www.w3.org/ns/solid/interop#registeredAt> "2024-07-04T02:43:21.015Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
     <http://www.w3.org/ns/solid/interop#updatedAt> "2024-07-04T02:43:21.015Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
-    <http://www.w3.org/ns/solid/interop#hasAccessGrant> <http://localhost:3000/alice/agentRegistry/vuejectron/b77e0ba1-7c1f-4f0f-90ba-486f542f621a>.
-<http://localhost:3000/acme/projectron/vue> <http://www.w3.org/ns/solid/oidc#client_name> "Vuejectron";
+    <http://www.w3.org/ns/solid/interop#hasAccessGrant> <https://alice.pod.docker/agentRegistry/vuejectron/b77e0ba1-7c1f-4f0f-90ba-486f542f621a>.
+<https://acme.pod.docker/projectron/vue> <http://www.w3.org/ns/solid/oidc#client_name> "Vuejectron";
     <http://www.w3.org/ns/solid/oidc#logo_uri> <https://robohash.org/https://vuejectron.example/?set=set3>;
-    <http://www.w3.org/ns/solid/interop#hasAccessNeedGroup> "http://localhost:3000/acme/projectron/access-needs#need-group-pm";
+    <http://www.w3.org/ns/solid/interop#hasAccessNeedGroup> "https://acme.pod.docker/projectron/access-needs#need-group-pm";
     <http://www.w3.org/ns/solid/interop#hasAuthorizationCallbackEndpoint> "http://localhost:4500".

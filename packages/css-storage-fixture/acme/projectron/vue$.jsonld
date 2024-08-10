@@ -5,11 +5,11 @@
       "interop": "http://www.w3.org/ns/solid/interop#"
     }
   ]  ,
-  "client_id": "http://localhost:3000/acme/projectron/vue",
+  "client_id": "https://acme.pod.docker/projectron/vue",
   "client_name": "Vuejectron",
   "logo_uri": "https://robohash.org/https://vuejectron.example/?set=set3",
   "redirect_uris": ["http://localhost:4500/redirect"],
   "grant_types" : ["refresh_token","authorization_code"],
-  "interop:hasAccessNeedGroup": "http://localhost:3000/acme/projectron/access-needs#need-group-pm",
+  "interop:hasAccessNeedGroup": "https://acme.pod.docker/projectron/access-needs#need-group-pm",
   "interop:hasAuthorizationCallbackEndpoint": "http://localhost:4500"
 }

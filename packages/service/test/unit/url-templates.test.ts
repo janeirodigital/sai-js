@@ -10,7 +10,7 @@ import {
 
 const webId = 'https://alice.example';
 const encodedWebId = 'aHR0cHM6Ly9hbGljZS5leGFtcGxl';
-const agentUrl = 'http://localhost:4000/agents/aHR0cHM6Ly9hbGljZS5leGFtcGxl';
+const agentUrl = 'https://sai.docker/agents/aHR0cHM6Ly9hbGljZS5leGFtcGxl';
 const peerWebId = 'https://bob.example';
 
 test('encodeWebId', () => {
@@ -30,11 +30,11 @@ test('agentUrl2webId', () => {
 });
 
 test('agentRedirectUrl', () => {
-  expect(agentRedirectUrl(agentUrl)).toEqual('http://localhost:4000/agents/aHR0cHM6Ly9hbGljZS5leGFtcGxl/redirect');
+  expect(agentRedirectUrl(agentUrl)).toEqual('https://sai.docker/agents/aHR0cHM6Ly9hbGljZS5leGFtcGxl/redirect');
 });
 
 test('webhookTargetUrl', () => {
   expect(webhookTargetUrl(webId, peerWebId)).toEqual(
-    'http://localhost:4000/agents/aHR0cHM6Ly9hbGljZS5leGFtcGxl/webhook/aHR0cHM6Ly9ib2IuZXhhbXBsZQ=='
+    'https://sai.docker/agents/aHR0cHM6Ly9hbGljZS5leGFtcGxl/webhook/aHR0cHM6Ly9ib2IuZXhhbXBsZQ=='
   );
 });

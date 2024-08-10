@@ -1,1 +1,1 @@
-<http://localhost:3000/acme-rnd/> a <http://www.w3.org/ns/pim/space#Storage>.
+<https://acme-rnd.pod.docker/> a <http://www.w3.org/ns/pim/space#Storage>.

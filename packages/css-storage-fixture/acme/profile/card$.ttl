@@ -6,16 +6,16 @@ PREFIX schema: <https://schema.org/>
 
 <>
     a foaf:PersonalProfileDocument;
-    foaf:maker <http://localhost:3000/acme/profile/card#me>;
-    foaf:primaryTopic <http://localhost:3000/acme/profile/card#me>.
+    foaf:maker <https://acme.pod.docker/profile/card#me>;
+    foaf:primaryTopic <https://acme.pod.docker/profile/card#me>.
 
-<http://localhost:3000/acme/profile/card#me>
+<https://acme.pod.docker/profile/card#me>
     
-    solid:oidcIssuer <http://localhost:3000/>;
+    solid:oidcIssuer <https://pod.docker/>;
     a schema:Organization ;
     rdfs:label "ACME" ;
-    interop:hasAuthorizationAgent <http://localhost:4000/agents/aHR0cDovL2xvY2FsaG9zdDozMDAwL2FjbWUvcHJvZmlsZS9jYXJkI21l> ;
+    interop:hasAuthorizationAgent <https://sai.docker/agents/aHR0cDovL2xvY2FsaG9zdDozMDAwL2FjbWUvcHJvZmlsZS9jYXJkI21l> ;
     schema:member
-        <http://localhost:3000/alice/profile/card#me> ,
-        <http://localhost:3000/bob/profile/card#me> ,
-        <http://localhost:3000/kim/profile/card#me> .
+        <https://alice.pod.docker/profile/card#me> ,
+        <https://bob.pod.docker/profile/card#me> ,
+        <https://kim.pod.docker/profile/card#me> .

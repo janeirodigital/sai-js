@@ -1,6 +1,6 @@
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX solidshapes: <http://localhost:3000/shapetrees/shapes/>
+PREFIX solidshapes: <https://shapetrees.pod.docker/shapes/>
 PREFIX pm: <https://vocab.example/project-management/>
 
 solidshapes:Task {

@@ -2,17 +2,17 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX schema: <https://schema.org/>
 PREFIX ex: <https://vocab.example/events/>
 
-<http://localhost:3000/acme-hr/dataRegistry/events/2024-03-27>
+<https://acme-hr.pod.docker/dataRegistry/events/2024-03-27>
   a schema:Event ;
   schema:name 'Weekly plenary' ;
   schema:startDate '2024-03-27T13:45:00-00:00'^^xsd:dateTime ;
   ex:chair 
-    <http://localhost:3000/acme-hr/dataRegistry/presence/2024-03-27-bob> ;
+    <https://acme-hr.pod.docker/dataRegistry/presence/2024-03-27-bob> ;
   ex:scribe 
-    <http://localhost:3000/acme-hr/dataRegistry/presence/2024-03-27-yori> ;
+    <https://acme-hr.pod.docker/dataRegistry/presence/2024-03-27-yori> ;
   ex:attendee 
-    <http://localhost:3000/acme-hr/dataRegistry/presence/2024-03-27-kim> ,
-    <http://localhost:3000/acme-hr/dataRegistry/presence/2024-03-27-zack> ;
+    <https://acme-hr.pod.docker/dataRegistry/presence/2024-03-27-kim> ,
+    <https://acme-hr.pod.docker/dataRegistry/presence/2024-03-27-zack> ;
   ex:absentee 
-    <http://localhost:3000/acme-hr/dataRegistry/presence/2024-03-27-ale> ,
-    <http://localhost:3000/acme-hr/dataRegistry/presence/2024-03-27-rob> .
+    <https://acme-hr.pod.docker/dataRegistry/presence/2024-03-27-ale> ,
+    <https://acme-hr.pod.docker/dataRegistry/presence/2024-03-27-rob> .

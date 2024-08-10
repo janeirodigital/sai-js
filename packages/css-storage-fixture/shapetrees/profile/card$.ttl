@@ -3,10 +3,10 @@
 
 <>
     a foaf:PersonalProfileDocument;
-    foaf:maker <http://localhost:3000/shapetrees/profile/card#me>;
-    foaf:primaryTopic <http://localhost:3000/shapetrees/profile/card#me>.
+    foaf:maker <https://shapetrees.pod.docker/profile/card#me>;
+    foaf:primaryTopic <https://shapetrees.pod.docker/profile/card#me>.
 
-<http://localhost:3000/shapetrees/profile/card#me>
+<https://shapetrees.pod.docker/profile/card#me>
     
-    solid:oidcIssuer <http://localhost:3000/>;
+    solid:oidcIssuer <https://pod.docker/>;
     a foaf:Person.

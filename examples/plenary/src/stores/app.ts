@@ -36,7 +36,7 @@ export const useAppStore = defineStore('app', () => {
 
   // FAKE data
   // TODO change while adding SAI
-  userId.value = 'http://localhost:3000/alice/profile/card#me';
+  userId.value = 'https://alice.pod.docker/profile/card#me';
   agents.value = data.agents;
   pods.value = data.pods;
   registrations.value = data.registrations;

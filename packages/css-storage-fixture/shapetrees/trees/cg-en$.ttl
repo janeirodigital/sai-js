@@ -1,8 +1,8 @@
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX shapetrees: <http://www.w3.org/ns/shapetrees#>
-PREFIX solidshapes: <http://localhost:3000/shapetrees/shapes/>
-PREFIX solidtrees: <http://localhost:3000/shapetrees/trees/>
+PREFIX solidshapes: <https://shapetrees.pod.docker/shapes/>
+PREFIX solidtrees: <https://shapetrees.pod.docker/trees/>
 
 solidtrees:cg-en
   a shapetrees:DescriptionSet ;
