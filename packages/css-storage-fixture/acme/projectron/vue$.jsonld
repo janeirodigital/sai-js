@@ -8,8 +8,8 @@
   "client_id": "https://acme.pod.docker/projectron/vue",
   "client_name": "Vuejectron",
   "logo_uri": "https://robohash.org/https://vuejectron.example/?set=set3",
-  "redirect_uris": ["http://localhost:4500/redirect"],
+  "redirect_uris": ["https://vuejectron.docker/redirect"],
   "grant_types" : ["refresh_token","authorization_code"],
   "interop:hasAccessNeedGroup": "https://acme.pod.docker/projectron/access-needs#need-group-pm",
-  "interop:hasAuthorizationCallbackEndpoint": "http://localhost:4500"
+  "interop:hasAuthorizationCallbackEndpoint": "https://vuejectron.docker"
 }

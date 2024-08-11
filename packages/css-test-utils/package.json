@@ -34,6 +34,6 @@
   },
   "dependencies": {
     "@inrupt/solid-client-authn-core": "^2.0.0",
-    "@solid/community-server": "^7.1.0"
+    "@solid/community-server": "^7.1.1"
   }
 }

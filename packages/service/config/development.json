@@ -12,6 +12,7 @@
     {
       "@id": "urn:ssv:RedisConnectionInfo",
       "@type": "RedisConnectionInfo",
+      "host": "redis",
       "port": "6379"
     },
     {

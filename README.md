@@ -71,13 +71,13 @@ Available on https://sai.docker (API only)
 ##### UI
 
 Run from [ui/authorization](https://github.com/janeirodigital/sai-js/tree/main/ui/authorization).
-Available on http://localhost:4200 , requires signing up with UI first and later signing up in with the service (_Connect server_).
+Available on https://ui.sai.docker , requires signing up with UI first and later signing up in with the service (_Connect server_).
 Dev config uses local CSS as default provider when input left empty.
 
 #### Demo app (Vujectron)
 
 Run from [examples/vuejectron](https://github.com/janeirodigital/sai-js/tree/main/examples/vuejectron).
-Available on http://localhost:4500 , requires signup and authorization.
+Available on https://vuejectron.docker , requires signup and authorization.
 Dev config uses local CSS as default provider when input left empty.
 
 ## Localization

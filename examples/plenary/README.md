@@ -2,7 +2,7 @@
 
 ## Development
 
-After [the steps described in the workspace root](https://github.com/janeirodigital/sai-js?tab=readme-ov-file#development) application will be available on http://localhost:4700
+After [the steps described in the workspace root](https://github.com/janeirodigital/sai-js?tab=readme-ov-file#development) application will be available on https://plenary.docker
 
 ## Requirements
 

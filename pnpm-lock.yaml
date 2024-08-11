@@ -303,8 +303,8 @@ importers:
   packages/css-storage-fixture:
     dependencies:
       '@solid/community-server':
-        specifier: ^7.1.0
-        version: 7.1.0
+        specifier: ^7.1.1
+        version: 7.1.1
 
   packages/css-test-utils:
     dependencies:
@@ -312,8 +312,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       '@solid/community-server':
-        specifier: ^7.1.0
-        version: 7.1.0
+        specifier: ^7.1.1
+        version: 7.1.1
 
   packages/data-model:
     dependencies:
@@ -2472,8 +2472,8 @@ packages:
   '@solid/access-token-verifier@2.1.0':
     resolution: {integrity: sha512-79u92GD1SBTxjYghg2ta6cfoBNZ5ljz/9zE6RmXUypTXW7oI18DTWiSrEjWwI4njW+OMh+4ih+sAR6AkI1IFxg==}
 
-  '@solid/community-server@7.1.0':
-    resolution: {integrity: sha512-ux6qIDB3xnsVKiOlHbs48gb6H5jxY77eo7F6x9/4T93dMAvDQn79LDWXztYx+v6Zu1vvQhFFuqMK4uFyE9fAbA==}
+  '@solid/community-server@7.1.1':
+    resolution: {integrity: sha512-C551rfeQHkrY7qC+YbawYFMv6Vfifui2//vwZrxUNyQ1j/IZVfqzaj06R+UpqmajVxRsXTf/XtSjb+3lpTCyeg==}
     engines: {node: '>=18.0'}
     hasBin: true
 
@@ -6232,6 +6232,17 @@ packages:
       jsdom:
         optional: true
 
+  vue-demi@0.14.10:
+    resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
+    engines: {node: '>=12'}
+    hasBin: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+
   vue-demi@0.14.6:
     resolution: {integrity: sha512-8QA7wrYSHKaYgUxDA5ZC24w+eHm3sYCbp0EzcDwKqN3p6HqtTCGR/GVsPyZW92unff4UlcSh++lmqDWN3ZIq4w==}
     engines: {node: '>=12'}
@@ -6245,17 +6256,6 @@ packages:
 
   vue-demi@0.14.7:
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
-    engines: {node: '>=12'}
-    hasBin: true
-    peerDependencies:
-      '@vue/composition-api': ^1.0.0-rc.1
-      vue: ^3.0.0-0 || ^2.6.0
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-
-  vue-demi@0.14.8:
-    resolution: {integrity: sha512-Uuqnk9YE9SsWeReYqK2alDI5YzciATE0r2SkA6iMAtuXvNTMNACJLJEXNXaEy94ECuBe4Sk6RzRU80kjdbIo1Q==}
     engines: {node: '>=12'}
     hasBin: true
     peerDependencies:
@@ -9703,7 +9703,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@solid/community-server@7.1.0':
+  '@solid/community-server@7.1.1':
     dependencies:
       '@comunica/context-entries': 2.8.2
       '@comunica/query-sparql': 2.9.0
@@ -11842,7 +11842,7 @@ snapshots:
       '@fluent/sequence': 0.8.0(@fluent/bundle@0.18.0)
       cached-iterable: 0.3.0
       vue: 3.3.4
-      vue-demi: 0.14.8(vue@3.3.4)
+      vue-demi: 0.14.10(vue@3.3.4)
 
   fn.name@1.1.0: {}
 
@@ -13220,7 +13220,7 @@ snapshots:
   rdf-object@1.14.0:
     dependencies:
       '@rdfjs/types': 1.1.0
-      jsonld-context-parser: 2.3.1
+      jsonld-context-parser: 2.4.0
       rdf-data-factory: 1.1.2
       rdf-string: 1.6.3
       streamify-array: 1.0.1
@@ -14341,6 +14341,10 @@ snapshots:
       - supports-color
       - terser
 
+  vue-demi@0.14.10(vue@3.3.4):
+    dependencies:
+      vue: 3.3.4
+
   vue-demi@0.14.6(vue@3.3.4):
     dependencies:
       vue: 3.3.4
@@ -14348,10 +14352,6 @@ snapshots:
   vue-demi@0.14.7(vue@3.4.21(typescript@5.4.3)):
     dependencies:
       vue: 3.4.21(typescript@5.4.3)
-
-  vue-demi@0.14.8(vue@3.3.4):
-    dependencies:
-      vue: 3.3.4
 
   vue-eslint-parser@9.3.1(eslint@8.51.0):
     dependencies:

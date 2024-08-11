@@ -7,4 +7,4 @@
 <https://acme.pod.docker/projectron/vue> <http://www.w3.org/ns/solid/oidc#client_name> "Vuejectron";
     <http://www.w3.org/ns/solid/oidc#logo_uri> <https://robohash.org/https://vuejectron.example/?set=set3>;
     <http://www.w3.org/ns/solid/interop#hasAccessNeedGroup> "https://acme.pod.docker/projectron/access-needs#need-group-pm";
-    <http://www.w3.org/ns/solid/interop#hasAuthorizationCallbackEndpoint> "http://localhost:4500".
+    <http://www.w3.org/ns/solid/interop#hasAuthorizationCallbackEndpoint> "https://vuejectron.docker".
