@@ -15,4 +15,4 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     a foaf:Person ;
     rdfs:label "Bob";
     interop:hasRegistrySet <https://bob.pod.docker/registrySet>;
-    interop:hasAuthorizationAgent <https://sai.docker/agents/aHR0cDovL2xvY2FsaG9zdDozMDAwL2JvYi9wcm9maWxlL2NhcmQjbWU=> .
+    interop:hasAuthorizationAgent <https://sai.docker/agents/aHR0cHM6Ly9ib2IucG9kLmRvY2tlci9wcm9maWxlL2NhcmQjbWU=> .

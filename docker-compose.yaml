@@ -20,8 +20,8 @@ services:
     dns:
       - 172.100.61.253
     volumes:
-      - /home/elf-pavlik/code/solid/sai-js/:/sai
-      - /home/elf-pavlik/.local/share/mkcert:/mkcert
+      - ./:/sai
+      - ${CAROOT}:/mkcert
     environment:
       - NODE_ENV=development
       - BASE_URL=https://sai.docker
@@ -40,34 +40,34 @@ services:
       - traefik.http.routers.sai.tls=true
       - traefik.http.services.sai.loadbalancer.server.port=4000
       - traefik.http.middlewares.testheader.headers.customrequestheaders.X-Forwarded-Proto=https
-  css:
-    image: node:22-alpine
-    restart: on-failure
-    networks:
-      - default
-      - shared
-    dns:
-      - 172.100.61.253
-    expose:
-      - 3000
-    working_dir: /sai/packages/css-storage-fixture
-    command: ["npm", "run", "start"]
-    volumes:
-      - /home/elf-pavlik/code/solid/sai-js:/sai
-      - /home/elf-pavlik/.local/share/mkcert:/mkcert
-    environment:
-      - CSS_CONFIG=/sai/packages/css-storage-fixture/config.json
-      - CSS_LOGGING_LEVEL=info
-      - CSS_ROOT_FILE_PATH=/sai/packages/css-storage-fixture
-      - CSS_BASE_URL=https://pod.docker
-      - NODE_EXTRA_CA_CERTS=/mkcert/rootCA.pem
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.pod.rule=Host(`pod.docker`) || HostRegexp(`^.+\.pod\.docker$`)
-      - traefik.http.routers.pod.entrypoints=websecure
-      - traefik.http.routers.pod.tls=true
-      - traefik.http.services.pod.loadbalancer.server.port=3000
-      #- traefik.http.middlewares.testheader.headers.customrequestheaders.X-Forwarded-Proto=https
+  # css:
+  #   image: node:22-alpine
+  #   restart: on-failure
+  #   networks:
+  #     - default
+  #     - shared
+  #   dns:
+  #     - 172.100.61.253
+  #   expose:
+  #     - 3000
+  #   working_dir: /sai/packages/css-storage-fixture
+  #   command: ["npm", "run", "start"]
+  #   volumes:
+  #     - ./:/sai
+  #     - ${CAROOT}:/mkcert
+  #   environment:
+  #     - CSS_CONFIG=/sai/packages/css-storage-fixture/config.json
+  #     - CSS_LOGGING_LEVEL=info
+  #     - CSS_ROOT_FILE_PATH=/sai/packages/css-storage-fixture
+  #     - CSS_BASE_URL=https://pod.docker
+  #     - NODE_EXTRA_CA_CERTS=/mkcert/rootCA.pem
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.pod.rule=Host(`pod.docker`) || HostRegexp(`^.+\.pod\.docker$`)
+  #     - traefik.http.routers.pod.entrypoints=websecure
+  #     - traefik.http.routers.pod.tls=true
+  #     - traefik.http.services.pod.loadbalancer.server.port=3000
+  #     - traefik.http.middlewares.testheader.headers.customrequestheaders.X-Forwarded-Proto=https
   ui:
     image: node:22-alpine
     restart: on-failure
@@ -79,7 +79,7 @@ services:
     working_dir: /sai/ui/authorization
     command: ["npm", "run", "dev"]
     volumes:
-      - /home/elf-pavlik/code/solid/sai-js/:/sai
+      - ./:/sai
     labels:
       - traefik.enable=true
       - traefik.http.routers.ui-sai.rule=Host(`ui.sai.docker`)
@@ -97,7 +97,7 @@ services:
     working_dir: /sai/examples/vuejectron
     command: ["npm", "run", "dev"]
     volumes:
-      - /home/elf-pavlik/code/solid/sai-js/:/sai
+      - ./:/sai
     labels:
       - traefik.enable=true
       - traefik.http.routers.vuejectron.rule=Host(`vuejectron.docker`)
