@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "community-solid-server -c config.json -l warn",
+    "dev": "community-solid-server -c config.json -l warn -f ./dev",
+    "test": "community-solid-server -c ../css-test-utils/css-config.json -l warn ./test",
     "clean": "pnpm clean:empty-directories && pnpm clean:notification-channels",
     "clean:empty-directories": "find . -type d -empty -delete",
     "clean:notification-channels": "rm -rf .internal/notifications/*"

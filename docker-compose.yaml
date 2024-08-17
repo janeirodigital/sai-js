@@ -51,14 +51,14 @@ services:
   #   expose:
   #     - 3000
   #   working_dir: /sai/packages/css-storage-fixture
-  #   command: ["npm", "run", "start"]
+  #   command: ["npm", "run", "dev"]
   #   volumes:
   #     - ./:/sai
   #     - ${CAROOT}:/mkcert
   #   environment:
   #     - CSS_CONFIG=/sai/packages/css-storage-fixture/config.json
   #     - CSS_LOGGING_LEVEL=info
-  #     - CSS_ROOT_FILE_PATH=/sai/packages/css-storage-fixture
+  #     - CSS_ROOT_FILE_PATH=/sai/packages/css-storage-fixture/dev
   #     - CSS_BASE_URL=https://pod.docker
   #     - NODE_EXTRA_CA_CERTS=/mkcert/rootCA.pem
   #   labels:

@@ -11,7 +11,7 @@ export function createApp() {
     shorthand: {
       port: 3_000,
       loggingLevel: 'off',
-      rootFilePath: new URL('../../css-storage-fixture', import.meta.url).pathname
+      rootFilePath: new URL('../../css-storage-fixture/test', import.meta.url).pathname
     }
   });
 }
