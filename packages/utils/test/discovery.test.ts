@@ -16,7 +16,8 @@ import {
 
 vi.setConfig({ testTimeout: 20_000, hookTimeout: 20_000 });
 
-const stu = new SolidTestUtils('https://alice.pod.docker/profile/card#me', 'alice@acme.example', 'password');
+const host = 'http://localhost:3711';
+const stu = new SolidTestUtils(`${host}/luka/profile/card#me`, 'luka@acme.example', 'password');
 beforeAll(async () => stu.beforeAll());
 afterAll(async () => stu.afterAll());
 
@@ -114,10 +115,10 @@ describe('discoverDescriptionResource', () => {
 });
 
 describe('discoverDescriptionResource', () => {
-  const resourceIri = 'https://alice.pod.docker/profile/card';
+  const resourceIri = `${host}/luka/profile/card`;
 
   test('should discover Storage Description from link header ', async () => {
-    const storageDescriptionIri = 'https://alice.pod.docker/.well-known/solid';
+    const storageDescriptionIri = `${host}/luka/.well-known/solid`;
 
     const iri = await discoverStorageDescription(resourceIri, stu.authFetch);
     expect(iri).toBe(storageDescriptionIri);

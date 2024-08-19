@@ -1,6 +1,9 @@
 import { KeyPair, createDpopHeader, generateDpopKeyPair } from '@inrupt/solid-client-authn-core';
 import { AppRunner, resolveModulePath } from '@solid/community-server';
 
+const port = 3711;
+const host = `http://localhost:${port}`;
+
 export function createApp() {
   return new AppRunner().create({
     loaderProperties: {
@@ -9,7 +12,7 @@ export function createApp() {
     },
     config: new URL('../src/css-config.json', import.meta.url).pathname,
     shorthand: {
-      port: 3_000,
+      port,
       loggingLevel: 'off',
       rootFilePath: new URL('../../css-storage-fixture/test', import.meta.url).pathname
     }
@@ -23,7 +26,7 @@ export interface ISecretData {
 
 // From https://communitysolidserver.github.io/CommunitySolidServer/7.x/usage/client-credentials/
 export async function getSecret(webId: string, email: string, password: string): Promise<ISecretData> {
-  const index = 'https://.account.pod.docker/';
+  const index = `${host}/.account/`;
   // First we request the account API controls to find out where we can log in
   let indexResponse = await fetch(index);
   let { controls } = await indexResponse.json();
@@ -77,7 +80,7 @@ export interface ITokenData {
 export async function refreshToken({ id, secret }: ISecretData): Promise<ITokenData> {
   const dpopKey = await generateDpopKeyPair();
   const authString = `${encodeURIComponent(id)}:${encodeURIComponent(secret)}`;
-  const tokenUrl = 'https://.oidc.pod.docker/token';
+  const tokenUrl = `${host}/.oidc/token`;
   const response = await fetch(tokenUrl, {
     method: 'POST',
     headers: {
