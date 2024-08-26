@@ -1,8 +1,6 @@
 import { KeyPair, createDpopHeader, generateDpopKeyPair } from '@inrupt/solid-client-authn-core';
 import { AppRunner, resolveModulePath } from '@solid/community-server';
-
-const port = 3711;
-const host = `http://localhost:${port}`;
+import { port, host } from './config';
 
 export function createApp() {
   return new AppRunner().create({

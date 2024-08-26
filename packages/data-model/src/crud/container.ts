@@ -67,10 +67,13 @@ export class CRUDContainer extends CRUDResource {
 
     // create empty container, CSS ignores body!
     {
-      const { ok } = await this.fetch(this.iri, {
+      const response = await this.fetch(this.iri, {
         method: 'PUT'
       });
-      if (!ok) throw new Error('failed to create empty container');
+      if (!response.ok) {
+        console.error(response);
+        throw new Error('failed to create empty container');
+      }
     }
 
     await this.discoverDescriptionResource();

@@ -1,4 +1,4 @@
-import { INTEROP } from '@janeirodigital/interop-utils';
+import { INTEROP, RDF } from '@janeirodigital/interop-utils';
 import { DataFactory } from 'n3';
 import { CRUDResource } from '.';
 import { AuthorizationAgentFactory } from '..';
@@ -33,6 +33,7 @@ export class CRUDDataRegistration extends CRUDResource {
     if (!this.data) {
       await this.fetchData();
     } else {
+      this.dataset.add(DataFactory.quad(this.node, RDF.type, INTEROP.DataRegistration));
       this.datasetFromData();
     }
   }

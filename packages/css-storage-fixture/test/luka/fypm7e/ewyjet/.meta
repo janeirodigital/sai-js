@@ -1,0 +1,9 @@
+<http://localhost:3711/luka/fypm7e/ewyjet/> a <http://www.w3.org/ns/solid/interop#SocialAgentRegistration>;
+    <http://www.w3.org/ns/solid/interop#registeredAgent> <http://localhost:3711/vaporcg/profile/card#me>;
+    <http://www.w3.org/2004/02/skos/core#prefLabel> "Vapor CG";
+    <http://www.w3.org/2004/02/skos/core#note> "The most nebulous community group";
+    <http://www.w3.org/ns/solid/interop#registeredBy> "http://localhost:3711/luka/profile/card#me";
+    <http://www.w3.org/ns/solid/interop#registeredWith> "https://auth.example/luka";
+    <http://www.w3.org/ns/solid/interop#registeredAt> "2024-08-25T23:46:19.807Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+    <http://www.w3.org/ns/solid/interop#updatedAt> "2024-08-25T23:46:19.808Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+    <http://www.w3.org/ns/solid/interop#reciprocalRegistration> <http://localhost:3711/vaporcg/khp4oz/h5sfsh/>.

@@ -1,6 +1,7 @@
 import type { App } from '@solid/community-server';
 import { createApp, getSecret, refreshToken, ISecretData, ITokenData } from './css-util';
 import { buildAuthenticatedFetch } from '@inrupt/solid-client-authn-core';
+import type { Account } from './accounts';
 
 export class SolidTestUtils {
   app: App;
@@ -8,11 +9,7 @@ export class SolidTestUtils {
   token: ITokenData;
   authFetch: typeof fetch;
 
-  constructor(
-    private webId: string,
-    private email: string,
-    private password: string
-  ) {}
+  constructor(public account: Account) {}
 
   async beforeAll(): Promise<void> {
     // Start up the server
@@ -20,7 +17,7 @@ export class SolidTestUtils {
     await this.app.start();
 
     // Generate secret
-    this.secret = await getSecret(this.webId, this.email, this.password);
+    this.secret = await getSecret(this.account.webId, this.account.email, this.account.password);
 
     // Get token
     this.token = await refreshToken(this.secret);

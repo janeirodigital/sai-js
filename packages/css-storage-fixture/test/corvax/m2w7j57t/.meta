@@ -1,0 +1,4 @@
+<http://localhost:3711/corvax/m2w7j57t/> <http://www.w3.org/ns/solid/interop#registeredBy> "http://localhost:3711/luka/profile/card#me";
+    <http://www.w3.org/ns/solid/interop#registeredWith> "https://auth.example/luka";
+    <http://www.w3.org/ns/solid/interop#registeredAt> "2024-08-20T01:23:06.574Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+    <http://www.w3.org/ns/solid/interop#updatedAt> "2024-08-20T01:23:06.574Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>.

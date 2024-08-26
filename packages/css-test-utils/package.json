@@ -30,10 +30,17 @@
   },
   "scripts": {
     "build": "tsc -b .",
+    "repl": "node --import=tsx ./repl.ts",
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
     "@inrupt/solid-client-authn-core": "^2.0.0",
     "@solid/community-server": "^7.1.1"
+  },
+  "devDependencies": {
+    "@janeirodigital/interop-authorization-agent": "workspace:^1.0.0-rc.24",
+    "@janeirodigital/interop-data-model": "workspace:^1.0.0-rc.24",
+    "@paralleldrive/cuid2": "^2.2.2",
+    "tsx": "^4.17.0"
   }
 }

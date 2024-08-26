@@ -1,17 +1,25 @@
 import { DataFactory } from 'n3';
-import { INTEROP } from '@janeirodigital/interop-utils';
+import { INTEROP, RDF } from '@janeirodigital/interop-utils';
 import { AuthorizationAgentFactory, ReadableAccessAuthorization } from '..';
 import { CRUDContainer } from '.';
+import { CRUDData } from './resource';
 
 export class CRUDAuthorizationRegistry extends CRUDContainer {
   factory: AuthorizationAgentFactory;
 
   async bootstrap(): Promise<void> {
     await this.fetchData();
+    if (this.data) {
+      this.dataset.add(DataFactory.quad(this.node, RDF.type, INTEROP.AuthorizationRegistry));
+    }
   }
 
-  public static async build(iri: string, factory: AuthorizationAgentFactory): Promise<CRUDAuthorizationRegistry> {
-    const instance = new CRUDAuthorizationRegistry(iri, factory);
+  public static async build(
+    iri: string,
+    factory: AuthorizationAgentFactory,
+    data?: CRUDData
+  ): Promise<CRUDAuthorizationRegistry> {
+    const instance = new CRUDAuthorizationRegistry(iri, factory, data);
     await instance.bootstrap();
     return instance;
   }

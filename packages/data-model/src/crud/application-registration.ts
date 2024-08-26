@@ -1,13 +1,15 @@
-import { INTEROP, OIDC } from '@janeirodigital/interop-utils';
+import { INTEROP, OIDC, RDF } from '@janeirodigital/interop-utils';
 import { NamedNode } from '@rdfjs/types';
 import { AgentRegistrationData, CRUDAgentRegistration } from '.';
 import { AuthorizationAgentFactory } from '..';
+import { DataFactory } from 'n3';
 
 export class CRUDApplicationRegistration extends CRUDAgentRegistration {
   protected async bootstrap(): Promise<void> {
     if (!this.data) {
       await this.fetchData();
     } else {
+      this.dataset.add(DataFactory.quad(this.node, RDF.type, INTEROP.ApplicationRegistration));
       this.datasetFromData();
     }
     await this.buildAccessGrant();

@@ -1,0 +1,19 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX uuid: <urn:uuid>
+PREFIX shapetrees: <http://www.w3.org/ns/shapetrees#>
+PREFIX solidshapes: <http://localhost:3711/solid/shapes/>
+PREFIX solidshapes: <http://localhost:3711/solid/trees/>
+PREFIX ex: <https://vocab.example/>
+
+solidtrees:Gadget
+  a shapetrees:ShapeTree ;
+  shapetrees:expectsType shapetrees:Resource ;
+  shapetrees:shape solidshapes:Gadget ;
+  shapetrees:describesInstance rdfs:label ;
+  shapetrees:references
+    uuid:1f648a07-06ba-5cfa-a423-8e4b79539d7d .
+
+uuid:1f648a07-06ba-5cfa-a423-8e4b79539d7d
+  shapetrees:hasShapeTree solidtrees:Widget ;
+  shapetrees:viaPredicate ex:hasWidge .

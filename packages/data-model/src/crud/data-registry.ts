@@ -3,6 +3,7 @@ import { DatasetCore } from '@rdfjs/types';
 import { INTEROP, RDF, SPACE, discoverStorageDescription, getOneMatchingQuad } from '@janeirodigital/interop-utils';
 import { ReadableDataRegistration } from '../readable';
 import { AuthorizationAgentFactory } from '..';
+import type { CRUDData } from './resource';
 import { CRUDContainer, CRUDDataRegistration } from '.';
 
 export class CRUDDataRegistry extends CRUDContainer {
@@ -58,10 +59,13 @@ export class CRUDDataRegistry extends CRUDContainer {
 
   async bootstrap(): Promise<void> {
     await this.fetchData();
+    if (this.data) {
+      this.dataset.add(DataFactory.quad(this.node, RDF.type, INTEROP.DataRegistry));
+    }
   }
 
-  static async build(iri: string, factory: AuthorizationAgentFactory): Promise<CRUDDataRegistry> {
-    const instance = new CRUDDataRegistry(iri, factory);
+  static async build(iri: string, factory: AuthorizationAgentFactory, data?: CRUDData): Promise<CRUDDataRegistry> {
+    const instance = new CRUDDataRegistry(iri, factory, data);
     await instance.bootstrap();
     return instance;
   }

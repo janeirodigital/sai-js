@@ -30,6 +30,8 @@ import {
   CRUDSocialAgentInvitation,
   SocialAgentInvitationData
 } from '.';
+import { CRUDRegistrySetData } from './crud/registry-set';
+import type { CRUDData } from './crud/resource';
 
 interface AuthorizationAgentReadableFactory extends BaseReadableFactory {
   accessAuthorization(iri: string): Promise<ReadableAccessAuthorization>;
@@ -48,11 +50,11 @@ interface CRUDFactory {
     data?: SocialAgentRegistrationData
   ): Promise<CRUDSocialAgentRegistration>;
   socialAgentInvitation(iri: string, data?: SocialAgentInvitationData): Promise<CRUDSocialAgentInvitation>;
-  dataRegistry(iri: string): Promise<CRUDDataRegistry>;
+  dataRegistry(iri: string, data?: CRUDData): Promise<CRUDDataRegistry>;
   dataRegistration(iri: string, data?: DataRegistrationData): Promise<CRUDDataRegistration>;
-  authorizationRegistry(iri: string): Promise<CRUDAuthorizationRegistry>;
-  agentRegistry(iri: string): Promise<CRUDAgentRegistry>;
-  registrySet(iri: string): Promise<CRUDRegistrySet>;
+  authorizationRegistry(iri: string, data?: CRUDData): Promise<CRUDAuthorizationRegistry>;
+  agentRegistry(iri: string, data?: CRUDData): Promise<CRUDAgentRegistry>;
+  registrySet(iri: string, data?: CRUDRegistrySetData): Promise<CRUDRegistrySet>;
 }
 
 interface ImmutableFactory {
@@ -105,8 +107,8 @@ export class AuthorizationAgentFactory extends BaseFactory {
       ): Promise<CRUDSocialAgentInvitation> {
         return CRUDSocialAgentInvitation.build(iri, factory, data);
       },
-      dataRegistry: async function dataRegistry(iri: string): Promise<CRUDDataRegistry> {
-        return CRUDDataRegistry.build(iri, factory);
+      dataRegistry: async function dataRegistry(iri: string, data?: CRUDData): Promise<CRUDDataRegistry> {
+        return CRUDDataRegistry.build(iri, factory, data);
       },
       dataRegistration: async function dataRegistration(
         iri: string,
@@ -114,14 +116,17 @@ export class AuthorizationAgentFactory extends BaseFactory {
       ): Promise<CRUDDataRegistration> {
         return CRUDDataRegistration.build(iri, factory, data);
       },
-      authorizationRegistry: async function authorizationRegistry(iri: string): Promise<CRUDAuthorizationRegistry> {
-        return CRUDAuthorizationRegistry.build(iri, factory);
+      authorizationRegistry: async function authorizationRegistry(
+        iri: string,
+        data?: CRUDData
+      ): Promise<CRUDAuthorizationRegistry> {
+        return CRUDAuthorizationRegistry.build(iri, factory, data);
       },
-      agentRegistry: async function agentRegistry(iri: string): Promise<CRUDAgentRegistry> {
-        return CRUDAgentRegistry.build(iri, factory);
+      agentRegistry: async function agentRegistry(iri: string, data?: CRUDData): Promise<CRUDAgentRegistry> {
+        return CRUDAgentRegistry.build(iri, factory, data);
       },
-      registrySet: async function registrySet(iri: string): Promise<CRUDRegistrySet> {
-        return CRUDRegistrySet.build(iri, factory);
+      registrySet: async function registrySet(iri: string, data?: CRUDRegistrySetData): Promise<CRUDRegistrySet> {
+        return CRUDRegistrySet.build(iri, factory, data);
       }
     };
   }

@@ -1,17 +1,25 @@
 import { DataFactory } from 'n3';
-import { INTEROP, OIDC } from '@janeirodigital/interop-utils';
+import { INTEROP, OIDC, RDF } from '@janeirodigital/interop-utils';
 import { AuthorizationAgentFactory } from '..';
 import { CRUDContainer, CRUDApplicationRegistration, CRUDSocialAgentRegistration, CRUDSocialAgentInvitation } from '.';
+import { CRUDData } from './resource';
 
 export class CRUDAgentRegistry extends CRUDContainer {
   factory: AuthorizationAgentFactory;
 
   async bootstrap(): Promise<void> {
     await this.fetchData();
+    if (this.data) {
+      this.dataset.add(DataFactory.quad(this.node, RDF.type, INTEROP.AgentRegistry));
+    }
   }
 
-  public static async build(iri: string, factory: AuthorizationAgentFactory): Promise<CRUDAgentRegistry> {
-    const instance = new CRUDAgentRegistry(iri, factory);
+  public static async build(
+    iri: string,
+    factory: AuthorizationAgentFactory,
+    data?: CRUDData
+  ): Promise<CRUDAgentRegistry> {
+    const instance = new CRUDAgentRegistry(iri, factory, data);
     await instance.bootstrap();
     return instance;
   }

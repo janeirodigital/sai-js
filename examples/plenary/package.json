@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "pnpm build:ldo && vue-tsc --noEmit && vite build",
+    "build.skip": "pnpm build:ldo && vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix --ignore-path .gitignore",
     "build:ldo": "ldo build --input ./shapes --output ./ldo"

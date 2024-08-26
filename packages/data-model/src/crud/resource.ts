@@ -2,20 +2,24 @@ import { INTEROP, XSD } from '@janeirodigital/interop-utils';
 import { DataFactory, Store } from 'n3';
 import { AuthorizationAgentFactory, InteropFactory, ReadableResource } from '..';
 
-type Data = { [key: string]: string | string[] };
+export type CRUDData = { [key: string]: string | string[] };
 
 // TODO (elf-pavlik) implement creating new resource
 export class CRUDResource extends ReadableResource {
-  data?: Data;
+  data?: CRUDData;
 
   factory: AuthorizationAgentFactory;
 
-  constructor(iri: string, factory: InteropFactory, data?: Data) {
+  constructor(iri: string, factory: InteropFactory, data?: CRUDData) {
     super(iri, factory);
     if (data) {
       this.data = data;
       this.dataset = new Store();
     }
+  }
+
+  protected async fetchData(): Promise<void> {
+    if (!this.data) return super.fetchData();
   }
 
   protected deleteQuad(property: string, namespace = INTEROP): void {

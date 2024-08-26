@@ -4,7 +4,8 @@ import {
   INTEROP,
   discoverAuthorizationAgent,
   discoverAgentRegistration,
-  WhatwgFetch
+  WhatwgFetch,
+  RDF
 } from '@janeirodigital/interop-utils';
 import { AgentRegistrationData, CRUDAgentRegistration } from '.';
 import { AuthorizationAgentFactory } from '..';
@@ -118,6 +119,7 @@ export class CRUDSocialAgentRegistration extends CRUDAgentRegistration {
     if (!this.data) {
       await this.fetchData();
     } else {
+      this.dataset.add(DataFactory.quad(this.node, RDF.type, INTEROP.SocialAgentRegistration));
       this.datasetFromData();
     }
     await this.buildAccessGrant();

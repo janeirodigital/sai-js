@@ -1,6 +1,6 @@
 import { vi, describe, test, expect, beforeAll, afterAll, Mock } from 'vitest';
 import { DataFactory, Store } from 'n3';
-import { SolidTestUtils } from '@janeirodigital/css-test-utils';
+import { SolidTestUtils, host, luka } from '@janeirodigital/css-test-utils';
 import {
   RdfResponse,
   discoverAuthorizationAgent,
@@ -16,8 +16,7 @@ import {
 
 vi.setConfig({ testTimeout: 20_000, hookTimeout: 20_000 });
 
-const host = 'http://localhost:3711';
-const stu = new SolidTestUtils(`${host}/luka/profile/card#me`, 'luka@acme.example', 'password');
+const stu = new SolidTestUtils(luka);
 beforeAll(async () => stu.beforeAll());
 afterAll(async () => stu.afterAll());
 

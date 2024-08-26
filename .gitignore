@@ -14,6 +14,7 @@ packages/css-storage-fixture/**/.internal/locks
 packages/css-storage-fixture/**/.internal/forgot-password
 packages/css-storage-fixture/**/.internal/notifications
 packages/css-storage-fixture/**/.internal/accounts/cookies
+packages/css-storage-fixture/**/.internal/accounts/index/clientCredentials
 
 # OS
 .DS_Store

@@ -1,0 +1,8 @@
+<http://localhost:3711/luka/yo73jo> a <http://www.w3.org/ns/solid/interop#RegistrySet>;
+    <http://www.w3.org/ns/solid/interop#hasAgentRegistry> <http://localhost:3711/luka/fypm7e/>;
+    <http://www.w3.org/ns/solid/interop#hasAuthorizationRegistry> <http://localhost:3711/luka/ybb0wc/>;
+    <http://www.w3.org/ns/solid/interop#hasDataRegistry> <http://localhost:3711/corvax/x7b09z/>, <http://localhost:3711/zenara/ynbygf/>;
+    <http://www.w3.org/ns/solid/interop#registeredBy> "http://localhost:3711/luka/profile/card#me";
+    <http://www.w3.org/ns/solid/interop#registeredWith> "https://auth.example/luka";
+    <http://www.w3.org/ns/solid/interop#registeredAt> "2024-08-21T04:02:52.591Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+    <http://www.w3.org/ns/solid/interop#updatedAt> "2024-08-21T04:02:52.591Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>.

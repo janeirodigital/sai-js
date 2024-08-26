@@ -1,0 +1,10 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ex: <https://vocab.example/>
+PREFIX solidshapes: <http://localhost:3711/solid/shapes/>
+
+solidshapes:Gadget {
+  a [ ex:Gadget ] ;
+  rdfs:label xsd:string ;
+  ex:hasWidget IRI *
+}
