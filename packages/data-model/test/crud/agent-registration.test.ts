@@ -2,7 +2,7 @@ import { describe, test } from 'vitest';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory } from 'n3';
-import { SKOS, INTEROP } from '@janeirodigital/interop-utils';
+import { SKOS, INTEROP, RDF } from '@janeirodigital/interop-utils';
 import { expect } from '../expect';
 import { CRUDSocialAgentRegistration, AuthorizationAgentFactory, SocialAgentRegistrationData } from '../../src';
 
@@ -31,6 +31,7 @@ describe('build', () => {
 
   test('should set dataset if data passed', async () => {
     const quads = [
+      DataFactory.quad(DataFactory.namedNode(newSnippetIri), RDF.type, INTEROP.SocialAgentRegistration),
       DataFactory.quad(
         DataFactory.namedNode(newSnippetIri),
         INTEROP.registeredAgent,
@@ -44,7 +45,7 @@ describe('build', () => {
       DataFactory.quad(DataFactory.namedNode(newSnippetIri), SKOS.prefLabel, DataFactory.literal(data.prefLabel))
     ];
     const agentRegistration = await CRUDSocialAgentRegistration.build(newSnippetIri, factory, false, data);
-    expect(agentRegistration.dataset.size).toBe(3);
+    expect(agentRegistration.dataset.size).toBe(4);
     expect(agentRegistration.dataset).toBeRdfDatasetContaining(...quads);
   });
 

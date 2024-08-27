@@ -2,7 +2,7 @@ import { describe, test } from 'vitest';
 import { fetch } from '@janeirodigital/interop-test-utils';
 import { randomUUID } from 'crypto';
 import { DataFactory } from 'n3';
-import { INTEROP } from '@janeirodigital/interop-utils';
+import { INTEROP, RDF } from '@janeirodigital/interop-utils';
 import { expect } from '../expect';
 import { AuthorizationAgentFactory, CRUDDataRegistration } from '../../src';
 
@@ -13,7 +13,7 @@ const snippetIri = 'https://pro.alice.example/773605f0-b5bf-4d46-878d-5c167eac8b
 const newSnippetIri = 'https://auth.alice.example/bd2bb0a3-e95a-4981-a30b-5b6a7358435c';
 
 const data = {
-  shapeTree: 'https://solidshapes.example/tree/Other'
+  registeredShapeTree: 'https://solidshapes.example/tree/Other'
 };
 
 describe('build', () => {
@@ -29,10 +29,15 @@ describe('build', () => {
 
   test('should set dataset if data passed', async () => {
     const quads = [
-      DataFactory.quad(DataFactory.namedNode(newSnippetIri), INTEROP.shapeTree, DataFactory.namedNode(data.shapeTree))
+      DataFactory.quad(DataFactory.namedNode(newSnippetIri), RDF.type, INTEROP.DataRegistration),
+      DataFactory.quad(
+        DataFactory.namedNode(newSnippetIri),
+        INTEROP.registeredShapeTree,
+        DataFactory.namedNode(data.registeredShapeTree)
+      )
     ];
     const dataRegistration = await CRUDDataRegistration.build(newSnippetIri, factory, data);
-    expect(dataRegistration.dataset.size).toBe(1);
+    expect(dataRegistration.dataset.size).toBe(2);
     expect(dataRegistration.dataset).toBeRdfDatasetContaining(...quads);
   });
 });

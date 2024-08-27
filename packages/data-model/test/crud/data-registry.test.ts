@@ -41,24 +41,24 @@ describe('createRegistration', () => {
     expect(registration).toBeInstanceOf(CRUDDataRegistration);
   });
 
-  test('should udpate created data registration', async () => {
+  test('should create data registration', async () => {
     const localFactory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
-    const updateMock = vi.fn();
+    const createMock = vi.fn();
     localFactory.crud.dataRegistration = vi.fn(
-      () => ({ update: updateMock }) as unknown as Promise<CRUDDataRegistration>
+      () => ({ create: createMock }) as unknown as Promise<CRUDDataRegistration>
     );
 
     const otherShapeTree = 'https://solidshapes.example/tree/Other';
     const dataRegistry = await localFactory.crud.dataRegistry(snippetIri);
     await dataRegistry.createRegistration(otherShapeTree);
 
-    expect(updateMock).toBeCalled();
+    expect(createMock).toBeCalled();
   });
 
   test('should link to new data registration and update itself', async () => {
     const otherShapeTree = 'https://solidshapes.example/tree/Other';
     const dataRegistry = await factory.crud.dataRegistry(snippetIri);
-    const dataRegistryUpdateSpy = vi.spyOn(dataRegistry, 'update');
+    const dataRegistryUpdateSpy = vi.spyOn(dataRegistry, 'addStatement');
     const registration = await dataRegistry.createRegistration(otherShapeTree);
     const expectedQuads = [
       DataFactory.quad(
