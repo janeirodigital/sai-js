@@ -1,7 +1,7 @@
 import type { App } from '@solid/community-server';
 import { createApp, getSecret, refreshToken, ISecretData, ITokenData } from './css-util';
+import type { Account } from './types';
 import { buildAuthenticatedFetch } from '@inrupt/solid-client-authn-core';
-import type { Account } from './accounts';
 
 export class SolidTestUtils {
   app: App;

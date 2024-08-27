@@ -3,10 +3,7 @@ import { init } from '@paralleldrive/cuid2';
 import type { CRUDRegistrySet, CRUDRegistrySetData } from '@janeirodigital/interop-data-model';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 
-import { createApp } from './src/css-util';
-import { SolidTestUtils } from './src/solid-test-utils';
-import * as accounts from './src/accounts';
-import type { Account } from './src/accounts';
+import { type Account, accounts, createApp, SolidTestUtils } from '@janeirodigital/css-test-utils';
 
 global.shapeTrees = accounts.shapeTree;
 

@@ -1,21 +1,26 @@
-import { ACL, INTEROP } from '@janeirodigital/interop-utils';
+import { DataFactory } from 'n3';
+import { NamedNode } from '@rdfjs/types';
+
 import { host } from './config';
+import { Account } from './types';
+
+// TODO fix circular depencency with utils package
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export function buildNamespace(base: string): any {
+  const handler = {
+    get: (target: { base: string }, property: string): NamedNode => DataFactory.namedNode(target.base + property)
+  };
+  return new Proxy({ base }, handler);
+}
+
+export const INTEROP = buildNamespace('http://www.w3.org/ns/solid/interop#');
+export const ACL = buildNamespace('http://www.w3.org/ns/auth/acl#');
 
 const password = 'password';
 
 export const shapeTree = {
   Gadget: `${host}/solid/trees/Gadget`,
   Widget: `${host}/solid/trees/Widget`
-};
-
-export type Account = {
-  webId: string;
-  email: string;
-  shortName: string;
-  password: 'password';
-  registrySet?: string;
-  auth: string;
-  data: { [key: string]: string };
 };
 
 export type Application = {

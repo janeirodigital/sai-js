@@ -1,8 +1,8 @@
 {
-  "name": "@janeirodigital/css-test-utils",
+  "name": "@janeirodigital/interop-repl",
   "private": true,
   "version": "1.0.0-rc.24",
-  "description": "Internal testing utilities intended to be used by other modules implementing Solid Application Interoperability specification. Intended to be only used as a development dependency.",
+  "description": "",
   "contributors": [
     {
       "name": "elf Pavlik",
@@ -29,16 +29,15 @@
     "test": "test"
   },
   "scripts": {
-    "build": "tsc -b .",
-    "clean": "rimraf dist tsconfig.tsbuildinfo"
+    "repl": "node --import=tsx ./repl.ts"
   },
   "dependencies": {
-    "@inrupt/solid-client-authn-core": "^2.0.0",
-    "@solid/community-server": "^7.1.1",
-    "n3": "^1.17.1"
   },
   "devDependencies": {
-    "@types/n3": "^1.16.2",
-    "@rdfjs/types": "^1.1.0"
+    "@janeirodigital/interop-authorization-agent": "workspace:^1.0.0-rc.24",
+    "@janeirodigital/css-test-utils": "^1.0.0-rc.24",
+    "@janeirodigital/interop-data-model": "workspace:^1.0.0-rc.24",
+    "@paralleldrive/cuid2": "^2.2.2",
+    "tsx": "^4.17.0"
   }
 }

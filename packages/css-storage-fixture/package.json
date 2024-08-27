@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "community-solid-server -c config.json -l warn -f ./dev",
-    "test": "community-solid-server -c ../css-test-utils/src/css-config.json -l warn -f ./test -p 3711",
+    "css:test": "community-solid-server -c ../css-test-utils/src/css-config.json -l warn -f ./test -p 3711",
     "clean": "pnpm clean:empty-directories && pnpm clean:notification-channels && pnpm clean:client-credentials",
     "clean:empty-directories": "find . -type d -empty -delete",
     "clean:notification-channels": "rm -rf ./dev/.internal/notifications/*",
