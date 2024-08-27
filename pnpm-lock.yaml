@@ -321,6 +321,9 @@ importers:
       '@janeirodigital/interop-data-model':
         specifier: workspace:^1.0.0-rc.24
         version: link:../data-model
+      '@janeirodigital/interop-utils':
+        specifier: workspace:^1.0.0-rc.24
+        version: link:../utils
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2

@@ -2,4 +2,5 @@
     <http://www.w3.org/ns/solid/interop#registeredBy> "http://localhost:3711/vaporcg/profile/card#me";
     <http://www.w3.org/ns/solid/interop#registeredWith> "https://auth.example/vaporcg";
     <http://www.w3.org/ns/solid/interop#registeredAt> "2024-08-25T01:54:07.789Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
-    <http://www.w3.org/ns/solid/interop#updatedAt> "2024-08-25T01:54:07.789Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>.
+    <http://www.w3.org/ns/solid/interop#updatedAt> "2024-08-25T01:54:07.789Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+    <http://www.w3.org/ns/solid/interop#hasAccessAuthorization> <http://localhost:3711/vaporcg/ejpvc5/geakxn>.

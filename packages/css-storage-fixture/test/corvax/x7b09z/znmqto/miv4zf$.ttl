@@ -1,0 +1,6 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ex: <https://vocab.example/>
+
+<http://localhost:3711/corvax/x7b09z/znmqto/miv4zf>
+  a ex:Widget ;
+  rdfs:label "Widget A" .

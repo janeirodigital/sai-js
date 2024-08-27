@@ -1,0 +1,8 @@
+<http://localhost:3711/luka/fypm7e/di5prv/oh1a63> a <http://www.w3.org/ns/solid/interop#DelegatedDataGrant>;
+    <http://www.w3.org/ns/solid/interop#dataOwner> <http://localhost:3711/vaporcg/profile/card#me>;
+    <http://www.w3.org/ns/solid/interop#registeredShapeTree> <http://localhost:3711/solid/trees/Widget>;
+    <http://www.w3.org/ns/solid/interop#hasDataRegistration> <http://localhost:3711/vortiga/n0l7ka/ot6gcw/>;
+    <http://www.w3.org/ns/solid/interop#scopeOfGrant> <http://www.w3.org/ns/solid/interop#Inherited>;
+    <http://www.w3.org/ns/solid/interop#inheritsFromGrant> <http://localhost:3711/luka/fypm7e/di5prv/vzt6ur>;
+    <http://www.w3.org/ns/solid/interop#delegationOfGrant> <http://localhost:3711/vaporcg/khp4oz/h5sfsh/vlrcck>;
+    <http://www.w3.org/ns/solid/interop#accessMode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Update>, <http://www.w3.org/ns/auth/acl#Create>, <http://www.w3.org/ns/auth/acl#Delete>.

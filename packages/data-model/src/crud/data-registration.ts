@@ -1,13 +1,13 @@
 import { INTEROP, RDF } from '@janeirodigital/interop-utils';
 import { DataFactory } from 'n3';
-import { CRUDResource } from '.';
+import { CRUDContainer } from '.';
 import { AuthorizationAgentFactory } from '..';
 
 export type DataRegistrationData = {
-  shapeTree: string;
+  registeredShapeTree: string;
 };
 
-export class CRUDDataRegistration extends CRUDResource {
+export class CRUDDataRegistration extends CRUDContainer {
   data: DataRegistrationData;
 
   public static async build(
@@ -21,7 +21,7 @@ export class CRUDDataRegistration extends CRUDResource {
   }
 
   private datasetFromData(): void {
-    const props: (keyof DataRegistrationData)[] = ['shapeTree'];
+    const props: (keyof DataRegistrationData)[] = ['registeredShapeTree'];
     for (const prop of props) {
       this.dataset.add(
         DataFactory.quad(DataFactory.namedNode(this.iri), INTEROP[prop], DataFactory.namedNode(this.data[prop]))

@@ -11,11 +11,7 @@ export class SolidTestUtils {
 
   constructor(public account: Account) {}
 
-  async beforeAll(): Promise<void> {
-    // Start up the server
-    this.app = await createApp();
-    await this.app.start();
-
+  async auth(): Promise<void> {
     // Generate secret
     this.secret = await getSecret(this.account.webId, this.account.email, this.account.password);
 
@@ -26,6 +22,13 @@ export class SolidTestUtils {
     this.authFetch = await buildAuthenticatedFetch(this.token.accessToken, {
       dpopKey: this.token.dpopKey
     });
+  }
+
+  async beforeAll(): Promise<void> {
+    // Start up the server
+    this.app = await createApp();
+    await this.app.start();
+    await this.auth();
   }
 
   async afterAll(): Promise<void> {

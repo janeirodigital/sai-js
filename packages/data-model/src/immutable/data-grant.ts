@@ -30,7 +30,6 @@ export class ImmutableDataGrant extends ImmutableResource {
 
   public constructor(iri: string, factory: AuthorizationAgentFactory, data: DataGrantData) {
     super(iri, factory, data);
-    const thisNode = DataFactory.namedNode(this.iri);
     const props: (keyof StringData)[] = [
       'dataOwner',
       'registeredShapeTree',
@@ -42,24 +41,24 @@ export class ImmutableDataGrant extends ImmutableResource {
 
     // set type
     const type: NamedNode = data.delegationOfGrant ? INTEROP.DelegatedDataGrant : INTEROP.DataGrant;
-    this.dataset.add(DataFactory.quad(thisNode, RDF.type, type));
+    this.dataset.add(DataFactory.quad(this.node, RDF.type, type));
     // set string data
     for (const prop of props) {
       if (data[prop]) {
-        this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
+        this.dataset.add(DataFactory.quad(this.node, INTEROP[prop], DataFactory.namedNode(data[prop])));
       }
     }
     const arrProps: (keyof ArrayData)[] = ['accessMode', 'creatorAccessMode', 'hasDataInstance'];
     for (const prop of arrProps) {
       if (data[prop]) {
         for (const element of data[prop]) {
-          this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(element)));
+          this.dataset.add(DataFactory.quad(this.node, INTEROP[prop], DataFactory.namedNode(element)));
         }
       }
     }
     if (data.hasInheritingGrant) {
       for (const child of data.hasInheritingGrant) {
-        this.dataset.add(DataFactory.quad(DataFactory.namedNode(child.iri), INTEROP.inheritsFromGrant, thisNode));
+        this.dataset.add(DataFactory.quad(DataFactory.namedNode(child.iri), INTEROP.inheritsFromGrant, this.node));
       }
     }
   }

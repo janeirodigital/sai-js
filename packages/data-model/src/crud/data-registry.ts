@@ -26,24 +26,25 @@ export class CRUDDataRegistry extends CRUDContainer {
     };
   }
 
-  async createRegistration(shapeTree: string): Promise<CRUDDataRegistration> {
+  async createRegistration(registeredShapeTree: string): Promise<CRUDDataRegistration> {
     for await (const registration of this.registrations) {
-      if (registration.registeredShapeTree === shapeTree) {
+      if (registration.registeredShapeTree === registeredShapeTree) {
         throw new Error('registration already exists');
       }
     }
-    const dataRegistration = await this.factory.crud.dataRegistration(this.iriForContained(), { shapeTree });
-    await dataRegistration.update();
+    const dataRegistration = await this.factory.crud.dataRegistration(this.iriForContained(true), {
+      registeredShapeTree
+    });
+    await dataRegistration.create();
+
     // link to create data registration
-    this.dataset.add(
-      DataFactory.quad(
-        DataFactory.namedNode(this.iri),
-        INTEROP.hasDataRegistration,
-        DataFactory.namedNode(dataRegistration.iri)
-      )
+    const quad = DataFactory.quad(
+      DataFactory.namedNode(this.iri),
+      INTEROP.hasDataRegistration,
+      DataFactory.namedNode(dataRegistration.iri)
     );
-    // update itself to store changes
-    await this.update();
+    this.dataset.add(quad);
+    await this.addStatement(quad);
     return dataRegistration;
   }
 

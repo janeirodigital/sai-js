@@ -1,5 +1,5 @@
 import { DataFactory } from 'n3';
-import { INTEROP } from '@janeirodigital/interop-utils';
+import { INTEROP, RDF } from '@janeirodigital/interop-utils';
 import { AuthorizationAgentFactory } from '..';
 import { ImmutableResource } from '.';
 
@@ -30,7 +30,7 @@ export type ExpandedDataAuthorizationData = DataAuthorizationData & {
 export class ImmutableDataAuthorization extends ImmutableResource {
   public constructor(iri: string, factory: AuthorizationAgentFactory, data: ExpandedDataAuthorizationData) {
     super(iri, factory, data);
-    const thisNode = DataFactory.namedNode(this.iri);
+    this.dataset.add(DataFactory.quad(this.node, RDF.type, INTEROP.DataAuthorization));
     const props: (keyof (StringData & { grantedBy: string }))[] = [
       'grantee',
       'grantedBy',
@@ -43,21 +43,21 @@ export class ImmutableDataAuthorization extends ImmutableResource {
     ];
     for (const prop of props) {
       if (data[prop]) {
-        this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
+        this.dataset.add(DataFactory.quad(this.node, INTEROP[prop], DataFactory.namedNode(data[prop])));
       }
     }
     const arrProps: (keyof ArrayData)[] = ['accessMode', 'creatorAccessMode', 'hasDataInstance'];
     for (const prop of arrProps) {
       if (data[prop]) {
         for (const element of data[prop]) {
-          this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(element)));
+          this.dataset.add(DataFactory.quad(this.node, INTEROP[prop], DataFactory.namedNode(element)));
         }
       }
     }
     // link back to children
     if (data.hasInheritingAuthorization) {
       for (const child of data.hasInheritingAuthorization) {
-        this.dataset.add(DataFactory.quad(DataFactory.namedNode(child), INTEROP.inheritsFromAuthorization, thisNode));
+        this.dataset.add(DataFactory.quad(DataFactory.namedNode(child), INTEROP.inheritsFromAuthorization, this.node));
       }
     }
   }

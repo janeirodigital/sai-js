@@ -1,0 +1,8 @@
+<http://localhost:3711/luka/fypm7e/di5prv/sq71qb> a <http://www.w3.org/ns/solid/interop#AccessGrant>;
+    <http://www.w3.org/ns/solid/interop#grantedBy> <http://localhost:3711/luka/profile/card#me>;
+    <http://www.w3.org/ns/solid/interop#grantedWith> <https://auth.example/luka>;
+    <http://www.w3.org/ns/solid/interop#grantee> <http://localhost:3711/solid/inspector/id>;
+    <http://www.w3.org/ns/solid/interop#hasAccessNeedGroup> <http://localhost:3711/solid/inspector/access-needs>;
+    <http://www.w3.org/ns/solid/interop#hasDataGrant> <http://localhost:3711/luka/fypm7e/di5prv/xuem08>, <http://localhost:3711/luka/fypm7e/di5prv/gbn0p0>, <http://localhost:3711/luka/fypm7e/di5prv/uq9e2m>, <http://localhost:3711/luka/fypm7e/di5prv/o989zy>;
+    <http://www.w3.org/ns/solid/interop#grantedAt> "2024-08-26T19:46:11.533Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+    <http://www.w3.org/ns/solid/interop#granted> true.

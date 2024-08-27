@@ -1,0 +1,6 @@
+<http://localhost:3711/galathor/nubjhy/rhmz9d/> a <http://www.w3.org/ns/solid/interop#DataRegistration>;
+    <http://www.w3.org/ns/solid/interop#registeredShapeTree> <http://localhost:3711/solid/trees/Widget>;
+    <http://www.w3.org/ns/solid/interop#registeredBy> "http://localhost:3711/vaporcg/profile/card#me";
+    <http://www.w3.org/ns/solid/interop#registeredWith> "https://auth.example/vaporcg";
+    <http://www.w3.org/ns/solid/interop#registeredAt> "2024-08-26T19:27:06.292Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+    <http://www.w3.org/ns/solid/interop#updatedAt> "2024-08-26T19:27:06.292Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>.

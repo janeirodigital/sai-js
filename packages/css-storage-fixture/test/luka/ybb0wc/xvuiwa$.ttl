@@ -1,0 +1,7 @@
+<http://localhost:3711/luka/ybb0wc/xvuiwa> a <http://www.w3.org/ns/solid/interop#DataAuthorization>;
+    <http://www.w3.org/ns/solid/interop#grantee> <http://localhost:3711/solid/inspector/id>;
+    <http://www.w3.org/ns/solid/interop#grantedBy> <http://localhost:3711/luka/profile/card#me>;
+    <http://www.w3.org/ns/solid/interop#registeredShapeTree> <http://localhost:3711/solid/trees/Widget>;
+    <http://www.w3.org/ns/solid/interop#scopeOfAuthorization> <http://www.w3.org/ns/solid/interop#Inherited>;
+    <http://www.w3.org/ns/solid/interop#inheritsFromAuthorization> <http://localhost:3711/luka/ybb0wc/p6y0dr>;
+    <http://www.w3.org/ns/solid/interop#accessMode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Update>, <http://www.w3.org/ns/auth/acl#Create>, <http://www.w3.org/ns/auth/acl#Delete>.

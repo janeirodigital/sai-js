@@ -2,7 +2,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX shapetrees: <http://www.w3.org/ns/shapetrees#>
 PREFIX solidshapes: <http://localhost:3711/solid/shapes/>
-PREFIX solidshapes: <http://localhost:3711/solid/trees/>
+PREFIX solidtrees: <http://localhost:3711/solid/trees/>
 
 solidtrees:Widget
   a shapetrees:ShapeTree ;

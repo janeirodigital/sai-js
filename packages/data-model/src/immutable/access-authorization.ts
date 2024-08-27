@@ -1,5 +1,5 @@
 import { DataFactory } from 'n3';
-import { INTEROP, XSD } from '@janeirodigital/interop-utils';
+import { INTEROP, RDF, XSD } from '@janeirodigital/interop-utils';
 import { AuthorizationAgentFactory, ImmutableDataAuthorization, ReadableAccessAuthorization } from '..';
 import { ImmutableResource } from '.';
 
@@ -26,30 +26,30 @@ export class ImmutableAccessAuthorization extends ImmutableResource {
   public constructor(iri: string, factory: AuthorizationAgentFactory, data: AccessAuthorizationData) {
     super(iri, factory, data);
     this.dataAuthorizations = data.dataAuthorizations;
-    const thisNode = DataFactory.namedNode(this.iri);
+    this.dataset.add(DataFactory.quad(this.node, RDF.type, INTEROP.AccessAuthorization));
     const props: (keyof StringData)[] = ['grantedBy', 'grantedWith', 'grantee', 'hasAccessNeedGroup'];
     for (const prop of props) {
       if (data[prop]) {
-        this.dataset.add(DataFactory.quad(thisNode, INTEROP[prop], DataFactory.namedNode(data[prop])));
+        this.dataset.add(DataFactory.quad(this.node, INTEROP[prop], DataFactory.namedNode(data[prop])));
       }
     }
     for (const dataAuthorization of data.dataAuthorizations) {
       this.dataset.add(
-        DataFactory.quad(thisNode, INTEROP.hasDataAuthorization, DataFactory.namedNode(dataAuthorization.iri))
+        DataFactory.quad(this.node, INTEROP.hasDataAuthorization, DataFactory.namedNode(dataAuthorization.iri))
       );
     }
     if (data.dataAuthorizationsToReuse) {
       for (const dataAuthorizationToReuse of data.dataAuthorizationsToReuse) {
         this.dataset.add(
-          DataFactory.quad(thisNode, INTEROP.hasDataAuthorization, DataFactory.namedNode(dataAuthorizationToReuse))
+          DataFactory.quad(this.node, INTEROP.hasDataAuthorization, DataFactory.namedNode(dataAuthorizationToReuse))
         );
       }
     }
     this.dataset.add(
-      DataFactory.quad(thisNode, INTEROP.grantedAt, DataFactory.literal(new Date().toISOString(), XSD.dateTime))
+      DataFactory.quad(this.node, INTEROP.grantedAt, DataFactory.literal(new Date().toISOString(), XSD.dateTime))
     );
     this.dataset.add(
-      DataFactory.quad(thisNode, INTEROP.granted, DataFactory.literal(data.granted.toString(), XSD.boolean))
+      DataFactory.quad(this.node, INTEROP.granted, DataFactory.literal(data.granted.toString(), XSD.boolean))
     );
   }
 

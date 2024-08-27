@@ -1,0 +1,6 @@
+<http://localhost:3711/zenara/ynbygf/ijqmjb/> a <http://www.w3.org/ns/solid/interop#DataRegistration>;
+    <http://www.w3.org/ns/solid/interop#registeredShapeTree> <http://localhost:3711/solid/trees/Widget>;
+    <http://www.w3.org/ns/solid/interop#registeredBy> "http://localhost:3711/luka/profile/card#me";
+    <http://www.w3.org/ns/solid/interop#registeredWith> "https://auth.example/luka";
+    <http://www.w3.org/ns/solid/interop#registeredAt> "2024-08-26T19:26:02.728Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+    <http://www.w3.org/ns/solid/interop#updatedAt> "2024-08-26T19:26:02.728Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>.

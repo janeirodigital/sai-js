@@ -1,0 +1,7 @@
+<http://localhost:3711/luka/fypm7e/di5prv/xuem08> a <http://www.w3.org/ns/solid/interop#DataGrant>;
+    <http://www.w3.org/ns/solid/interop#dataOwner> <http://localhost:3711/luka/profile/card#me>;
+    <http://www.w3.org/ns/solid/interop#registeredShapeTree> <http://localhost:3711/solid/trees/Gadget>;
+    <http://www.w3.org/ns/solid/interop#hasDataRegistration> <http://localhost:3711/corvax/x7b09z/mt4xs0/>;
+    <http://www.w3.org/ns/solid/interop#scopeOfGrant> <http://www.w3.org/ns/solid/interop#AllFromRegistry>;
+    <http://www.w3.org/ns/solid/interop#accessMode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Update>, <http://www.w3.org/ns/auth/acl#Create>, <http://www.w3.org/ns/auth/acl#Delete>.
+<http://localhost:3711/luka/fypm7e/di5prv/gbn0p0> <http://www.w3.org/ns/solid/interop#inheritsFromGrant> <http://localhost:3711/luka/fypm7e/di5prv/xuem08>.

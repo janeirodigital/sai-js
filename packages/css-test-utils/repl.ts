@@ -3,15 +3,12 @@ import { init } from '@paralleldrive/cuid2';
 import type { CRUDRegistrySet, CRUDRegistrySetData } from '@janeirodigital/interop-data-model';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 
+import { createApp } from './src/css-util';
 import { SolidTestUtils } from './src/solid-test-utils';
 import * as accounts from './src/accounts';
 import type { Account } from './src/accounts';
-import { host } from './src/config';
 
-global.shapeTrees = {
-  Gadget: `${host}/solid/trees/Gadget`,
-  Widget: `${host}/solid/trees/Widget`
-};
+global.shapeTrees = accounts.shapeTree;
 
 global.cuid = init({ length: 6 });
 
@@ -57,7 +54,7 @@ global.bootstrapAccount = async function bootstrapAccount(
 
 global.buildSession = async function buildSession(account: Account): Promise<AuthorizationAgent> {
   const stu = new SolidTestUtils(account);
-  await stu.beforeAll();
+  await stu.auth();
   return await AuthorizationAgent.build(
     account.webId,
     `https://auth.example/${account.shortName}`,
@@ -70,5 +67,8 @@ global.buildSession = async function buildSession(account: Account): Promise<Aut
 };
 
 global.accounts = accounts;
+
+global.server = await createApp();
+await global.server.start();
 
 repl.start('-> ');

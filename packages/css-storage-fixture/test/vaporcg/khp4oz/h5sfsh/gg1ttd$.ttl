@@ -1,0 +1,6 @@
+<http://localhost:3711/vaporcg/khp4oz/h5sfsh/gg1ttd> <http://www.w3.org/ns/solid/interop#grantedBy> <http://localhost:3711/vaporcg/profile/card#me>;
+    <http://www.w3.org/ns/solid/interop#grantedWith> <https://auth.example/vaporcg>;
+    <http://www.w3.org/ns/solid/interop#grantee> <http://localhost:3711/luka/profile/card#me>;
+    <http://www.w3.org/ns/solid/interop#hasDataGrant> <http://localhost:3711/vaporcg/khp4oz/h5sfsh/ymyx48>, <http://localhost:3711/vaporcg/khp4oz/h5sfsh/vlrcck>, <http://localhost:3711/vaporcg/khp4oz/h5sfsh/e0om3r>, <http://localhost:3711/vaporcg/khp4oz/h5sfsh/s3nis5>;
+    <http://www.w3.org/ns/solid/interop#grantedAt> "2024-08-26T22:40:57.482Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+    <http://www.w3.org/ns/solid/interop#granted> true.

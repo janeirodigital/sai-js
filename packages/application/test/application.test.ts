@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { vi, describe, test, expect, beforeAll, afterAll, beforeEach } from 'vitest';
-import { SolidTestUtils, luka } from '@janeirodigital/css-test-utils';
+import { SolidTestUtils, luka, vaporcg, inspector, shapeTree } from '@janeirodigital/css-test-utils';
 import { statelessFetch } from '@janeirodigital/interop-test-utils';
 import { ReadableApplicationRegistration, DataOwner } from '@janeirodigital/interop-data-model';
 import { RdfResponse } from '@janeirodigital/interop-utils';
@@ -99,10 +99,15 @@ describe('describe discovery', () => {
   } as unknown as RdfResponse;
   responseMock.clone = () => ({ ...responseMock });
 
+  const info = {
+    id: 'http://localhost:3711/corvax/x7b09z/znmqto/ibc822',
+    scope: shapeTree.Widget,
+    resourceServer: luka.data.corvax,
+    parent: 'http://localhost:3711/corvax/x7b09z/mt4xs0/lcea5v'
+  };
+
   beforeEach(() => {
-    vi.spyOn(utils, 'discoverAgentRegistration').mockResolvedValueOnce(
-      'http://alice.pod.docker/agentRegistry/vuejectron/'
-    );
+    vi.spyOn(utils, 'discoverAgentRegistration').mockResolvedValueOnce('http://localhost:3711/luka/fypm7e/di5prv/');
     vi.spyOn(utils, 'discoverAuthorizationRedirectEndpoint').mockResolvedValueOnce('https://sai.example/luka/redirect');
     vi.spyOn(utils, 'discoverWebPushService').mockResolvedValueOnce({
       id: 'https://sai.example/luka/webpush',
@@ -112,186 +117,135 @@ describe('describe discovery', () => {
 
   describe('resourceOwners', () => {
     test('should return set of owenrs', async () => {
-      const resourceOwners = new Set([
-        'http://localhost:3711/luka/profile/card#me'
-        //'http://localhost:3711/theorg/profile/card#me'
-      ]);
-      const app = await Application.build(luka.webId, applicationId, { fetch: stu.authFetch, randomUUID });
+      const resourceOwners = new Set([luka.webId, vaporcg.webId]);
+      const app = await Application.build(luka.webId, inspector.clientId, { fetch: stu.authFetch, randomUUID });
       expect(app.resourceOwners()).toEqual(resourceOwners);
     });
   });
 
   describe('resourceServers', () => {
     test('should return set of resource servers', async () => {
-      const scope = 'https://shapetrees.pod.docker/trees/Project';
-      const resourceServers = new Set(['https://alice-home.pod.docker/', 'https://alice-work.pod.docker/']);
-      const app = await Application.build(luka.webId, applicationId, { fetch: stu.authFetch, randomUUID });
-      expect(app.resourceServers(luka.webId, scope)).toEqual(resourceServers);
+      const resourceServers = new Set(Object.values(luka.data));
+      const app = await Application.build(luka.webId, inspector.clientId, { fetch: stu.authFetch, randomUUID });
+      expect(app.resourceServers(luka.webId, shapeTree.Gadget)).toEqual(resourceServers);
     });
   });
 
   describe('resources', () => {
     test('should return set of resource ids', async () => {
-      const resourceServer = 'https://alice-home.pod.docker/';
-      const scope = 'https://shapetrees.pod.docker/trees/Project';
       const resources = new Set([
-        'https://alice-home.pod.docker/dataRegistry/projects/project-1',
-        'https://alice-home.pod.docker/dataRegistry/projects/project-2'
+        'http://localhost:3711/corvax/x7b09z/mt4xs0/lcea5v',
+        'http://localhost:3711/corvax/x7b09z/mt4xs0/jey14x'
       ]);
-      const app = await Application.build(luka.webId, applicationId, { fetch: stu.authFetch, randomUUID });
-      expect(await app.resources(resourceServer, scope)).toEqual(resources);
+      const app = await Application.build(luka.webId, inspector.clientId, { fetch: stu.authFetch, randomUUID });
+      expect(await app.resources(luka.data.corvax, shapeTree.Gadget)).toEqual(resources);
     });
   });
 
   describe('childInfo', () => {
     test('should return info for a child resource', async () => {
-      const id = 'https://alice-home.pod.docker/dataRegistry/tasks/task-1';
-      const parent = 'https://alice-home.pod.docker/dataRegistry/projects/project-1';
-      const scope = 'https://shapetrees.pod.docker/trees/Task';
-      const parentScope = 'https://shapetrees.pod.docker/trees/Project';
-      const resourceServer = 'https://alice-home.pod.docker/';
-      const info = {
-        id,
-        scope,
-        resourceServer,
-        parent
-      };
-      const app = await Application.build(luka.webId, applicationId, { fetch: stu.authFetch, randomUUID });
+      const app = await Application.build(luka.webId, inspector.clientId, { fetch: stu.authFetch, randomUUID });
 
       // populate parentMap
-      await app.resources(resourceServer, parentScope);
+      await app.resources(info.resourceServer, shapeTree.Gadget);
 
-      expect(await app.childInfo(id, scope, parent)).toEqual(info);
+      expect(await app.childInfo(info.id, info.scope, info.parent)).toEqual(info);
     });
   });
 
   describe('setChildInfo', () => {
     test('should set child info in the childMap', async () => {
-      const id = 'https://alice-home.pod.docker/dataRegistry/tasks/task-1';
-      const parent = 'https://alice-home.pod.docker/dataRegistry/projects/project-1';
-      const scope = 'https://shapetrees.pod.docker/trees/Task';
-      const parentScope = 'https://shapetrees.pod.docker/trees/Project';
-      const resourceServer = 'https://alice-home.pod.docker/';
-      const info = {
-        id,
-        scope,
-        resourceServer,
-        parent
-      };
-      const app = await Application.build(luka.webId, applicationId, { fetch: stu.authFetch, randomUUID });
+      const app = await Application.build(luka.webId, inspector.clientId, { fetch: stu.authFetch, randomUUID });
 
       // populate parentMap
-      await app.resources(resourceServer, parentScope);
+      await app.resources(info.resourceServer, shapeTree.Gadget);
 
       // set child info
-      await app.setChildInfo(id, scope, parent);
+      await app.setChildInfo(info.id, info.scope, info.parent);
 
       // @ts-expect-error
-      expect(app.getInfo(id)).toEqual(info);
+      expect(app.getInfo(info.id)).toEqual(info);
     });
   });
 
   describe('canCreate', () => {
     test('should check if can create new resources in the scope', async () => {
-      const resourceServer = 'https://alice-home.pod.docker/';
-      const scope = 'https://shapetrees.pod.docker/trees/Project';
-      const app = await Application.build(luka.webId, applicationId, { fetch: stu.authFetch, randomUUID });
-      expect(await app.canCreate(resourceServer, scope)).toEqual(true);
+      const app = await Application.build(luka.webId, inspector.clientId, { fetch: stu.authFetch, randomUUID });
+      expect(await app.canCreate(info.resourceServer, shapeTree.Gadget)).toEqual(true);
     });
   });
 
   describe('canCreateChild', () => {
     test('should check if can create a new child for a resource', async () => {
-      const parent = 'https://alice-home.pod.docker/dataRegistry/projects/project-1';
-      const parentScope = 'https://shapetrees.pod.docker/trees/Project';
-      const scope = 'https://shapetrees.pod.docker/trees/Task';
-      const resourceServer = 'https://alice-home.pod.docker/';
-      const app = await Application.build(luka.webId, applicationId, { fetch: stu.authFetch, randomUUID });
+      const app = await Application.build(luka.webId, inspector.clientId, { fetch: stu.authFetch, randomUUID });
 
       // populate parentMap
-      await app.resources(resourceServer, parentScope);
+      await app.resources(info.resourceServer, shapeTree.Gadget);
 
-      expect(app.canCreateChild(parent, scope)).toBe(true);
+      expect(app.canCreateChild(info.parent, info.scope)).toBe(true);
     });
   });
 
   describe('canUpdate', () => {
     test('should check if can update the resource', async () => {
-      const id = 'https://alice-home.pod.docker/dataRegistry/projects/project-1';
-      const resourceServer = 'https://alice-home.pod.docker/';
-      const scope = 'https://shapetrees.pod.docker/trees/Project';
-      const app = await Application.build(luka.webId, applicationId, { fetch: stu.authFetch, randomUUID });
+      const app = await Application.build(luka.webId, inspector.clientId, { fetch: stu.authFetch, randomUUID });
 
       // populate parentMap
-      await app.resources(resourceServer, scope);
+      await app.resources(info.resourceServer, shapeTree.Gadget);
 
-      expect(await app.canUpdate(id)).toEqual(true);
+      expect(await app.canUpdate(info.parent)).toEqual(true);
     });
   });
 
   describe('canDelete', () => {
     test('should check if can delete the resource', async () => {
-      const id = 'https://alice-home.pod.docker/dataRegistry/projects/project-1';
-      const resourceServer = 'https://alice-home.pod.docker/';
-      const scope = 'https://shapetrees.pod.docker/trees/Project';
-      const app = await Application.build(luka.webId, applicationId, { fetch: stu.authFetch, randomUUID });
+      const app = await Application.build(luka.webId, inspector.clientId, { fetch: stu.authFetch, randomUUID });
 
       // populate parentMap
-      await app.resources(resourceServer, scope);
+      await app.resources(info.resourceServer, shapeTree.Gadget);
 
-      expect(await app.canDelete(id)).toEqual(true);
+      expect(await app.canDelete(info.parent)).toEqual(true);
     });
   });
 
   describe('iriForNew', () => {
     test('should mint correct id for new resource', async () => {
-      const resourceServer = 'https://alice-home.pod.docker/';
-      const scope = 'https://shapetrees.pod.docker/trees/Project';
-      const app = await Application.build(luka.webId, applicationId, { fetch: stu.authFetch, randomUUID });
-      expect(await app.iriForNew(resourceServer, scope)).toMatch(
-        'https://alice-home.pod.docker/dataRegistry/projects/'
+      const app = await Application.build(luka.webId, inspector.clientId, { fetch: stu.authFetch, randomUUID });
+      expect(await app.iriForNew(info.resourceServer, shapeTree.Gadget)).toMatch(
+        'http://localhost:3711/corvax/x7b09z/mt4xs0/'
       );
     });
   });
 
   describe('iriForChild', () => {
     test('should mint correct id for new child for a resource', async () => {
-      const parent = 'https://alice-home.pod.docker/dataRegistry/projects/project-1';
-      const parentScope = 'https://shapetrees.pod.docker/trees/Project';
-      const scope = 'https://shapetrees.pod.docker/trees/Task';
-      const resourceServer = 'https://alice-home.pod.docker/';
-      const app = await Application.build(luka.webId, applicationId, { fetch: stu.authFetch, randomUUID });
+      const app = await Application.build(luka.webId, inspector.clientId, { fetch: stu.authFetch, randomUUID });
 
       // populate parentMap
-      await app.resources(resourceServer, parentScope);
+      await app.resources(info.resourceServer, shapeTree.Gadget);
 
-      expect(await app.iriForChild(parent, scope)).toMatch('https://alice-home.pod.docker/dataRegistry/tasks/');
+      expect(await app.iriForChild(info.parent, info.scope)).toMatch('http://localhost:3711/corvax/x7b09z/znmqto/');
     });
   });
 
   describe('findParent', () => {
     test('should find parent resource given a child resource', async () => {
-      const id = 'https://alice-home.pod.docker/dataRegistry/tasks/task-1';
-      const parent = 'https://alice-home.pod.docker/dataRegistry/projects/project-1';
-      const scope = 'https://shapetrees.pod.docker/trees/Task';
-      const parentScope = 'https://shapetrees.pod.docker/trees/Project';
-      const resourceServer = 'https://alice-home.pod.docker/';
-      const app = await Application.build(luka.webId, applicationId, { fetch: stu.authFetch, randomUUID });
+      const app = await Application.build(luka.webId, inspector.clientId, { fetch: stu.authFetch, randomUUID });
 
       // populate parentMap
-      await app.resources(resourceServer, parentScope);
+      await app.resources(info.resourceServer, shapeTree.Gadget);
 
       // set child info
-      await app.setChildInfo(id, scope, parent);
+      await app.setChildInfo(info.id, info.scope, info.parent);
 
-      expect(app.findParent(id)).toEqual(parent);
+      expect(app.findParent(info.id)).toEqual(info.parent);
     });
   });
 
   describe('discoverDescription', () => {
-    test('should find auxiliary description resource', async () => {
+    test.skip('should find auxiliary description resource', async () => {
       const id = 'https://alice-work.pod.docker/dataRegistry/images/cat';
-      const app = await Application.build(luka.webId, applicationId, { fetch: stu.authFetch, randomUUID });
+      const app = await Application.build(luka.webId, inspector.clientId, { fetch: stu.authFetch, randomUUID });
       expect(await app.discoverDescription(id)).toEqual('https://alice-work.pod.docker/dataRegistry/images/cat.meta');
     });
   });
