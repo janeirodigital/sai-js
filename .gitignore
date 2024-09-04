@@ -39,3 +39,5 @@ packages/css-storage-fixture/**/.internal/accounts/index/clientCredentials
 
 # ldo
 examples/*/ldo/
+
+traefik/certs/*

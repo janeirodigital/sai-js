@@ -303,8 +303,8 @@ importers:
   packages/css-storage-fixture:
     dependencies:
       '@solid/community-server':
-        specifier: ^7.1.1
-        version: 7.1.1
+        specifier: ^7.1.2
+        version: 7.1.2
 
   packages/css-test-utils:
     dependencies:
@@ -312,8 +312,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       '@solid/community-server':
-        specifier: ^7.1.1
-        version: 7.1.1
+        specifier: ^7.1.2
+        version: 7.1.2
       n3:
         specifier: ^1.17.1
         version: 1.17.2
@@ -2651,8 +2651,8 @@ packages:
   '@solid/access-token-verifier@2.1.0':
     resolution: {integrity: sha512-79u92GD1SBTxjYghg2ta6cfoBNZ5ljz/9zE6RmXUypTXW7oI18DTWiSrEjWwI4njW+OMh+4ih+sAR6AkI1IFxg==}
 
-  '@solid/community-server@7.1.1':
-    resolution: {integrity: sha512-C551rfeQHkrY7qC+YbawYFMv6Vfifui2//vwZrxUNyQ1j/IZVfqzaj06R+UpqmajVxRsXTf/XtSjb+3lpTCyeg==}
+  '@solid/community-server@7.1.2':
+    resolution: {integrity: sha512-VLCr8EoL4/aeQUag1Dv0pSPkl5lJ7y6igmc0UHYEwIT4tRE8OxRaD2A6C+BmF93J4G1za9IT32eCUh+uPJD3uw==}
     engines: {node: '>=18.0'}
     hasBin: true
 
@@ -9973,7 +9973,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@solid/community-server@7.1.1':
+  '@solid/community-server@7.1.2':
     dependencies:
       '@comunica/context-entries': 2.8.2
       '@comunica/query-sparql': 2.9.0

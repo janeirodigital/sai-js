@@ -4,13 +4,11 @@ services:
     restart: on-failure
     networks:
       - default
-      - shared
   sai:
     image: node:22-alpine
     restart: on-failure
     networks:
       - default
-      - shared
     expose:
       - 4000
     ports:
@@ -40,40 +38,38 @@ services:
       - traefik.http.routers.sai.tls=true
       - traefik.http.services.sai.loadbalancer.server.port=4000
       - traefik.http.middlewares.testheader.headers.customrequestheaders.X-Forwarded-Proto=https
-  # css:
-  #   image: node:22-alpine
-  #   restart: on-failure
-  #   networks:
-  #     - default
-  #     - shared
-  #   dns:
-  #     - 172.100.61.253
-  #   expose:
-  #     - 3000
-  #   working_dir: /sai/packages/css-storage-fixture
-  #   command: ["npm", "run", "dev"]
-  #   volumes:
-  #     - ./:/sai
-  #     - ${CAROOT}:/mkcert
-  #   environment:
-  #     - CSS_CONFIG=/sai/packages/css-storage-fixture/config.json
-  #     - CSS_LOGGING_LEVEL=info
-  #     - CSS_ROOT_FILE_PATH=/sai/packages/css-storage-fixture/dev
-  #     - CSS_BASE_URL=https://pod.docker
-  #     - NODE_EXTRA_CA_CERTS=/mkcert/rootCA.pem
-  #   labels:
-  #     - traefik.enable=true
-  #     - traefik.http.routers.pod.rule=Host(`pod.docker`) || HostRegexp(`^.+\.pod\.docker$`)
-  #     - traefik.http.routers.pod.entrypoints=websecure
-  #     - traefik.http.routers.pod.tls=true
-  #     - traefik.http.services.pod.loadbalancer.server.port=3000
-  #     - traefik.http.middlewares.testheader.headers.customrequestheaders.X-Forwarded-Proto=https
+  css:
+    image: node:22-alpine
+    restart: on-failure
+    networks:
+      - default
+    dns:
+      - 172.100.61.253
+    expose:
+      - 3000
+    working_dir: /sai/packages/css-storage-fixture
+    command: ["npm", "run", "dev"]
+    volumes:
+      - ./:/sai
+      - ${CAROOT}:/mkcert
+    environment:
+      - CSS_CONFIG=/sai/packages/css-storage-fixture/config.json
+      - CSS_LOGGING_LEVEL=info
+      - CSS_ROOT_FILE_PATH=/sai/packages/css-storage-fixture/dev
+      - CSS_BASE_URL=https://pod.docker
+      - NODE_EXTRA_CA_CERTS=/mkcert/rootCA.pem
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.pod.rule=Host(`pod.docker`) || HostRegexp(`^.+\.pod\.docker$`)
+      - traefik.http.routers.pod.entrypoints=websecure
+      - traefik.http.routers.pod.tls=true
+      - traefik.http.services.pod.loadbalancer.server.port=3000
+      - traefik.http.middlewares.testheader.headers.customrequestheaders.X-Forwarded-Proto=https
   ui:
     image: node:22-alpine
     restart: on-failure
     networks:
       - default
-      - shared
     expose:
       - 4200
     working_dir: /sai/ui/authorization
@@ -91,7 +87,6 @@ services:
     restart: on-failure
     networks:
       - default
-      - shared
     expose:
       - 4500
     working_dir: /sai/examples/vuejectron
@@ -105,9 +100,58 @@ services:
       - traefik.http.routers.vuejectron.tls=true
       - traefik.http.services.vuejectron.loadbalancer.server.port=4500
 
+  router:
+    image: traefik:v3.0.4
+    container_name: router
+    restart: on-failure
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/conf/traefik.yml:/etc/traefik/traefik.yml
+      - ./traefik/certs/cert.pem:/etc/traefik/cert.pem
+      - ./traefik/certs/key.pem:/etc/traefik/key.pem
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.router.rule=Host(`router${SHARED_DOMAIN_SEGMENT}.docker`)
+      - traefik.http.routers.router.entrypoints=websecure
+      - traefik.http.services.router.loadbalancer.server.port=8080
+      - traefik.http.routers.router.tls=true
+    healthcheck:
+      test: ['CMD-SHELL', 'traefik healthcheck --ping']
+      interval: 4s
+      timeout: 4s
+      retries: 8
+      start_period: 4s
+    networks:
+      default:
+        ipv4_address: 172.100.61.250
+
+  dns:
+    image: drpsychick/dnsmasq:latest
+    container_name: dnsmasq
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - '53:53/tcp'
+      - '53:53/udp'
+    cap_add:
+      - NET_ADMIN
+    healthcheck:
+      test: ['CMD-SHELL', 'nslookup localhost 127.0.0.1 || exit 1']
+      interval: 4s
+      timeout: 4s
+      retries: 8
+      start_period: 4s
+    networks:
+      default:
+        ipv4_address: 172.100.61.253
+
 networks:
-  shared:
-    external: true
-    name: network.ss
   default:
-    name: network.sai
+    name: network.${COMPOSE_PROJECT_NAME}
+    ipam:
+      config:
+        - subnet: 172.100.61.0/24
