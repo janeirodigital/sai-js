@@ -14,9 +14,9 @@ services:
     ports:
       - 9229:9229 # node debugger
     working_dir: /sai/packages/service
-    command: ["node", "--inspect", "dist/componentsMain.js"]
+    command: ['node', '--inspect', 'dist/componentsMain.js']
     dns:
-      - 172.100.61.253
+      - 172.16.0.253
     volumes:
       - ./:/sai
       - ${CAROOT}:/mkcert
@@ -44,11 +44,11 @@ services:
     networks:
       - default
     dns:
-      - 172.100.61.253
+      - 172.16.0.253
     expose:
       - 3000
     working_dir: /sai/packages/css-storage-fixture
-    command: ["npm", "run", "dev"]
+    command: ['npm', 'run', 'dev']
     volumes:
       - ./:/sai
       - ${CAROOT}:/mkcert
@@ -73,7 +73,7 @@ services:
     expose:
       - 4200
     working_dir: /sai/ui/authorization
-    command: ["npm", "run", "dev"]
+    command: ['npm', 'run', 'dev']
     volumes:
       - ./:/sai
     labels:
@@ -90,7 +90,7 @@ services:
     expose:
       - 4500
     working_dir: /sai/examples/vuejectron
-    command: ["npm", "run", "dev"]
+    command: ['npm', 'run', 'dev']
     volumes:
       - ./:/sai
     labels:
@@ -126,7 +126,7 @@ services:
       start_period: 4s
     networks:
       default:
-        ipv4_address: 172.100.61.250
+        ipv4_address: 172.16.0.250
 
   dns:
     image: drpsychick/dnsmasq:latest
@@ -147,11 +147,12 @@ services:
       start_period: 4s
     networks:
       default:
-        ipv4_address: 172.100.61.253
+        ipv4_address: 172.16.0.253
 
 networks:
   default:
     name: network.${COMPOSE_PROJECT_NAME}
     ipam:
       config:
-        - subnet: 172.100.61.0/24
+        - subnet: 172.16.0.0/16
+          gateway: 172.16.0.1

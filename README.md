@@ -21,9 +21,7 @@ Modules implementing [Solid Application Interoperability Specification](https://
 Default setup assumes `docker` command available, and runs it as non-root user.
 Also [mkcert](https://mkcert.dev/) is required.
 
-The setup is using modified `Makefile` and `docker-compose.yaml` from  [docker-shared-services](https://github.com/wayofdev/docker-shared-services)
-
-
+The setup is using modified `Makefile` and `docker-compose.yaml` from [docker-shared-services](https://github.com/wayofdev/docker-shared-services)
 
 ### Node, corepack and pnpm
 
@@ -42,6 +40,28 @@ corepack prepare pnpm@latest --activate
 - Modify `~/.npmrc` ([per-user config file](https://docs.npmjs.com/cli/v7/configuring-npm/npmrc#per-user-config-file))
   and add line `//npm.pkg.github.com/:_authToken=` and the generated token.
 
+### Local DNS
+
+#### macOS
+
+```bash
+mkdir /etc/resolver/
+sudo sh -c 'echo "nameserver 127.0.0.1" > /etc/resolver/docker'
+sudo dscacheutil -flushcache
+```
+
+If port 53 is occupied, go to docker and uncheck settings -> resources -> network -> Use kernel networking for UDP
+
+To enable communication to docker network
+
+```bash
+# Install via Homebrew
+$ brew install chipmk/tap/docker-mac-net-connect
+
+# Run the service and register it to launch at boot
+$ sudo brew services start chipmk/tap/docker-mac-net-connect
+```
+
 ### Bootstrapping
 
 ```bash
@@ -49,10 +69,13 @@ pnpm install
 pnpm build
 pnpm test
 ```
+
 To create local certificates
+
 ```bash
 make cert-install
 ```
+
 To start local development
 
 ```bash
