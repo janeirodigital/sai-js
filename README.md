@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/janeirodigital/sai-js/actions/workflows/ci.yml/badge.svg)](https://github.com/janeirodigital/sai-js/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/janeirodigital/sai-js/branch/main/graph/badge.svg)](https://codecov.io/gh/janeirodigital/sai-js/tree/main)
-[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/solid/data-interoperability-panel)
+[![Matrix chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://app.gitter.im/#/room/#solid_specification:gitter.im)
 [![MIT license](https://img.shields.io/github/license/janeirodigital/sai-js)](https://github.com/janeirodigital/sai-js/blob/main/LICENSE)
 
 Modules implementing [Solid Application Interoperability Specification](https://solid.github.io/data-interoperability-panel/specification/)
@@ -16,10 +16,14 @@ Modules implementing [Solid Application Interoperability Specification](https://
 
 ## Development
 
-### Docker
+### Docker Shared Services
 
 Default setup assumes `docker` command available, and runs it as non-root user.
-It only uses [official redis image](https://hub.docker.com/_/redis) for the authorization agent service.
+Also [mkcert](https://mkcert.dev/) is required.
+
+The setup is using modified `Makefile` and `docker-compose.yaml` from  [docker-shared-services](https://github.com/wayofdev/docker-shared-services)
+
+
 
 ### Node, corepack and pnpm
 
@@ -44,22 +48,25 @@ corepack prepare pnpm@latest --activate
 pnpm install
 pnpm build
 pnpm test
-pnpm dev
 ```
-In separate terminal
+To create local certificates
+```bash
+make cert-install
+```
+To start local development
 
 ```bash
-pnpm watch
+make up
 ```
 
-It will run following:
+It will run the following:
 
 #### Community Solid Server
 
 Run from [packages/css-solid-fixture](https://github.com/janeirodigital/sai-js/tree/main/packages/css-storage-fixture).
 Used for solid storage instances and solid-oidc provider.
 
-Available on http://https://pod.docker, default demo account is `alice@acme.example` with `password`.
+Available on https://pod.docker, default demo account is `alice@acme.example` with `password`.
 
 #### Authorization Agent
 
@@ -82,13 +89,13 @@ Dev config uses local CSS as default provider when input left empty.
 
 ## Localization
 
-The translation project for all relevant components is available at https://hosted.weblate.org/projects/sai/
-Courtesy of [Weblate Libre hosting](https://weblate.org/en/hosting/#libre).
+The translation project for all relevant components is hosted thanks to the courtesy of [Weblate Libre hosting](https://weblate.org/en/hosting/#libre).
+
+[<img src="https://hosted.weblate.org/widget/sai/open-graph.png" alt="Translation status" width="40%" />](https://hosted.weblate.org/engage/sai/)
 
 ## Funding
 
 This project is funded through the [NGI Zero Entrust Fund](https://nlnet.nl/entrust), a fund established by [NLnet](https://nlnet.nl) with financial support from the European Commission's [Next Generation Internet](https://ngi.eu) program. Learn more at the [NLnet project page](https://nlnet.nl/project/SolidInterop3).
 
-[<img src="https://nlnet.nl/logo/banner.png" alt="NLnet foundation logo" width="20%" />](https://nlnet.nl)
-
-[<img src="https://nlnet.nl/image/logos/NGI0Entrust_tag.svg" alt="NGI Zero Entrust Logo" width="20%" />](https://nlnet.nl/entrust)
+[<img src="https://nlnet.nl/logo/banner.png" alt="NLnet foundation logo" height="100px" style="margin-right: 50px" />](https://nlnet.nl)
+[<img src="https://nlnet.nl/image/logos/NGI0Entrust_tag.svg" alt="NGI Zero Entrust Logo" height="100px"/>](https://nlnet.nl/entrust)

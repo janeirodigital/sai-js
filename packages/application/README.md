@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/janeirodigital/sai-js/actions/workflows/ci.yml/badge.svg)](https://github.com/janeirodigital/sai-js/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/janeirodigital/sai-js/branch/main/graph/badge.svg?flag=application)](https://codecov.io/gh/janeirodigital/sai-js/tree/codecov/packages/application)
-[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/solid/data-interoperability-panel)
+[![Matrix chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://app.gitter.im/#/room/#solid_specification:gitter.im)
 [![npm version](https://badge.fury.io/js/%40janeirodigital%2Finterop-application.svg)](https://www.npmjs.com/package/@janeirodigital/interop-application)
 [![MIT license](https://img.shields.io/github/license/janeirodigital/sai-js)](https://github.com/janeirodigital/sai-js/blob/main/LICENSE)
 
@@ -13,7 +13,7 @@ this library implements are still a work in progress. While we track changes
 to the public API of this library with semver, the underlying data will be slightly changing
 for the rest of 2021. We are commited to keep this implementation up to date.
 If you plan to use your application in production please ask the specification editors
-on the [public chatroom](https://gitter.im/solid/data-interoperability-panel)
+on the [public chatroom](https://app.gitter.im/#/room/#solid_specification:gitter.im)
 about the stability of the data model.
 
 ## Overview
