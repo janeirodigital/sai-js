@@ -3,12 +3,12 @@ services:
     image: redis:7.2.4
     restart: on-failure
     networks:
-      - default
+      - sai
   sai:
     image: node:22-alpine
     restart: on-failure
     networks:
-      - default
+      - sai
     expose:
       - 4000
     ports:
@@ -42,7 +42,7 @@ services:
     image: node:22-alpine
     restart: on-failure
     networks:
-      - default
+      - sai
     dns:
       - 172.16.0.253
     expose:
@@ -69,7 +69,7 @@ services:
     image: node:22-alpine
     restart: on-failure
     networks:
-      - default
+      - sai
     expose:
       - 4200
     working_dir: /sai/ui/authorization
@@ -86,7 +86,7 @@ services:
     image: node:22-alpine
     restart: on-failure
     networks:
-      - default
+      - sai
     expose:
       - 4500
     working_dir: /sai/examples/vuejectron
@@ -150,8 +150,9 @@ services:
         ipv4_address: 172.16.0.253
 
 networks:
-  default:
+  sai:
     name: network.${COMPOSE_PROJECT_NAME}
+    internal: false
     ipam:
       config:
         - subnet: 172.16.0.0/16
