@@ -25,13 +25,12 @@ The setup is using modified `Makefile` and `docker-compose.yaml` from [docker-sh
 
 ### Node, corepack and pnpm
 
-Requires node.js 20 or higher with corepack ([Volta](https://volta.sh/) may help with managing node versions).
+Requires node.js 22 or higher with corepack
 Uses pnpm as package manager.
 
 ```bash
-volta install node@20
-volta install corepack
 corepack prepare pnpm@latest --activate
+corepack enable pnpm
 ```
 
 ### Github packages

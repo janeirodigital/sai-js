@@ -2,25 +2,25 @@
   "name": "interop",
   "private": true,
   "devDependencies": {
-    "@eslint/js": "^9.5.0",
-    "@inrupt/base-rollup-config": "^3.1.0",
+    "@eslint/js": "^9.10.0",
+    "@inrupt/base-rollup-config": "^3.2.3",
     "@types/eslint__js": "^8.42.3",
-    "@types/node": "^20.8.6",
+    "@types/node": "^22.5.5",
     "@vitest/coverage-v8": "^1.6.0",
     "componentsjs-generator": "^3.1.2",
-    "eslint": "^9.5.0",
-    "eslint-plugin-vue": "^9.26.0",
+    "eslint": "^9.10.0",
+    "eslint-plugin-vue": "^9.28.0",
     "husky": "^8.0.3",
     "jest-rdf": "^1.8.0",
     "lint-staged": "^15.0.1",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.5",
-    "rollup": "^4.13.0",
-    "tslib": "^2.6.3",
+    "rollup": "^4.21.3",
+    "tslib": "^2.7.0",
     "turbo": "^1.10.16",
     "turbowatch": "^2.29.4",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^7.13.0",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.5.0",
     "vitest": "^1.6.0"
   },
   "scripts": {
@@ -32,10 +32,7 @@
     "watch": "./node_modules/.bin/turbowatch turbowatch.ts",
     "lint": "eslint"
   },
-  "volta": {
-    "node": "20.7.0"
-  },
-  "packageManager": "pnpm@9.0.2",
+  "packageManager": "pnpm@9.10.0+sha256.355a8ab8dbb6ad41befbef39bc4fd6b5df85e12761d2724bd01f13e878de4b13",
   "lint-staged": {
     "*.ts": [
       "prettier --write",
