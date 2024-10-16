@@ -46,5 +46,14 @@
       "eslint",
       "git add"
     ]
+  },
+  "pnpm": {
+    "overrides": {
+      "rollup": "npm:@rollup/wasm-node"
+    },
+    "supportedArchitectures": {
+      "os": ["win32", "darwin", "current", "linux"],
+      "cpu": ["x64", "arm64"]
+    }
   }
 }
