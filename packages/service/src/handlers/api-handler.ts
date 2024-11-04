@@ -4,16 +4,16 @@ import { getLogger } from '@digita-ai/handlersjs-logging';
 import { type LoginStatus, RequestMessageTypes, ResponseMessageTypes } from '@janeirodigital/sai-api-messages';
 import type { IQueue } from '@janeirodigital/sai-server-interfaces';
 import {
-  getApplications,
-  getDescriptions,
+  // getApplications,
+  // getDescriptions,
   recordAuthorization,
-  getDataRegistries,
+  // getDataRegistries,
   getSocialAgents,
   addSocialAgent,
-  getUnregisteredApplicationProfile,
+  // getUnregisteredApplicationProfile,
   getResource,
   shareResource,
-  listDataInstances,
+  // listDataInstances,
   requestAccessUsingApplicationNeeds,
   acceptInvitation,
   createInvitation,
@@ -64,24 +64,24 @@ export class ApiHandler extends HttpHandler {
     const saiSession = await this.sessionManager.getSaiSession(context.authn.webId);
 
     switch (body.type) {
-      case RequestMessageTypes.APPLICATIONS_REQUEST:
-        return {
-          body: {
-            type: ResponseMessageTypes.APPLICATIONS_RESPONSE,
-            payload: await getApplications(saiSession)
-          },
-          status: 200,
-          headers: {}
-        };
-      case RequestMessageTypes.UNREGISTERED_APPLICATION_PROFILE:
-        return {
-          body: {
-            type: ResponseMessageTypes.UNREGISTERED_APPLICATION_PROFILE,
-            payload: await getUnregisteredApplicationProfile(saiSession, body.id)
-          },
-          status: 200,
-          headers: {}
-        };
+      // case RequestMessageTypes.APPLICATIONS_REQUEST:
+      //   return {
+      //     body: {
+      //       type: ResponseMessageTypes.APPLICATIONS_RESPONSE,
+      //       payload: await getApplications(saiSession)
+      //     },
+      //     status: 200,
+      //     headers: {}
+      //   };
+      // case RequestMessageTypes.UNREGISTERED_APPLICATION_PROFILE:
+      //   return {
+      //     body: {
+      //       type: ResponseMessageTypes.UNREGISTERED_APPLICATION_PROFILE,
+      //       payload: await getUnregisteredApplicationProfile(saiSession, body.id)
+      //     },
+      //     status: 200,
+      //     headers: {}
+      //   };
       case RequestMessageTypes.SOCIAL_AGENTS_REQUEST:
         return {
           body: {
@@ -110,33 +110,33 @@ export class ApiHandler extends HttpHandler {
           headers: {}
         };
       }
-      case RequestMessageTypes.DATA_REGISTRIES_REQUEST:
-        return {
-          body: {
-            type: ResponseMessageTypes.DATA_REGISTRIES_RESPONSE,
-            payload: await getDataRegistries(body.agentId, body.lang, saiSession)
-          },
-          status: 200,
-          headers: {}
-        };
-      case RequestMessageTypes.DESCRIPTIONS_REQUEST:
-        return {
-          body: {
-            type: ResponseMessageTypes.DESCRIPTIONS_RESPONSE,
-            payload: await getDescriptions(body.agentId, body.agentType, body.lang, saiSession)
-          },
-          status: 200,
-          headers: {}
-        };
-      case RequestMessageTypes.LIST_DATA_INSTANCES_REQUEST:
-        return {
-          body: {
-            type: ResponseMessageTypes.LIST_DATA_INSTANCES_RESPONSE,
-            payload: await listDataInstances(body.agentId, body.registrationId, saiSession)
-          },
-          status: 200,
-          headers: {}
-        };
+      // case RequestMessageTypes.DATA_REGISTRIES_REQUEST:
+      //   return {
+      //     body: {
+      //       type: ResponseMessageTypes.DATA_REGISTRIES_RESPONSE,
+      //       payload: await getDataRegistries(body.agentId, body.lang, saiSession)
+      //     },
+      //     status: 200,
+      //     headers: {}
+      //   };
+      // case RequestMessageTypes.DESCRIPTIONS_REQUEST:
+      //   return {
+      //     body: {
+      //       type: ResponseMessageTypes.DESCRIPTIONS_RESPONSE,
+      //       payload: await getDescriptions(body.agentId, body.agentType, body.lang, saiSession)
+      //     },
+      //     status: 200,
+      //     headers: {}
+      //   };
+      // case RequestMessageTypes.LIST_DATA_INSTANCES_REQUEST:
+      //   return {
+      //     body: {
+      //       type: ResponseMessageTypes.LIST_DATA_INSTANCES_RESPONSE,
+      //       payload: await listDataInstances(body.agentId, body.registrationId, saiSession)
+      //     },
+      //     status: 200,
+      //     headers: {}
+      //   };
       case RequestMessageTypes.APPLICATION_AUTHORIZATION:
         return {
           body: {

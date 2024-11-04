@@ -1,11 +1,11 @@
 import type { CRUDApplicationRegistration } from '@janeirodigital/interop-data-model';
 import type { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
-import type { Application, IRI } from '@janeirodigital/sai-api-messages';
+import { Application, UnregisteredApplication, IRI } from '@janeirodigital/sai-api-messages';
 
-const buildApplicationProfile = (registration: CRUDApplicationRegistration): Application =>
+const buildApplicationProfile = (registration: CRUDApplicationRegistration) =>
   // TODO (angel) data validation and how to handle when the applications profile is missing some components?
-  ({
-    id: registration.registeredAgent,
+  Application.make({
+    id: IRI.make(registration.registeredAgent),
     name: registration.name!,
     logo: registration.logo,
     authorizationDate: registration.registeredAt!.toISOString(),
@@ -18,7 +18,7 @@ const buildApplicationProfile = (registration: CRUDApplicationRegistration): App
  * @param saiSession
  */
 export const getApplications = async (saiSession: AuthorizationAgent) => {
-  const profiles: Application[] = [];
+  const profiles = [];
   for await (const registration of saiSession.applicationRegistrations) {
     profiles.push(buildApplicationProfile(registration));
   }
@@ -28,13 +28,13 @@ export const getApplications = async (saiSession: AuthorizationAgent) => {
 /**
  * Returns the application profile of an application that is _not_ registered for the given agent
  */
-export const getUnregisteredApplicationProfile = async (
+export const getUnregisteredApplication = async (
   agent: AuthorizationAgent,
   id: IRI
-): Promise<Partial<Application>> => {
+) => {
   const { name, logo, accessNeedGroup } = await agent.factory.readable
     .clientIdDocument(id)
     .then((doc) => ({ name: doc.clientName, logo: doc.logoUri, accessNeedGroup: doc.hasAccessNeedGroup }));
 
-  return { id, name, logo, accessNeedGroup };
+  return UnregisteredApplication.make({ id: IRI.make(id), name, logo, accessNeedGroup })
 };

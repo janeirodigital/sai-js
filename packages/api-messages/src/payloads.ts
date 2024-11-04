@@ -1,4 +1,5 @@
-import { IRI, UniqueId } from './index';
+import * as S from "effect/Schema"
+import { AuthorizationData, UniqueId } from './index';
 
 // duplicated so that we don't need to use RDFJS and namespace builder on the frontend
 export const AccessModes = {
@@ -12,95 +13,95 @@ export type LoginStatus = {
   webId?: string;
 };
 
-export interface Application extends UniqueId {
-  name: string;
-  logo?: IRI;
-  callbackEndpoint?: IRI;
-  authorizationDate: string; // interop:registeredAt
-  lastUpdateDate?: string; // interop:updatedAt
-  accessNeedGroup: IRI; // interop:hasAccessNeedGroup
-}
+// export interface Application extends UniqueId {
+//   name: string;
+//   logo?: string;
+//   callbackEndpoint?: string;
+//   authorizationDate: string; // interop:registeredAt
+//   lastUpdateDate?: string; // interop:updatedAt
+//   accessNeedGroup: string; // interop:hasAccessNeedGroup
+// }
 
-export interface SocialAgent extends UniqueId {
+export interface SocialAgentOld extends UniqueId {
   label: string;
   note?: string;
-  accessNeedGroup?: IRI;
+  accessNeedGroup?: string;
   accessRequested: boolean;
-  accessGrant?: IRI;
+  accessGrant?: string;
   authorizationDate: string; // interop:registeredAt TODO: rename to not imply access
   lastUpdateDate?: string; // interop:updatedAt
 }
 
-export interface DataRegistration extends UniqueId {
-  shapeTree: IRI;
-  // TODO dataOwner: IRI;
-  dataRegistry?: IRI;
-  count?: number;
-  label?: string; // TODO label should be ensured
-}
+// export interface DataRegistration extends UniqueId {
+//   shapeTree: string;
+//   // TODO dataOwner: string;
+//   dataRegistry?: string;
+//   count?: number;
+//   label?: string; // TODO label should be ensured
+// }
 
-export interface DataRegistry extends UniqueId {
-  label: string;
-  registrations: DataRegistration[];
-}
+// export interface DataRegistry extends UniqueId {
+//   label: string;
+//   registrations: S.Schema.Type<typeof DataRegistration>[];
+// }
 
 export interface Description extends UniqueId {
   label: string;
   description?: string;
-  needId: IRI;
+  needId: string;
 }
 
-export interface AccessNeed extends UniqueId {
-  label: string;
-  description?: string;
-  required?: boolean;
-  // IRIs for the access modes
-  access: Array<IRI>;
-  shapeTree: {
-    id: IRI;
-    label: string;
-  };
-  children?: AccessNeed[];
-  parent?: IRI;
-}
+// export interface AccessNeed extends UniqueId {
+//   label: string;
+//   description?: string;
+//   required?: boolean;
+//   // IRIs for the access modes
+//   access: Array<string>;
+//   shapeTree: {
+//     id: string;
+//     label: string;
+//   };
+//   children?: AccessNeed[];
+//   parent?: string;
+// }
 
-export interface AccessNeedGroup extends UniqueId {
-  label: string;
-  description?: string;
-  required?: boolean;
-  needs: AccessNeed[];
-  descriptionLanguages: string[];
-  lang: string;
-}
+// export interface AccessNeedGroup extends UniqueId {
+//   label: string;
+//   description?: string;
+//   required?: boolean;
+//   needs: AccessNeed[];
+//   descriptionLanguages: string[];
+//   lang: string;
+// }
 
-export interface DataOwner extends UniqueId {
-  label: string;
-  dataRegistrations: DataRegistration[];
-}
+// export interface DataOwner extends UniqueId {
+//   label: string;
+//   dataRegistrations: DataRegistration[];
+// }
 
 export enum AgentType {
   SocialAgent = 'http://www.w3.org/ns/solid/interop#SocialAgent',
   Application = 'http://www.w3.org/ns/solid/interop#Application'
 }
 
-export interface AuthorizationData extends UniqueId {
-  agentType: AgentType;
-  accessNeedGroup: AccessNeedGroup;
-  dataOwners: DataOwner[];
-}
+// export interface AuthorizationData extends UniqueId {
+//   agentType: AgentType;
+//   accessNeedGroup: AccessNeedGroup;
+//   dataOwners: DataOwner[];
+// }
 
 export interface DataAuthorization {
-  accessNeed: IRI;
+  accessNeed: string;
   scope: string;
-  dataOwner?: IRI;
-  dataRegistration?: IRI;
-  dataInstances?: IRI[];
+  dataOwner?: string;
+  dataRegistration?: string;
+  dataInstances?: string[];
 }
 
 export interface BaseAuthorization {
-  grantee: IRI;
+  grantee: string;
   agentType: AgentType;
-  accessNeedGroup: IRI;
+  accessNeedGroup: string;
 }
 export interface GrantedAuthorization extends BaseAuthorization {
   dataAuthorizations: DataAuthorization[];
@@ -115,54 +116,55 @@ export interface DeniedAuthorization extends BaseAuthorization {
 export type Authorization = GrantedAuthorization | DeniedAuthorization;
 
 export interface AccessAuthorization extends UniqueId, GrantedAuthorization {
-  callbackEndpoint: IRI;
+  callbackEndpoint: string;
 }
 
-export type ShapeTree = {
-  id: IRI;
-  label: string;
-  references?: ShapeTree[];
-};
+// export type ShapeTree = {
+//   id: string;
+//   label: string;
+//   references?: ShapeTree[];
+// };
 
-export type ChildResource = {
-  count: number;
-  shapeTree: {
-    id: string;
-    label: string;
-  };
-};
-export type DataInstance = {
-  id: IRI;
-  label?: string;
-};
+// export type ChildResource = {
+//   count: number;
+//   shapeTree: {
+//     id: string;
+//     label: string;
+//   };
+// };
 
-export type Resource = DataInstance & {
-  shapeTree: ShapeTree;
-  children: ChildResource[];
-  accessGrantedTo: IRI[];
-};
+// export type DataInstance = {
+//   id: string;
+//   label?: string;
+// };
+
+// export type Resource = DataInstance & {
+//   shapeTree: ShapeTree;
+//   children: ChildResource[];
+//   accessGrantedTo: string[];
+// };
 
 export type ShareAuthorizationModes = {
-  accessMode: IRI[];
+  accessMode: string[];
   children: {
-    shapeTree: IRI;
-    accessMode: IRI[];
+    shapeTree: string;
+    accessMode: string[];
   }[];
 };
 
 export type ShareAuthorization = {
-  applicationId: IRI;
-  resource: IRI;
-  agents: IRI[];
+  applicationId: string;
+  resource: string;
+  agents: string[];
 } & ShareAuthorizationModes;
 
 export interface ShareAuthorizationConfirmation {
-  callbackEndpoint: IRI;
+  callbackEndpoint: string;
 }
 
 export type RequestAccessUsingApplicationNeeds = {
-  applicationId: IRI;
-  agentId: IRI;
+  applicationId: string;
+  agentId: string;
 };
 
 export type InvitationBase = {
@@ -171,26 +173,27 @@ export type InvitationBase = {
 };
 
 export type Invitation = InvitationBase & {
-  capabilityUrl: IRI;
+  capabilityUrl: string;
 };
 
-export type SocialAgentInvitation = Invitation & {
-  id: IRI;
-};
+// export type SocialAgentInvitation = Invitation & {
+//   id: string;
+// };
 
 export type Payloads =
   | LoginStatus
-  | Application[]
-  | SocialAgent[]
-  | SocialAgent
-  | DataRegistry[]
-  | AuthorizationData
-  | DataInstance[]
+  // | Application[]
+  // | SocialAgent[]
+  // | SocialAgentInvitation[]
+  | SocialAgentOld
+  // | DataRegistry[]
+  | S.Schema.Type<typeof AuthorizationData>
+  // | DataInstance[]
   | AccessAuthorization
-  | Partial<Application>
-  | Resource
+  // | Partial<Application>
+  // | Resource
   | ShareAuthorizationConfirmation
   | RequestAccessUsingApplicationNeeds
   | InvitationBase
   | Invitation
-  | SocialAgentInvitation;
+  // | SocialAgentInvitation;

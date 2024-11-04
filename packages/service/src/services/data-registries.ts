@@ -1,28 +1,29 @@
+import * as S from 'effect/Schema'
 import type { CRUDDataRegistry, DataGrant } from '@janeirodigital/interop-data-model';
 import type { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
-import type { DataRegistration, DataRegistry } from '@janeirodigital/sai-api-messages';
+import { IRI, DataRegistration, DataRegistry } from '@janeirodigital/sai-api-messages';
 
 const buildDataRegistry = async (
   registry: CRUDDataRegistry,
   descriptionsLang: string,
   saiSession: AuthorizationAgent
-): Promise<DataRegistry> => {
-  const registrations: DataRegistration[] = [];
+) => {
+  const registrations: S.Schema.Type<typeof DataRegistration>[] = [];
   for await (const registration of registry.registrations) {
     const shapeTree = await saiSession.factory.readable.shapeTree(registration.registeredShapeTree, descriptionsLang);
-    registrations.push({
-      id: registration.iri,
+    registrations.push(DataRegistration.make({
+      id: IRI.make(registration.iri),
       shapeTree: registration.registeredShapeTree,
       dataRegistry: registry.iri,
       count: registration.contains.length,
       label: shapeTree.descriptions[descriptionsLang]?.label
-    });
+    }));
   }
-  return {
-    id: registry.iri,
+  return DataRegistry.make({
+    id: IRI.make(registry.iri),
     label: await registry.storageIri(),
     registrations
-  };
+  });
 };
 
 const buildDataRegistryForGrant = async (
@@ -30,25 +31,25 @@ const buildDataRegistryForGrant = async (
   dataGrants: DataGrant[],
   descriptionsLang: string,
   saiSession: AuthorizationAgent
-): Promise<DataRegistry> => {
-  const registrations: DataRegistration[] = [];
+) => {
+  const registrations: S.Schema.Type<typeof DataRegistration>[] = [];
   for (const dataGrant of dataGrants) {
     const shapeTree = await saiSession.factory.readable.shapeTree(dataGrant.registeredShapeTree, descriptionsLang);
-    registrations.push({
-      id: dataGrant.hasDataRegistration,
+    registrations.push(DataRegistration.make({
+      id: IRI.make(dataGrant.hasDataRegistration),
       shapeTree: dataGrant.registeredShapeTree,
       dataRegistry: registryIri,
       label: shapeTree.descriptions[descriptionsLang]?.label
-    });
+    }));
   }
-  return {
-    id: registryIri,
+  return DataRegistry.make({
+    id: IRI.make(registryIri),
     label: dataGrants[0].storageIri,
     registrations
-  };
+  });
 };
 
-export const getDataRegistries = async (agentId: string, descriptionsLang: string, saiSession: AuthorizationAgent) => {
+export const getDataRegistries = async (saiSession: AuthorizationAgent, agentId: string, descriptionsLang: string) => {
   if (agentId === saiSession.webId) {
     return Promise.all(
       saiSession.registrySet.hasDataRegistry.map((registry) =>

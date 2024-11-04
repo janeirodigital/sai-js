@@ -39,6 +39,9 @@
     "@digita-ai/handlersjs-core": "^0.19.3",
     "@digita-ai/handlersjs-http": "^0.19.3",
     "@digita-ai/handlersjs-logging": "^0.19.3",
+    "@effect/platform": "^0.69.13",
+    "@effect/platform-node": "^0.64.14",
+    "@effect/rpc": "^0.44.13",
     "@inrupt/solid-client-authn-node": "^2.0.0",
     "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.24",
     "@janeirodigital/interop-data-model": "^1.0.0-rc.24",
@@ -52,6 +55,7 @@
     "componentsjs": "^5.4.2",
     "cookie": "^1.0.2",
     "dotenv": "^16.3.1",
+    "effect": "^3.10.8",
     "ioredis": "^5.3.2",
     "n3": "^1.17.1",
     "rxjs": "^7.8.1",
@@ -65,7 +69,6 @@
     "@types/body-parser": "^1.19.3",
     "@types/n3": "^1.16.2",
     "@types/web-push": "^3.6.1",
-    "@types/yargs": "^17.0.28",
-    "@solid-notifications/types": "^0.1.2"
+    "@types/yargs": "^17.0.28"
   }
 }

@@ -1,7 +1,5 @@
-export type IRI = string;
-
 export interface UniqueId {
-  id: IRI;
+  id: string;
 }
 
 export enum Scopes {
@@ -15,3 +13,4 @@ export enum Scopes {
 export * from './payloads';
 export * from './requests';
 export * from './responses';
+export * from './effect';

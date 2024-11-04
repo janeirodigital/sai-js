@@ -1,24 +1,22 @@
-import { IRI } from '@janeirodigital/sai-api-messages';
-
 export interface IReciprocalRegistrationsJobData {
-  webId: IRI;
-  registeredAgent: IRI;
+  webId: string;
+  registeredAgent: string;
 }
 export interface IReciprocalRegistrationsJob {
   data: IReciprocalRegistrationsJobData;
 }
 
 export interface IDelegatedGrantsJobData {
-  webId: IRI;
-  registeredAgent: IRI;
+  webId: string;
+  registeredAgent: string;
 }
 export interface IDelegatedGrantsJob {
   data: IDelegatedGrantsJobData;
 }
 
 export interface IPushNotificationsJobData {
-  webId: IRI;
-  registeredAgent: IRI;
+  webId: string;
+  registeredAgent: string;
 }
 export interface IPushNotificationsJob {
   data: IPushNotificationsJobData;

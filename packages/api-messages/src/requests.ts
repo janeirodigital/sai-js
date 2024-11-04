@@ -1,4 +1,3 @@
-import { IRI } from './index';
 import { AgentType, Authorization, ShareAuthorization } from './payloads';
 
 export const RequestMessageTypes = {
@@ -41,7 +40,7 @@ export class ApplicationsRequest extends MessageBase {
 export class UnregisteredApplicationProfileRequest extends MessageBase {
   public type = RequestMessageTypes.UNREGISTERED_APPLICATION_PROFILE;
 
-  constructor(private id: IRI) {
+  constructor(private id: string) {
     super();
   }
 }
@@ -54,7 +53,7 @@ export class AddSocialAgentRequest extends MessageBase {
   public type = RequestMessageTypes.ADD_SOCIAL_AGENT_REQUEST;
 
   constructor(
-    public webId: IRI,
+    public webId: string,
     public label: string,
     public note?: string
   ) {
@@ -77,7 +76,7 @@ export class DescriptionsRequest extends MessageBase {
   public type = RequestMessageTypes.DESCRIPTIONS_REQUEST;
 
   constructor(
-    private agentId: IRI,
+    private agentId: string,
     private agentType: AgentType,
     private lang: string
   ) {
@@ -90,7 +89,7 @@ export class ListDataInstancesRequest extends MessageBase {
 
   constructor(
     private agentId: string,
-    private registrationId: IRI
+    private registrationId: string
   ) {
     super();
   }
@@ -108,7 +107,7 @@ export class ResourceRequest extends MessageBase {
   public type = RequestMessageTypes.RESOURCE_REQUEST;
 
   constructor(
-    public id: IRI,
+    public id: string,
     private lang: string
   ) {
     super();
@@ -127,8 +126,8 @@ export class RequestAccessUsingApplicationNeedsRequest extends MessageBase {
   public type = RequestMessageTypes.REQUEST_AUTHORIZATION_USING_APPLICATION_NEEDS;
 
   constructor(
-    private applicationId: IRI,
-    private agentId: IRI
+    private applicationId: string,
+    private agentId: string
   ) {
     super();
   }
@@ -153,7 +152,7 @@ export class AcceptInvitationRequest extends MessageBase {
   public type = RequestMessageTypes.ACCEPT_INVITATION;
 
   constructor(
-    private capabilityUrl: IRI,
+    private capabilityUrl: string,
     private label: string,
     private note?: string
   ) {

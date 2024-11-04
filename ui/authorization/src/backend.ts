@@ -1,45 +1,46 @@
+import * as S from 'effect/Schema';
+
 import {
   AccessAuthorization,
-  AgentType,
-  Application,
+  // AgentType,
+  // Application,
   ApplicationAuthorizationRequest,
   ApplicationAuthorizationResponse,
   ApplicationAuthorizationResponseMessage,
-  ApplicationsRequest,
-  ApplicationsResponse,
-  ApplicationsResponseMessage,
+  // ApplicationsRequest,
+  // ApplicationsResponse,
+  // ApplicationsResponseMessage,
   Authorization,
-  AuthorizationData,
-  DataInstance,
-  DataRegistriesRequest,
-  DataRegistriesResponse,
-  DataRegistriesResponseMessage,
-  DataRegistry,
-  DescriptionsRequest,
-  DescriptionsResponse,
-  DescriptionsResponseMessage,
-  IRI,
-  ListDataInstancesRequest,
-  ListDataInstancesResponse,
-  ListDataInstancesResponseMessage,
+  // AuthorizationData,
+  // DataInstance,
+  // DataRegistriesRequest,
+  // DataRegistriesResponse,
+  // DataRegistriesResponseMessage,
+  // DataRegistry,
+  // DescriptionsRequest,
+  // DescriptionsResponse,
+  // DescriptionsResponseMessage,
+  // ListDataInstancesRequest,
+  // ListDataInstancesResponse,
+  // ListDataInstancesResponseMessage,
   Request,
   RequestAccessUsingApplicationNeedsRequest,
   RequestAccessUsingApplicationNeedsResponse,
-  Resource,
-  ResourceRequest,
-  ResourceResponse,
+  // Resource,
+  // ResourceRequest,
+  // ResourceResponse,
   ResponseMessage,
   ShareAuthorization,
   ShareAuthorizationConfirmation,
   ShareAuthorizationRequest,
   ShareAuthorizationResponse,
   ShareAuthorizationResponseMessage,
-  SocialAgent,
-  SocialAgentsRequest,
-  SocialAgentsResponse,
-  SocialAgentsResponseMessage,
-  UnregisteredApplicationProfileRequest,
-  UnregisteredApplicationProfileResponse,
+  SocialAgentOld,
+  // SocialAgentsRequest,
+  // SocialAgentsResponse,
+  // SocialAgentsResponseMessage,
+  // UnregisteredApplicationProfileRequest,
+  // UnregisteredApplicationProfileResponse,
   SocialAgentInvitation,
   CreateInvitationRequest,
   InvitationResponseMessage,
@@ -47,9 +48,9 @@ import {
   AcceptInvitationRequest,
   SocialAgentResponseMessage,
   SocialAgentResponse,
-  SocialAgentInvitationsRequest,
-  SocialAgentInvitationsResponseMessage,
-  SocialAgentInvitationsResponse,
+  // SocialAgentInvitationsRequest,
+  // SocialAgentInvitationsResponseMessage,
+  // SocialAgentInvitationsResponse,
   LoginStatus,
   HelloRequest,
   HelloResponse,
@@ -77,26 +78,26 @@ async function checkServerSession(subscription?: PushSubscription): Promise<Logi
   return response.payload;
 }
 
-async function getResource(resourceId: IRI, lang: string): Promise<Resource> {
-  const request = new ResourceRequest(resourceId, lang);
-  const data = await getDataFromApi<ResourceResponse>(request);
-  const response = new ResourceResponse(data);
-  return response.payload;
-}
+// async function getResource(resourceId: string, lang: string): Promise<Resource> {
+//   const request = new ResourceRequest(resourceId, lang);
+//   const data = await getDataFromApi<ResourceResponse>(request);
+//   const response = new ResourceResponse(data);
+//   return response.payload;
+// }
 
-async function getAuthorization(agentId: IRI, agentType: AgentType, lang: string): Promise<AuthorizationData> {
-  const request = new DescriptionsRequest(agentId, agentType, lang);
-  const data = await getDataFromApi<DescriptionsResponseMessage>(request);
-  const response = new DescriptionsResponse(data);
-  return response.payload;
-}
+// async function getAuthorization(agentId: string, agentType: AgentType, lang: string): Promise<AuthorizationData> {
+//   const request = new DescriptionsRequest(agentId, agentType, lang);
+//   const data = await getDataFromApi<DescriptionsResponseMessage>(request);
+//   const response = new DescriptionsResponse(data);
+//   return response.payload;
+// }
 
-async function listDataInstances(agentId: IRI, registrationId: IRI): Promise<DataInstance[]> {
-  const request = new ListDataInstancesRequest(agentId, registrationId);
-  const data = await getDataFromApi<ListDataInstancesResponseMessage>(request);
-  const response = new ListDataInstancesResponse(data);
-  return response.payload;
-}
+// async function listDataInstances(agentId: string, registrationId: string): Promise<DataInstance[]> {
+//   const request = new ListDataInstancesRequest(agentId, registrationId);
+//   const data = await getDataFromApi<ListDataInstancesResponseMessage>(request);
+//   const response = new ListDataInstancesResponse(data);
+//   return response.payload;
+// }
 
 async function authorizeApp(authorization: Authorization): Promise<AccessAuthorization> {
   const request = new ApplicationAuthorizationRequest(authorization);
@@ -105,38 +106,38 @@ async function authorizeApp(authorization: Authorization): Promise<AccessAuthori
   return response.payload;
 }
 
-async function requestAccess(applicationId: IRI, agentId: IRI): Promise<void> {
+async function requestAccess(applicationId: string, agentId: string): Promise<void> {
   const request = new RequestAccessUsingApplicationNeedsRequest(applicationId, agentId);
   await getDataFromApi<RequestAccessUsingApplicationNeedsResponse>(request);
 }
 
-async function listSocialAgents(): Promise<SocialAgent[]> {
-  const request = new SocialAgentsRequest();
-  const data = await getDataFromApi<SocialAgentsResponseMessage>(request);
-  const response = new SocialAgentsResponse(data);
-  return response.payload;
-}
+// async function listSocialAgents(): Promise<SocialAgent[]> {
+//   const request = new SocialAgentsRequest();
+//   const data = await getDataFromApi<SocialAgentsResponseMessage>(request);
+//   const response = new SocialAgentsResponse(data);
+//   return response.payload;
+// }
 
-async function getApplication(applicationId: IRI): Promise<Partial<Application>> {
-  const request = new UnregisteredApplicationProfileRequest(applicationId);
-  const data = await getDataFromApi<UnregisteredApplicationProfileResponse>(request);
-  const response = new UnregisteredApplicationProfileResponse(data);
-  return response.payload;
-}
+// async function getApplication(applicationId: string): Promise<Partial<Application>> {
+//   const request = new UnregisteredApplicationProfileRequest(applicationId);
+//   const data = await getDataFromApi<UnregisteredApplicationProfileResponse>(request);
+//   const response = new UnregisteredApplicationProfileResponse(data);
+//   return response.payload;
+// }
 
-async function listApplications(): Promise<Application[]> {
-  const request = new ApplicationsRequest();
-  const data = await getDataFromApi<ApplicationsResponseMessage>(request);
-  const response = new ApplicationsResponse(data);
-  return response.payload;
-}
+// async function listApplications(): Promise<Application[]> {
+//   const request = new ApplicationsRequest();
+//   const data = await getDataFromApi<ApplicationsResponseMessage>(request);
+//   const response = new ApplicationsResponse(data);
+//   return response.payload;
+// }
 
-async function listDataRegistires(agentId: string, lang: string): Promise<DataRegistry[]> {
-  const request = new DataRegistriesRequest(agentId, lang);
-  const data = await getDataFromApi<DataRegistriesResponseMessage>(request);
-  const response = new DataRegistriesResponse(data);
-  return response.payload;
-}
+// async function listDataRegistires(agentId: string, lang: string): Promise<DataRegistry[]> {
+//   const request = new DataRegistriesRequest(agentId, lang);
+//   const data = await getDataFromApi<DataRegistriesResponseMessage>(request);
+//   const response = new DataRegistriesResponse(data);
+//   return response.payload;
+// }
 
 async function shareResource(shareAuthorization: ShareAuthorization): Promise<ShareAuthorizationConfirmation> {
   const request = new ShareAuthorizationRequest(shareAuthorization);
@@ -145,21 +146,21 @@ async function shareResource(shareAuthorization: ShareAuthorization): Promise<Sh
   return response.payload;
 }
 
-async function createInvitation(label: string, note?: string): Promise<SocialAgentInvitation> {
+async function createInvitation(label: string, note?: string): Promise<S.Schema.Type<typeof SocialAgentInvitation>> {
   const request = new CreateInvitationRequest(label, note);
   const data = await getDataFromApi<InvitationResponseMessage>(request);
   const response = new SocialAgentInvitationResponse(data);
   return response.payload;
 }
 
-async function listSocialAgentInvitations(): Promise<SocialAgentInvitation[]> {
-  const request = new SocialAgentInvitationsRequest();
-  const data = await getDataFromApi<SocialAgentInvitationsResponseMessage>(request);
-  const response = new SocialAgentInvitationsResponse(data);
-  return response.payload;
-}
+// async function listSocialAgentInvitations(): Promise<SocialAgentInvitation[]> {
+//   const request = new SocialAgentInvitationsRequest();
+//   const data = await getDataFromApi<SocialAgentInvitationsResponseMessage>(request);
+//   const response = new SocialAgentInvitationsResponse(data);
+//   return response.payload;
+// }
 
-async function acceptInvitation(capabilityUrl: string, label: string, note?: string): Promise<SocialAgent> {
+async function acceptInvitation(capabilityUrl: string, label: string, note?: string): Promise<SocialAgentOld> {
   const request = new AcceptInvitationRequest(capabilityUrl, label, note);
   const data = await getDataFromApi<SocialAgentResponseMessage>(request);
   const response = new SocialAgentResponse(data);
@@ -169,18 +170,18 @@ async function acceptInvitation(capabilityUrl: string, label: string, note?: str
 export function useBackend() {
   return {
     checkServerSession,
-    getResource,
+    // getResource,
     shareResource,
-    getAuthorization,
-    listDataInstances,
+    // getAuthorization,
+    // listDataInstances,
     authorizeApp,
     requestAccess,
-    listSocialAgents,
-    getApplication,
-    listApplications,
-    listDataRegistires,
+    // listSocialAgents,
+    // getApplication,
+    // listApplications,
+    // listDataRegistires,
     createInvitation,
-    listSocialAgentInvitations,
+    // listSocialAgentInvitations,
     acceptInvitation
   };
 }

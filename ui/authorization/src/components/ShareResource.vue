@@ -93,9 +93,10 @@
 </template>
 
 <script lang="ts" setup>
+import * as S from 'effect/Schema'
 import { computed, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { AccessModes, Resource, ShareAuthorizationModes, SocialAgent } from '@janeirodigital/sai-api-messages';
+import { AccessModes, Resource, ShareAuthorizationModes, SocialAgentList } from '@janeirodigital/sai-api-messages';
 import { useAppStore } from '@/store/app';
 import AccessModeSelector from '@/components/AccessModeSelector.vue';
 
@@ -104,8 +105,8 @@ const appStore = useAppStore();
 
 const props = defineProps<{
   applicationId: string;
-  resource: Resource;
-  socialAgents: SocialAgent[];
+  resource: S.Schema.Type<typeof Resource>;
+  socialAgents: S.Schema.Type<typeof SocialAgentList>;
 }>();
 
 const shareData: ShareAuthorizationModes = reactive({

@@ -1,21 +1,22 @@
+import * as S from 'effect/Schema'
 import { randomUUID } from 'crypto';
 import { CRUDSocialAgentInvitation } from '@janeirodigital/interop-data-model';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
-import { Invitation, InvitationBase, SocialAgentInvitation, SocialAgent } from '@janeirodigital/sai-api-messages';
+import { IRI, Invitation, InvitationBase, SocialAgentInvitation, SocialAgentOld } from '@janeirodigital/sai-api-messages';
 import { invitationCapabilityUrl } from '../url-templates';
 import { buildSocialAgentProfile } from './social-agents';
 
-function buildSocialAgentInvitation(socialAgentInvitation: CRUDSocialAgentInvitation): SocialAgentInvitation {
-  return {
-    id: socialAgentInvitation.iri,
+function buildSocialAgentInvitation(socialAgentInvitation: CRUDSocialAgentInvitation) {
+  return SocialAgentInvitation.make({
+    id: IRI.make(socialAgentInvitation.iri),
     capabilityUrl: socialAgentInvitation.capabilityUrl,
     label: socialAgentInvitation.label,
     note: socialAgentInvitation.note
-  };
+  });
 }
 
-export async function getSocialAgentInvitations(saiSession: AuthorizationAgent): Promise<SocialAgentInvitation[]> {
-  const invitations: SocialAgentInvitation[] = [];
+export async function getSocialAgentInvitations(saiSession: AuthorizationAgent) {
+  const invitations = [];
   for await (const invitation of saiSession.socialAgentInvitations) {
     if (!invitation.registeredAgent) {
       invitations.push(buildSocialAgentInvitation(invitation));
@@ -27,7 +28,7 @@ export async function getSocialAgentInvitations(saiSession: AuthorizationAgent):
 export async function createInvitation(
   saiSession: AuthorizationAgent,
   base: InvitationBase
-): Promise<SocialAgentInvitation> {
+): Promise<S.Schema.Type<typeof SocialAgentInvitation>> {
   const socialAgentInvitation = await saiSession.registrySet.hasAgentRegistry.addSocialAgentInvitation(
     invitationCapabilityUrl(saiSession.webId, randomUUID()),
     base.label,
@@ -36,7 +37,7 @@ export async function createInvitation(
   return buildSocialAgentInvitation(socialAgentInvitation);
 }
 
-export async function acceptInvitation(saiSession: AuthorizationAgent, invitation: Invitation): Promise<SocialAgent> {
+export async function acceptInvitation(saiSession: AuthorizationAgent, invitation: Invitation): Promise<SocialAgentOld> {
   // discover who issued the invitation
   const response = await saiSession.fetch.raw(invitation.capabilityUrl, {
     method: 'POST'

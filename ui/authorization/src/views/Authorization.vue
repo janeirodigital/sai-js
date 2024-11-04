@@ -75,7 +75,7 @@ watch(
   clientId,
   (id) => {
     if (id && !resourceId.value) {
-      appStore.getApplication(id);
+      appStore.getUnregisteredApplication(id);
       appStore.getAuthoriaztion(id, AgentType.Application);
     }
   },

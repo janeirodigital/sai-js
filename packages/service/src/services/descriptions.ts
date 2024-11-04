@@ -1,3 +1,4 @@
+import * as S from 'effect/Schema'
 import {
   CRUDSocialAgentRegistration,
   DataAuthorizationData,
@@ -5,62 +6,56 @@ import {
   ReadableAccessNeed,
   ReadableAccessNeedGroup
 } from '@janeirodigital/interop-data-model';
-import type {
+import {
   AuthorizationAgent,
   AccessAuthorizationStructure,
   NestedDataAuthorizationData
 } from '@janeirodigital/interop-authorization-agent';
 import { INTEROP } from '@janeirodigital/interop-utils';
 import {
-  AuthorizationData,
   Authorization,
+  AuthorizationData,
   AccessAuthorization,
   AccessNeed,
   AgentType,
   GrantedAuthorization,
-  DataOwner,
-  DataRegistration,
-  DataInstance
+  DataInstance,
+  IRI
 } from '@janeirodigital/sai-api-messages';
 
-const formatAccessNeed = async (accessNeed: ReadableAccessNeed, descriptionsLang: string): Promise<AccessNeed> => {
+const formatAccessNeed = async (accessNeed: ReadableAccessNeed, descriptionsLang: string): Promise<S.Schema.Type<typeof AccessNeed>> => {
   const description = await accessNeed.getDescription(descriptionsLang);
   const shapeTreeDescription = await accessNeed.shapeTree.getDescription(descriptionsLang);
 
-  const formatted = {
-    id: accessNeed.iri,
+  return AccessNeed.make({
+    id: IRI.make(accessNeed.iri),
     label: description.label,
     description: description.definition,
     required: accessNeed.required,
-    access: accessNeed.accessMode,
+    access: accessNeed.accessMode.map(mode => IRI.make(mode)),
     shapeTree: {
-      id: accessNeed.shapeTree.iri,
+      id: IRI.make(accessNeed.shapeTree.iri),
       label: shapeTreeDescription.label
-    }
-  } as AccessNeed;
-  if (accessNeed.inheritsFromNeed) {
-    formatted.parent = accessNeed.inheritsFromNeed;
-  }
-  if (accessNeed.children) {
-    formatted.children = await Promise.all(
+    },
+    parent: accessNeed.inheritsFromNeed ? IRI.make(accessNeed.inheritsFromNeed) : undefined,
+    children: accessNeed.children ? await Promise.all(
       accessNeed.children.map((child) => formatAccessNeed(child, descriptionsLang))
-    );
-  }
-  return formatted;
+    ) : undefined
+  })
 };
 
 async function findUserDataRegistrations(
   accessNeedGroup: ReadableAccessNeedGroup,
   saiSession: AuthorizationAgent
-): Promise<DataRegistration[]> {
-  const dataRegistrations: DataRegistration[] = [];
+) {
+  const dataRegistrations = [];
   for (const dataRegistry of saiSession.registrySet.hasDataRegistry) {
     for (const accessNeed of accessNeedGroup.accessNeeds) {
       const dataRegistration = await saiSession.findDataRegistration(dataRegistry.iri, accessNeed.shapeTree.iri);
       if (dataRegistration)
         dataRegistrations.push({
-          id: dataRegistration.iri,
-          dataRegistry: dataRegistry.iri,
+          id: IRI.make(dataRegistration.iri),
+          // dataRegistry: dataRegistry.iri,
           label: `${dataRegistration.iri.split('/').slice(0, 4).join('/')}/`, // TODO get proper label,
           shapeTree: accessNeed.shapeTree.iri,
           count: dataRegistration.contains.length
@@ -74,8 +69,8 @@ async function findSocialAgentDataRegistrations(
   socialAgentRegistration: CRUDSocialAgentRegistration,
   accessNeedGroup: ReadableAccessNeedGroup,
   saiSession: AuthorizationAgent
-): Promise<DataRegistration[]> {
-  const dataRegistrations: DataRegistration[] = [];
+) {
+  const dataRegistrations = [];
   if (!socialAgentRegistration.accessGrant) return [];
   for (const dataGrant of socialAgentRegistration.accessGrant.hasDataGrant) {
     for (const accessNeed of accessNeedGroup.accessNeeds) {
@@ -84,7 +79,7 @@ async function findSocialAgentDataRegistrations(
         !(dataGrant instanceof InheritedDataGrant) // TODO clarify case when this could happen
       ) {
         dataRegistrations.push({
-          id: dataGrant.hasDataRegistration,
+          id: IRI.make(dataGrant.hasDataRegistration),
           label: `${dataGrant.hasDataRegistration.split('/').slice(0, 4).join('/')}/`, // TODO get proper label
           shapeTree: accessNeed.shapeTree.iri,
           // @ts-ignore
@@ -107,11 +102,11 @@ async function findSocialAgentDataRegistrations(
  * @param saiSession Authoirization Agent from `@janeirodigital/interop-authorization-agent`
  */
 export const getDescriptions = async (
+  saiSession: AuthorizationAgent,
   agentIri: string,
   agentType: AgentType,
   preferredLang: string,
-  saiSession: AuthorizationAgent
-): Promise<AuthorizationData | null> => {
+): Promise<S.Schema.Type<typeof AuthorizationData>> => {
   let accessNeedGroupIri: string;
   if (agentType === AgentType.Application) {
     const clientIdDocument = await saiSession.factory.readable.clientIdDocument(agentIri);
@@ -126,9 +121,9 @@ export const getDescriptions = async (
 
   const accessNeedGroup = await saiSession.factory.readable.accessNeedGroup(accessNeedGroupIri, preferredLang);
 
-  const dataOwners: DataOwner[] = [
+  const dataOwners = [
     {
-      id: saiSession.webId,
+      id: IRI.make(saiSession.webId),
       label: saiSession.webId, // TODO get from user's webid document
       dataRegistrations: await findUserDataRegistrations(accessNeedGroup, saiSession)
     }
@@ -143,7 +138,7 @@ export const getDescriptions = async (
       );
       if (dataRegistrations.length) {
         dataOwners.push({
-          id: socialAgentRegistration.registeredAgent,
+          id: IRI.make(socialAgentRegistration.registeredAgent),
           label: socialAgentRegistration.label,
           dataRegistrations
         });
@@ -159,10 +154,10 @@ export const getDescriptions = async (
   return {
     // TODO if the id is the unique id of something then it should not be its own id. It should refer by a different name,
     //      e.g.: applicationId and be documented as such
-    id: agentIri,
+    id: IRI.make(agentIri), // TODO change to agentID
     agentType,
     accessNeedGroup: {
-      id: accessNeedGroup.iri,
+      id: IRI.make(accessNeedGroup.iri),
       label: descriptions.label,
       description: descriptions.definition,
       needs: await Promise.all(accessNeedGroup.accessNeeds.map((need) => formatAccessNeed(need, descriptionsLang))),
@@ -174,19 +169,19 @@ export const getDescriptions = async (
 };
 
 export const listDataInstances = async (
+  saiSession: AuthorizationAgent,
   agentId: string,
   registrationId: string,
-  saiSession: AuthorizationAgent
-): Promise<DataInstance[]> => {
-  const dataInstances: DataInstance[] = [];
+) => {
+  const dataInstances = [];
   if (agentId === saiSession.webId) {
     const dataRegistration = await saiSession.factory.readable.dataRegistration(registrationId);
     for (const dataInstanceIri of dataRegistration.contains) {
       const dataInstance = await saiSession.factory.readable.dataInstance(dataInstanceIri);
-      dataInstances.push({
-        id: dataInstance.iri,
+      dataInstances.push(DataInstance.make({
+        id: IRI.make(dataInstance.iri),
         label: dataInstance.label
-      });
+      }));
     }
   } else {
     const socialAgentRegistration = (await saiSession.findSocialAgentRegistration(agentId)).reciprocalRegistration;
@@ -202,10 +197,10 @@ export const listDataInstances = async (
 
         for await (const instance of dataGrant.getDataInstanceIterator()) {
           const dataInstance = await saiSession.factory.readable.dataInstance(instance.iri);
-          dataInstances.push({
-            id: dataInstance.iri,
+          dataInstances.push(DataInstance.make({
+            id: IRI.make(dataInstance.iri),
             label: dataInstance.label
-          });
+          }));
         }
       }
     }

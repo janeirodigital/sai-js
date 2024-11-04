@@ -4,5 +4,6 @@
     "ISessionManager",
     "IQueue",
     "IWorker",
-    "IProcessor"
+    "IProcessor",
+    "Test_base"
 ]
