@@ -1,23 +1,7 @@
 // Composables
-import { h } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import { useCoreStore, OidcError } from '@/store/core';
-
-async function handleRedirect() {
-  const coreStore = useCoreStore();
-  try {
-    await coreStore.handleRedirect(window.location.href);
-  } catch (err) {
-    console.error('handleRedirect', err);
-    if (err instanceof OidcError) {
-      return { name: 'login' };
-    }
-    throw err;
-  }
-  const restoreUrl = localStorage.getItem('restoreUrl');
-  localStorage.removeItem('restoreUrl');
-  return restoreUrl || { name: 'dashboard' };
-}
+import { useCoreStore } from '@/store/core';
+import { useBackend } from '@/backend';
 
 const routes = [
   {
@@ -65,12 +49,6 @@ const routes = [
         path: '/login',
         name: 'login',
         component: () => import(/* webpackChunkName: "authn" */ '@/views/Authentication.vue')
-      },
-      {
-        path: '/redirect',
-        name: 'redirect',
-        beforeEnter: handleRedirect,
-        component: h('div') // empty component
       }
     ]
   }
@@ -82,18 +60,25 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
-  if (['redirect', 'login'].includes(to.name as string)) return undefined;
+  if (to.name === 'login') return undefined;
 
   const coreStore = useCoreStore();
 
-  await coreStore.restoreOidcSession(to);
-
-  if (!coreStore.userId || !coreStore.isBackendLoggedIn) {
-    return {
-      name: 'login'
-    };
+  if (coreStore.userId) {
+    return;
   }
-  return undefined;
+  const backend = useBackend();
+  // TODO: refactor after merging rpc branch
+  try {
+    const { webId } = await backend.checkServerSession();
+    if (webId) {
+      coreStore.userId = webId;
+    } else {
+      return { name: 'login' };
+    }
+  } catch {
+    return { name: 'login' };
+  }
 });
 
 export default router;

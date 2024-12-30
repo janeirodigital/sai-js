@@ -1,30 +1,13 @@
 <template>
   <v-main>
     <v-card>
-      <v-card-item v-if="!coreStore.userId">
+      <v-card-item>
         <v-form @submit.prevent="login">
-          <v-text-field
-            v-bind="$ta('sign-in-input')"
-            v-model="oidcIssuer"
-            :placeholder="defaultOidcIssuer"
-          />
-          <v-btn
-            type="submit"
-            block
-            class="mt-2"
-          >
+          <v-text-field label="webId" v-model="webId" required />
+          <v-btn type="submit" block class="mt-2" :disabled="!webId">
             {{ $t('sign-in') }}
           </v-btn>
         </v-form>
-      </v-card-item>
-      <v-card-item v-else>
-        <v-btn
-          block
-          class="mt-2"
-          @click="loginBackend"
-        >
-          {{ $t('connect-server') }}
-        </v-btn>
       </v-card-item>
     </v-card>
   </v-main>
@@ -36,16 +19,10 @@ import { useCoreStore } from '@/store/core';
 
 const coreStore = useCoreStore();
 
-const defaultOidcIssuer = import.meta.env.VITE_DEFAULT_OIDC_ISSUER;
-const oidcIssuer = ref('');
+const webId = ref('');
 
-// will redirect to OIDC issuer
+// TODO: validate webId
 async function login() {
-  return coreStore.login(oidcIssuer.value || defaultOidcIssuer);
-}
-
-// will redirect to OIDC issuer
-function loginBackend() {
-  window.location.href = coreStore.redirectUrlForBackend;
+  return coreStore.login(webId.value);
 }
 </script>

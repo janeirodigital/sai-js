@@ -6,6 +6,7 @@
   ],
   "import": [
     "./controllers/agents.json",
+    "./controllers/login.json",
     "./controllers/login-redirect.json",
     "./controllers/api.json",
     "./controllers/webhooks.json",
@@ -25,6 +26,7 @@
         "hsts_includeSubDomains": false,
         "httpHandler": {
           "@type": "HttpCorsRequestHandler",
+          "credentials": true,
           "options_exposeHeaders": ["Link"],
           "handler": {
             "@type": "ErrorHandler",
@@ -34,6 +36,7 @@
                 "@type": "RoutedHttpRequestHandler",
                 "handlerControllerList": [
                   { "@id": "urn:solid:authorization-agent:controller:Agents" },
+                  { "@id": "urn:solid:authorization-agent:controller:Login" },
                   { "@id": "urn:solid:authorization-agent:controller:LoginRedirect" },
                   { "@id": "urn:solid:authorization-agent:controller:API" },
                   { "@id": "urn:solid:authorization-agent:controller:Webhooks" },

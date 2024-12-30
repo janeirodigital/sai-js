@@ -436,6 +436,9 @@ importers:
       componentsjs:
         specifier: ^5.4.2
         version: 5.4.2
+      cookie:
+        specifier: ^1.0.2
+        version: 1.0.2
       dotenv:
         specifier: ^16.3.1
         version: 16.3.1
@@ -523,9 +526,6 @@ importers:
       '@fluent/bundle':
         specifier: ^0.18.0
         version: 0.18.0
-      '@inrupt/solid-client-authn-browser':
-        specifier: ^2.0.0
-        version: 2.0.0
       '@janeirodigital/sai-api-messages':
         specifier: ^1.0.0-rc.24
         version: link:../../packages/api-messages
@@ -583,7 +583,7 @@ importers:
         version: 5.2.2
       unplugin-fluent-vue:
         specifier: ^1.1.4
-        version: 1.1.4(@rollup/wasm-node@4.28.1)
+        version: 1.1.4(@rollup/wasm-node@4.30.0)
       vite:
         specifier: ^5.1.4
         version: 5.1.4(@types/node@20.8.6)(sass@1.72.0)(terser@5.26.0)
@@ -2484,6 +2484,11 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
+  '@rollup/wasm-node@4.30.0':
+    resolution: {integrity: sha512-fRkB9VoRK/rWFVMw3eaBz8x3I74xoX9HXM01yM4qmm7Uptzq/jM8TJZEJPBGqyMZtEhU6HORUAOPX38wmXJj1g==}
+    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
+    hasBin: true
+
   '@rubensworks/saxes@6.0.1':
     resolution: {integrity: sha512-UW4OTIsOtJ5KSXo2Tchi4lhZqu+tlHrOAs4nNti7CrtB53kAZl3/hyrTi6HkMihxdbDM6m2Zc3swc/ZewEe1xw==}
     engines: {node: '>=v12.22.12'}
@@ -3595,6 +3600,10 @@ packages:
   cookie@0.5.0:
     resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
     engines: {node: '>= 0.6'}
+
+  cookie@1.0.2:
+    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+    engines: {node: '>=18'}
 
   cookies@0.8.0:
     resolution: {integrity: sha512-8aPsApQfebXnuI+537McwYsDtjVxGm8gTIzQI3FDW6t5t/DAhERxtnbEPN/8RX+uZthoz4eCOgloXaE5cYyNow==}
@@ -9645,30 +9654,30 @@ snapshots:
     dependencies:
       '@types/node': 20.11.30
 
-  '@rollup/plugin-babel@5.3.1(@babel/core@7.23.0)(@rollup/wasm-node@4.28.1)(@types/babel__core@7.20.2)':
+  '@rollup/plugin-babel@5.3.1(@babel/core@7.23.0)(@rollup/wasm-node@4.30.0)(@types/babel__core@7.20.2)':
     dependencies:
       '@babel/core': 7.23.0
       '@babel/helper-module-imports': 7.22.15
-      '@rollup/pluginutils': 3.1.0(@rollup/wasm-node@4.28.1)
-      rollup: '@rollup/wasm-node@4.28.1'
+      '@rollup/pluginutils': 3.1.0(@rollup/wasm-node@4.30.0)
+      rollup: '@rollup/wasm-node@4.30.0'
     optionalDependencies:
       '@types/babel__core': 7.20.2
 
-  '@rollup/plugin-node-resolve@11.2.1(@rollup/wasm-node@4.28.1)':
+  '@rollup/plugin-node-resolve@11.2.1(@rollup/wasm-node@4.30.0)':
     dependencies:
-      '@rollup/pluginutils': 3.1.0(@rollup/wasm-node@4.28.1)
+      '@rollup/pluginutils': 3.1.0(@rollup/wasm-node@4.30.0)
       '@types/resolve': 1.17.1
       builtin-modules: 3.3.0
       deepmerge: 4.3.1
       is-module: 1.0.0
       resolve: 1.22.6
-      rollup: '@rollup/wasm-node@4.28.1'
+      rollup: '@rollup/wasm-node@4.30.0'
 
-  '@rollup/plugin-replace@2.4.2(@rollup/wasm-node@4.28.1)':
+  '@rollup/plugin-replace@2.4.2(@rollup/wasm-node@4.30.0)':
     dependencies:
-      '@rollup/pluginutils': 3.1.0(@rollup/wasm-node@4.28.1)
+      '@rollup/pluginutils': 3.1.0(@rollup/wasm-node@4.30.0)
       magic-string: 0.25.9
-      rollup: '@rollup/wasm-node@4.28.1'
+      rollup: '@rollup/wasm-node@4.30.0'
 
   '@rollup/plugin-typescript@11.1.6(@rollup/wasm-node@4.28.1)(tslib@2.6.3)(typescript@5.4.5)':
     dependencies:
@@ -9679,12 +9688,12 @@ snapshots:
       rollup: '@rollup/wasm-node@4.28.1'
       tslib: 2.6.3
 
-  '@rollup/pluginutils@3.1.0(@rollup/wasm-node@4.28.1)':
+  '@rollup/pluginutils@3.1.0(@rollup/wasm-node@4.30.0)':
     dependencies:
       '@types/estree': 0.0.39
       estree-walker: 1.0.1
       picomatch: 2.3.1
-      rollup: '@rollup/wasm-node@4.28.1'
+      rollup: '@rollup/wasm-node@4.30.0'
 
   '@rollup/pluginutils@5.1.0(@rollup/wasm-node@4.28.1)':
     dependencies:
@@ -9694,7 +9703,21 @@ snapshots:
     optionalDependencies:
       rollup: '@rollup/wasm-node@4.28.1'
 
+  '@rollup/pluginutils@5.1.0(@rollup/wasm-node@4.30.0)':
+    dependencies:
+      '@types/estree': 1.0.5
+      estree-walker: 2.0.2
+      picomatch: 2.3.1
+    optionalDependencies:
+      rollup: '@rollup/wasm-node@4.30.0'
+
   '@rollup/wasm-node@4.28.1':
+    dependencies:
+      '@types/estree': 1.0.6
+    optionalDependencies:
+      fsevents: 2.3.3
+
+  '@rollup/wasm-node@4.30.0':
     dependencies:
       '@types/estree': 1.0.6
     optionalDependencies:
@@ -11216,6 +11239,8 @@ snapshots:
   convert-source-map@2.0.0: {}
 
   cookie@0.5.0: {}
+
+  cookie@1.0.2: {}
 
   cookies@0.8.0:
     dependencies:
@@ -13581,11 +13606,11 @@ snapshots:
 
   roboto-fontface@0.10.0: {}
 
-  rollup-plugin-terser@7.0.2(@rollup/wasm-node@4.28.1):
+  rollup-plugin-terser@7.0.2(@rollup/wasm-node@4.30.0):
     dependencies:
       '@babel/code-frame': 7.22.13
       jest-worker: 26.6.2
-      rollup: '@rollup/wasm-node@4.28.1'
+      rollup: '@rollup/wasm-node@4.30.0'
       serialize-javascript: 4.0.0
       terser: 5.26.0
 
@@ -14171,10 +14196,10 @@ snapshots:
 
   unpipe@1.0.0: {}
 
-  unplugin-fluent-vue@1.1.4(@rollup/wasm-node@4.28.1):
+  unplugin-fluent-vue@1.1.4(@rollup/wasm-node@4.30.0):
     dependencies:
       '@fluent/syntax': 0.19.0
-      '@rollup/pluginutils': 5.1.0(@rollup/wasm-node@4.28.1)
+      '@rollup/pluginutils': 5.1.0(@rollup/wasm-node@4.30.0)
       magic-string: 0.30.4
       unplugin: 1.5.1
     transitivePeerDependencies:
@@ -14639,9 +14664,9 @@ snapshots:
       '@babel/core': 7.23.0
       '@babel/preset-env': 7.23.6(@babel/core@7.23.0)
       '@babel/runtime': 7.23.6
-      '@rollup/plugin-babel': 5.3.1(@babel/core@7.23.0)(@rollup/wasm-node@4.28.1)(@types/babel__core@7.20.2)
-      '@rollup/plugin-node-resolve': 11.2.1(@rollup/wasm-node@4.28.1)
-      '@rollup/plugin-replace': 2.4.2(@rollup/wasm-node@4.28.1)
+      '@rollup/plugin-babel': 5.3.1(@babel/core@7.23.0)(@rollup/wasm-node@4.30.0)(@types/babel__core@7.20.2)
+      '@rollup/plugin-node-resolve': 11.2.1(@rollup/wasm-node@4.30.0)
+      '@rollup/plugin-replace': 2.4.2(@rollup/wasm-node@4.30.0)
       '@surma/rollup-plugin-off-main-thread': 2.2.3
       ajv: 8.12.0
       common-tags: 1.8.2
@@ -14650,8 +14675,8 @@ snapshots:
       glob: 7.2.3
       lodash: 4.17.21
       pretty-bytes: 5.6.0
-      rollup: '@rollup/wasm-node@4.28.1'
-      rollup-plugin-terser: 7.0.2(@rollup/wasm-node@4.28.1)
+      rollup: '@rollup/wasm-node@4.30.0'
+      rollup-plugin-terser: 7.0.2(@rollup/wasm-node@4.30.0)
       source-map: 0.8.0-beta.0
       stringify-object: 3.3.0
       strip-comments: 2.0.1

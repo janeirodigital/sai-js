@@ -17,4 +17,6 @@ describe('getters', () => {
     const webIdProfile = await factory.readable.webIdProfile(webId);
     expect(webIdProfile.label).toBe('Alice');
   });
+
+  test.todo('oidcIssuer');
 });

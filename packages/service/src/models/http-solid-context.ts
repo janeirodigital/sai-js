@@ -14,4 +14,10 @@ export interface AuthenticatedAuthnContext extends HttpHandlerContext {
   };
 }
 
+export interface CookieContext extends HttpHandlerContext {
+  authn: {
+    webId: string;
+  };
+}
+
 export type AuthnContext = UnauthenticatedAuthnContext | AuthenticatedAuthnContext;

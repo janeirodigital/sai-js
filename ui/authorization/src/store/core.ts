@@ -1,23 +1,10 @@
 import { defineStore } from 'pinia';
 import { ref, watch } from 'vue';
-import {
-  ISessionInfo,
-  getDefaultSession,
-  handleIncomingRedirect,
-  login as oidcLogin
-} from '@inrupt/solid-client-authn-browser';
-import type { RouteLocationNormalized } from 'vue-router';
 import { FluentBundle } from '@fluent/bundle';
 import { fluent } from '@/plugins/fluent';
 import { useBackend } from '@/backend';
 
 const backend = useBackend();
-
-export class OidcError extends Error {
-  constructor(private oidcInfo?: ISessionInfo) {
-    super('oidcInfo');
-  }
-}
 
 function defaultLang(availableLanguages: string[]): string {
   const lang = navigator.language.split('-')[0];
@@ -26,8 +13,6 @@ function defaultLang(availableLanguages: string[]): string {
 
 export const useCoreStore = defineStore('core', () => {
   const userId = ref<string | null>(null);
-  const isBackendLoggedIn = ref(false);
-  const redirectUrlForBackend = ref('');
   const availableLanguages = ref<string[]>(import.meta.env.VITE_LANGUAGES.split(','));
   const lang = ref(localStorage.getItem('lang') ?? defaultLang(availableLanguages.value));
   const pushSubscription = ref<PushSubscription | null>(null);
@@ -44,13 +29,14 @@ export const useCoreStore = defineStore('core', () => {
     { immediate: true }
   );
 
-  async function login(oidcIssuer: string) {
-    const options = {
-      clientId: import.meta.env.VITE_APPLICATION_ID,
-      oidcIssuer,
-      redirectUrl: `${import.meta.env.VITE_BASE_URL}/redirect`
-    };
-    await oidcLogin(options);
+  async function login(webId: string) {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/login`, {
+      method: 'POST',
+      body: JSON.stringify(webId),
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    window.location.href = await response.json();
   }
 
   async function getPushSubscription() {
@@ -60,32 +46,6 @@ export const useCoreStore = defineStore('core', () => {
       pushSubscription.value = subscription;
     }
     return backend.checkServerSession(subscription ?? undefined);
-  }
-
-  async function handleRedirect(url: string) {
-    const oidcInfo = await handleIncomingRedirect(url);
-    if (!oidcInfo?.webId) {
-      throw new OidcError(oidcInfo);
-    }
-    userId.value = oidcInfo.webId;
-
-    // TODO check if backend authenticated
-    const loginStatus = await getPushSubscription();
-    isBackendLoggedIn.value = loginStatus.isLoggedIn;
-    redirectUrlForBackend.value = loginStatus.completeRedirectUrl ?? '';
-  }
-
-  async function restoreOidcSession(to: RouteLocationNormalized): Promise<void> {
-    const oidcSession = getDefaultSession();
-
-    if (!oidcSession.info.isLoggedIn) {
-      if (to.name !== 'login') localStorage.setItem('restoreUrl', to.fullPath);
-      // if session can be restored it will redirect to oidcIssuer, which will return back to `/redirect`
-      const oidcInfo = await oidcSession.handleIncomingRedirect({ restorePreviousSession: true });
-      if (oidcInfo?.webId) {
-        userId.value = oidcInfo.webId;
-      }
-    }
   }
 
   async function enableNotifications() {
@@ -109,12 +69,8 @@ export const useCoreStore = defineStore('core', () => {
     userId,
     lang,
     availableLanguages,
-    isBackendLoggedIn,
-    redirectUrlForBackend,
     pushSubscription,
     login,
-    handleRedirect,
-    restoreOidcSession,
     enableNotifications,
     getPushSubscription
   };

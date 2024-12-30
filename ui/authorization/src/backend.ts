@@ -1,4 +1,3 @@
-import { getDefaultSession } from '@inrupt/solid-client-authn-browser';
 import {
   AccessAuthorization,
   AgentType,
@@ -58,20 +57,16 @@ import {
 } from '@janeirodigital/sai-api-messages';
 
 const backendBaseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
-const authnFetch = getDefaultSession().fetch;
 
 async function getDataFromApi<T extends ResponseMessage>(request: Request): Promise<T> {
-  const commonOptions = {
+  const response = await fetch(`${backendBaseUrl}/api`, {
     method: 'POST',
+    body: request.stringify(),
+    credentials: 'include',
     headers: {
       'content-type': 'application/json'
     }
-  };
-  const options = {
-    ...commonOptions,
-    body: request.stringify()
-  };
-  const response = await authnFetch(`${backendBaseUrl}/api`, options);
+  });
   return (await response.json()) as T;
 }
 

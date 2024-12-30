@@ -14,6 +14,8 @@ export * from './handlers/web-push-subscribe-handler';
 export * from './handlers/web-push-unsubscribe-handler';
 export * from './handlers/web-push-webhooks-handler';
 export * from './handlers/x-forward-proto-handler';
+export * from './handlers/cookie-context-handler';
+export * from './handlers/login-handler';
 
 // Models
 export * from './models/http-solid-context';

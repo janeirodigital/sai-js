@@ -8,15 +8,9 @@ export const AccessModes = {
   Delete: 'http://www.w3.org/ns/auth/acl#Delete'
 } as const;
 
-export type LoginStatus =
-  | {
-      isLoggedIn: false;
-      completeRedirectUrl: string;
-    }
-  | {
-      isLoggedIn: true;
-      completeRedirectUrl?: never;
-    };
+export type LoginStatus = {
+  webId?: string;
+};
 
 export interface Application extends UniqueId {
   name: string;

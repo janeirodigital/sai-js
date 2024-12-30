@@ -36,7 +36,6 @@ vi.mock('../../../src/services', () => ({
   getResource: vi.fn(),
   shareResource: vi.fn(),
   getSocialAgentInvitations: vi.fn(),
-  initLogin: vi.fn(),
   createInvitation: vi.fn(),
   acceptInvitation: vi.fn()
 }));
@@ -90,9 +89,7 @@ describe('hello', () => {
         next: (response: HttpHandlerResponse) => {
           expect(response.status).toBe(200);
           expect(response.body.type).toBe(ResponseMessageTypes.HELLO_RESPONSE);
-          expect(response.body.payload.isLoggedIn).toBe(true);
-          expect(response.body.payload.completeRedirectUrl).toBeUndefined();
-          expect(mocked.initLogin).not.toBeCalled();
+          expect(response.body.payload.webId).toBe(webId);
           done();
         }
       });
@@ -100,7 +97,6 @@ describe('hello', () => {
   });
 
   test('when is not logged in', async () => {
-    const opRedirectUrl = 'https:/op.example/auth/?something';
     const oidcSession = {
       info: { isLoggedIn: false }
     } as unknown as Session;
@@ -113,20 +109,18 @@ describe('hello', () => {
       }
     } as unknown as HttpHandlerRequest;
     const ctx = { request, authn, logger } as AuthenticatedAuthnContext;
-    mocked.initLogin.mockResolvedValueOnce(opRedirectUrl);
     await new Promise<void>((done) => {
       apiHandler.handle(ctx).subscribe({
         next: (response: HttpHandlerResponse) => {
           expect(response.status).toBe(200);
           expect(response.body.type).toBe(ResponseMessageTypes.HELLO_RESPONSE);
-          expect(response.body.payload.isLoggedIn).toBe(false);
-          expect(response.body.payload.completeRedirectUrl).toBe(opRedirectUrl);
-          expect(mocked.initLogin).toBeCalledTimes(1);
+          expect(response.body.payload.webId).toBeUndefined();
           done();
         }
       });
     });
   });
+
   test('should add the subscription', async () => {
     const oidcSession = {
       info: { isLoggedIn: false }

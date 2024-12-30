@@ -17,10 +17,9 @@ import {
   requestAccessUsingApplicationNeeds,
   acceptInvitation,
   createInvitation,
-  getSocialAgentInvitations,
-  initLogin
+  getSocialAgentInvitations
 } from '../services';
-import type { AuthenticatedAuthnContext } from '../models/http-solid-context';
+import type { CookieContext } from '../models/http-solid-context';
 import { validateContentType } from '../utils/http-validators';
 import { IReciprocalRegistrationsJobData } from '../models/jobs';
 import { SessionManager } from '../session-manager';
@@ -35,7 +34,7 @@ export class ApiHandler extends HttpHandler {
     super();
   }
 
-  async handleAsync(context: AuthenticatedAuthnContext): Promise<HttpHandlerResponse> {
+  async handleAsync(context: CookieContext): Promise<HttpHandlerResponse> {
     validateContentType(context, 'application/json');
     const { body } = context.request;
     if (!body) {
@@ -47,17 +46,10 @@ export class ApiHandler extends HttpHandler {
       }
 
       const oidcSession = await this.sessionManager.getOidcSession(context.authn.webId);
-      let loginStatus: LoginStatus;
+      const loginStatus: LoginStatus = {};
 
       if (oidcSession.info.isLoggedIn) {
-        loginStatus = {
-          isLoggedIn: true
-        };
-      } else {
-        loginStatus = {
-          completeRedirectUrl: await initLogin(oidcSession, context.authn.webId, context.authn.issuer),
-          isLoggedIn: false
-        };
+        loginStatus.webId = oidcSession.info.webId;
       }
 
       return {
@@ -227,7 +219,7 @@ export class ApiHandler extends HttpHandler {
     }
   }
 
-  handle(context: AuthenticatedAuthnContext): Observable<HttpHandlerResponse> {
+  handle(context: CookieContext): Observable<HttpHandlerResponse> {
     return from(this.handleAsync(context));
   }
 }
