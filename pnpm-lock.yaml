@@ -563,9 +563,6 @@ importers:
       '@janeirodigital/sai-api-messages':
         specifier: ^1.0.0-rc.24
         version: link:../../packages/api-messages
-      '@janeirodigital/sai-server':
-        specifier: ^1.0.0-rc.24
-        version: link:../../packages/service
       '@mdi/font':
         specifier: 7.3.67
         version: 7.3.67
@@ -14332,7 +14329,7 @@ snapshots:
   terser@5.26.0:
     dependencies:
       '@jridgewell/source-map': 0.3.5
-      acorn: 8.12.0
+      acorn: 8.14.0
       commander: 2.20.3
       source-map-support: 0.5.21
 

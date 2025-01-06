@@ -17,22 +17,20 @@ import {
   // requestAccessUsingApplicationNeeds,
   // acceptInvitation,
   // createInvitation,
-  getSocialAgentInvitations,
-  initLogin
+  getSocialAgentInvitations
 } from '../services';
 import type { AuthenticatedAuthnContext } from '../models/http-solid-context';
 // import { IReciprocalRegistrationsJobData } from '../models/jobs';
 import { SessionManager } from '../session-manager';
 import { Effect, Layer } from 'effect';
 import { RpcRouter } from '@effect/rpc';
-import { router, SaiService } from "@janeirodigital/sai-api-messages"
+import { router, SaiService } from '@janeirodigital/sai-api-messages';
 
 export class RpcHandler extends HttpHandler {
   private logger = getLogger();
 
   constructor(
-    private sessionManager: SessionManager,
-    // private queue: IQueue
+    private sessionManager: SessionManager // private queue: IQueue
   ) {
     super();
   }
@@ -48,17 +46,10 @@ export class RpcHandler extends HttpHandler {
       }
 
       const oidcSession = await this.sessionManager.getOidcSession(context.authn.webId);
-      let loginStatus: LoginStatus;
+      const loginStatus: LoginStatus = {};
 
       if (oidcSession.info.isLoggedIn) {
-        loginStatus = {
-          isLoggedIn: true
-        };
-      } else {
-        loginStatus = {
-          completeRedirectUrl: await initLogin(oidcSession, context.authn.webId, context.authn.issuer),
-          isLoggedIn: false
-        };
+        loginStatus.webId = oidcSession.info.webId;
       }
 
       return {
@@ -76,29 +67,28 @@ export class RpcHandler extends HttpHandler {
       SaiService.of({
         getApplications: () => Effect.promise(() => getApplications(saiSession)),
         getUnregisteredApplication: (id) => Effect.promise(() => getUnregisteredApplication(saiSession, id)),
-        getAuthorizationData: (agentId, agentType, lang) => Effect.promise(() => getDescriptions(saiSession, agentId, agentType, lang)),
+        getAuthorizationData: (agentId, agentType, lang) =>
+          Effect.promise(() => getDescriptions(saiSession, agentId, agentType, lang)),
         getResource: (id, lang) => Effect.promise(() => getResource(saiSession, id, lang)),
         getSocialAgents: () => Effect.promise(() => getSocialAgents(saiSession)),
         getSocialAgentInvitations: () => Effect.promise(() => getSocialAgentInvitations(saiSession)),
         getDataRegistries: (agentId, lang) => Effect.promise(() => getDataRegistries(saiSession, agentId, lang)),
-        listDataInstances: (agentId, registrationId) => Effect.promise(() => listDataInstances(saiSession, agentId, registrationId)),
+        listDataInstances: (agentId, registrationId) =>
+          Effect.promise(() => listDataInstances(saiSession, agentId, registrationId))
       })
     );
-    const rpcHandler = RpcRouter.toHandlerNoStream(router)
+    const rpcHandler = RpcRouter.toHandlerNoStream(router);
 
-    const program = Effect.gen(function*() {
-      return yield* rpcHandler(body)
-    }).pipe(
-      Effect.provide(SaiServiceLive),
-    )
-    const payload = await Effect.runPromise(program)
+    const program = Effect.gen(function* () {
+      return yield* rpcHandler(body);
+    }).pipe(Effect.provide(SaiServiceLive));
+    const payload = await Effect.runPromise(program);
 
     return {
       body: payload,
       status: 200,
       headers: {}
     };
-        
   }
 
   handle(context: AuthenticatedAuthnContext): Observable<HttpHandlerResponse> {
