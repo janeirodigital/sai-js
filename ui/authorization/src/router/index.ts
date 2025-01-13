@@ -1,7 +1,7 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router';
 import { useCoreStore } from '@/store/core';
-import { useBackend } from '@/backend';
+import * as effect from '@/effect';
 
 const routes = [
   {
@@ -67,10 +67,8 @@ router.beforeEach(async (to) => {
   if (coreStore.userId) {
     return;
   }
-  const backend = useBackend();
-  // TODO: refactor after merging rpc branch
   try {
-    const { webId } = await backend.checkServerSession();
+    const webId = await effect.getWebId();
     if (webId) {
       coreStore.userId = webId;
     } else {

@@ -1,7 +1,6 @@
 import { from, Observable } from 'rxjs';
 import { BadRequestHttpError, HttpHandler, HttpHandlerResponse } from '@digita-ai/handlersjs-http';
 import { getLogger } from '@digita-ai/handlersjs-logging';
-import { type LoginStatus, RequestMessageTypes, ResponseMessageTypes } from '@janeirodigital/sai-api-messages';
 // import type { IQueue } from '@janeirodigital/sai-server-interfaces';
 import {
   getApplications,
@@ -19,12 +18,13 @@ import {
   // createInvitation,
   getSocialAgentInvitations
 } from '../services';
-import type { AuthenticatedAuthnContext } from '../models/http-solid-context';
+import type { AuthenticatedAuthnContext, CookieContext } from '../models/http-solid-context';
 // import { IReciprocalRegistrationsJobData } from '../models/jobs';
 import { SessionManager } from '../session-manager';
 import { Effect, Layer } from 'effect';
 import { RpcRouter } from '@effect/rpc';
 import { router, SaiService } from '@janeirodigital/sai-api-messages';
+import type { PushSubscription } from 'web-push';
 
 export class RpcHandler extends HttpHandler {
   private logger = getLogger();
@@ -35,36 +35,18 @@ export class RpcHandler extends HttpHandler {
     super();
   }
 
-  async handleAsync(context: AuthenticatedAuthnContext): Promise<HttpHandlerResponse> {
+  async handleAsync(context: CookieContext): Promise<HttpHandlerResponse> {
     const { body } = context.request;
     if (!body) {
       throw new BadRequestHttpError('body is required');
-    }
-    if (body.type === RequestMessageTypes.HELLO_REQUEST) {
-      if (body.subscription) {
-        await this.sessionManager.addPushSubscription(context.authn.webId, body.subscription);
-      }
-
-      const oidcSession = await this.sessionManager.getOidcSession(context.authn.webId);
-      const loginStatus: LoginStatus = {};
-
-      if (oidcSession.info.isLoggedIn) {
-        loginStatus.webId = oidcSession.info.webId;
-      }
-
-      return {
-        body: {
-          type: ResponseMessageTypes.HELLO_RESPONSE,
-          payload: loginStatus
-        },
-        status: 200,
-        headers: {}
-      };
     }
     const saiSession = await this.sessionManager.getSaiSession(context.authn.webId);
     const SaiServiceLive = Layer.succeed(
       SaiService,
       SaiService.of({
+        getWebId: () => Effect.succeed(saiSession.webId),
+        registerPushSubscription: (subscription: PushSubscription) =>
+          Effect.promise(() => this.sessionManager.addPushSubscription(saiSession.webId, subscription)),
         getApplications: () => Effect.promise(() => getApplications(saiSession)),
         getUnregisteredApplication: (id) => Effect.promise(() => getUnregisteredApplication(saiSession, id)),
         getAuthorizationData: (agentId, agentType, lang) =>

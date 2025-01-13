@@ -47,14 +47,10 @@ import {
   SocialAgentInvitationResponse,
   AcceptInvitationRequest,
   SocialAgentResponseMessage,
-  SocialAgentResponse,
+  SocialAgentResponse
   // SocialAgentInvitationsRequest,
   // SocialAgentInvitationsResponseMessage,
   // SocialAgentInvitationsResponse,
-  LoginStatus,
-  HelloRequest,
-  HelloResponse,
-  HelloResponseMessage
 } from '@janeirodigital/sai-api-messages';
 
 const backendBaseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
@@ -71,12 +67,12 @@ async function getDataFromApi<T extends ResponseMessage>(request: Request): Prom
   return (await response.json()) as T;
 }
 
-async function checkServerSession(subscription?: PushSubscription): Promise<LoginStatus> {
-  const request = new HelloRequest(subscription);
-  const data = await getDataFromApi<HelloResponseMessage>(request);
-  const response = new HelloResponse(data);
-  return response.payload;
-}
+// async function checkServerSession(subscription?: PushSubscription): Promise<LoginStatus> {
+//   const request = new HelloRequest(subscription);
+//   const data = await getDataFromApi<HelloResponseMessage>(request);
+//   const response = new HelloResponse(data);
+//   return response.payload;
+// }
 
 // async function getResource(resourceId: string, lang: string): Promise<Resource> {
 //   const request = new ResourceRequest(resourceId, lang);
@@ -169,7 +165,6 @@ async function acceptInvitation(capabilityUrl: string, label: string, note?: str
 
 export function useBackend() {
   return {
-    checkServerSession,
     // getResource,
     shareResource,
     // getAuthorization,

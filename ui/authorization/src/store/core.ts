@@ -2,9 +2,8 @@ import { defineStore } from 'pinia';
 import { ref, watch } from 'vue';
 import { FluentBundle } from '@fluent/bundle';
 import { fluent } from '@/plugins/fluent';
-import { useBackend } from '@/backend';
-
-const backend = useBackend();
+import * as effect from '@/effect';
+import type { PushSubscription } from 'web-push';
 
 function defaultLang(availableLanguages: string[]): string {
   const lang = navigator.language.split('-')[0];
@@ -39,13 +38,13 @@ export const useCoreStore = defineStore('core', () => {
     window.location.href = await response.json();
   }
 
-  async function getPushSubscription() {
+  async function getPushSubscription(): Promise<void> {
     const registration = await navigator.serviceWorker.ready;
     const subscription = await registration.pushManager.getSubscription();
     if (subscription) {
-      pushSubscription.value = subscription;
+      pushSubscription.value = subscription.toJSON() as PushSubscription;
+      effect.registerPushSubscription(pushSubscription.value);
     }
-    return backend.checkServerSession(subscription ?? undefined);
   }
 
   async function enableNotifications() {
@@ -59,8 +58,8 @@ export const useCoreStore = defineStore('core', () => {
           applicationServerKey: import.meta.env.VITE_VAPID_PUBLIC_KEY
         });
       }
-      pushSubscription.value = subscription;
-      await backend.checkServerSession(subscription);
+      pushSubscription.value = subscription.toJSON() as PushSubscription;
+      await effect.registerPushSubscription(pushSubscription.value);
     }
     return result;
   }

@@ -23,5 +23,8 @@
     "@effect/rpc": "^0.44.13",
     "@janeirodigital/interop-authorization-agent": "^1.0.0-rc.24",
     "effect": "^3.10.8"
+  },
+  "devDependencies": {
+    "@types/web-push": "^3.6.1"
   }
 }

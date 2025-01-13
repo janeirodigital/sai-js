@@ -13,8 +13,11 @@ import {
   ListSocialAgentInvitations,
   type UiRpcRouter,
   ListDataRegistries,
-  ListDataInstances
+  ListDataInstances,
+  GetWebId,
+  RegisterPushSubscription
 } from '@janeirodigital/sai-api-messages';
+import type { PushSubscription } from 'web-push';
 
 const backendBaseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
 
@@ -39,6 +42,22 @@ const AuthFetch = FetchHttpClient.layer.pipe(
 );
 
 const AuthLayer = FetchHttpClient.layer.pipe(Layer.provide(AuthFetch));
+
+export async function getWebId() {
+  const program = Effect.gen(function* () {
+    const client = yield* makeClient;
+    return yield* client(new GetWebId());
+  }).pipe(Effect.provide(AuthLayer));
+  return Effect.runPromise(program);
+}
+
+export async function registerPushSubscription(subscription: PushSubscription) {
+  const program = Effect.gen(function* () {
+    const client = yield* makeClient;
+    return yield* client(new RegisterPushSubscription({ subscription }));
+  }).pipe(Effect.provide(AuthLayer));
+  return Effect.runPromise(program);
+}
 
 export async function listApplications() {
   const program = Effect.gen(function* () {
