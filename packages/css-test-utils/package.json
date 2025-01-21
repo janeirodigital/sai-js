@@ -29,16 +29,17 @@
     "test": "test"
   },
   "scripts": {
-    "build": "tsc -b .",
+    "build": "tsc",
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
     "@inrupt/solid-client-authn-core": "^2.0.0",
-    "@solid/community-server": "^7.1.2",
+    "@solid/community-server": "^7.1.4",
     "n3": "^1.17.1"
   },
   "devDependencies": {
     "@types/n3": "^1.16.2",
-    "@rdfjs/types": "^1.1.0"
+    "@rdfjs/types": "^1.1.0",
+    "typescript": "^5.6.2"
   }
 }

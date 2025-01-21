@@ -29,7 +29,6 @@
     "eslint-plugin-promise": "^6.1.1",
     "pinia": "^2.1.7",
     "sass": "^1.71.1",
-    "typescript": "^5.4.2",
     "unplugin-vue-router": "^0.8.4",
     "vite": "^5.1.5",
     "vite-plugin-vue-layouts": "^0.11.0",
