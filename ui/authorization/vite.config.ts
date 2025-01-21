@@ -81,5 +81,6 @@ export default defineConfig({
   server: {
     port: 4200,
     host: '0.0.0.0',
+    allowedHosts: ['ui.sai.docker']
   }
 });

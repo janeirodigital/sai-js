@@ -51,7 +51,7 @@ export class SessionManager implements ISessionManager {
   }
 
   async getOidcSession(webId: string): Promise<Session> {
-    let session = await getSessionFromStorage(webId, this.storage);
+    let session = await getSessionFromStorage(webId, { storage: this.storage });
 
     if (!session) {
       session = new Session({ storage: this.storage }, webId);

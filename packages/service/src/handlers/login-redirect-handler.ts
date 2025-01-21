@@ -27,7 +27,9 @@ export class LoginRedirectHandler extends HttpHandler {
     let loginId: string;
     if (context.request.headers.cookie) {
       const cookies = cookie.parse(context.request.headers.cookie);
-      loginId = decryptCookie(cookies.loginId);
+      if (cookies.loginId) {
+        loginId = decryptCookie(cookies.loginId);
+      }
     }
 
     const webId = decodeWebId(context.request.parameters!.encodedWebId);
