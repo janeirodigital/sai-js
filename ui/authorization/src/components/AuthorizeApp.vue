@@ -323,9 +323,11 @@
   </v-card>
 </template>
 <script lang="ts" setup>
+import * as S from 'effect/Schema'
 import locale from 'locale-codes'
 import { VExpansionPanel } from 'vuetify/lib/components/index.mjs';
 import {
+  IRI,
   Scopes,
   AccessModes,
   AccessNeed,
@@ -334,9 +336,9 @@ import {
   AuthorizationData,
   BaseAuthorization,
   DataAuthorization,
-  DataInstance,
   SocialAgent,
-  AgentType
+  AgentType,
+  DataInstanceList
 } from '@janeirodigital/sai-api-messages';
 import { reactive, ref, onMounted, watch, computed } from 'vue';
 import { useRouter } from 'vue-router';
@@ -349,9 +351,9 @@ const coreStore = useCoreStore();
 const appStore = useAppStore();
 
 const props = defineProps<{
-  application?: Partial<Application>;
-  agent?: SocialAgent;
-  authorizationData: AuthorizationData;
+  application?: Partial<S.Schema.Type<typeof Application>>;
+  agent?: S.Schema.Type<typeof SocialAgent>;
+  authorizationData: S.Schema.Type<typeof AuthorizationData>;
   redirect: boolean
 }>();
 // TODO add stepper to support multiple top level access needs
@@ -442,7 +444,7 @@ const dataInstancesIndex = reactive<Record<string, SelectableDataInstance>>({});
 function addDataInstancesToIndex(
   agentId: string,
   registrationId: string,
-  dataInstances: DataInstance[],
+  dataInstances: S.Schema.Type<typeof DataInstanceList>,
   selected: boolean
 ): void {
   for (const dataInstance of dataInstances) {
@@ -503,7 +505,7 @@ function agentScopeChanged(agentId: string, scope: Scope) {
 }
 
 async function loadDataInstances(agentId: string, registrationId: string, selected: boolean): Promise<void> {
-  await appStore.listDataInstances(agentId, registrationId);
+  await appStore.listDataInstances(IRI.make(agentId), IRI.make(registrationId));
   addDataInstancesToIndex(agentId, registrationId, appStore.loadedDataInstances[registrationId], selected);
 }
 
@@ -607,8 +609,8 @@ function isSelected(needId: string, childId?: string): boolean {
   
 }
 
-function chooseIcon(access: string[]): string {
-  if (access.includes(AccessModes.Update)) {
+function chooseIcon(access: readonly S.Schema.Type<typeof IRI>[]): string {
+  if (access.includes(IRI.make(AccessModes.Update))) {
     return 'mdi-square-edit-outline';
   } 
     return 'mdi-euey-outline';
@@ -616,23 +618,23 @@ function chooseIcon(access: string[]): string {
 }
 
 // TODO throw error if required need is not satisfied
-function createDataAuthorizations(need: AccessNeed, parent?: AccessNeed): DataAuthorization[] {
+function createDataAuthorizations(need: S.Schema.Type<typeof AccessNeed>, parent?: S.Schema.Type<typeof AccessNeed>): S.Schema.Type<typeof DataAuthorization>[] {
   if (!parent && !isSelected(need.id)) return [];
   if (parent && !isSelected(parent.id, need.id)) return [];
-  const dataAuthorizations: DataAuthorization[] = [];
+  const dataAuthorizations: S.Schema.Type<typeof DataAuthorization>[] = [];
   const accessNeedAuthorization = {
     accessNeed: need.id
-  } as Partial<DataAuthorization>;
+  } as Partial<S.Schema.Type<typeof DataAuthorization>>;
   if (need.parent) {
     dataAuthorizations.push({
       ...accessNeedAuthorization,
       scope: Scopes.Inherited
-    } as DataAuthorization);
+    } as S.Schema.Type<typeof DataAuthorization>);
   } else if (topLevelScope.value === 'all') {
     dataAuthorizations.push({
       ...accessNeedAuthorization,
       scope: Scopes.All
-    } as DataAuthorization);
+    } as S.Schema.Type<typeof DataAuthorization>);
   } else if (topLevelScope.value === 'some') {
     for (const agent of Object.values(agentsIndex)) {
       const agentAuthorization = {
@@ -643,18 +645,18 @@ function createDataAuthorizations(need: AccessNeed, parent?: AccessNeed): DataAu
         dataAuthorizations.push({
           ...agentAuthorization,
           scope: Scopes.AllFromAgent
-        } as DataAuthorization);
+        } as S.Schema.Type<typeof DataAuthorization>);
       } else if (agent.scope === 'some') {
         for (const registration of findAgentRegistrations(agent.id)) {
           const registrationAuthorization = {
             ...agentAuthorization,
             dataRegistration: registration.id
-          } as Partial<DataAuthorization>;
+          } as Partial<S.Schema.Type<typeof DataAuthorization>>;
           if (registration.scope === 'all') {
             dataAuthorizations.push({
               ...registrationAuthorization,
               scope: Scopes.AllFromRegistry
-            } as DataAuthorization);
+            } as S.Schema.Type<typeof DataAuthorization>);
           } else if (registration.scope === 'some') {
             dataAuthorizations.push({
               ...registrationAuthorization,
@@ -662,13 +664,13 @@ function createDataAuthorizations(need: AccessNeed, parent?: AccessNeed): DataAu
               dataInstances: findRegistrationDataInstances(registration.id)
                 .filter((i) => i.selected)
                 .map((i) => i.id)
-            } as DataAuthorization);
+            } as unknown as S.Schema.Type<typeof DataAuthorization>);
           }
         }
       }
     }
   }
-  let children: DataAuthorization[] = [];
+  let children: S.Schema.Type<typeof DataAuthorization>[] = [];
   if (need.children) {
     children = need.children.flatMap((childAccessNeed) => createDataAuthorizations(childAccessNeed, need));
   }
@@ -683,12 +685,12 @@ function authorize(granted = true) {
   loadingAuthorize.value = granted;
   loadingDeny.value = !granted;
   if (props.authorizationData) {
-    let authorization: Authorization;
+    let authorization: S.Schema.Type<typeof Authorization>;
     const baseAuthorization = {
       grantee: props.authorizationData.id,
       agentType: props.agent ? AgentType.SocialAgent : AgentType.Application,
       accessNeedGroup: props.authorizationData.accessNeedGroup.id
-    } as BaseAuthorization;
+    } as S.Schema.Type<typeof BaseAuthorization>;
     if (granted) {
       authorization = {
         ...baseAuthorization,
@@ -703,6 +705,7 @@ function authorize(granted = true) {
         granted: false
       };
     }
+    //@ts-ignore
     if (granted && !authorization.dataAuthorizations?.length) {
       throw new Error('Use granted = false if no data is being shared');
     }

@@ -1,3 +1,4 @@
+import * as S from 'effect/Schema';
 import { FetchHttpClient, HttpClient, HttpClientRequest } from '@effect/platform';
 import { RpcResolver } from '@effect/rpc';
 import { HttpRpcResolverNoStream } from '@effect/rpc-http';
@@ -15,7 +16,14 @@ import {
   ListDataRegistries,
   ListDataInstances,
   GetWebId,
-  RegisterPushSubscription
+  RegisterPushSubscription,
+  AcceptInvitation,
+  CreateInvitation,
+  RequestAccessUsingApplicationNeeds,
+  ShareAuthorization,
+  ShareResource,
+  AuthorizeApp,
+  Authorization
 } from '@janeirodigital/sai-api-messages';
 import type { PushSubscription } from 'web-push';
 
@@ -115,12 +123,52 @@ export async function listDataRegistries(agentId: string, lang: string) {
   return Effect.runPromise(program);
 }
 
-export async function listDataInstances(agentId: string, registrationId: string) {
+export async function listDataInstances(agentId: S.Schema.Type<typeof IRI>, registrationId: S.Schema.Type<typeof IRI>) {
+  const program = Effect.gen(function* () {
+    const client = yield* makeClient;
+    return yield* client(new ListDataInstances({ agentId: agentId, registrationId: registrationId }));
+  }).pipe(Effect.provide(AuthLayer));
+  return Effect.runPromise(program);
+}
+
+export async function requestAccessUsingApplicationNeeds(applicationId: string, agentId: string) {
   const program = Effect.gen(function* () {
     const client = yield* makeClient;
     return yield* client(
-      new ListDataInstances({ agentId: IRI.make(agentId), registrationId: IRI.make(registrationId) })
+      new RequestAccessUsingApplicationNeeds({ applicationId: IRI.make(applicationId), agentId: IRI.make(agentId) })
     );
+  }).pipe(Effect.provide(AuthLayer));
+  return Effect.runPromise(program);
+}
+
+export async function createInvitation(label: string, note?: string) {
+  const program = Effect.gen(function* () {
+    const client = yield* makeClient;
+    return yield* client(new CreateInvitation({ label, note }));
+  }).pipe(Effect.provide(AuthLayer));
+  return Effect.runPromise(program);
+}
+
+export async function acceptInvitation(capabilityUrl: string, label: string, note?: string) {
+  const program = Effect.gen(function* () {
+    const client = yield* makeClient;
+    return yield* client(new AcceptInvitation({ capabilityUrl, label, note }));
+  }).pipe(Effect.provide(AuthLayer));
+  return Effect.runPromise(program);
+}
+
+export async function shareResource(authorization: S.Schema.Type<typeof ShareAuthorization>) {
+  const program = Effect.gen(function* () {
+    const client = yield* makeClient;
+    return yield* client(new ShareResource({ authorization }));
+  }).pipe(Effect.provide(AuthLayer));
+  return Effect.runPromise(program);
+}
+
+export async function authorizeApp(authorization: S.Schema.Type<typeof Authorization>) {
+  const program = Effect.gen(function* () {
+    const client = yield* makeClient;
+    return yield* client(new AuthorizeApp({ authorization }));
   }).pipe(Effect.provide(AuthLayer));
   return Effect.runPromise(program);
 }

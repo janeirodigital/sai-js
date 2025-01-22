@@ -1,11 +1,8 @@
-import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
+import * as S from 'effect/Schema';
+import { AuthorizationAgent, ShareDataInstanceStructure } from '@janeirodigital/interop-authorization-agent';
 import { IRI, Resource, ShareAuthorization, ShareAuthorizationConfirmation } from '@janeirodigital/sai-api-messages';
 
-export const getResource = async (
-  saiSession: AuthorizationAgent,
-  iri: string,
-  lang: string
-) => {
+export const getResource = async (saiSession: AuthorizationAgent, iri: string, lang: string) => {
   const resource = await saiSession.factory.readable.dataInstance(iri, lang);
   if (!resource) throw new Error(`Resource not found: ${iri}`);
   return Resource.make({
@@ -28,9 +25,12 @@ export const getResource = async (
 
 export const shareResource = async (
   saiSession: AuthorizationAgent,
-  shareAuthorization: ShareAuthorization
-): Promise<ShareAuthorizationConfirmation | undefined> => {
-  const authorizationIris = await saiSession.shareDataInstance(shareAuthorization);
+  shareAuthorization: S.Schema.Type<typeof ShareAuthorization>
+): Promise<S.Schema.Type<typeof ShareAuthorizationConfirmation>> => {
+  // TODO: finde cleaner way of dealing with types
+  const authorizationIris = await saiSession.shareDataInstance(
+    shareAuthorization as unknown as ShareDataInstanceStructure
+  );
 
   // TODO: this should be handled in a worker
   await Promise.all(authorizationIris.map((authorizationIri) => saiSession.generateAccessGrant(authorizationIri)));

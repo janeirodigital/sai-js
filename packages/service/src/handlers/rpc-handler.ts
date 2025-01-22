@@ -5,17 +5,17 @@ import { getLogger } from '@digita-ai/handlersjs-logging';
 import {
   getApplications,
   getDescriptions,
-  // recordAuthorization,
+  recordAuthorization,
   getDataRegistries,
   getSocialAgents,
   // addSocialAgent,
   getUnregisteredApplication,
   getResource,
-  // shareResource,
+  shareResource,
   listDataInstances,
-  // requestAccessUsingApplicationNeeds,
-  // acceptInvitation,
-  // createInvitation,
+  requestAccessUsingApplicationNeeds,
+  acceptInvitation,
+  createInvitation,
   getSocialAgentInvitations
 } from '../services';
 import type { AuthenticatedAuthnContext, CookieContext } from '../models/http-solid-context';
@@ -56,7 +56,14 @@ export class RpcHandler extends HttpHandler {
         getSocialAgentInvitations: () => Effect.promise(() => getSocialAgentInvitations(saiSession)),
         getDataRegistries: (agentId, lang) => Effect.promise(() => getDataRegistries(saiSession, agentId, lang)),
         listDataInstances: (agentId, registrationId) =>
-          Effect.promise(() => listDataInstances(saiSession, agentId, registrationId))
+          Effect.promise(() => listDataInstances(saiSession, agentId, registrationId)),
+        requestAccessUsingApplicationNeeds: (applicationId, agentId) =>
+          Effect.promise(() => requestAccessUsingApplicationNeeds(saiSession, applicationId, agentId)),
+        createInvitation: (label, note) => Effect.promise(() => createInvitation(saiSession, { label, note })),
+        acceptInvitation: (capabilityUrl, label, note) =>
+          Effect.promise(() => acceptInvitation(saiSession, { capabilityUrl, label, note })),
+        shareResource: (authorization) => Effect.promise(() => shareResource(saiSession, authorization)),
+        authorizeApp: (authorization) => Effect.promise(() => recordAuthorization(saiSession, authorization))
       })
     );
     const rpcHandler = RpcRouter.toHandlerNoStream(router);

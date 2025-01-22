@@ -1,11 +1,30 @@
 import { Context, Effect, pipe } from 'effect';
 import * as S from 'effect/Schema';
 import { Rpc, RpcRouter } from '@effect/rpc';
-import { AgentType } from './payloads';
 import type { PushSubscription } from 'web-push';
 
 export const IRI = pipe(S.String, S.brand('IRI'));
 export type IRI = S.Schema.Type<typeof IRI>;
+
+export enum Scopes {
+  Inherited = 'Inherited',
+  All = 'All',
+  AllFromAgent = 'AllFromAgent',
+  AllFromRegistry = 'AllFromRegistry',
+  SelectedFromRegistry = 'SelectedFromRegistry'
+}
+
+export const AccessModes = {
+  Read: 'http://www.w3.org/ns/auth/acl#Read',
+  Update: 'http://www.w3.org/ns/auth/acl#Update',
+  Create: 'http://www.w3.org/ns/auth/acl#Create',
+  Delete: 'http://www.w3.org/ns/auth/acl#Delete'
+} as const;
+
+export enum AgentType {
+  SocialAgent = 'http://www.w3.org/ns/solid/interop#SocialAgent',
+  Application = 'http://www.w3.org/ns/solid/interop#Application'
+}
 
 export const WebPushSubscription = S.Struct({
   endpoint: S.String,
@@ -148,6 +167,56 @@ export const DataInstance = S.Struct({
 
 export const DataInstanceList = S.Array(DataInstance);
 
+export const ShareAuthorization = S.Struct({
+  applicationId: IRI,
+  resource: IRI,
+  agents: S.Array(IRI),
+  accessMode: S.Array(IRI),
+  children: S.Array(
+    S.Struct({
+      shapeTree: IRI,
+      accessMode: S.Array(IRI)
+    })
+  )
+});
+
+export const ShareAuthorizationConfirmation = S.Struct({
+  callbackEndpoint: S.String
+});
+
+export const BaseAuthorization = S.Struct({
+  grantee: IRI,
+  agentType: S.Enums(AgentType),
+  accessNeedGroup: IRI
+});
+
+export const DataAuthorization = S.Struct({
+  accessNeed: IRI,
+  scope: S.Enums(Scopes),
+  dataOwner: S.optional(IRI),
+  dataRegistration: S.optional(IRI),
+  dataInstances: S.optional(S.Array(IRI))
+});
+
+export const GrantedAuthorization = S.Struct({
+  ...BaseAuthorization.fields,
+  dataAuthorizations: S.Array(DataAuthorization),
+  granted: S.Literal(true)
+});
+
+export const DeniedAuthorization = S.Struct({
+  ...BaseAuthorization.fields,
+  granted: S.Literal(false)
+});
+
+export const Authorization = S.Union(GrantedAuthorization, DeniedAuthorization);
+
+export const AccessAuthorization = S.Struct({
+  id: IRI,
+  callbackEndpoint: S.String,
+  ...GrantedAuthorization.fields
+});
+
 export class GetWebId extends S.TaggedRequest<GetWebId>()('GetWebId', {
   failure: S.Never,
   success: S.String,
@@ -229,6 +298,53 @@ export class ListDataInstances extends S.TaggedRequest<ListDataInstances>()('Lis
   }
 }) {}
 
+export class RequestAccessUsingApplicationNeeds extends S.TaggedRequest<RequestAccessUsingApplicationNeeds>()(
+  'RequestAccessUsingApplicationNeeds',
+  {
+    failure: S.Never,
+    success: S.Void,
+    payload: {
+      applicationId: IRI,
+      agentId: IRI
+    }
+  }
+) {}
+
+export class CreateInvitation extends S.TaggedRequest<CreateInvitation>()('CreateInvitation', {
+  failure: S.Never,
+  success: SocialAgentInvitation,
+  payload: {
+    label: S.String,
+    note: S.optional(S.String)
+  }
+}) {}
+
+export class AcceptInvitation extends S.TaggedRequest<AcceptInvitation>()('AcceptInvitation', {
+  failure: S.Never,
+  success: SocialAgent,
+  payload: {
+    capabilityUrl: S.String,
+    label: S.String,
+    note: S.optional(S.String)
+  }
+}) {}
+
+export class ShareResource extends S.TaggedRequest<ShareResource>()('ShareResource', {
+  failure: S.Never,
+  success: ShareAuthorizationConfirmation,
+  payload: {
+    authorization: ShareAuthorization
+  }
+}) {}
+
+export class AuthorizeApp extends S.TaggedRequest<AuthorizeApp>()('AuthorizeApp', {
+  failure: S.Never,
+  success: AccessAuthorization,
+  payload: {
+    authorization: Authorization
+  }
+}) {}
+
 export class SaiService extends Context.Tag('SaiService')<
   SaiService,
   {
@@ -249,6 +365,25 @@ export class SaiService extends Context.Tag('SaiService')<
       agentId: IRI,
       registrationId: string
     ) => Effect.Effect<S.Schema.Type<typeof DataInstanceList>>;
+    readonly requestAccessUsingApplicationNeeds: (
+      applicationId: string,
+      agentId: string
+    ) => Effect.Effect<S.Schema.Type<typeof S.Void>>;
+    readonly createInvitation: (
+      label: string,
+      note?: string
+    ) => Effect.Effect<S.Schema.Type<typeof SocialAgentInvitation>>;
+    readonly acceptInvitation: (
+      capabilityUrl: string,
+      label: string,
+      note?: string
+    ) => Effect.Effect<S.Schema.Type<typeof SocialAgent>>;
+    readonly shareResource: (
+      authorization: S.Schema.Type<typeof ShareAuthorization>
+    ) => Effect.Effect<S.Schema.Type<typeof ShareAuthorizationConfirmation>>;
+    readonly authorizeApp: (
+      authorization: S.Schema.Type<typeof Authorization>
+    ) => Effect.Effect<S.Schema.Type<typeof AccessAuthorization>>;
   }
 >() {}
 
@@ -311,6 +446,36 @@ export const router = RpcRouter.make(
     Effect.gen(function* () {
       const saiService = yield* SaiService;
       return yield* saiService.listDataInstances(agentId, registrationId);
+    })
+  ),
+  Rpc.effect(RequestAccessUsingApplicationNeeds, ({ applicationId, agentId }) =>
+    Effect.gen(function* () {
+      const saiService = yield* SaiService;
+      return yield* saiService.requestAccessUsingApplicationNeeds(applicationId, agentId);
+    })
+  ),
+  Rpc.effect(CreateInvitation, ({ label, note }) =>
+    Effect.gen(function* () {
+      const saiService = yield* SaiService;
+      return yield* saiService.createInvitation(label, note);
+    })
+  ),
+  Rpc.effect(AcceptInvitation, ({ capabilityUrl, label, note }) =>
+    Effect.gen(function* () {
+      const saiService = yield* SaiService;
+      return yield* saiService.acceptInvitation(capabilityUrl, label, note);
+    })
+  ),
+  Rpc.effect(ShareResource, ({ authorization }) =>
+    Effect.gen(function* () {
+      const saiService = yield* SaiService;
+      return yield* saiService.shareResource(authorization);
+    })
+  ),
+  Rpc.effect(AuthorizeApp, ({ authorization }) =>
+    Effect.gen(function* () {
+      const saiService = yield* SaiService;
+      return yield* saiService.authorizeApp(authorization);
     })
   )
 );

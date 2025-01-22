@@ -1,6 +1,6 @@
 import { CRUDSocialAgentRegistration } from '@janeirodigital/interop-data-model';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
-import { IRI, SocialAgent, SocialAgentOld } from '@janeirodigital/sai-api-messages';
+import { IRI, SocialAgent } from '@janeirodigital/sai-api-messages';
 import { getLogger } from '@digita-ai/handlersjs-logging';
 
 const logger = getLogger();
@@ -17,6 +17,7 @@ export const buildSocialAgentProfile = (registration: CRUDSocialAgentRegistratio
     accessRequested: !!registration.hasAccessNeedGroup,
     accessNeedGroup: registration.reciprocalRegistration?.hasAccessNeedGroup
   });
+
 export const getSocialAgents = async (saiSession: AuthorizationAgent) => {
   const profiles = [];
   for await (const registration of saiSession.socialAgentRegistrations) {
@@ -28,7 +29,7 @@ export const getSocialAgents = async (saiSession: AuthorizationAgent) => {
 export const addSocialAgent = async (
   saiSession: AuthorizationAgent,
   data: { webId: string; label: string; note?: string }
-): Promise<SocialAgentOld> => {
+) => {
   const existing = await saiSession.findSocialAgentRegistration(data.webId);
   if (existing) {
     logger.error('SocialAgentRegistration already exists', { webId: data.webId });

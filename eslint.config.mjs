@@ -30,7 +30,8 @@ export default tseslint.config(
       'no-shadow': 'off',
       '@typescript-eslint/no-shadow': 'warn',
       'consistent-return': 'off',
-      'vue/multi-word-component-names': 'off'
+      'vue/multi-word-component-names': 'off',
+      '@typescript-eslint/no-duplicate-enum-values': 'off',
     },
   }
 )

@@ -7,7 +7,6 @@ export * from './handlers/login-redirect-handler';
 export * from './handlers/agents-handler';
 export * from './handlers/middleware-http-handler';
 export * from './handlers/authn-context-handler';
-export * from './handlers/api-handler';
 export * from './handlers/rpc-handler';
 export * from './handlers/webhooks-handler';
 export * from './handlers/invitations-handler';

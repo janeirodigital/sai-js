@@ -1,8 +1,8 @@
-import * as S from 'effect/Schema'
+import * as S from 'effect/Schema';
 import { randomUUID } from 'crypto';
 import { CRUDSocialAgentInvitation } from '@janeirodigital/interop-data-model';
 import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
-import { IRI, Invitation, InvitationBase, SocialAgentInvitation, SocialAgentOld } from '@janeirodigital/sai-api-messages';
+import { IRI, SocialAgent, SocialAgentInvitation } from '@janeirodigital/sai-api-messages';
 import { invitationCapabilityUrl } from '../url-templates';
 import { buildSocialAgentProfile } from './social-agents';
 
@@ -27,7 +27,7 @@ export async function getSocialAgentInvitations(saiSession: AuthorizationAgent) 
 
 export async function createInvitation(
   saiSession: AuthorizationAgent,
-  base: InvitationBase
+  base: { label: string; note?: string }
 ): Promise<S.Schema.Type<typeof SocialAgentInvitation>> {
   const socialAgentInvitation = await saiSession.registrySet.hasAgentRegistry.addSocialAgentInvitation(
     invitationCapabilityUrl(saiSession.webId, randomUUID()),
@@ -37,7 +37,10 @@ export async function createInvitation(
   return buildSocialAgentInvitation(socialAgentInvitation);
 }
 
-export async function acceptInvitation(saiSession: AuthorizationAgent, invitation: Invitation): Promise<SocialAgentOld> {
+export async function acceptInvitation(
+  saiSession: AuthorizationAgent,
+  invitation: { capabilityUrl: string; label: string; note?: string }
+): Promise<S.Schema.Type<typeof SocialAgent>> {
   // discover who issued the invitation
   const response = await saiSession.fetch.raw(invitation.capabilityUrl, {
     method: 'POST'

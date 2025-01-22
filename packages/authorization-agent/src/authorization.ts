@@ -19,6 +19,7 @@ interface BaseAuthorization {
 }
 
 // TODO: de-duplicate with AccessAuthorizationData (in immutable/access-authorization)
+// TODO: de-duplicate with Authorization (in api-messages)
 export interface GrantedAuthorization extends BaseAuthorization {
   dataAuthorizations: DataAuthorizationData[];
   granted: true;

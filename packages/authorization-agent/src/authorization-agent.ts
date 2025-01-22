@@ -40,7 +40,7 @@ export interface AgentWithAccess {
   accessMode: string[];
 }
 
-// TODO: duplicats ShareAuthorization from api-messages (sai-impl-service)
+// TODO: duplicates ShareAuthorization from api-messages (sai-impl-service)
 export type ShareDataInstanceStructure = {
   applicationId: string;
   resource: string;
