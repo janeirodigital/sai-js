@@ -38,11 +38,7 @@ describe('constructor', () => {
       ...commonData
     };
     const allFromRegistryQuads = [
-      DataFactory.quad(
-        DataFactory.namedNode(snippetIri),
-        INTEROP.scopeOfGrant,
-        DataFactory.namedNode(INTEROP.AllFromRegistry)
-      ),
+      DataFactory.quad(DataFactory.namedNode(snippetIri), INTEROP.scopeOfGrant, INTEROP.AllFromRegistry),
       ...commonQuads
     ];
 
@@ -57,11 +53,7 @@ describe('constructor', () => {
       ...commonData
     };
     const selectedFromRegistryQuads = [
-      DataFactory.quad(
-        DataFactory.namedNode(snippetIri),
-        INTEROP.scopeOfGrant,
-        DataFactory.namedNode(INTEROP.SelectedFromRegistry)
-      ),
+      DataFactory.quad(DataFactory.namedNode(snippetIri), INTEROP.scopeOfGrant, INTEROP.SelectedFromRegistry),
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.hasDataInstance,
@@ -86,11 +78,7 @@ describe('constructor', () => {
       ...commonData
     };
     const inheritedQuads = [
-      DataFactory.quad(
-        DataFactory.namedNode(snippetIri),
-        INTEROP.scopeOfGrant,
-        DataFactory.namedNode(INTEROP.Inherited)
-      ),
+      DataFactory.quad(DataFactory.namedNode(snippetIri), INTEROP.scopeOfGrant, INTEROP.Inherited),
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.inheritsFromGrant,
@@ -110,16 +98,8 @@ describe('constructor', () => {
       ...commonData
     };
     const allFromRegistryQuads = [
-      DataFactory.quad(
-        DataFactory.namedNode(snippetIri),
-        INTEROP.scopeOfGrant,
-        DataFactory.namedNode(INTEROP.AllFromRegistry)
-      ),
-      DataFactory.quad(
-        DataFactory.namedNode(snippetIri),
-        INTEROP.creatorAccessMode,
-        DataFactory.namedNode(ACL.Update.value)
-      ),
+      DataFactory.quad(DataFactory.namedNode(snippetIri), INTEROP.scopeOfGrant, INTEROP.AllFromRegistry),
+      DataFactory.quad(DataFactory.namedNode(snippetIri), INTEROP.creatorAccessMode, ACL.Update),
       ...commonQuads
     ];
 

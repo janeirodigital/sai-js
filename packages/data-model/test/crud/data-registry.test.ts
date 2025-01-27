@@ -9,7 +9,7 @@ import { AuthorizationAgentFactory, ReadableDataRegistration, CRUDDataRegistrati
 const webId = 'https://alice.example/#id';
 const agentId = 'https://jarvis.alice.example/#agent';
 const factory = new AuthorizationAgentFactory(webId, agentId, { fetch, randomUUID });
-const snippetIri = 'https://home.alice.example/2d3d97b4-a26d-434e-afa2-e3bc8e8e2b56';
+const snippetIri = 'https://home.alice.example/2d3d97b4-a26d-434e-afa2-e3bc8e8e2b56/';
 
 test('hasDataRegistration', async () => {
   const dataRegistry = await factory.crud.dataRegistry(snippetIri);

@@ -38,11 +38,7 @@ export class CRUDDataRegistry extends CRUDContainer {
     await dataRegistration.create();
 
     // link to create data registration
-    const quad = DataFactory.quad(
-      DataFactory.namedNode(this.iri),
-      INTEROP.hasDataRegistration,
-      DataFactory.namedNode(dataRegistration.iri)
-    );
+    const quad = DataFactory.quad(this.node, INTEROP.hasDataRegistration, dataRegistration.node);
     this.dataset.add(quad);
     await this.addStatement(quad);
     return dataRegistration;

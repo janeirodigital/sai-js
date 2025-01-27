@@ -28,7 +28,7 @@ const commonQuads = [
     INTEROP.hasDataRegistration,
     DataFactory.namedNode(commonData.hasDataRegistration)
   ),
-  DataFactory.quad(DataFactory.namedNode(snippetIri), INTEROP.accessMode, DataFactory.namedNode(ACL.Read.value))
+  DataFactory.quad(DataFactory.namedNode(snippetIri), INTEROP.accessMode, ACL.Read)
 ];
 
 describe('constructor', () => {
@@ -44,11 +44,7 @@ describe('constructor', () => {
         INTEROP.dataOwner,
         DataFactory.namedNode(allFromRegistryData.dataOwner)
       ),
-      DataFactory.quad(
-        DataFactory.namedNode(snippetIri),
-        INTEROP.scopeOfAuthorization,
-        DataFactory.namedNode(INTEROP.AllFromRegistry)
-      ),
+      DataFactory.quad(DataFactory.namedNode(snippetIri), INTEROP.scopeOfAuthorization, INTEROP.AllFromRegistry),
       ...commonQuads
     ];
 
@@ -69,11 +65,7 @@ describe('constructor', () => {
         INTEROP.dataOwner,
         DataFactory.namedNode(selectedFromRegistryData.dataOwner)
       ),
-      DataFactory.quad(
-        DataFactory.namedNode(snippetIri),
-        INTEROP.scopeOfAuthorization,
-        DataFactory.namedNode(INTEROP.SelectedFromRegistry)
-      ),
+      DataFactory.quad(DataFactory.namedNode(snippetIri), INTEROP.scopeOfAuthorization, INTEROP.SelectedFromRegistry),
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.hasDataInstance,
@@ -104,11 +96,7 @@ describe('constructor', () => {
         INTEROP.dataOwner,
         DataFactory.namedNode(inheritedData.dataOwner)
       ),
-      DataFactory.quad(
-        DataFactory.namedNode(snippetIri),
-        INTEROP.scopeOfAuthorization,
-        DataFactory.namedNode(INTEROP.Inherited)
-      ),
+      DataFactory.quad(DataFactory.namedNode(snippetIri), INTEROP.scopeOfAuthorization, INTEROP.Inherited),
       DataFactory.quad(
         DataFactory.namedNode(snippetIri),
         INTEROP.inheritsFromAuthorization,
@@ -134,16 +122,8 @@ describe('constructor', () => {
         INTEROP.dataOwner,
         DataFactory.namedNode(allFromRegistryData.dataOwner)
       ),
-      DataFactory.quad(
-        DataFactory.namedNode(snippetIri),
-        INTEROP.scopeOfAuthorization,
-        DataFactory.namedNode(INTEROP.AllFromRegistry)
-      ),
-      DataFactory.quad(
-        DataFactory.namedNode(snippetIri),
-        INTEROP.creatorAccessMode,
-        DataFactory.namedNode(ACL.Update.value)
-      ),
+      DataFactory.quad(DataFactory.namedNode(snippetIri), INTEROP.scopeOfAuthorization, INTEROP.AllFromRegistry),
+      DataFactory.quad(DataFactory.namedNode(snippetIri), INTEROP.creatorAccessMode, ACL.Update.value),
       ...commonQuads
     ];
 
