@@ -23,12 +23,7 @@ export class NotificationManager extends EventTarget {
   public async subscribeViaPush(subscription: PushSubscription, topic: string): Promise<NotificationChannel> {
     if (!this.webPushService) throw new Error('Web Push Service not found');
     const channel = {
-      '@context': [
-        'https://www.w3.org/ns/solid/notifications-context/v1',
-        {
-          notify: 'http://www.w3.org/ns/solid/notifications#'
-        }
-      ],
+      '@context': ['https://www.w3.org/ns/solid/notifications-context/v1'],
       type: 'notify:WebPushChannel2023',
       topic,
       sendTo: subscription.endpoint,

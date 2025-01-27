@@ -12,8 +12,7 @@ function clientIdDocument(agentUrl: string) {
       'https://www.w3.org/ns/solid/oidc-context.jsonld',
       'https://www.w3.org/ns/solid/notifications-context/v1',
       {
-        interop: 'http://www.w3.org/ns/solid/interop#',
-        notify: 'http://www.w3.org/ns/solid/notifications#'
+        interop: 'http://www.w3.org/ns/solid/interop#'
       }
     ],
     client_id: agentUrl,

@@ -32,7 +32,7 @@ export default defineConfig({
       devOptions: {
         enabled: true
       }
-    }),
+    })
   ],
   define: { 'process.env': {} },
   resolve: {
@@ -44,6 +44,7 @@ export default defineConfig({
   server: {
     port: 4500,
     host: '0.0.0.0',
+    allowedHosts: ['vuejectron.docker'],
     fs: {
       strict: false
     }
