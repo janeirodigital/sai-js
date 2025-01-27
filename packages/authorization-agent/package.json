@@ -48,10 +48,11 @@
   "dependencies": {
     "@janeirodigital/interop-data-model": "^1.0.0-rc.24",
     "@janeirodigital/interop-utils": "^1.0.0-rc.24",
-    "n3": "^1.17.1"
+    "n3": "^1.23.1"
   },
   "devDependencies": {
     "@janeirodigital/interop-test-utils": "^1.0.0-rc.24",
-    "@rdfjs/types": "^1.1.0"
+    "@rdfjs/types": "^1.1.0",
+    "@types/n3": "^1.21.1"
   }
 }

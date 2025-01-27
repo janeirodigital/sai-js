@@ -57,7 +57,7 @@
     "dotenv": "^16.3.1",
     "effect": "^3.10.8",
     "ioredis": "^5.3.2",
-    "n3": "^1.17.1",
+    "n3": "^1.23.1",
     "rxjs": "^7.8.1",
     "web-push": "^3.6.6",
     "yargs": "^17.7.2"
@@ -67,7 +67,7 @@
     "@rdfjs/types": "^1.1.0",
     "@solid-notifications/types": "^0.1.2",
     "@types/body-parser": "^1.19.3",
-    "@types/n3": "^1.16.2",
+    "@types/n3": "^1.21.1",
     "@types/web-push": "^3.6.1",
     "@types/yargs": "^17.0.28"
   }

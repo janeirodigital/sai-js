@@ -47,13 +47,13 @@
   },
   "dependencies": {
     "@janeirodigital/interop-utils": "^1.0.0-rc.24",
-    "n3": "^1.17.1",
+    "n3": "^1.23.1",
     "ts-mixer": "^6.0.3",
     "typescript-memoize": "^1.1.1"
   },
   "devDependencies": {
     "@janeirodigital/interop-test-utils": "^1.0.0-rc.24",
     "@rdfjs/types": "^1.1.0",
-    "@types/n3": "^1.16.2"
+    "@types/n3": "^1.21.1"
   }
 }

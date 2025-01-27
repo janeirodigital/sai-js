@@ -49,12 +49,13 @@
     "@janeirodigital/interop-data-model": "^1.0.0-rc.24",
     "@janeirodigital/interop-utils": "^1.0.0-rc.24",
     "@solid-notifications/subscription": "^0.1.2",
-    "n3": "^1.17.1"
+    "n3": "^1.23.1"
   },
   "devDependencies": {
     "@janeirodigital/css-test-utils": "^1.0.0-rc.24",
     "@janeirodigital/interop-test-utils": "^1.0.0-rc.24",
     "@solid-notifications/types": "^0.1.2",
-    "@rdfjs/types": "^1.1.0"
+    "@rdfjs/types": "^1.1.0",
+    "@types/n3": "^1.21.1"
   }
 }
