@@ -16,7 +16,6 @@
   "scripts": {
     "build": "rollup --config rollup.config.mjs",
     "clean": "rimraf dist tsconfig.tsbuildinfo",
-    "test": "NODE_ENV=vitest vitest run --coverage",
     "publish": "pnpm run clean && pnpm run build"
   },
   "dependencies": {
