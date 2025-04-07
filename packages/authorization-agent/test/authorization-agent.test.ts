@@ -14,6 +14,7 @@ import {
 } from '@janeirodigital/interop-data-model';
 import { asyncIterableToArray, ACL, INTEROP } from '@janeirodigital/interop-utils';
 import { AccessAuthorizationStructure, AuthorizationAgent, ShareDataInstanceStructure } from '../src';
+import { DataFactory } from 'n3';
 
 const webId = 'https://alice.example/#id';
 const agentId = 'https://alice.jarvis.example/#agent';
@@ -139,12 +140,23 @@ describe('recordAccessAuthorization', () => {
       'https://auth.alice.example/5ae2442a-75f7-4d5a-ba81-df0f5033e219',
       'https://auth.alice.example/99c56d7c-6ac3-4758-b234-5e33d3984d0b'
     ];
-    agent.registrySet.hasAuthorizationRegistry.findAuthorization = vi.fn(
+    const priorAuthorizationIri = 'https://auth.alice.example/some-authorization';
+    const authorizationRegistry = agent.registrySet.hasAuthorizationRegistry;
+    authorizationRegistry.findAuthorization = vi.fn(
       async () =>
         ({
+          iri: priorAuthorizationIri,
           hasDataAuthorization: existingDataAuthorizations,
           dataAuthorizations: [] as unknown as AsyncIterable<ReadableDataAuthorization>
         }) as ReadableAccessAuthorization
+    );
+
+    authorizationRegistry.dataset.add(
+      DataFactory.quad(
+        authorizationRegistry.node,
+        INTEROP.hasAccessAuthorization,
+        DataFactory.namedNode(priorAuthorizationIri)
+      )
     );
 
     const accessAuthorization = await agent.recordAccessAuthorization(
@@ -194,12 +206,23 @@ describe('recordAccessAuthorization', () => {
       matchingDataAuthorization.hasInheritingAuthorization[0].iri
     ];
 
-    agent.registrySet.hasAuthorizationRegistry.findAuthorization = vi.fn(
+    const priorAuthorizationIri = 'https://auth.alice.example/some-authorization';
+    const authorizationRegistry = agent.registrySet.hasAuthorizationRegistry;
+    authorizationRegistry.findAuthorization = vi.fn(
       async () =>
         ({
+          iri: priorAuthorizationIri,
           hasDataAuthorization: existingDataAuthorizations,
           dataAuthorizations: [matchingDataAuthorization] as unknown as AsyncIterable<ReadableDataAuthorization>
         }) as ReadableAccessAuthorization
+    );
+
+    authorizationRegistry.dataset.add(
+      DataFactory.quad(
+        authorizationRegistry.node,
+        INTEROP.hasAccessAuthorization,
+        DataFactory.namedNode(priorAuthorizationIri)
+      )
     );
 
     const accessAuthorization = await agent.recordAccessAuthorization(
