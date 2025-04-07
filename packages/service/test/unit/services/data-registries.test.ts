@@ -62,7 +62,7 @@ const saiSession = {
 
 describe('owned data', () => {
   test('gets well formated data registries', async () => {
-    const result = await getDataRegistries(aliceId, 'en', saiSession);
+    const result = await getDataRegistries(saiSession, aliceId, 'en');
     expect(result).toEqual([
       {
         id: 'https://rnd.acme.example/data/',
@@ -110,19 +110,19 @@ describe('owned data', () => {
 
 describe('peer data', () => {
   test.skip('throw if peer registration not found', async () => {
-    expect(getDataRegistries(bobId, 'en', saiSession)).toThrow('missing social agent registration');
+    expect(getDataRegistries(saiSession, bobId, 'en')).toThrow('missing social agent registration');
   });
 
   test('throw if reciprocal registration not found', async () => {
     saiSession.findSocialAgentRegistration.mockResolvedValueOnce({} as CRUDSocialAgentRegistration);
-    expect(getDataRegistries(bobId, 'en', saiSession)).rejects.toThrow('missing social agent registration');
+    expect(getDataRegistries(saiSession, bobId, 'en')).rejects.toThrow('missing social agent registration');
   });
 
   test('returns empty array if no access grant', async () => {
     saiSession.findSocialAgentRegistration.mockResolvedValueOnce({
       reciprocalRegistration: {} as CRUDSocialAgentRegistration
     } as CRUDSocialAgentRegistration);
-    const result = await getDataRegistries(bobId, 'en', saiSession);
+    const result = await getDataRegistries(saiSession, bobId, 'en');
     expect(result).toEqual([]);
   });
 
@@ -155,7 +155,7 @@ describe('peer data', () => {
         }
       } as unknown as CRUDSocialAgentRegistration
     } as CRUDSocialAgentRegistration);
-    const result = await getDataRegistries(bobId, 'en', saiSession);
+    const result = await getDataRegistries(saiSession, bobId, 'en');
     expect(result).toEqual([
       {
         id: proRegistryIri,

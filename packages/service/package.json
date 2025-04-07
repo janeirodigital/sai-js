@@ -28,6 +28,7 @@
     "build:ts": "tsc",
     "clean": "rm -rf dist/",
     "test": "NODE_ENV=vitest vitest run --coverage",
+    "test:debug": "NODE_ENV=vitest vitest --run --inspect-brk --no-file-parallelism",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write {src,test}/**/*.ts"

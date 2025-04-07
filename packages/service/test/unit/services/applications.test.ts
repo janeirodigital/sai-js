@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest';
 import type { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
-import { getApplications, getUnregisteredApplicationProfile } from '../../../src/services/applications';
+import { getApplications, getUnregisteredApplication } from '../../../src/services/applications';
 
 const saiSession = {
   applicationRegistrations: [
@@ -54,7 +54,7 @@ test('get unregistered application profile', async () => {
     }
   } as unknown as AuthorizationAgent;
 
-  const profile = await getUnregisteredApplicationProfile(agent, 'https://id');
+  const profile = await getUnregisteredApplication(agent, 'https://id');
   expect(profile.name).toEqual('name');
   expect(profile.logo).toEqual('http://logo');
   expect(profile.accessNeedGroup).toEqual('https://group');

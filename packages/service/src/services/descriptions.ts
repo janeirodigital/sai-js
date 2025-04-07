@@ -1,4 +1,5 @@
 import * as S from 'effect/Schema';
+import type { Brand } from 'effect/Brand';
 import {
   CRUDSocialAgentRegistration,
   DataAuthorizationData,
@@ -55,7 +56,7 @@ async function findUserDataRegistrations(accessNeedGroup: ReadableAccessNeedGrou
       if (dataRegistration)
         dataRegistrations.push({
           id: IRI.make(dataRegistration.iri),
-          // dataRegistry: dataRegistry.iri,
+          dataRegistry: IRI.make(dataRegistry.iri),
           label: `${dataRegistration.iri.split('/').slice(0, 4).join('/')}/`, // TODO get proper label,
           shapeTree: accessNeed.shapeTree.iri,
           count: dataRegistration.contains.length
@@ -121,7 +122,17 @@ export const getDescriptions = async (
 
   const accessNeedGroup = await saiSession.factory.readable.accessNeedGroup(accessNeedGroupIri, preferredLang);
 
-  const dataOwners = [
+  const dataOwners: {
+    id: string & Brand<'IRI'>;
+    label: string;
+    dataRegistrations: {
+      id: string & Brand<'IRI'>;
+      dataRegistry?: string & Brand<'IRI'>;
+      label: string;
+      shapeTree: string;
+      count: number;
+    }[];
+  }[] = [
     {
       id: IRI.make(saiSession.webId),
       label: saiSession.webId, // TODO get from user's webid document

@@ -21,7 +21,7 @@ const saiSession = {
 } as unknown as AuthorizationAgent;
 
 test('sets access need group using one from the app', async () => {
-  await requestAccessUsingApplicationNeeds(applicationIri, webId, saiSession);
+  await requestAccessUsingApplicationNeeds(saiSession, applicationIri, webId);
 
   expect(saiSession.findSocialAgentRegistration).toBeCalledWith(webId);
   expect(saiSession.factory.readable.clientIdDocument).toBeCalledWith(applicationIri);

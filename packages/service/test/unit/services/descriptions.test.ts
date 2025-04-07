@@ -1,4 +1,5 @@
 import { vi, describe, test, expect, beforeEach } from 'vitest';
+import * as S from 'effect/Schema';
 import type { AuthorizationAgent, NestedDataAuthorizationData } from '@janeirodigital/interop-authorization-agent';
 import {
   CRUDApplicationRegistration,
@@ -62,7 +63,7 @@ describe('getDescriptions', () => {
   test('returns null if no access need group', async () => {
     saiSession.factory.readable.clientIdDocument.mockResolvedValueOnce({} as unknown as ReadableClientIdDocument);
 
-    const descriptions = await getDescriptions(applicationIri, AgentType.Application, lang, saiSession);
+    const descriptions = await getDescriptions(saiSession, applicationIri, AgentType.Application, lang);
     expect(descriptions).toBeNull();
   });
 
@@ -79,7 +80,7 @@ describe('getDescriptions', () => {
       },
       getDescription: vi.fn(async (preferredLang: string) => childAccessNeed.descriptions[preferredLang]),
       required: true,
-      accessMode: [ACL.Read],
+      accessMode: [ACL.Read.value],
       shapeTree: {
         iri: 'https://solidshapes.example/trees/Task',
         descriptions: {
@@ -100,7 +101,7 @@ describe('getDescriptions', () => {
       },
       getDescription: vi.fn(async (preferredLang: string) => accessNeed.descriptions[preferredLang]),
       required: true,
-      accessMode: [ACL.Read],
+      accessMode: [ACL.Read.value],
       shapeTree: {
         iri: projectShapeTree,
         descriptions: {
@@ -215,7 +216,7 @@ describe('getDescriptions', () => {
         }
       ]
     };
-    const descriptions = await getDescriptions(applicationIri, AgentType.Application, lang, saiSession);
+    const descriptions = await getDescriptions(saiSession, applicationIri, AgentType.Application, lang);
     expect(descriptions).toStrictEqual(expected);
   });
 });
@@ -243,13 +244,13 @@ describe('listDataInstances', () => {
     const count = 23;
     const template = {
       iri: 'https://iri.example',
-      lable: 'Example'
+      label: 'Example'
     } as unknown as ReadableDataInstance;
     saiSession.factory.readable.dataRegistration.mockResolvedValueOnce({
       contains: new Array(count)
     } as unknown as ReadableDataRegistration);
     saiSession.factory.readable.dataInstance.mockResolvedValue(template);
-    const result = await listDataInstances(webId, registrationId, saiSession);
+    const result = await listDataInstances(saiSession, webId, registrationId);
     expect(saiSession.factory.readable.dataRegistration).toBeCalledWith(registrationId);
     expect(saiSession.factory.readable.dataInstance).toHaveBeenCalledTimes(count);
     for (const instance of result) {
@@ -310,7 +311,7 @@ describe('recordAuthorization', () => {
         scope: 'Inherited'
       }
     ]
-  } as unknown as Authorization;
+  } as unknown as S.Schema.Type<typeof Authorization>;
 
   const dataAuthorizations = [
     {
@@ -363,12 +364,12 @@ describe('recordAuthorization', () => {
   } as unknown as ReadableAccessAuthorization);
 
   describe('granted', () => {
-    const grantedAuthorization = { ...authorization, granted: true } as Authorization;
+    const grantedAuthorization = { ...authorization, granted: true } as S.Schema.Type<typeof Authorization>;
     test('works for existing application registration', async () => {
       saiSession.factory.readable.clientIdDocument.mockResolvedValue(clientIdDocument);
       saiSession.findApplicationRegistration.mockResolvedValueOnce({} as unknown as CRUDApplicationRegistration);
 
-      const accessAuthorization = await recordAuthorization(grantedAuthorization, saiSession);
+      const accessAuthorization = await recordAuthorization(saiSession, grantedAuthorization);
       expect(saiSession.registrySet.hasAgentRegistry.addApplicationRegistration).not.toBeCalled();
       expect(saiSession.factory.readable.accessNeedGroup).toBeCalledWith(accessNeedGroupIri);
       expect(saiSession.recordAccessAuthorization).toBeCalledWith({
@@ -388,7 +389,7 @@ describe('recordAuthorization', () => {
     test('creates application registration if one does not exist', async () => {
       saiSession.findApplicationRegistration.mockResolvedValue(undefined);
       saiSession.factory.readable.clientIdDocument.mockResolvedValue(clientIdDocument);
-      await recordAuthorization(grantedAuthorization, saiSession);
+      await recordAuthorization(saiSession, grantedAuthorization);
       expect(saiSession.registrySet.hasAgentRegistry.addApplicationRegistration).toBeCalledWith(
         grantedAuthorization.grantee
       );
@@ -396,13 +397,13 @@ describe('recordAuthorization', () => {
   });
 
   describe('not granted', () => {
-    const notGrantedAuthorization = { ...authorization, granted: false } as Authorization;
+    const notGrantedAuthorization = { ...authorization, granted: false } as S.Schema.Type<typeof Authorization>;
 
     test('works for existing application registration', async () => {
       saiSession.factory.readable.clientIdDocument.mockResolvedValue(clientIdDocument);
       saiSession.findApplicationRegistration.mockResolvedValueOnce({} as unknown as CRUDApplicationRegistration);
 
-      const accessAuthorization = await recordAuthorization(notGrantedAuthorization, saiSession);
+      const accessAuthorization = await recordAuthorization(saiSession, notGrantedAuthorization);
       expect(saiSession.registrySet.hasAgentRegistry.addApplicationRegistration).not.toBeCalled();
       expect(saiSession.recordAccessAuthorization).toBeCalledWith({
         grantee: notGrantedAuthorization.grantee,
@@ -420,7 +421,7 @@ describe('recordAuthorization', () => {
     test('creates application registration if one does not exist', async () => {
       saiSession.findApplicationRegistration.mockResolvedValue(undefined);
       saiSession.factory.readable.clientIdDocument.mockResolvedValue(clientIdDocument);
-      await recordAuthorization(notGrantedAuthorization, saiSession);
+      await recordAuthorization(saiSession, notGrantedAuthorization);
       expect(saiSession.registrySet.hasAgentRegistry.addApplicationRegistration).toBeCalledWith(
         notGrantedAuthorization.grantee
       );

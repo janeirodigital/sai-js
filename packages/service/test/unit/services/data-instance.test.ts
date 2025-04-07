@@ -1,4 +1,5 @@
 import { vi, describe, test, expect } from 'vitest';
+import * as S from 'effect/Schema';
 import { AgentWithAccess, AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
 import { ReadableClientIdDocument, ReadableDataInstance } from '@janeirodigital/interop-data-model';
 import { ShareAuthorization } from '@janeirodigital/sai-api-messages';
@@ -97,7 +98,7 @@ describe('shareResource', () => {
     saiSession.factory.readable.clientIdDocument.mockResolvedValueOnce(clientIdDocument);
     saiSession.shareDataInstance.mockResolvedValueOnce(authorizationIris);
 
-    const shareAuthorization = {} as unknown as ShareAuthorization;
+    const shareAuthorization = {} as unknown as S.Schema.Type<typeof ShareAuthorization>;
     const expected = {
       callbackEndpoint: clientIdDocument.callbackEndpoint
     };
