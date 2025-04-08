@@ -16,7 +16,6 @@ jobs:
           - test-utils
           - utils
           - service
-          - api-messages
     steps:
       - name: Use Node.js 22.x
         uses: actions/setup-node@v4

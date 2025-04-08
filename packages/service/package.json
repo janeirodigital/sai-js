@@ -53,7 +53,7 @@
     "@solid-notifications/subscription": "^0.1.2",
     "@solid/access-token-verifier": "^2.0.5",
     "bullmq": "^4.12.4",
-    "componentsjs": "^5.4.2",
+    "componentsjs": "^6.3.0",
     "cookie": "^1.0.2",
     "dotenv": "^16.3.1",
     "effect": "^3.10.8",

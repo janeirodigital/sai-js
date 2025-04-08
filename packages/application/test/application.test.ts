@@ -11,8 +11,8 @@ import { Application } from '../src';
 vi.setConfig({ testTimeout: 200_000, hookTimeout: 200_000 });
 
 const stu = new SolidTestUtils(accounts.luka);
-beforeAll(async () => stu.beforeAll());
-afterAll(async () => stu.afterAll());
+beforeAll(async () => await stu.beforeAll());
+afterAll(async () => await stu.afterAll());
 
 const webId = 'https://alice.example/#id';
 const applicationId = 'https://projectron.example/';
