@@ -1,7 +1,7 @@
+import * as effect from '@/effect'
+import { useCoreStore } from '@/store/core'
 // Composables
-import { createRouter, createWebHistory } from 'vue-router';
-import { useCoreStore } from '@/store/core';
-import * as effect from '@/effect';
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {
@@ -16,67 +16,71 @@ const routes = [
           {
             path: '/applications',
             name: 'application-list',
-            component: () => import(/* webpackChunkName: "application-list" */ '@/views/ApplicationList.vue')
+            component: () =>
+              import(/* webpackChunkName: "application-list" */ '@/views/ApplicationList.vue'),
           },
           {
             path: '/social-agents',
             name: 'social-agent-list',
-            component: () => import(/* webpackChunkName: "social-agent-list" */ '@/views/SocialAgentList.vue')
+            component: () =>
+              import(/* webpackChunkName: "social-agent-list" */ '@/views/SocialAgentList.vue'),
           },
           {
             path: '/data-registries',
             name: 'data-registry-list',
-            component: () => import(/* webpackChunkName: "data-registry-list" */ '@/views/DataRegistryList.vue')
+            component: () =>
+              import(/* webpackChunkName: "data-registry-list" */ '@/views/DataRegistryList.vue'),
           },
           {
             path: '/settings',
             name: 'settings',
-            component: () => import(/* webpackChunkName: "settings" */ '@/views/Settings.vue')
+            component: () => import(/* webpackChunkName: "settings" */ '@/views/Settings.vue'),
           },
           {
             path: '/invitation',
             name: 'invitation',
-            component: () => import(/* webpackChunkName: "invitation" */ '@/views/Invitation.vue')
-          }
-        ]
+            component: () => import(/* webpackChunkName: "invitation" */ '@/views/Invitation.vue'),
+          },
+        ],
       },
       {
         path: '/authorize',
         name: 'authorization',
-        component: () => import(/* webpackChunkName: "authorization" */ '@/views/Authorization.vue')
+        component: () =>
+          import(/* webpackChunkName: "authorization" */ '@/views/Authorization.vue'),
       },
       {
         path: '/login',
         name: 'login',
-        component: () => import(/* webpackChunkName: "authn" */ '@/views/Authentication.vue')
-      }
-    ]
-  }
-];
+        component: () => import(/* webpackChunkName: "authn" */ '@/views/Authentication.vue'),
+      },
+    ],
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
-});
+  routes,
+})
 
 router.beforeEach(async (to) => {
-  if (to.name === 'login') return undefined;
+  if (to.name === 'login') return undefined
 
-  const coreStore = useCoreStore();
+  const coreStore = useCoreStore()
 
   if (coreStore.userId) {
-    return;
+    return
   }
   try {
-    const webId = await effect.getWebId();
+    const webId = await effect.getWebId()
     if (webId) {
-      coreStore.userId = webId;
+      coreStore.userId = webId
     } else {
-      return { name: 'login' };
+      return { name: 'login' }
     }
   } catch {
-    return { name: 'login' };
+    return { name: 'login' }
   }
-});
+})
 
-export default router;
+export default router

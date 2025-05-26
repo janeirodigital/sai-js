@@ -1,8 +1,8 @@
-import { DatasetCore } from '@rdfjs/types';
-import { Memoize } from 'typescript-memoize';
-import { ACL } from '@janeirodigital/interop-utils';
-import { AbstractDataGrant, InheritableDataGrant } from '.';
-import { DataInstance, InteropFactory } from '..';
+import { ACL } from '@janeirodigital/interop-utils'
+import type { DatasetCore } from '@rdfjs/types'
+import { Memoize } from 'typescript-memoize'
+import { AbstractDataGrant, InheritableDataGrant } from '.'
+import type { DataInstance, InteropFactory } from '..'
 
 export class AllFromRegistryDataGrant extends InheritableDataGrant {
   public static async build(
@@ -10,33 +10,35 @@ export class AllFromRegistryDataGrant extends InheritableDataGrant {
     factory: InteropFactory,
     dataset: DatasetCore
   ): Promise<AllFromRegistryDataGrant> {
-    const instance = new AllFromRegistryDataGrant(iri, factory, dataset);
-    await instance.bootstrap();
-    return instance;
+    const instance = new AllFromRegistryDataGrant(iri, factory, dataset)
+    await instance.bootstrap()
+    return instance
   }
 
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
-    const { factory } = this;
+    const { factory } = this
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const dataGrant = this;
+    const dataGrant = this
     return {
       async *[Symbol.asyncIterator]() {
-        const dataRegistration = await factory.readable.dataRegistration(dataGrant.hasDataRegistration);
+        const dataRegistration = await factory.readable.dataRegistration(
+          dataGrant.hasDataRegistration
+        )
         for (const instanceIri of dataRegistration.contains) {
-          yield factory.dataInstance(instanceIri, dataGrant);
+          yield factory.dataInstance(instanceIri, dataGrant)
         }
-      }
-    };
+      },
+    }
   }
 
   public async newDataInstance(): Promise<DataInstance> {
-    return AbstractDataGrant.newDataInstance(this);
+    return AbstractDataGrant.newDataInstance(this)
   }
 
   // TODO (elf-pavlik) verify expected access mode
   // https://github.com/solid/data-interoperability-panel/issues/159
   @Memoize()
   get canCreate(): boolean {
-    return this.accessMode.includes(ACL.Write.value);
+    return this.accessMode.includes(ACL.Write.value)
   }
 }

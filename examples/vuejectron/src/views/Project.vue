@@ -113,80 +113,82 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import { computedAsync } from '@vueuse/core';
+import { computedAsync } from '@vueuse/core'
+import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
-import { useAppStore } from '@/store/app';
+import { useAppStore } from '@/store/app'
 
-import InputDialog from '@/components/InputDialog.vue';
-import { Task } from '../../ldo/Task$.typings'
-import { File as FileObject } from '../../ldo/File$.typings'
+import InputDialog from '@/components/InputDialog.vue'
+import type { File as FileObject } from '../../ldo/File$.typings'
+import type { Task } from '../../ldo/Task$.typings'
 
+const download = ref<HTMLAnchorElement>()
+const fileUpload = ref<HTMLInputElement>()
+const imageUpload = ref<HTMLInputElement>()
 
-const download = ref<HTMLAnchorElement>();
-const fileUpload = ref<HTMLInputElement>();
-const imageUpload = ref<HTMLInputElement>();
+const route = useRoute()
+const dialog = ref(false)
 
-const route = useRoute();
-const dialog = ref(false);
+const selectedTask = ref<Task | null>(null)
 
-const selectedTask = ref<Task | null>(null);
+const appStore = useAppStore()
 
-const appStore = useAppStore();
+const imageUrls = computedAsync(async () =>
+  Promise.all(appStore.currentProject?.hasImage?.map(({ '@id': id }) => appStore.dataUrl(id)) || [])
+)
 
- 
-const imageUrls = computedAsync(async () => Promise.all(appStore.currentProject?.hasImage?.map(({ '@id': id }) => appStore.dataUrl(id)) || []));
-
-const files = computed(() => appStore.currentProject?.hasFile?.map(({ '@id': id }) => appStore.getFileObject(id)) || [])
+const files = computed(
+  () => appStore.currentProject?.hasFile?.map(({ '@id': id }) => appStore.getFileObject(id)) || []
+)
 
 watch(
   () => route.query.project,
   async (project) => {
     if (project && route.query.resourceServer) {
-      appStore.setCurrentProject(route.query.resourceServer as string, project as string);
-      appStore.loadTasks(project as string);
-      appStore.loadFiles(project as string);
-      appStore.loadImages(project as string);
+      appStore.setCurrentProject(route.query.resourceServer as string, project as string)
+      appStore.loadTasks(project as string)
+      appStore.loadFiles(project as string)
+      appStore.loadImages(project as string)
     }
   },
   { immediate: true }
-);
+)
 
 async function downloadFile(file: FileObject) {
   if (download.value) {
-    download.value.download = file.fileName ?? 'file';
-    download.value.href = await appStore.dataUrl(file['@id']!);
-    download.value.click();
+    download.value.download = file.fileName ?? 'file'
+    download.value.href = await appStore.dataUrl(file['@id']!)
+    download.value.click()
   }
 }
 
 async function updateTask(label: string) {
   let cTask: Task
   if (selectedTask.value) {
-    cTask = appStore.changeData(selectedTask.value);
+    cTask = appStore.changeData(selectedTask.value)
   } else {
     const createdTask = await appStore.draftTask(appStore.currentProject!['@id']!)
-    cTask = appStore.changeData(createdTask);
+    cTask = appStore.changeData(createdTask)
   }
-  cTask.label = label;
-  appStore.updateTask(cTask);
-  selectedTask.value = null;
-  dialog.value = false;
+  cTask.label = label
+  appStore.updateTask(cTask)
+  selectedTask.value = null
+  dialog.value = false
 }
 
 function deleteTask(task: Task) {
   if (window.confirm('Are you sure to delete')) {
-    appStore.deleteTask(task);
+    appStore.deleteTask(task)
   }
 }
 
 function newTask() {
-  dialog.value = true;
+  dialog.value = true
 }
 
 function editTask(task: Task) {
-  selectedTask.value = task;
-  dialog.value = true;
+  selectedTask.value = task
+  dialog.value = true
 }
 </script>

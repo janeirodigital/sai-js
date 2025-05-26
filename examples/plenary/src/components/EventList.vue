@@ -30,19 +30,19 @@
 </template>
 
 <script setup lang="ts">
-  import { useRouter } from 'vue-router'
-  import { useAppStore } from '../stores/app'
-  import { Event } from '../../ldo/Event$.typings'
+import { useRouter } from 'vue-router'
+import type { Event } from '../../ldo/Event$.typings'
+import { useAppStore } from '../stores/app'
 
-  const router = useRouter()
-  const store = useAppStore()
+const router = useRouter()
+const store = useAppStore()
 
-  store.loadOrganizations()
-  store.loadEvents()
+store.loadOrganizations()
+store.loadEvents()
 
-  function showDetails(event: Event) {
-    router.push({ name: 'details', query: { event: event['@id']} })
-  }
+function showDetails(event: Event) {
+  router.push({ name: 'details', query: { event: event['@id'] } })
+}
 </script>
 
 <style scoped>

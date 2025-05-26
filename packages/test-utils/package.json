@@ -24,10 +24,7 @@
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",
-  "files": [
-    "dist/",
-    "src/"
-  ],
+  "files": ["dist/", "src/"],
   "directories": {
     "lib": "src",
     "test": "test"

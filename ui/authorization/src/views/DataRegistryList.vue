@@ -94,10 +94,10 @@
   </v-container>
 </template>
 <script lang="ts" setup>
-import { useRoute } from 'vue-router';
-import { computed, ref, watch } from 'vue';
-import { useCoreStore } from '@/store/core';
-import { useAppStore } from '@/store/app';
+import { useAppStore } from '@/store/app'
+import { useCoreStore } from '@/store/core'
+import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 const appStore = useAppStore()
 const coreStore = useCoreStore()
@@ -110,12 +110,12 @@ appStore.listApplications()
 function requestAccess(applicationId: string) {
   if (!route.query.agent) return
   appStore.requestAccess(applicationId, route.query.agent as string)
-  appListDialog.value = false  
+  appListDialog.value = false
 }
 
-const agent = computed(() => appStore.socialAgentList.find((a) => a.id === route.query.agent));
+const agent = computed(() => appStore.socialAgentList.find((a) => a.id === route.query.agent))
 
-const hasData = computed(() => !!appStore.dataRegistryList[route.query.agent as string]?.length);
+const hasData = computed(() => !!appStore.dataRegistryList[route.query.agent as string]?.length)
 
 watch(
   () => route.query.agent,
@@ -125,8 +125,7 @@ watch(
     }
   },
   { immediate: true }
-);
-
+)
 </script>
 
 <style>

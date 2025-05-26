@@ -1,31 +1,37 @@
-import { vi, describe, test, expect, beforeEach } from 'vitest';
-import * as S from 'effect/Schema';
-import type { AuthorizationAgent, NestedDataAuthorizationData } from '@janeirodigital/interop-authorization-agent';
-import {
+import type {
+  AuthorizationAgent,
+  NestedDataAuthorizationData,
+} from '@janeirodigital/interop-authorization-agent'
+import type {
   CRUDApplicationRegistration,
-  ReadableDataInstance,
   ReadableAccessAuthorization,
+  ReadableAccessNeed,
   ReadableAccessNeedGroup,
   ReadableClientIdDocument,
+  ReadableDataInstance,
   ReadableDataRegistration,
-  ReadableAccessNeed
-} from '@janeirodigital/interop-data-model';
-import { ACL, INTEROP } from '@janeirodigital/interop-utils';
-import { AgentType, Authorization } from '@janeirodigital/sai-api-messages';
-import { getDescriptions, recordAuthorization, listDataInstances } from '../../../src/services';
+} from '@janeirodigital/interop-data-model'
+import { ACL, INTEROP } from '@janeirodigital/interop-utils'
+import { AgentType, type Authorization } from '@janeirodigital/sai-api-messages'
+import type * as S from 'effect/Schema'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
+import { getDescriptions, listDataInstances, recordAuthorization } from '../../../src/services'
 
-const projectShapeTree = 'https://solidshapes.example/trees/Project';
-const webId = 'https://alice.example';
+const projectShapeTree = 'https://solidshapes.example/trees/Project'
+const webId = 'https://alice.example'
 
 describe('getDescriptions', () => {
-  const applicationIri = 'https://projectron.example';
-  const lang = 'en';
+  const applicationIri = 'https://projectron.example'
+  const lang = 'en'
 
   const saiSession = vi.mocked(
     {
       webId,
       registrySet: {
-        hasDataRegistry: [{ iri: 'https://home.alice.example/data/' }, { iri: 'https://work.alice.example/data/' }]
+        hasDataRegistry: [
+          { iri: 'https://home.alice.example/data/' },
+          { iri: 'https://work.alice.example/data/' },
+        ],
       },
       findDataRegistration: vi.fn(),
       socialAgentRegistrations: [
@@ -38,112 +44,129 @@ describe('getDescriptions', () => {
                 {
                   registeredShapeTree: projectShapeTree,
                   hasDataRegistration: 'https://rnd.acme.example/data/projects/',
-                  hasDataInstance: new Array(17)
-                }
-              ]
-            }
-          }
-        }
+                  hasDataInstance: new Array(17),
+                },
+              ],
+            },
+          },
+        },
       ],
       factory: {
         readable: {
           clientIdDocument: vi.fn(),
-          accessNeedGroup: vi.fn()
-        }
-      }
+          accessNeedGroup: vi.fn(),
+        },
+      },
     } as unknown as AuthorizationAgent,
     true
-  );
+  )
 
   beforeEach(() => {
-    saiSession.factory.readable.clientIdDocument.mockReset();
-    saiSession.factory.readable.accessNeedGroup.mockReset();
-  });
+    saiSession.factory.readable.clientIdDocument.mockReset()
+    saiSession.factory.readable.accessNeedGroup.mockReset()
+  })
 
   test('returns null if no access need group', async () => {
-    saiSession.factory.readable.clientIdDocument.mockResolvedValueOnce({} as unknown as ReadableClientIdDocument);
+    saiSession.factory.readable.clientIdDocument.mockResolvedValueOnce(
+      {} as unknown as ReadableClientIdDocument
+    )
 
-    const descriptions = await getDescriptions(saiSession, applicationIri, AgentType.Application, lang);
-    expect(descriptions).toBeNull();
-  });
+    const descriptions = await getDescriptions(
+      saiSession,
+      applicationIri,
+      AgentType.Application,
+      lang
+    )
+    expect(descriptions).toBeNull()
+  })
 
   test('returns well formatted descriptions', async () => {
-    const accessNeedIri = 'https://projectron.example/access-needs#need-projects';
+    const accessNeedIri = 'https://projectron.example/access-needs#need-projects'
     const childAccessNeed = {
       iri: 'https://projectron.example/access-needs#need-tasks',
       inheritsFromNeed: accessNeedIri,
       descriptions: {
         [lang]: {
           label: 'label for tasks',
-          definition: 'definition for tasks'
-        }
+          definition: 'definition for tasks',
+        },
       },
-      getDescription: vi.fn(async (preferredLang: string) => childAccessNeed.descriptions[preferredLang]),
+      getDescription: vi.fn(
+        async (preferredLang: string) => childAccessNeed.descriptions[preferredLang]
+      ),
       required: true,
       accessMode: [ACL.Read.value],
       shapeTree: {
         iri: 'https://solidshapes.example/trees/Task',
         descriptions: {
           [lang]: {
-            label: 'Tasks'
-          }
+            label: 'Tasks',
+          },
         },
-        getDescription: vi.fn(async (preferredLang: string) => childAccessNeed.shapeTree.descriptions[preferredLang])
-      }
-    } as unknown as ReadableAccessNeed;
+        getDescription: vi.fn(
+          async (preferredLang: string) => childAccessNeed.shapeTree.descriptions[preferredLang]
+        ),
+      },
+    } as unknown as ReadableAccessNeed
     const accessNeed = {
       iri: accessNeedIri,
       descriptions: {
         [lang]: {
           label: 'label for projects',
-          definition: 'definition for projects'
-        }
+          definition: 'definition for projects',
+        },
       },
-      getDescription: vi.fn(async (preferredLang: string) => accessNeed.descriptions[preferredLang]),
+      getDescription: vi.fn(
+        async (preferredLang: string) => accessNeed.descriptions[preferredLang]
+      ),
       required: true,
       accessMode: [ACL.Read.value],
       shapeTree: {
         iri: projectShapeTree,
         descriptions: {
           [lang]: {
-            label: 'Projects'
-          }
+            label: 'Projects',
+          },
         },
-        getDescription: vi.fn(async (preferredLang: string) => accessNeed.shapeTree.descriptions[preferredLang])
+        getDescription: vi.fn(
+          async (preferredLang: string) => accessNeed.shapeTree.descriptions[preferredLang]
+        ),
       },
-      children: [childAccessNeed]
-    } as unknown as ReadableAccessNeed;
+      children: [childAccessNeed],
+    } as unknown as ReadableAccessNeed
 
     const accessNeedGroup = {
       iri: 'https://projectron.example/access-needs#need-group-pm',
       descriptions: {
         [lang]: {
           label: 'Projectron',
-          definition: 'Manage project and tasks'
-        }
+          definition: 'Manage project and tasks',
+        },
       },
       reliableDescriptionLanguages: new Set([lang]),
-      getDescription: vi.fn(async (preferredLang: string) => accessNeedGroup.descriptions[preferredLang]),
-      accessNeeds: [accessNeed]
-    } as unknown as ReadableAccessNeedGroup;
+      getDescription: vi.fn(
+        async (preferredLang: string) => accessNeedGroup.descriptions[preferredLang]
+      ),
+      accessNeeds: [accessNeed],
+    } as unknown as ReadableAccessNeedGroup
     saiSession.factory.readable.clientIdDocument.mockResolvedValueOnce({
-      hasAccessNeedGroup: accessNeedGroup.iri
-    } as unknown as ReadableClientIdDocument);
-    saiSession.factory.readable.accessNeedGroup.mockResolvedValueOnce(accessNeedGroup);
+      hasAccessNeedGroup: accessNeedGroup.iri,
+    } as unknown as ReadableClientIdDocument)
+    saiSession.factory.readable.accessNeedGroup.mockResolvedValueOnce(accessNeedGroup)
     saiSession.findDataRegistration.mockImplementationOnce(
       async () =>
         ({
           iri: 'https://home.alice.example/data/projects/',
-          contains: new Array(23)
+          contains: new Array(23),
         }) as unknown as ReadableDataRegistration
-    );
+    )
     saiSession.findDataRegistration.mockImplementationOnce(
       async () =>
         ({
           iri: 'https://work.alice.example/data/projects/',
-          contains: new Array(34)
+          contains: new Array(34),
         }) as unknown as ReadableDataRegistration
-    );
+    )
     const expected = {
       id: applicationIri,
       agentType: AgentType.Application,
@@ -160,7 +183,7 @@ describe('getDescriptions', () => {
             access: accessNeed.accessMode,
             shapeTree: {
               id: accessNeed.shapeTree.iri,
-              label: accessNeed.shapeTree.descriptions[lang].label
+              label: accessNeed.shapeTree.descriptions[lang].label,
             },
             children: [
               {
@@ -172,12 +195,12 @@ describe('getDescriptions', () => {
                 access: childAccessNeed.accessMode,
                 shapeTree: {
                   id: childAccessNeed.shapeTree.iri,
-                  label: childAccessNeed.shapeTree.descriptions[lang].label
-                }
-              }
-            ]
-          }
-        ]
+                  label: childAccessNeed.shapeTree.descriptions[lang].label,
+                },
+              },
+            ],
+          },
+        ],
       }),
       dataOwners: [
         {
@@ -190,16 +213,16 @@ describe('getDescriptions', () => {
               label: 'https://home.alice.example/data/', // TODO generalize
               shapeTree: projectShapeTree,
               dataRegistry: 'https://home.alice.example/data/',
-              count: 23
+              count: 23,
             },
             {
               id: 'https://work.alice.example/data/projects/',
               label: 'https://work.alice.example/data/', // TODO generalize
               shapeTree: projectShapeTree,
               dataRegistry: 'https://work.alice.example/data/',
-              count: 34
-            }
-          ]
+              count: 34,
+            },
+          ],
         },
         {
           id: 'https://acme.example',
@@ -210,16 +233,21 @@ describe('getDescriptions', () => {
               id: 'https://rnd.acme.example/data/projects/',
               label: 'https://rnd.acme.example/data/', // TODO generalize
               shapeTree: projectShapeTree,
-              count: 17
-            }
-          ]
-        }
-      ]
-    };
-    const descriptions = await getDescriptions(saiSession, applicationIri, AgentType.Application, lang);
-    expect(descriptions).toStrictEqual(expected);
-  });
-});
+              count: 17,
+            },
+          ],
+        },
+      ],
+    }
+    const descriptions = await getDescriptions(
+      saiSession,
+      applicationIri,
+      AgentType.Application,
+      lang
+    )
+    expect(descriptions).toStrictEqual(expected)
+  })
+})
 
 describe('listDataInstances', () => {
   const saiSession = vi.mocked(
@@ -228,44 +256,44 @@ describe('listDataInstances', () => {
       factory: {
         readable: {
           dataRegistration: vi.fn(),
-          dataInstance: vi.fn()
-        }
-      }
+          dataInstance: vi.fn(),
+        },
+      },
     } as unknown as AuthorizationAgent,
     true
-  );
+  )
 
   beforeEach(() => {
-    saiSession.factory.readable.dataRegistration.mockReset();
-  });
+    saiSession.factory.readable.dataRegistration.mockReset()
+  })
 
   test('list instances for existing registration', async () => {
-    const registrationId = 'https://rnd.acme.example/data/projects/';
-    const count = 23;
+    const registrationId = 'https://rnd.acme.example/data/projects/'
+    const count = 23
     const template = {
       iri: 'https://iri.example',
-      label: 'Example'
-    } as unknown as ReadableDataInstance;
+      label: 'Example',
+    } as unknown as ReadableDataInstance
     saiSession.factory.readable.dataRegistration.mockResolvedValueOnce({
-      contains: new Array(count)
-    } as unknown as ReadableDataRegistration);
-    saiSession.factory.readable.dataInstance.mockResolvedValue(template);
-    const result = await listDataInstances(saiSession, webId, registrationId);
-    expect(saiSession.factory.readable.dataRegistration).toBeCalledWith(registrationId);
-    expect(saiSession.factory.readable.dataInstance).toHaveBeenCalledTimes(count);
+      contains: new Array(count),
+    } as unknown as ReadableDataRegistration)
+    saiSession.factory.readable.dataInstance.mockResolvedValue(template)
+    const result = await listDataInstances(saiSession, webId, registrationId)
+    expect(saiSession.factory.readable.dataRegistration).toBeCalledWith(registrationId)
+    expect(saiSession.factory.readable.dataInstance).toHaveBeenCalledTimes(count)
     for (const instance of result) {
-      expect(instance.id).toBe(template.iri);
-      expect(instance.label).toBe(template.label);
+      expect(instance.id).toBe(template.iri)
+      expect(instance.label).toBe(template.label)
     }
-  });
+  })
 
-  test.todo('thorw error if registration does not exist');
-});
+  test.todo('thorw error if registration does not exist')
+})
 
 describe('recordAuthorization', () => {
   const clientIdDocument = {
-    callbackEndpoint: 'http://some.iri'
-  } as unknown as ReadableClientIdDocument;
+    callbackEndpoint: 'http://some.iri',
+  } as unknown as ReadableClientIdDocument
   const saiSession = vi.mocked(
     {
       recordAccessAuthorization: vi.fn(),
@@ -273,30 +301,30 @@ describe('recordAuthorization', () => {
       generateAccessGrant: vi.fn(),
       registrySet: {
         hasAgentRegistry: {
-          addApplicationRegistration: vi.fn()
-        }
+          addApplicationRegistration: vi.fn(),
+        },
       },
       factory: {
         readable: {
           accessNeedGroup: vi.fn(),
-          clientIdDocument: vi.fn()
-        }
-      }
+          clientIdDocument: vi.fn(),
+        },
+      },
     } as unknown as AuthorizationAgent,
     true
-  );
+  )
 
   beforeEach(() => {
-    saiSession.recordAccessAuthorization.mockClear();
-    saiSession.findApplicationRegistration.mockClear();
-    saiSession.generateAccessGrant.mockClear();
-    saiSession.registrySet.hasAgentRegistry.addApplicationRegistration.mockClear();
-    saiSession.factory.readable.accessNeedGroup.mockClear();
-  });
+    saiSession.recordAccessAuthorization.mockClear()
+    saiSession.findApplicationRegistration.mockClear()
+    saiSession.generateAccessGrant.mockClear()
+    saiSession.registrySet.hasAgentRegistry.addApplicationRegistration.mockClear()
+    saiSession.factory.readable.accessNeedGroup.mockClear()
+  })
 
-  const bobWebId = 'https://bob.example';
+  const bobWebId = 'https://bob.example'
 
-  const accessNeedGroupIri = 'https://projectron.example/access-needs#need-group-pm';
+  const accessNeedGroupIri = 'https://projectron.example/access-needs#need-group-pm'
   const authorization = {
     grantee: bobWebId,
     agentType: AgentType.Application,
@@ -304,14 +332,14 @@ describe('recordAuthorization', () => {
     dataAuthorizations: [
       {
         accessNeed: 'https://projectron.example/access-needs#need-project',
-        scope: 'All'
+        scope: 'All',
       },
       {
         accessNeed: 'https://projectron.example/access-needs#need-task',
-        scope: 'Inherited'
-      }
-    ]
-  } as unknown as S.Schema.Type<typeof Authorization>;
+        scope: 'Inherited',
+      },
+    ],
+  } as unknown as S.Schema.Type<typeof Authorization>
 
   const dataAuthorizations = [
     {
@@ -326,11 +354,11 @@ describe('recordAuthorization', () => {
           grantee: bobWebId,
           scopeOfAuthorization: INTEROP.Inherited.value,
           accessMode: [INTEROP.Read.value],
-          registeredShapeTree: 'https://solidshapes.example/trees/Task'
-        }
-      ]
-    }
-  ] as NestedDataAuthorizationData[];
+          registeredShapeTree: 'https://solidshapes.example/trees/Task',
+        },
+      ],
+    },
+  ] as NestedDataAuthorizationData[]
 
   const accessNeedGroup = {
     iri: accessNeedGroupIri,
@@ -338,93 +366,101 @@ describe('recordAuthorization', () => {
       {
         iri: 'https://projectron.example/access-needs#need-project',
         shapeTree: {
-          iri: projectShapeTree
+          iri: projectShapeTree,
         },
         accessMode: [INTEROP.Read.value],
         children: [
           {
             iri: 'https://projectron.example/access-needs#need-task',
             shapeTree: {
-              iri: 'https://solidshapes.example/trees/Task'
+              iri: 'https://solidshapes.example/trees/Task',
             },
             accessMode: [INTEROP.Read.value],
-            inheritsFromNeed: 'https://projectron.example/access-needs#need-project'
-          }
-        ]
-      }
-    ]
-  } as unknown as ReadableAccessNeedGroup;
+            inheritsFromNeed: 'https://projectron.example/access-needs#need-project',
+          },
+        ],
+      },
+    ],
+  } as unknown as ReadableAccessNeedGroup
 
-  const recordedAccessAuthorizationIri = 'https://auth.alice.example/some-authorization';
+  const recordedAccessAuthorizationIri = 'https://auth.alice.example/some-authorization'
 
-  saiSession.recordAccessAuthorization.mockResolvedValue({} as ReadableAccessAuthorization);
-  saiSession.factory.readable.accessNeedGroup.mockResolvedValue(accessNeedGroup);
+  saiSession.recordAccessAuthorization.mockResolvedValue({} as ReadableAccessAuthorization)
+  saiSession.factory.readable.accessNeedGroup.mockResolvedValue(accessNeedGroup)
   saiSession.recordAccessAuthorization.mockResolvedValue({
-    iri: recordedAccessAuthorizationIri
-  } as unknown as ReadableAccessAuthorization);
+    iri: recordedAccessAuthorizationIri,
+  } as unknown as ReadableAccessAuthorization)
 
   describe('granted', () => {
-    const grantedAuthorization = { ...authorization, granted: true } as S.Schema.Type<typeof Authorization>;
+    const grantedAuthorization = { ...authorization, granted: true } as S.Schema.Type<
+      typeof Authorization
+    >
     test('works for existing application registration', async () => {
-      saiSession.factory.readable.clientIdDocument.mockResolvedValue(clientIdDocument);
-      saiSession.findApplicationRegistration.mockResolvedValueOnce({} as unknown as CRUDApplicationRegistration);
+      saiSession.factory.readable.clientIdDocument.mockResolvedValue(clientIdDocument)
+      saiSession.findApplicationRegistration.mockResolvedValueOnce(
+        {} as unknown as CRUDApplicationRegistration
+      )
 
-      const accessAuthorization = await recordAuthorization(saiSession, grantedAuthorization);
-      expect(saiSession.registrySet.hasAgentRegistry.addApplicationRegistration).not.toBeCalled();
-      expect(saiSession.factory.readable.accessNeedGroup).toBeCalledWith(accessNeedGroupIri);
+      const accessAuthorization = await recordAuthorization(saiSession, grantedAuthorization)
+      expect(saiSession.registrySet.hasAgentRegistry.addApplicationRegistration).not.toBeCalled()
+      expect(saiSession.factory.readable.accessNeedGroup).toBeCalledWith(accessNeedGroupIri)
       expect(saiSession.recordAccessAuthorization).toBeCalledWith({
         grantee: grantedAuthorization.grantee,
         granted: grantedAuthorization.granted,
         hasAccessNeedGroup: grantedAuthorization.accessNeedGroup,
-        dataAuthorizations
-      });
+        dataAuthorizations,
+      })
       expect(accessAuthorization).toStrictEqual({
         id: recordedAccessAuthorizationIri,
         callbackEndpoint: clientIdDocument.callbackEndpoint,
-        ...grantedAuthorization
-      });
-      expect(saiSession.generateAccessGrant).toBeCalledWith(recordedAccessAuthorizationIri);
-    });
+        ...grantedAuthorization,
+      })
+      expect(saiSession.generateAccessGrant).toBeCalledWith(recordedAccessAuthorizationIri)
+    })
 
     test('creates application registration if one does not exist', async () => {
-      saiSession.findApplicationRegistration.mockResolvedValue(undefined);
-      saiSession.factory.readable.clientIdDocument.mockResolvedValue(clientIdDocument);
-      await recordAuthorization(saiSession, grantedAuthorization);
+      saiSession.findApplicationRegistration.mockResolvedValue(undefined)
+      saiSession.factory.readable.clientIdDocument.mockResolvedValue(clientIdDocument)
+      await recordAuthorization(saiSession, grantedAuthorization)
       expect(saiSession.registrySet.hasAgentRegistry.addApplicationRegistration).toBeCalledWith(
         grantedAuthorization.grantee
-      );
-    });
-  });
+      )
+    })
+  })
 
   describe('not granted', () => {
-    const notGrantedAuthorization = { ...authorization, granted: false } as S.Schema.Type<typeof Authorization>;
+    const notGrantedAuthorization = { ...authorization, granted: false } as S.Schema.Type<
+      typeof Authorization
+    >
 
     test('works for existing application registration', async () => {
-      saiSession.factory.readable.clientIdDocument.mockResolvedValue(clientIdDocument);
-      saiSession.findApplicationRegistration.mockResolvedValueOnce({} as unknown as CRUDApplicationRegistration);
+      saiSession.factory.readable.clientIdDocument.mockResolvedValue(clientIdDocument)
+      saiSession.findApplicationRegistration.mockResolvedValueOnce(
+        {} as unknown as CRUDApplicationRegistration
+      )
 
-      const accessAuthorization = await recordAuthorization(saiSession, notGrantedAuthorization);
-      expect(saiSession.registrySet.hasAgentRegistry.addApplicationRegistration).not.toBeCalled();
+      const accessAuthorization = await recordAuthorization(saiSession, notGrantedAuthorization)
+      expect(saiSession.registrySet.hasAgentRegistry.addApplicationRegistration).not.toBeCalled()
       expect(saiSession.recordAccessAuthorization).toBeCalledWith({
         grantee: notGrantedAuthorization.grantee,
         granted: notGrantedAuthorization.granted,
-        hasAccessNeedGroup: notGrantedAuthorization.accessNeedGroup
-      });
+        hasAccessNeedGroup: notGrantedAuthorization.accessNeedGroup,
+      })
       expect(accessAuthorization).toStrictEqual({
         id: recordedAccessAuthorizationIri,
         callbackEndpoint: clientIdDocument.callbackEndpoint,
-        ...notGrantedAuthorization
-      });
-      expect(saiSession.generateAccessGrant).toBeCalledWith(recordedAccessAuthorizationIri);
-    });
+        ...notGrantedAuthorization,
+      })
+      expect(saiSession.generateAccessGrant).toBeCalledWith(recordedAccessAuthorizationIri)
+    })
 
     test('creates application registration if one does not exist', async () => {
-      saiSession.findApplicationRegistration.mockResolvedValue(undefined);
-      saiSession.factory.readable.clientIdDocument.mockResolvedValue(clientIdDocument);
-      await recordAuthorization(saiSession, notGrantedAuthorization);
+      saiSession.findApplicationRegistration.mockResolvedValue(undefined)
+      saiSession.factory.readable.clientIdDocument.mockResolvedValue(clientIdDocument)
+      await recordAuthorization(saiSession, notGrantedAuthorization)
       expect(saiSession.registrySet.hasAgentRegistry.addApplicationRegistration).toBeCalledWith(
         notGrantedAuthorization.grantee
-      );
-    });
-  });
-});
+      )
+    })
+  })
+})

@@ -1,7 +1,7 @@
-import { DataGrant, ReadableDataRegistrationProxy } from '.';
+import { type DataGrant, ReadableDataRegistrationProxy } from '.'
 
 export class DataOwner {
-  issuedGrants: DataGrant[] = [];
+  issuedGrants: DataGrant[] = []
 
   constructor(public iri: string) {}
 
@@ -13,6 +13,6 @@ export class DataOwner {
   selectRegistrations(shapeTree: string): ReadableDataRegistrationProxy[] {
     return this.issuedGrants
       .filter((sourceGrant) => sourceGrant.registeredShapeTree === shapeTree)
-      .map((grant) => new ReadableDataRegistrationProxy(grant));
+      .map((grant) => new ReadableDataRegistrationProxy(grant))
   }
 }

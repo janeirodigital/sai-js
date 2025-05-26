@@ -1,5 +1,5 @@
-import { Term, Quad, DatasetCore } from '@rdfjs/types';
-import { RDF, SPACE } from './namespaces';
+import type { DatasetCore, Quad, Term } from '@rdfjs/types'
+import { RDF, SPACE } from './namespaces'
 
 /**
  *
@@ -16,9 +16,9 @@ export const getOneMatchingQuad = (
   object?: Term,
   graph?: Term
 ): Quad | undefined => {
-  const matches = dataset.match(subject, predicate, object, graph);
-  return [...matches].shift();
-};
+  const matches = dataset.match(subject, predicate, object, graph)
+  return [...matches].shift()
+}
 
 export const getAllMatchingQuads = (
   dataset: DatasetCore,
@@ -26,7 +26,7 @@ export const getAllMatchingQuads = (
   predicate?: Term,
   object?: Term,
   graph?: Term
-): Array<Quad> => [...dataset.match(subject, predicate, object, graph)];
+): Array<Quad> => [...dataset.match(subject, predicate, object, graph)]
 
 export const getStorageRoot = (dataset: DatasetCore): string =>
-  getOneMatchingQuad(dataset, null, RDF.type, SPACE.Storage).subject.value;
+  getOneMatchingQuad(dataset, null, RDF.type, SPACE.Storage).subject.value

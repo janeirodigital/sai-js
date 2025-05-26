@@ -1,31 +1,32 @@
-import { DataFactory } from 'n3';
-import { NamedNode } from '@rdfjs/types';
+import type { NamedNode } from '@rdfjs/types'
+import { DataFactory } from 'n3'
 
-import { host } from './config';
-import { Account } from './types';
+import { host } from './config'
+import type { Account } from './types'
 
 // TODO fix circular depencency with utils package
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export function buildNamespace(base: string): any {
   const handler = {
-    get: (target: { base: string }, property: string): NamedNode => DataFactory.namedNode(target.base + property)
-  };
-  return new Proxy({ base }, handler);
+    get: (target: { base: string }, property: string): NamedNode =>
+      DataFactory.namedNode(target.base + property),
+  }
+  return new Proxy({ base }, handler)
 }
 
-export const INTEROP = buildNamespace('http://www.w3.org/ns/solid/interop#');
-export const ACL = buildNamespace('http://www.w3.org/ns/auth/acl#');
+export const INTEROP = buildNamespace('http://www.w3.org/ns/solid/interop#')
+export const ACL = buildNamespace('http://www.w3.org/ns/auth/acl#')
 
-const password = 'password';
+const password = 'password'
 
 export const shapeTree = {
   Gadget: `${host}/solid/trees/Gadget`,
-  Widget: `${host}/solid/trees/Widget`
-};
+  Widget: `${host}/solid/trees/Widget`,
+}
 
 export type Application = {
-  clientId: string;
-};
+  clientId: string
+}
 
 export const luka: Account = {
   webId: `${host}/luka/profile/card#me`,
@@ -36,9 +37,9 @@ export const luka: Account = {
   auth: `${host}/luka/`,
   data: {
     corvax: `${host}/corvax/`,
-    zenara: `${host}/zenara/`
-  }
-};
+    zenara: `${host}/zenara/`,
+  },
+}
 
 export const vaporcg: Account = {
   webId: `${host}/vaporcg/profile/card#me`,
@@ -49,9 +50,9 @@ export const vaporcg: Account = {
   auth: `${host}/vaporcg/`,
   data: {
     vortiga: `${host}/vortiga/`,
-    galathor: `${host}/galathor/`
-  }
-};
+    galathor: `${host}/galathor/`,
+  },
+}
 
 export const solid: Account = {
   webId: `${host}/solid/profile/card#me`,
@@ -60,13 +61,13 @@ export const solid: Account = {
   password,
   auth: `${host}/solid/`,
   data: {
-    solid: `${host}/solid/`
-  }
-};
+    solid: `${host}/solid/`,
+  },
+}
 
 export const inspector: Application = {
-  clientId: `${host}/solid/inspector/id`
-};
+  clientId: `${host}/solid/inspector/id`,
+}
 
 export const lukaForInspector = {
   granted: true,
@@ -87,12 +88,12 @@ export const lukaForInspector = {
           grantedBy: luka.webId,
           registeredShapeTree: shapeTree.Widget,
           accessMode: [ACL.Read.value, ACL.Update.value, ACL.Create.value, ACL.Delete.value],
-          scopeOfAuthorization: INTEROP.Inherited.value
-        }
-      ]
-    }
-  ]
-} as const;
+          scopeOfAuthorization: INTEROP.Inherited.value,
+        },
+      ],
+    },
+  ],
+} as const
 
 export const vaporcgForLuka = {
   granted: true,
@@ -112,9 +113,9 @@ export const vaporcgForLuka = {
           grantedBy: vaporcg.webId,
           registeredShapeTree: shapeTree.Widget,
           accessMode: [ACL.Read.value, ACL.Update.value, ACL.Create.value, ACL.Delete.value],
-          scopeOfAuthorization: INTEROP.Inherited.value
-        }
-      ]
-    }
-  ]
-} as const;
+          scopeOfAuthorization: INTEROP.Inherited.value,
+        },
+      ],
+    },
+  ],
+} as const

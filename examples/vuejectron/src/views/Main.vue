@@ -58,82 +58,82 @@
   </v-snackbar>
 </template>
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { Agent } from '@/models';
-import { useAppStore } from '@/store/app';
+import type { Agent } from '@/models'
+import { useAppStore } from '@/store/app'
+import { computed, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
-const router = useRouter();
-const route = useRoute();
+const router = useRouter()
+const route = useRoute()
 
-const appStore = useAppStore();
-await appStore.loadAgents();
+const appStore = useAppStore()
+await appStore.loadAgents()
 if (route.query.project) {
-  await appStore.loadProjects(route.query.agent as string);
+  await appStore.loadProjects(route.query.agent as string)
 }
 
-const showSnackbar = ref(false);
-const newAgent = ref<Agent>();
+const showSnackbar = ref(false)
+const newAgent = ref<Agent>()
 
 const title = computed(() => {
   if (route.query.agent) {
-    return route.query.project ? appStore.currentProject?.label : appStore.currentAgent?.label;
+    return route.query.project ? appStore.currentProject?.label : appStore.currentAgent?.label
   }
-  return 'Vuejectron';
+  return 'Vuejectron'
 })
 
 const icon = computed(() => {
   if (route.query.agent) {
-    return route.query.project ? 'mdi-account-details' : 'mdi-account-convert';
+    return route.query.project ? 'mdi-account-details' : 'mdi-account-convert'
   }
-  return null;
-});
+  return null
+})
 
 function showAgent() {
-  showSnackbar.value = false;
+  showSnackbar.value = false
   if (newAgent.value) {
-    router.push({ name: 'agent', query: { agent: newAgent.value.id } });
+    router.push({ name: 'agent', query: { agent: newAgent.value.id } })
   }
 }
 
 function navigateUp() {
   if (route.query.project) {
-    router.push({ name: 'agent', query: { agent: route.query.agent } });
+    router.push({ name: 'agent', query: { agent: route.query.agent } })
   } else {
-    router.push({ name: 'dashboard' });
+    router.push({ name: 'dashboard' })
   }
 }
 
 function subscribeToProject() {
   if (appStore.currentProject) {
-    appStore.subscribeViaPush(appStore.currentProject['@id']!);
+    appStore.subscribeViaPush(appStore.currentProject['@id']!)
   }
 }
 
 function unsubscribeFromProject() {
   if (appStore.currentProject) {
-    appStore.unsubscribeViaPush(appStore.currentProject['@id']!);
+    appStore.unsubscribeViaPush(appStore.currentProject['@id']!)
   }
 }
 
 function shareProject() {
   if (appStore.currentProject) {
-    appStore.shareProject(appStore.currentProject['@id']!);
+    appStore.shareProject(appStore.currentProject['@id']!)
   }
 }
 
 watch(
   () => appStore.agents,
   (latestAgents, previousAgents) => {
-    newAgent.value = latestAgents.find((agent) => !previousAgents.some((a) => a.id === agent.id));
+    newAgent.value = latestAgents.find((agent) => !previousAgents.some((a) => a.id === agent.id))
   }
-);
+)
 
 watch(newAgent, (agent) => {
   if (agent) {
-    showSnackbar.value = true;
+    showSnackbar.value = true
   }
-});
+})
 </script>
 
 <style>

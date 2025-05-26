@@ -23,23 +23,23 @@
   </v-main>
 </template>
 <script lang="ts" setup>
-import { watch } from 'vue';
-import { useRoute } from 'vue-router';
-import { useAppStore } from '@/store/app';
+import { useAppStore } from '@/store/app'
+import { watch } from 'vue'
+import { useRoute } from 'vue-router'
 
-const route = useRoute();
+const route = useRoute()
 
-const appStore = useAppStore();
-await appStore.loadAgents();
+const appStore = useAppStore()
+await appStore.loadAgents()
 
 watch(
   () => route.query.agent,
   (agent) => {
     if (agent) {
-      appStore.setCurrentAgent(agent as string); // TODO
-      appStore.loadProjects(agent as string); // TODO
+      appStore.setCurrentAgent(agent as string) // TODO
+      appStore.loadProjects(agent as string) // TODO
     }
   },
   { immediate: true }
-);
+)
 </script>

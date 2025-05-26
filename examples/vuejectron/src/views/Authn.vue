@@ -35,24 +35,24 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import { useCoreStore } from '@/store/core';
-import { useAppStore } from '@/store/app';
+import { useAppStore } from '@/store/app'
+import { useCoreStore } from '@/store/core'
+import { computed, ref } from 'vue'
 
-const store = useCoreStore();
-const appStore = useAppStore();
+const store = useCoreStore()
+const appStore = useAppStore()
 const hasError = computed(() => !!appStore.saiError)
 
-const defaultOidcIssuer = import.meta.env.VITE_DEFAULT_OIDC_ISSUER;
-const oidcIssuer = ref('');
+const defaultOidcIssuer = import.meta.env.VITE_DEFAULT_OIDC_ISSUER
+const oidcIssuer = ref('')
 
 // will redirect to OIDC issuer
 async function login() {
-  return store.login(oidcIssuer.value || defaultOidcIssuer);
+  return store.login(oidcIssuer.value || defaultOidcIssuer)
 }
 
 // will redirect to authorization agent
 async function requestAuthorization() {
-  return appStore.authorize();
+  return appStore.authorize()
 }
 </script>

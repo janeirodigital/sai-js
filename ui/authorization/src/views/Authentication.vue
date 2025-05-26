@@ -14,15 +14,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { useCoreStore } from '@/store/core';
+import { useCoreStore } from '@/store/core'
+import { ref } from 'vue'
 
-const coreStore = useCoreStore();
+const coreStore = useCoreStore()
 
-const webId = ref('');
+const webId = ref('')
 
 // TODO: validate webId
 async function login() {
-  return coreStore.login(webId.value);
+  return coreStore.login(webId.value)
 }
 </script>

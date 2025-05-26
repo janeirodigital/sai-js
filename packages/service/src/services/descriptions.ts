@@ -1,35 +1,35 @@
-import * as S from 'effect/Schema';
-import type { Brand } from 'effect/Brand';
-import {
-  CRUDSocialAgentRegistration,
-  DataAuthorizationData,
-  InheritedDataGrant,
-  ReadableAccessNeed,
-  ReadableAccessNeedGroup
-} from '@janeirodigital/interop-data-model';
-import {
-  AuthorizationAgent,
+import type {
   AccessAuthorizationStructure,
-  NestedDataAuthorizationData
-} from '@janeirodigital/interop-authorization-agent';
-import { INTEROP } from '@janeirodigital/interop-utils';
+  AuthorizationAgent,
+  NestedDataAuthorizationData,
+} from '@janeirodigital/interop-authorization-agent'
 import {
-  AuthorizationData,
-  AccessAuthorization,
+  type CRUDSocialAgentRegistration,
+  type DataAuthorizationData,
+  InheritedDataGrant,
+  type ReadableAccessNeed,
+  type ReadableAccessNeedGroup,
+} from '@janeirodigital/interop-data-model'
+import { INTEROP } from '@janeirodigital/interop-utils'
+import {
+  type AccessAuthorization,
   AccessNeed,
   AgentType,
-  GrantedAuthorization,
+  type Authorization,
+  type AuthorizationData,
   DataInstance,
+  type GrantedAuthorization,
   IRI,
-  Authorization
-} from '@janeirodigital/sai-api-messages';
+} from '@janeirodigital/sai-api-messages'
+import type { Brand } from 'effect/Brand'
+import type * as S from 'effect/Schema'
 
 const formatAccessNeed = async (
   accessNeed: ReadableAccessNeed,
   descriptionsLang: string
 ): Promise<S.Schema.Type<typeof AccessNeed>> => {
-  const description = await accessNeed.getDescription(descriptionsLang);
-  const shapeTreeDescription = await accessNeed.shapeTree.getDescription(descriptionsLang);
+  const description = await accessNeed.getDescription(descriptionsLang)
+  const shapeTreeDescription = await accessNeed.shapeTree.getDescription(descriptionsLang)
 
   return AccessNeed.make({
     id: IRI.make(accessNeed.iri),
@@ -39,31 +39,39 @@ const formatAccessNeed = async (
     access: accessNeed.accessMode.map((mode) => IRI.make(mode)),
     shapeTree: {
       id: IRI.make(accessNeed.shapeTree.iri),
-      label: shapeTreeDescription.label
+      label: shapeTreeDescription.label,
     },
     parent: accessNeed.inheritsFromNeed ? IRI.make(accessNeed.inheritsFromNeed) : undefined,
     children: accessNeed.children
-      ? await Promise.all(accessNeed.children.map((child) => formatAccessNeed(child, descriptionsLang)))
-      : undefined
-  });
-};
+      ? await Promise.all(
+          accessNeed.children.map((child) => formatAccessNeed(child, descriptionsLang))
+        )
+      : undefined,
+  })
+}
 
-async function findUserDataRegistrations(accessNeedGroup: ReadableAccessNeedGroup, saiSession: AuthorizationAgent) {
-  const dataRegistrations = [];
+async function findUserDataRegistrations(
+  accessNeedGroup: ReadableAccessNeedGroup,
+  saiSession: AuthorizationAgent
+) {
+  const dataRegistrations = []
   for (const dataRegistry of saiSession.registrySet.hasDataRegistry) {
     for (const accessNeed of accessNeedGroup.accessNeeds) {
-      const dataRegistration = await saiSession.findDataRegistration(dataRegistry.iri, accessNeed.shapeTree.iri);
+      const dataRegistration = await saiSession.findDataRegistration(
+        dataRegistry.iri,
+        accessNeed.shapeTree.iri
+      )
       if (dataRegistration)
         dataRegistrations.push({
           id: IRI.make(dataRegistration.iri),
           dataRegistry: IRI.make(dataRegistry.iri),
           label: `${dataRegistration.iri.split('/').slice(0, 4).join('/')}/`, // TODO get proper label,
           shapeTree: accessNeed.shapeTree.iri,
-          count: dataRegistration.contains.length
-        });
+          count: dataRegistration.contains.length,
+        })
     }
   }
-  return dataRegistrations;
+  return dataRegistrations
 }
 
 async function findSocialAgentDataRegistrations(
@@ -71,8 +79,8 @@ async function findSocialAgentDataRegistrations(
   accessNeedGroup: ReadableAccessNeedGroup,
   saiSession: AuthorizationAgent
 ) {
-  const dataRegistrations = [];
-  if (!socialAgentRegistration.accessGrant) return [];
+  const dataRegistrations = []
+  if (!socialAgentRegistration.accessGrant) return []
   for (const dataGrant of socialAgentRegistration.accessGrant.hasDataGrant) {
     for (const accessNeed of accessNeedGroup.accessNeeds) {
       if (
@@ -87,12 +95,13 @@ async function findSocialAgentDataRegistrations(
           count: dataGrant.hasDataInstance
             ? // @ts-ignore
               dataGrant.hasDataInstance.length
-            : (await saiSession.factory.readable.dataRegistration(dataGrant.hasDataRegistration)).contains.length
-        });
+            : (await saiSession.factory.readable.dataRegistration(dataGrant.hasDataRegistration))
+                .contains.length,
+        })
       }
     }
   }
-  return dataRegistrations;
+  return dataRegistrations
 }
 
 /**
@@ -108,37 +117,40 @@ export const getDescriptions = async (
   agentType: AgentType,
   preferredLang: string
 ): Promise<S.Schema.Type<typeof AuthorizationData>> => {
-  let accessNeedGroupIri: string;
+  let accessNeedGroupIri: string
   if (agentType === AgentType.Application) {
-    const clientIdDocument = await saiSession.factory.readable.clientIdDocument(agentIri);
-    if (!clientIdDocument.hasAccessNeedGroup) return null;
-    accessNeedGroupIri = clientIdDocument.hasAccessNeedGroup;
+    const clientIdDocument = await saiSession.factory.readable.clientIdDocument(agentIri)
+    if (!clientIdDocument.hasAccessNeedGroup) return null
+    accessNeedGroupIri = clientIdDocument.hasAccessNeedGroup
   } else if (agentType === AgentType.SocialAgent) {
-    const socialAgentRegistration = await saiSession.findSocialAgentRegistration(agentIri);
-    if (!socialAgentRegistration) throw new Error(`registration not found for ${agentIri}`);
-    accessNeedGroupIri = socialAgentRegistration.reciprocalRegistration?.hasAccessNeedGroup;
-    if (!accessNeedGroupIri) return null;
-  } else throw new Error('wrong agent type');
+    const socialAgentRegistration = await saiSession.findSocialAgentRegistration(agentIri)
+    if (!socialAgentRegistration) throw new Error(`registration not found for ${agentIri}`)
+    accessNeedGroupIri = socialAgentRegistration.reciprocalRegistration?.hasAccessNeedGroup
+    if (!accessNeedGroupIri) return null
+  } else throw new Error('wrong agent type')
 
-  const accessNeedGroup = await saiSession.factory.readable.accessNeedGroup(accessNeedGroupIri, preferredLang);
+  const accessNeedGroup = await saiSession.factory.readable.accessNeedGroup(
+    accessNeedGroupIri,
+    preferredLang
+  )
 
   const dataOwners: {
-    id: string & Brand<'IRI'>;
-    label: string;
+    id: string & Brand<'IRI'>
+    label: string
     dataRegistrations: {
-      id: string & Brand<'IRI'>;
-      dataRegistry?: string & Brand<'IRI'>;
-      label: string;
-      shapeTree: string;
-      count: number;
-    }[];
+      id: string & Brand<'IRI'>
+      dataRegistry?: string & Brand<'IRI'>
+      label: string
+      shapeTree: string
+      count: number
+    }[]
   }[] = [
     {
       id: IRI.make(saiSession.webId),
       label: saiSession.webId, // TODO get from user's webid document
-      dataRegistrations: await findUserDataRegistrations(accessNeedGroup, saiSession)
-    }
-  ];
+      dataRegistrations: await findUserDataRegistrations(accessNeedGroup, saiSession),
+    },
+  ]
 
   for await (const socialAgentRegistration of saiSession.socialAgentRegistrations) {
     if (socialAgentRegistration.reciprocalRegistration) {
@@ -146,21 +158,21 @@ export const getDescriptions = async (
         socialAgentRegistration.reciprocalRegistration,
         accessNeedGroup,
         saiSession
-      );
+      )
       if (dataRegistrations.length) {
         dataOwners.push({
           id: IRI.make(socialAgentRegistration.registeredAgent),
           label: socialAgentRegistration.label,
-          dataRegistrations
-        });
+          dataRegistrations,
+        })
       }
     }
   }
-  const descriptionLanguages = [...accessNeedGroup.reliableDescriptionLanguages];
+  const descriptionLanguages = [...accessNeedGroup.reliableDescriptionLanguages]
   const descriptionsLang = accessNeedGroup.reliableDescriptionLanguages.has(preferredLang)
     ? preferredLang
-    : descriptionLanguages[0];
-  const descriptions = await accessNeedGroup.getDescription(descriptionsLang);
+    : descriptionLanguages[0]
+  const descriptions = await accessNeedGroup.getDescription(descriptionsLang)
 
   return {
     // TODO if the id is the unique id of something then it should not be its own id. It should refer by a different name,
@@ -171,54 +183,61 @@ export const getDescriptions = async (
       id: IRI.make(accessNeedGroup.iri),
       label: descriptions.label,
       description: descriptions.definition,
-      needs: await Promise.all(accessNeedGroup.accessNeeds.map((need) => formatAccessNeed(need, descriptionsLang))),
+      needs: await Promise.all(
+        accessNeedGroup.accessNeeds.map((need) => formatAccessNeed(need, descriptionsLang))
+      ),
       descriptionLanguages,
-      lang: descriptionsLang
+      lang: descriptionsLang,
     },
-    dataOwners
-  };
-};
+    dataOwners,
+  }
+}
 
-export const listDataInstances = async (saiSession: AuthorizationAgent, agentId: string, registrationId: string) => {
-  const dataInstances = [];
+export const listDataInstances = async (
+  saiSession: AuthorizationAgent,
+  agentId: string,
+  registrationId: string
+) => {
+  const dataInstances = []
   if (agentId === saiSession.webId) {
-    const dataRegistration = await saiSession.factory.readable.dataRegistration(registrationId);
+    const dataRegistration = await saiSession.factory.readable.dataRegistration(registrationId)
     for (const dataInstanceIri of dataRegistration.contains) {
-      const dataInstance = await saiSession.factory.readable.dataInstance(dataInstanceIri);
+      const dataInstance = await saiSession.factory.readable.dataInstance(dataInstanceIri)
       dataInstances.push(
         DataInstance.make({
           id: IRI.make(dataInstance.iri),
-          label: dataInstance.label
+          label: dataInstance.label,
         })
-      );
+      )
     }
   } else {
-    const socialAgentRegistration = (await saiSession.findSocialAgentRegistration(agentId)).reciprocalRegistration;
+    const socialAgentRegistration = (await saiSession.findSocialAgentRegistration(agentId))
+      .reciprocalRegistration
     if (!socialAgentRegistration) {
-      throw new Error(`missing social agent registration: ${agentId}`);
+      throw new Error(`missing social agent registration: ${agentId}`)
     }
     if (!socialAgentRegistration.accessGrant) {
-      throw new Error(`missing access grant for social agent: ${agentId}`);
+      throw new Error(`missing access grant for social agent: ${agentId}`)
     }
     for (const dataGrant of socialAgentRegistration.accessGrant.hasDataGrant) {
       if (dataGrant.hasDataRegistration === registrationId) {
         // TODO: optimize not to create crud data instances
 
         for await (const instance of dataGrant.getDataInstanceIterator()) {
-          const dataInstance = await saiSession.factory.readable.dataInstance(instance.iri);
+          const dataInstance = await saiSession.factory.readable.dataInstance(instance.iri)
           dataInstances.push(
             DataInstance.make({
               id: IRI.make(dataInstance.iri),
-              label: dataInstance.label
+              label: dataInstance.label,
             })
-          );
+          )
         }
       }
     }
   }
 
-  return dataInstances;
-};
+  return dataInstances
+}
 
 // currently the spec only anticipates one level of inheritance
 // since we still don't have IRIs at this point, we need to use nesting to represent inheritance
@@ -230,36 +249,36 @@ function buildDataAuthorizations(
   const structuredDataAuthorizations = authorization.dataAuthorizations.map((dataAuthorization) => {
     const accessNeed = accessNeedGroup.accessNeeds
       .flatMap((need) => [need, ...(need.children ?? [])])
-      .find((need) => need.iri === dataAuthorization.accessNeed);
+      .find((need) => need.iri === dataAuthorization.accessNeed)
     if (!accessNeed) {
-      throw new Error(`missing access need: ${dataAuthorization.accessNeed}`);
+      throw new Error(`missing access need: ${dataAuthorization.accessNeed}`)
     }
     const saiReady: DataAuthorizationData = {
       satisfiesAccessNeed: accessNeed.iri,
       grantee: authorization.grantee,
       registeredShapeTree: accessNeed.shapeTree.iri,
       scopeOfAuthorization: INTEROP[dataAuthorization.scope].value,
-      accessMode: accessNeed!.accessMode
-    };
-    if (saiReady.scopeOfAuthorization === INTEROP.AllFromAgent.value) {
-      saiReady.dataOwner = dataAuthorization.dataOwner;
-    } else if (saiReady.scopeOfAuthorization === INTEROP.AllFromRegistry.value) {
-      saiReady.dataOwner = dataAuthorization.dataOwner;
-      saiReady.hasDataRegistration = dataAuthorization.dataRegistration;
-    } else if (saiReady.scopeOfAuthorization === INTEROP.SelectedFromRegistry.value) {
-      saiReady.dataOwner = dataAuthorization.dataOwner;
-      saiReady.hasDataRegistration = dataAuthorization.dataRegistration;
-      saiReady.hasDataInstance = dataAuthorization.dataInstances as unknown as string[];
+      accessMode: accessNeed!.accessMode,
     }
-    return saiReady;
-  });
-  const parents: NestedDataAuthorizationData[] = [];
-  const children: DataAuthorizationData[] = [];
+    if (saiReady.scopeOfAuthorization === INTEROP.AllFromAgent.value) {
+      saiReady.dataOwner = dataAuthorization.dataOwner
+    } else if (saiReady.scopeOfAuthorization === INTEROP.AllFromRegistry.value) {
+      saiReady.dataOwner = dataAuthorization.dataOwner
+      saiReady.hasDataRegistration = dataAuthorization.dataRegistration
+    } else if (saiReady.scopeOfAuthorization === INTEROP.SelectedFromRegistry.value) {
+      saiReady.dataOwner = dataAuthorization.dataOwner
+      saiReady.hasDataRegistration = dataAuthorization.dataRegistration
+      saiReady.hasDataInstance = dataAuthorization.dataInstances as unknown as string[]
+    }
+    return saiReady
+  })
+  const parents: NestedDataAuthorizationData[] = []
+  const children: DataAuthorizationData[] = []
   for (const structuredDataAuthorization of structuredDataAuthorizations) {
     if (structuredDataAuthorization.scopeOfAuthorization === INTEROP.Inherited.value) {
-      children.push(structuredDataAuthorization);
+      children.push(structuredDataAuthorization)
     } else {
-      parents.push(structuredDataAuthorization);
+      parents.push(structuredDataAuthorization)
     }
   }
   return parents.map((parentDataAuthorization) => {
@@ -267,50 +286,56 @@ function buildDataAuthorizations(
     const inheritingDataAuthorizations = children.filter((childDataAuthorization) => {
       const accessNeed = accessNeedGroup.accessNeeds
         .flatMap((need) => [need, ...(need.children ?? [])])
-        .find((need) => need.iri === childDataAuthorization.satisfiesAccessNeed)!;
+        .find((need) => need.iri === childDataAuthorization.satisfiesAccessNeed)!
 
-      return accessNeed.inheritsFromNeed === parentDataAuthorization.satisfiesAccessNeed;
-    });
+      return accessNeed.inheritsFromNeed === parentDataAuthorization.satisfiesAccessNeed
+    })
     if (inheritingDataAuthorizations.length) {
-      return { ...parentDataAuthorization, children: inheritingDataAuthorizations };
+      return { ...parentDataAuthorization, children: inheritingDataAuthorizations }
     }
-    return parentDataAuthorization;
-  });
+    return parentDataAuthorization
+  })
 }
 
 export const recordAuthorization = async (
   saiSession: AuthorizationAgent,
   authorization: S.Schema.Type<typeof Authorization>
 ): Promise<S.Schema.Type<typeof AccessAuthorization>> => {
-  let structure: AccessAuthorizationStructure;
+  let structure: AccessAuthorizationStructure
   if (authorization.granted) {
-    const accessNeedGroup = await saiSession.factory.readable.accessNeedGroup(authorization.accessNeedGroup);
+    const accessNeedGroup = await saiSession.factory.readable.accessNeedGroup(
+      authorization.accessNeedGroup
+    )
     structure = {
       grantee: authorization.grantee,
       hasAccessNeedGroup: authorization.accessNeedGroup,
       dataAuthorizations: buildDataAuthorizations(authorization, accessNeedGroup),
-      granted: true
-    };
+      granted: true,
+    }
   } else {
     structure = {
       grantee: IRI.make(authorization.grantee),
       hasAccessNeedGroup: authorization.accessNeedGroup,
-      granted: false
-    };
+      granted: false,
+    }
   }
 
-  const recorded = await saiSession.recordAccessAuthorization(structure);
-  let response = { id: recorded.iri, ...authorization } as S.Schema.Type<typeof AccessAuthorization>;
+  const recorded = await saiSession.recordAccessAuthorization(structure)
+  let response = { id: recorded.iri, ...authorization } as S.Schema.Type<typeof AccessAuthorization>
   if (authorization.agentType === AgentType.Application) {
     // we need to ensure that Application Registration exists before generating Access Grant!
     if (!(await saiSession.findApplicationRegistration(authorization.grantee))) {
-      await saiSession.registrySet.hasAgentRegistry.addApplicationRegistration(authorization.grantee);
+      await saiSession.registrySet.hasAgentRegistry.addApplicationRegistration(
+        authorization.grantee
+      )
     }
-    const clientIdDocument = await saiSession.factory.readable.clientIdDocument(authorization.grantee);
+    const clientIdDocument = await saiSession.factory.readable.clientIdDocument(
+      authorization.grantee
+    )
     if (clientIdDocument.callbackEndpoint) {
-      response = { ...response, callbackEndpoint: clientIdDocument.callbackEndpoint };
+      response = { ...response, callbackEndpoint: clientIdDocument.callbackEndpoint }
     }
   }
-  await saiSession.generateAccessGrant(recorded.iri);
-  return response;
-};
+  await saiSession.generateAccessGrant(recorded.iri)
+  return response
+}

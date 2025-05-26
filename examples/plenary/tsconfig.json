@@ -10,11 +10,7 @@
       "@/*": ["src/*"]
     },
     "resolveJsonModule": true,
-    "types": [
-      "vite/client",
-      "vite-plugin-vue-layouts/client",
-      "unplugin-vue-router/client"
-    ],
+    "types": ["vite/client", "vite-plugin-vue-layouts/client", "unplugin-vue-router/client"],
     "allowJs": true,
     "strict": true,
     "strictNullChecks": true,
@@ -24,9 +20,7 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": [
-    "./src/typed-router.d.ts"
-  ],
+  "include": ["./src/typed-router.d.ts"],
   "exclude": ["dist", "node_modules", "cypress"],
-  "references": [{ "path": "./tsconfig.node.json" }],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

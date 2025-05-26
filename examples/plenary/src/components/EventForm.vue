@@ -89,53 +89,57 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, watch } from 'vue';
-  import { useRouter } from 'vue-router'
-  import { useAppStore } from '../stores/app'
+import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAppStore } from '../stores/app'
 
-  const router = useRouter()
-  const store = useAppStore()
+const router = useRouter()
+const store = useAppStore()
 
-  const eventName = ref('')
-  const organizationId = ref()
-  const podId = ref()
-  const chairId = ref()
-  const startDate = ref<Date>()
-  const dateModal = ref(false)
-  const startTime = ref<string>()
-  const timeModal = ref(false)
+const eventName = ref('')
+const organizationId = ref()
+const podId = ref()
+const chairId = ref()
+const startDate = ref<Date>()
+const dateModal = ref(false)
+const startTime = ref<string>()
+const timeModal = ref(false)
 
-  const organization = computed(() => store.organizations.find(o => o['@id'] === organizationId.value))
-  const pods = computed(() => store.pods[organizationId.value])
-  const dateTime = computed(() => {
-    if (!startDate.value || !startTime.value) return undefined
-    return new Date(`${startDate.value.toLocaleDateString()} ${startTime.value}`)
-  })
-  watch(pods, () => {
-    if (pods.value?.length === 1) podId.value = pods.value[0].id
-    else podId.value = undefined
-  })
-  
-  store.loadOrganizations()
+const organization = computed(() =>
+  store.organizations.find((o) => o['@id'] === organizationId.value)
+)
+const pods = computed(() => store.pods[organizationId.value])
+const dateTime = computed(() => {
+  if (!startDate.value || !startTime.value) return undefined
+  return new Date(`${startDate.value.toLocaleDateString()} ${startTime.value}`)
+})
+watch(pods, () => {
+  if (pods.value?.length === 1) podId.value = pods.value[0].id
+  else podId.value = undefined
+})
 
-  function required (value) { return !!value || 'required' }
-  
-  function minDate(): string {
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    }
-    return new Intl.DateTimeFormat("en-CA", options).format(new Date())
+store.loadOrganizations()
+
+function required(value) {
+  return !!value || 'required'
+}
+
+function minDate(): string {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
   }
-  
-  function create () {
-    const chair = organization.value?.member?.find(m => m['@id'] === chairId.value)
-    if (chair && dateTime.value) {
-      store.createEvent(eventName.value, organizationId.value, podId.value, chair, dateTime.value)
-      router.push({ name: 'list' })
-    }
+  return new Intl.DateTimeFormat('en-CA', options).format(new Date())
+}
+
+function create() {
+  const chair = organization.value?.member?.find((m) => m['@id'] === chairId.value)
+  if (chair && dateTime.value) {
+    store.createEvent(eventName.value, organizationId.value, podId.value, chair, dateTime.value)
+    router.push({ name: 'list' })
   }
+}
 </script>
 
 <style>

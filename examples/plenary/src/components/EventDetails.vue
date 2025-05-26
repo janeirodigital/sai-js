@@ -134,23 +134,22 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, watchEffect } from 'vue';
-  import { useRoute } from 'vue-router'
-  import { useAppStore } from '../stores/app'
+import { computed, watchEffect } from 'vue'
+import { useRoute } from 'vue-router'
+import { useAppStore } from '../stores/app'
 
-  const route = useRoute()
-  const store = useAppStore()
+const route = useRoute()
+const store = useAppStore()
 
-  const event = computed(() => store.events.find(e => e['@id'] === route.query.event))
+const event = computed(() => store.events.find((e) => e['@id'] === route.query.event))
 
-  watchEffect(() => {
-    if (!event.value) return
-    store.loadDetails(event.value)
-  }) 
+watchEffect(() => {
+  if (!event.value) return
+  store.loadDetails(event.value)
+})
 
-  store.loadOrganizations()
-  store.loadEvents()
-
+store.loadOrganizations()
+store.loadEvents()
 </script>
 
 <style>

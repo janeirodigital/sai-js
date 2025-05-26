@@ -1,137 +1,137 @@
-import { vi, describe, test, beforeEach, expect } from 'vitest';
-import { InMemoryStorage } from '@inrupt/solid-client-authn-node';
-import { type HttpError, type HttpHandlerRequest } from '@digita-ai/handlersjs-http';
-import type { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent';
+import type { HttpError, HttpHandlerRequest } from '@digita-ai/handlersjs-http'
+import { InMemoryStorage } from '@inrupt/solid-client-authn-node'
+import type { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent'
 import type {
   CRUDAgentRegistry,
   CRUDRegistrySet,
   CRUDSocialAgentInvitation,
-  CRUDSocialAgentRegistration
-} from '@janeirodigital/interop-data-model';
+  CRUDSocialAgentRegistration,
+} from '@janeirodigital/interop-data-model'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 
-import { MockedQueue } from '../mocked-queue';
 import {
+  type AuthenticatedAuthnContext,
   InvitationsHandler,
   SessionManager,
-  AuthenticatedAuthnContext,
+  encodeWebId,
   invitationCapabilityUrl,
-  encodeWebId
-} from '../../../src';
+} from '../../../src'
+import { MockedQueue } from '../mocked-queue'
 
 vi.mock('../../../src/session-manager', async (originalImport) => {
-  const originalModule = (await originalImport()) as object;
+  const originalModule = (await originalImport()) as object
 
   return {
     ...originalModule,
     SessionManager: vi.fn(() => ({
-      getSaiSession: vi.fn()
-    }))
-  };
-});
+      getSaiSession: vi.fn(),
+    })),
+  }
+})
 
-let reciprocalQueue: MockedQueue;
+let reciprocalQueue: MockedQueue
 
-const aliceWebId = 'https://alice.example';
-const bobWebId = 'https://bob.example';
-const capabilityUrl = invitationCapabilityUrl(aliceWebId, crypto.randomUUID());
-const label = 'Bob';
-const note = 'some dude';
+const aliceWebId = 'https://alice.example'
+const bobWebId = 'https://bob.example'
+const capabilityUrl = invitationCapabilityUrl(aliceWebId, crypto.randomUUID())
+const label = 'Bob'
+const note = 'some dude'
 
-const manager = vi.mocked(new SessionManager(new InMemoryStorage()));
-let invitationsHandler: InvitationsHandler;
+const manager = vi.mocked(new SessionManager(new InMemoryStorage()))
+let invitationsHandler: InvitationsHandler
 
 beforeEach(() => {
-  manager.getSaiSession.mockReset();
-  reciprocalQueue = new MockedQueue('reciprocal-registrations');
-  invitationsHandler = new InvitationsHandler(manager, reciprocalQueue);
-});
+  manager.getSaiSession.mockReset()
+  reciprocalQueue = new MockedQueue('reciprocal-registrations')
+  invitationsHandler = new InvitationsHandler(manager, reciprocalQueue)
+})
 
 describe('capability url request', () => {
   const request = {
     headers: {},
     parameters: {
-      encodedWebId: encodeWebId(aliceWebId)
+      encodedWebId: encodeWebId(aliceWebId),
     },
-    url: capabilityUrl
-  } as unknown as HttpHandlerRequest;
+    url: capabilityUrl,
+  } as unknown as HttpHandlerRequest
   const authn = {
     authenticated: true,
-    webId: bobWebId
-  };
-  const ctx = { request, authn } as AuthenticatedAuthnContext;
+    webId: bobWebId,
+  }
+  const ctx = { request, authn } as AuthenticatedAuthnContext
 
   test('should respond with WebID', async () => {
     const addSocialAgentRegistrationMock = vi.fn(
       () =>
         ({
-          registeredAgent: bobWebId
+          registeredAgent: bobWebId,
         }) as CRUDSocialAgentRegistration
-    );
+    )
     manager.getSaiSession.mockResolvedValueOnce({
       findSocialAgentInvitation: async () =>
         ({
           label,
           note,
-          update: vi.fn()
+          update: vi.fn(),
         }) as unknown as CRUDSocialAgentInvitation,
       findSocialAgentRegistration: vi.fn(),
       registrySet: {
         hasAgentRegistry: {
-          addSocialAgentRegistration: addSocialAgentRegistrationMock
-        } as unknown as CRUDAgentRegistry
-      } as CRUDRegistrySet
-    } as unknown as AuthorizationAgent);
+          addSocialAgentRegistration: addSocialAgentRegistrationMock,
+        } as unknown as CRUDAgentRegistry,
+      } as CRUDRegistrySet,
+    } as unknown as AuthorizationAgent)
 
     await new Promise<void>((done) => {
       invitationsHandler.handle(ctx).subscribe((response) => {
-        expect(response.body).toContain(aliceWebId);
-        expect(addSocialAgentRegistrationMock).toBeCalledWith(bobWebId, label, note);
+        expect(response.body).toContain(aliceWebId)
+        expect(addSocialAgentRegistrationMock).toBeCalledWith(bobWebId, label, note)
         expect(reciprocalQueue.add).toBeCalledWith(
           {
             webId: aliceWebId,
-            registeredAgent: bobWebId
+            registeredAgent: bobWebId,
           },
           { delay: 10000 }
-        );
-        done();
-      });
-    });
-  });
+        )
+        done()
+      })
+    })
+  })
 
   test('should work if registration already exists', async () => {
     manager.getSaiSession.mockResolvedValueOnce({
       findSocialAgentInvitation: async () =>
         ({
-          update: vi.fn()
+          update: vi.fn(),
         }) as unknown as CRUDSocialAgentInvitation,
       findSocialAgentRegistration: async () =>
         ({
-          registeredAgent: bobWebId
-        }) as CRUDSocialAgentRegistration
-    } as unknown as AuthorizationAgent);
+          registeredAgent: bobWebId,
+        }) as CRUDSocialAgentRegistration,
+    } as unknown as AuthorizationAgent)
 
     await new Promise<void>((done) => {
       invitationsHandler.handle(ctx).subscribe((response) => {
-        expect(response.body).toContain(aliceWebId);
-        expect(reciprocalQueue.add).not.toBeCalled();
-        done();
-      });
-    });
-  });
+        expect(response.body).toContain(aliceWebId)
+        expect(reciprocalQueue.add).not.toBeCalled()
+        done()
+      })
+    })
+  })
 
   test('should throw if invitation not found', async () => {
     manager.getSaiSession.mockResolvedValueOnce({
-      findSocialAgentInvitation: vi.fn()
-    } as unknown as AuthorizationAgent);
+      findSocialAgentInvitation: vi.fn(),
+    } as unknown as AuthorizationAgent)
 
     await new Promise<void>((done) => {
       invitationsHandler.handle(ctx).subscribe({
         error: (e: HttpError) => {
-          expect(e).toBeInstanceOf(Error);
-          expect(reciprocalQueue.add).not.toBeCalled();
-          done();
-        }
-      });
-    });
-  });
-});
+          expect(e).toBeInstanceOf(Error)
+          expect(reciprocalQueue.add).not.toBeCalled()
+          done()
+        },
+      })
+    })
+  })
+})

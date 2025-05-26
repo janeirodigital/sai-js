@@ -323,48 +323,48 @@
   </v-card>
 </template>
 <script lang="ts" setup>
-import * as S from 'effect/Schema'
-import locale from 'locale-codes'
-import { VExpansionPanel } from 'vuetify/lib/components/index.mjs';
+import { useAppStore } from '@/store/app'
+import { useCoreStore } from '@/store/core'
 import {
+  AccessModes,
+  type AccessNeed,
+  AgentType,
+  type Application,
+  type Authorization,
+  type AuthorizationData,
+  type BaseAuthorization,
+  type DataAuthorization,
+  type DataInstanceList,
   IRI,
   Scopes,
-  AccessModes,
-  AccessNeed,
-  Application,
-  Authorization,
-  AuthorizationData,
-  BaseAuthorization,
-  DataAuthorization,
-  SocialAgent,
-  AgentType,
-  DataInstanceList
-} from '@janeirodigital/sai-api-messages';
-import { reactive, ref, onMounted, watch, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useCoreStore } from '@/store/core';
-import { useAppStore } from '@/store/app';
+  type SocialAgent,
+} from '@janeirodigital/sai-api-messages'
+import type * as S from 'effect/Schema'
+import locale from 'locale-codes'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { VExpansionPanel } from 'vuetify/lib/components/index.mjs'
 
 const router = useRouter()
 
-const coreStore = useCoreStore();
-const appStore = useAppStore();
+const coreStore = useCoreStore()
+const appStore = useAppStore()
 
 const props = defineProps<{
-  application?: Partial<S.Schema.Type<typeof Application>>;
-  agent?: S.Schema.Type<typeof SocialAgent>;
-  authorizationData: S.Schema.Type<typeof AuthorizationData>;
+  application?: Partial<S.Schema.Type<typeof Application>>
+  agent?: S.Schema.Type<typeof SocialAgent>
+  authorizationData: S.Schema.Type<typeof AuthorizationData>
   redirect: boolean
-}>();
+}>()
 // TODO add stepper to support multiple top level access needs
 const accessNeed = computed(() => props.authorizationData.accessNeedGroup.needs[0])
 
 const alternativeLang = ref(props.authorizationData.accessNeedGroup.lang)
 const langLoading = ref(false)
-const descriptionLanguages = computed(() => 
-  props.authorizationData.accessNeedGroup.descriptionLanguages.map(lang => ({
+const descriptionLanguages = computed(() =>
+  props.authorizationData.accessNeedGroup.descriptionLanguages.map((lang) => ({
     title: locale.getByTag(lang)?.local || lang,
-    value: lang
+    value: lang,
   }))
 )
 
@@ -379,66 +379,71 @@ watch(alternativeLang, (selectedLang) => {
   appStore.getAuthoriaztion(
     props.application?.id ?? props.agent!.id,
     props.application ? AgentType.Application : AgentType.SocialAgent,
-    selectedLang)
+    selectedLang
+  )
 })
 
-type PropagatingScope = 'none' | 'all';
-type Scope = PropagatingScope | 'some';
+type PropagatingScope = 'none' | 'all'
+type Scope = PropagatingScope | 'some'
 
 interface Agent {
-  id: string;
-  scope: Scope;
+  id: string
+  scope: Scope
 }
 
 // TODO: add proper type from sai-api-messages
 function buildAgentsIndex(data: typeof props.authorizationData.dataOwners): Record<string, Agent> {
-  const index: Record<string, Agent> = {};
+  const index: Record<string, Agent> = {}
   for (const agent of data) {
     index[agent.id] = {
       id: agent.id,
-      scope: 'all'
-    };
+      scope: 'all',
+    }
   }
-  return index;
+  return index
 }
 
-const agentsIndex = reactive<Record<string, Agent>>(buildAgentsIndex(props.authorizationData.dataOwners));
+const agentsIndex = reactive<Record<string, Agent>>(
+  buildAgentsIndex(props.authorizationData.dataOwners)
+)
 
 interface Registration {
-  id: string;
-  agent: string;
-  scope: Scope;
-  count: number;
+  id: string
+  agent: string
+  scope: Scope
+  count: number
 }
 
 // TODO: add proper type from sai-api-messages
-function buildRegistrationsIndex(data: typeof props.authorizationData.dataOwners): Record<string, Registration> {
-  const index: Record<string, Registration> = {};
+function buildRegistrationsIndex(
+  data: typeof props.authorizationData.dataOwners
+): Record<string, Registration> {
+  const index: Record<string, Registration> = {}
   for (const agent of data) {
     for (const registration of agent.dataRegistrations) {
       index[registration.id] = {
         id: registration.id,
         agent: agent.id,
         scope: 'all',
-        count: registration.count!
-      };
+        count: registration.count!,
+      }
     }
   }
-  return index;
+  return index
 }
 
 const registrationsIndex = reactive<Record<string, Registration>>(
   buildRegistrationsIndex(props.authorizationData.dataOwners)
-);
+)
 
 interface SelectableDataInstance {
-  id: string;
-  registration: string;
-  agent: string;
-  selected: boolean;
+  id: string
+  registration: string
+  agent: string
+  selected: boolean
 }
 
-const dataInstancesIndex = reactive<Record<string, SelectableDataInstance>>({});
+const dataInstancesIndex = reactive<Record<string, SelectableDataInstance>>({})
 
 // TODO: add proper type from sai-api-messages
 function addDataInstancesToIndex(
@@ -452,24 +457,26 @@ function addDataInstancesToIndex(
       id: dataInstance.id,
       registration: registrationId,
       agent: agentId,
-      selected
-    };
+      selected,
+    }
   }
 }
 
 function findAgentRegistrations(agentId: string): Registration[] {
-  return Object.values(registrationsIndex).filter((registration) => registration.agent === agentId);
+  return Object.values(registrationsIndex).filter((registration) => registration.agent === agentId)
 }
 function findRegistrationDataInstances(registrationId: string): SelectableDataInstance[] {
-  return Object.values(dataInstancesIndex).filter((dataInstance) => dataInstance.registration === registrationId);
+  return Object.values(dataInstancesIndex).filter(
+    (dataInstance) => dataInstance.registration === registrationId
+  )
 }
 
-const panelsOpened = ref<string[]>([]);
-const topLevelScope = ref<Scope>('all');
+const panelsOpened = ref<string[]>([])
+const topLevelScope = ref<Scope>('all')
 
 function setScopeForAgents(scope: PropagatingScope): void {
   for (const agent of Object.values(agentsIndex)) {
-    agent.scope = scope;
+    agent.scope = scope
   }
 }
 
@@ -486,94 +493,103 @@ onMounted(() => {
 
 watch(topLevelScope, (newScope) => {
   if (newScope !== 'some') {
-    setScopeForAgents(newScope);
+    setScopeForAgents(newScope)
   }
-});
+})
 
 function setScopeForAgentRegistrations(agentId: string, scope: PropagatingScope): void {
-  const registrations = findAgentRegistrations(agentId);
+  const registrations = findAgentRegistrations(agentId)
   for (const registration of registrations) {
-    registration.scope = scope;
+    registration.scope = scope
   }
 }
 
 function agentScopeChanged(agentId: string, scope: Scope) {
   if (scope !== 'some') {
-    setScopeForAgentRegistrations(agentId, scope);
+    setScopeForAgentRegistrations(agentId, scope)
   }
-  agentsIndex[agentId].scope = scope;
+  agentsIndex[agentId].scope = scope
 }
 
-async function loadDataInstances(agentId: string, registrationId: string, selected: boolean): Promise<void> {
-  await appStore.listDataInstances(IRI.make(agentId), IRI.make(registrationId));
-  addDataInstancesToIndex(agentId, registrationId, appStore.loadedDataInstances[registrationId], selected);
+async function loadDataInstances(
+  agentId: string,
+  registrationId: string,
+  selected: boolean
+): Promise<void> {
+  await appStore.listDataInstances(IRI.make(agentId), IRI.make(registrationId))
+  addDataInstancesToIndex(
+    agentId,
+    registrationId,
+    appStore.loadedDataInstances[registrationId],
+    selected
+  )
 }
 
 function setSelectedForRegistrationInstances(registrationId: string, selected: boolean): void {
-  const dataInstances = findRegistrationDataInstances(registrationId);
+  const dataInstances = findRegistrationDataInstances(registrationId)
   for (const dataInstance of dataInstances) {
     if (dataInstance.registration === registrationId) {
-      dataInstance.selected = selected;
+      dataInstance.selected = selected
     }
   }
 }
 
 function registrationScopeChanged(agentId: string, registrationId: string, scope: Scope) {
   if (scope !== 'some') {
-    setSelectedForRegistrationInstances(registrationId, scope === 'all');
+    setSelectedForRegistrationInstances(registrationId, scope === 'all')
   } else if (!appStore.loadedDataInstances[registrationId]) {
-    const previousScope = registrationsIndex[registrationId].scope;
-    loadDataInstances(agentId, registrationId, previousScope === 'all');
+    const previousScope = registrationsIndex[registrationId].scope
+    loadDataInstances(agentId, registrationId, previousScope === 'all')
   }
-  registrationsIndex[registrationId].scope = scope;
+  registrationsIndex[registrationId].scope = scope
 }
 
 function toggleOneInstance(instanceId: string) {
-  const instance = dataInstancesIndex[instanceId];
-  const registration = registrationsIndex[instance.registration];
+  const instance = dataInstancesIndex[instanceId]
+  const registration = registrationsIndex[instance.registration]
   if (registration.scope === 'some') {
     // UI is also disabling the element
-    dataInstancesIndex[instanceId].selected = !dataInstancesIndex[instanceId].selected;
+    dataInstancesIndex[instanceId].selected = !dataInstancesIndex[instanceId].selected
   }
 }
 
 function statsForRegistration(registrationId: string): number {
-  const registration = registrationsIndex[registrationId];
+  const registration = registrationsIndex[registrationId]
   if (registration.scope === 'none') {
-    return 0;
-  } 
+    return 0
+  }
   if (registration.scope === 'all') {
-    return registration.count;
-  } 
-  const dataInstances = findRegistrationDataInstances(registration.id);
-  return dataInstances.filter((dataInstance) => dataInstance.selected).length;
+    return registration.count
+  }
+  const dataInstances = findRegistrationDataInstances(registration.id)
+  return dataInstances.filter((dataInstance) => dataInstance.selected).length
 }
 
 function statsForAgent(agentId: string): number {
-  const agent = agentsIndex[agentId];
+  const agent = agentsIndex[agentId]
   if (agent.scope === 'none') {
-    return 0;
-  } 
-  const registrations = findAgentRegistrations(agentId);
+    return 0
+  }
+  const registrations = findAgentRegistrations(agentId)
   if (agent.scope === 'all') {
-    return registrations.length;
-  } 
-  return registrations.filter((registration) => statsForRegistration(registration.id)).length;
+    return registrations.length
+  }
+  return registrations.filter((registration) => statsForRegistration(registration.id)).length
 }
 
 function statsForTopLevel(): number {
   if (topLevelScope.value === 'none') {
-    return 0;
-  } 
-  const agents = Object.values(agentsIndex);
+    return 0
+  }
+  const agents = Object.values(agentsIndex)
   if (topLevelScope.value === 'all') {
-    return agents.length;
-  } 
-  return agents.filter((agent) => statsForAgent(agent.id)).length;
+    return agents.length
+  }
+  return agents.filter((agent) => statsForAgent(agent.id)).length
 }
 
-const loadingAuthorize = ref(false);
-const loadingDeny = ref(false);
+const loadingAuthorize = ref(false)
+const loadingDeny = ref(false)
 const selection = reactive({
   needs: props.authorizationData.accessNeedGroup.needs.map((n) => ({
     id: n.id,
@@ -582,134 +598,137 @@ const selection = reactive({
     children: n.children?.map((c) => ({
       id: c.id,
       required: c.required,
-      selected: true
-    }))
-  }))
-});
+      selected: true,
+    })),
+  })),
+})
 
 function toggleSelect(needId: string, childId?: string): void {
-  const need = selection.needs.find((n) => n.id === needId)!;
+  const need = selection.needs.find((n) => n.id === needId)!
   if (childId) {
-    const child = need.children!.find((n) => n.id === childId)!;
-    if (child.required) return;
-    child.selected = !child.selected;
+    const child = need.children!.find((n) => n.id === childId)!
+    if (child.required) return
+    child.selected = !child.selected
   } else {
-    if (need.required) return;
-    need.selected = !need.selected;
+    if (need.required) return
+    need.selected = !need.selected
   }
 }
 
 function isSelected(needId: string, childId?: string): boolean {
-  const need = selection.needs.find((n) => n.id === needId)!;
+  const need = selection.needs.find((n) => n.id === needId)!
   if (childId) {
-    const child = need.children!.find((n) => n.id === childId)!;
-    return child.selected;
-  } 
-    return need.selected;
-  
+    const child = need.children!.find((n) => n.id === childId)!
+    return child.selected
+  }
+  return need.selected
 }
 
 function chooseIcon(access: readonly S.Schema.Type<typeof IRI>[]): string {
   if (access.includes(IRI.make(AccessModes.Update))) {
-    return 'mdi-square-edit-outline';
-  } 
-    return 'mdi-euey-outline';
-  
+    return 'mdi-square-edit-outline'
+  }
+  return 'mdi-euey-outline'
 }
 
 // TODO throw error if required need is not satisfied
-function createDataAuthorizations(need: S.Schema.Type<typeof AccessNeed>, parent?: S.Schema.Type<typeof AccessNeed>): S.Schema.Type<typeof DataAuthorization>[] {
-  if (!parent && !isSelected(need.id)) return [];
-  if (parent && !isSelected(parent.id, need.id)) return [];
-  const dataAuthorizations: S.Schema.Type<typeof DataAuthorization>[] = [];
+function createDataAuthorizations(
+  need: S.Schema.Type<typeof AccessNeed>,
+  parent?: S.Schema.Type<typeof AccessNeed>
+): S.Schema.Type<typeof DataAuthorization>[] {
+  if (!parent && !isSelected(need.id)) return []
+  if (parent && !isSelected(parent.id, need.id)) return []
+  const dataAuthorizations: S.Schema.Type<typeof DataAuthorization>[] = []
   const accessNeedAuthorization = {
-    accessNeed: need.id
-  } as Partial<S.Schema.Type<typeof DataAuthorization>>;
+    accessNeed: need.id,
+  } as Partial<S.Schema.Type<typeof DataAuthorization>>
   if (need.parent) {
     dataAuthorizations.push({
       ...accessNeedAuthorization,
-      scope: Scopes.Inherited
-    } as S.Schema.Type<typeof DataAuthorization>);
+      scope: Scopes.Inherited,
+    } as S.Schema.Type<typeof DataAuthorization>)
   } else if (topLevelScope.value === 'all') {
     dataAuthorizations.push({
       ...accessNeedAuthorization,
-      scope: Scopes.All
-    } as S.Schema.Type<typeof DataAuthorization>);
+      scope: Scopes.All,
+    } as S.Schema.Type<typeof DataAuthorization>)
   } else if (topLevelScope.value === 'some') {
     for (const agent of Object.values(agentsIndex)) {
       const agentAuthorization = {
         ...accessNeedAuthorization,
-        dataOwner: agent.id
-      };
+        dataOwner: agent.id,
+      }
       if (agent.scope === 'all') {
         dataAuthorizations.push({
           ...agentAuthorization,
-          scope: Scopes.AllFromAgent
-        } as S.Schema.Type<typeof DataAuthorization>);
+          scope: Scopes.AllFromAgent,
+        } as S.Schema.Type<typeof DataAuthorization>)
       } else if (agent.scope === 'some') {
         for (const registration of findAgentRegistrations(agent.id)) {
           const registrationAuthorization = {
             ...agentAuthorization,
-            dataRegistration: registration.id
-          } as Partial<S.Schema.Type<typeof DataAuthorization>>;
+            dataRegistration: registration.id,
+          } as Partial<S.Schema.Type<typeof DataAuthorization>>
           if (registration.scope === 'all') {
             dataAuthorizations.push({
               ...registrationAuthorization,
-              scope: Scopes.AllFromRegistry
-            } as S.Schema.Type<typeof DataAuthorization>);
+              scope: Scopes.AllFromRegistry,
+            } as S.Schema.Type<typeof DataAuthorization>)
           } else if (registration.scope === 'some') {
             dataAuthorizations.push({
               ...registrationAuthorization,
               scope: Scopes.SelectedFromRegistry,
               dataInstances: findRegistrationDataInstances(registration.id)
                 .filter((i) => i.selected)
-                .map((i) => i.id)
-            } as unknown as S.Schema.Type<typeof DataAuthorization>);
+                .map((i) => i.id),
+            } as unknown as S.Schema.Type<typeof DataAuthorization>)
           }
         }
       }
     }
   }
-  let children: S.Schema.Type<typeof DataAuthorization>[] = [];
+  let children: S.Schema.Type<typeof DataAuthorization>[] = []
   if (need.children) {
-    children = need.children.flatMap((childAccessNeed) => createDataAuthorizations(childAccessNeed, need));
+    children = need.children.flatMap((childAccessNeed) =>
+      createDataAuthorizations(childAccessNeed, need)
+    )
   }
-  return [...dataAuthorizations, ...children];
+  return [...dataAuthorizations, ...children]
 }
 
 function authorize(granted = true) {
   // UI also disables the authorize button
   if (granted && topLevelScope.value === 'none') {
-    throw new Error('Use granted = false if no data is being shared');
+    throw new Error('Use granted = false if no data is being shared')
   }
-  loadingAuthorize.value = granted;
-  loadingDeny.value = !granted;
+  loadingAuthorize.value = granted
+  loadingDeny.value = !granted
   if (props.authorizationData) {
-    let authorization: S.Schema.Type<typeof Authorization>;
+    let authorization: S.Schema.Type<typeof Authorization>
     const baseAuthorization = {
       grantee: props.authorizationData.id,
       agentType: props.agent ? AgentType.SocialAgent : AgentType.Application,
-      accessNeedGroup: props.authorizationData.accessNeedGroup.id
-    } as S.Schema.Type<typeof BaseAuthorization>;
+      accessNeedGroup: props.authorizationData.accessNeedGroup.id,
+    } as S.Schema.Type<typeof BaseAuthorization>
     if (granted) {
       authorization = {
         ...baseAuthorization,
         dataAuthorizations: props.authorizationData.accessNeedGroup.needs.flatMap((need) =>
           createDataAuthorizations(need)
         ),
-        granted: true
-      };
+        granted: true,
+      }
     } else {
       authorization = {
         ...baseAuthorization,
-        granted: false
-      };
+        granted: false,
+      }
     }
     //@ts-ignore
     if (granted && !authorization.dataAuthorizations?.length) {
-      throw new Error('Use granted = false if no data is being shared');
+      throw new Error('Use granted = false if no data is being shared')
     }
-    appStore.authorizeApp(authorization);
+    appStore.authorizeApp(authorization)
   }
 }
 
@@ -717,16 +736,16 @@ watch(
   () => appStore.accessAuthorization,
   (accessAuthorization) => {
     if (accessAuthorization) {
-      if(props.redirect) {
-        window.location.href = accessAuthorization.callbackEndpoint;
+      if (props.redirect) {
+        window.location.href = accessAuthorization.callbackEndpoint
       } else if (props.authorizationData.agentType === AgentType.SocialAgent) {
-        router.push( { name: 'social-agent-list' })
+        router.push({ name: 'social-agent-list' })
       } else {
-        router.push( { name: 'application-list' })
+        router.push({ name: 'application-list' })
       }
     }
   }
-);
+)
 </script>
 
 <style>

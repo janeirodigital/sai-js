@@ -30,29 +30,29 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { ref, watch } from 'vue'
 
-const props = defineProps<{ dialog: boolean; text?: string }>();
+const props = defineProps<{ dialog: boolean; text?: string }>()
 const emit = defineEmits<{
-  cancel: [];
-  save: [text: string];
-}>();
+  cancel: []
+  save: [text: string]
+}>()
 
-const inputText = ref('');
+const inputText = ref('')
 
 watch(
   () => props.text,
   (value) => {
-    inputText.value = value || '';
+    inputText.value = value || ''
   },
   { immediate: true }
-);
+)
 
 function cancel() {
-  emit('cancel');
+  emit('cancel')
 }
 
 function save() {
-  emit('save', inputText.value);
+  emit('save', inputText.value)
 }
 </script>

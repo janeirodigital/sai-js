@@ -28,22 +28,22 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 const props = defineProps({
   add: {
     type: Boolean,
-    default: false
+    default: false,
   },
   disabled: {
     type: Boolean,
-    default: false
-  }
-});
+    default: false,
+  },
+})
 
 defineEmits<{
-  selected: [mode: string];
-}>();
+  selected: [mode: string]
+}>()
 
-const mode = ref('none');
+const mode = ref('none')
 </script>

@@ -18,69 +18,69 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, computed } from 'vue';
-import { useRoute } from 'vue-router';
-import { AgentType } from '@janeirodigital/sai-api-messages';
-import { useAppStore } from '@/store/app';
-import AuthorizeApp from '@/components/AuthorizeApp.vue';
-import ShareResource from '@/components/ShareResource.vue';
+import AuthorizeApp from '@/components/AuthorizeApp.vue'
+import ShareResource from '@/components/ShareResource.vue'
+import { useAppStore } from '@/store/app'
+import { AgentType } from '@janeirodigital/sai-api-messages'
+import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
-const appStore = useAppStore();
+const appStore = useAppStore()
 
-const route = useRoute();
-const clientId = ref<string | null>(null);
-const agentId = ref<string | null>(null);
-const resourceId = ref<string | undefined>();
+const route = useRoute()
+const clientId = ref<string | null>(null)
+const agentId = ref<string | null>(null)
+const resourceId = ref<string | undefined>()
 
 watch(
   () => [route.query.client_id, route.query.resource],
   ([cId, resource]) => {
     if (route.name !== 'authorization') return
-    if (route.query.webid) return;
-    if (!cId || Array.isArray(cId)) throw new Error('one client_id is required');
-    clientId.value = cId;
+    if (route.query.webid) return
+    if (!cId || Array.isArray(cId)) throw new Error('one client_id is required')
+    clientId.value = cId
     if (resource) {
-      if (Array.isArray(resource)) throw new Error('only one resource is allowed');
-      resourceId.value = resource;
+      if (Array.isArray(resource)) throw new Error('only one resource is allowed')
+      resourceId.value = resource
     }
   },
   { immediate: true }
-);
+)
 
 watch(
   () => route.query.webid,
   (webid) => {
     if (webid) {
-      appStore.listSocialAgents();
-      if (Array.isArray(webid)) throw new Error('only one agent is allowed');
-      agentId.value = webid;
-      appStore.getAuthoriaztion(webid, AgentType.SocialAgent);
+      appStore.listSocialAgents()
+      if (Array.isArray(webid)) throw new Error('only one agent is allowed')
+      agentId.value = webid
+      appStore.getAuthoriaztion(webid, AgentType.SocialAgent)
     }
   },
   { immediate: true }
-);
+)
 
 watch(
   resourceId,
   (id) => {
     if (id) {
-      appStore.getResource(id);
-      appStore.listSocialAgents();
+      appStore.getResource(id)
+      appStore.listSocialAgents()
     }
   },
   { immediate: true }
-);
+)
 
 watch(
   clientId,
   (id) => {
     if (id && !resourceId.value) {
-      appStore.getUnregisteredApplication(id);
-      appStore.getAuthoriaztion(id, AgentType.Application);
+      appStore.getUnregisteredApplication(id)
+      appStore.getAuthoriaztion(id, AgentType.Application)
     }
   },
   { immediate: true }
-);
+)
 
-const agent = computed(() => appStore.socialAgentList.find((a) => a.id === agentId.value));
+const agent = computed(() => appStore.socialAgentList.find((a) => a.id === agentId.value))
 </script>

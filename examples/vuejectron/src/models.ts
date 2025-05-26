@@ -1,11 +1,11 @@
 export interface Agent {
-  id: string;
-  label: string;
+  id: string
+  label: string
 }
 
 export interface ResourceServer {
-  id: string;
-  label: string;
-  owner: string;
-  canCreate?: boolean;
+  id: string
+  label: string
+  owner: string
+  canCreate?: boolean
 }

@@ -18,19 +18,18 @@
 </template>
 
 <script lang="ts" setup>
+import { useCoreStore } from '@/store/core'
 import locale from 'locale-codes'
-import { computed } from 'vue';
-import { useCoreStore } from '@/store/core';
+import { computed } from 'vue'
 
 const coreStore = useCoreStore()
 
-const languages = computed(() => 
-  coreStore.availableLanguages.map(lang => ({
-      title: locale.getByTag(lang)?.local || lang,
-      value: lang
-    }))
+const languages = computed(() =>
+  coreStore.availableLanguages.map((lang) => ({
+    title: locale.getByTag(lang)?.local || lang,
+    value: lang,
+  }))
 )
-
 </script>
 <style scoped>
   #translation {

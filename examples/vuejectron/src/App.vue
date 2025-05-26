@@ -11,15 +11,15 @@
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
-import { useTheme } from 'vuetify';
-import { usePreferredDark } from '@vueuse/core';
+import { usePreferredDark } from '@vueuse/core'
+import { watch } from 'vue'
+import { useTheme } from 'vuetify'
 
-const theme = useTheme();
+const theme = useTheme()
 
-const preferredDark = usePreferredDark();
+const preferredDark = usePreferredDark()
 
 watch(preferredDark, (newValue) => {
-  theme.global.name.value = newValue ? 'dark' : 'light';
-});
+  theme.global.name.value = newValue ? 'dark' : 'light'
+})
 </script>

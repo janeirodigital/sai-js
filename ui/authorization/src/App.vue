@@ -11,19 +11,19 @@
 </template>
 
 <script lang="ts" setup>
-import { useTheme } from 'vuetify';
+import { useTheme } from 'vuetify'
 
-const theme = useTheme();
+const theme = useTheme()
 
 function toggleDark(on: boolean) {
-  theme.global.name.value = on ? 'dark' : 'light';
+  theme.global.name.value = on ? 'dark' : 'light'
 }
 
-const mq = window.matchMedia('(prefers-color-scheme: dark)');
+const mq = window.matchMedia('(prefers-color-scheme: dark)')
 
-toggleDark(mq.matches);
+toggleDark(mq.matches)
 
 mq.addEventListener('change', () => {
-  toggleDark(mq.matches);
-});
+  toggleDark(mq.matches)
+})
 </script>

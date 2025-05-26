@@ -93,86 +93,95 @@
 </template>
 
 <script lang="ts" setup>
-import * as S from 'effect/Schema'
-import { computed, reactive, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { AccessModes, Resource, ShareAuthorizationModes, SocialAgentList } from '@janeirodigital/sai-api-messages';
-import { useAppStore } from '@/store/app';
-import AccessModeSelector from '@/components/AccessModeSelector.vue';
+import AccessModeSelector from '@/components/AccessModeSelector.vue'
+import { useAppStore } from '@/store/app'
+import {
+  AccessModes,
+  type Resource,
+  type ShareAuthorizationModes,
+  type SocialAgentList,
+} from '@janeirodigital/sai-api-messages'
+import type * as S from 'effect/Schema'
+import { computed, reactive, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
-const router = useRouter();
-const appStore = useAppStore();
+const router = useRouter()
+const appStore = useAppStore()
 
 const props = defineProps<{
-  applicationId: string;
-  resource: S.Schema.Type<typeof Resource>;
-  socialAgents: S.Schema.Type<typeof SocialAgentList>;
-}>();
+  applicationId: string
+  resource: S.Schema.Type<typeof Resource>
+  socialAgents: S.Schema.Type<typeof SocialAgentList>
+}>()
 
 const shareData: ShareAuthorizationModes = reactive({
   accessMode: [],
-  children: []
-});
+  children: [],
+})
 
-const loading = ref(false);
+const loading = ref(false)
 
-const selectedAgents = reactive<Set<string>>(new Set());
+const selectedAgents = reactive<Set<string>>(new Set())
 
-const valid = computed(() => Boolean(shareData.accessMode.length && selectedAgents.size));
+const valid = computed(() => Boolean(shareData.accessMode.length && selectedAgents.size))
 
 function toggleAgent(id: string) {
   if (selectedAgents.has(id)) {
-    selectedAgents.delete(id);
+    selectedAgents.delete(id)
   } else {
-    selectedAgents.add(id);
+    selectedAgents.add(id)
   }
 }
 
-const existingGrantees = computed(() => props.socialAgents.filter((agent) => props.resource.accessGrantedTo.includes(agent.id)));
+const existingGrantees = computed(() =>
+  props.socialAgents.filter((agent) => props.resource.accessGrantedTo.includes(agent.id))
+)
 
-const potentialGrantees = computed(() => props.socialAgents.filter((agent) => !props.resource.accessGrantedTo.includes(agent.id)));
+const potentialGrantees = computed(() =>
+  props.socialAgents.filter((agent) => !props.resource.accessGrantedTo.includes(agent.id))
+)
 
 function chooseAccessMode(value: string): string[] {
   switch (value) {
     case 'view':
-      return [AccessModes.Read];
+      return [AccessModes.Read]
     case 'edit':
-      return [AccessModes.Read, AccessModes.Update];
+      return [AccessModes.Read, AccessModes.Update]
     case 'add':
-      return [AccessModes.Read, AccessModes.Update, AccessModes.Create];
+      return [AccessModes.Read, AccessModes.Update, AccessModes.Create]
     default:
-      return [];
+      return []
   }
 }
 function modeSelected(shapeTree: string, mode: string) {
   if (shapeTree === props.resource.shapeTree.id) {
-    shareData.accessMode = chooseAccessMode(mode);
+    shareData.accessMode = chooseAccessMode(mode)
   } else {
-    let child = shareData.children.find((c) => c.shapeTree === shapeTree);
+    let child = shareData.children.find((c) => c.shapeTree === shapeTree)
     if (!child) {
-      child = { shapeTree, accessMode: chooseAccessMode(mode) };
-      shareData.children.push(child);
+      child = { shapeTree, accessMode: chooseAccessMode(mode) }
+      shareData.children.push(child)
     } else {
-      child.accessMode = chooseAccessMode(mode);
+      child.accessMode = chooseAccessMode(mode)
     }
   }
 }
 
 function share() {
-  loading.value = true;
+  loading.value = true
   appStore.shareResource({
     applicationId: props.applicationId,
     resource: props.resource.id,
     accessMode: shareData.accessMode,
     children: shareData.children,
-    agents: [...selectedAgents]
-  });
+    agents: [...selectedAgents],
+  })
 }
 
 watch(
   () => appStore.shareAuthorizationConfirmation,
   (confirmation) => {
-    if (confirmation) window.location.href = confirmation.callbackEndpoint;
+    if (confirmation) window.location.href = confirmation.callbackEndpoint
   }
-);
+)
 </script>

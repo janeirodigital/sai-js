@@ -80,12 +80,12 @@
   </v-sheet>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { Invitation } from '@janeirodigital/sai-api-messages';
-import { useAppStore } from '@/store/app';
+import { useAppStore } from '@/store/app'
+import type { Invitation } from '@janeirodigital/sai-api-messages'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-const router = useRouter() 
+const router = useRouter()
 const appStore = useAppStore()
 appStore.listSocialAgents()
 appStore.listSocialAgentInvitations()
@@ -99,14 +99,13 @@ function webShareUrl(invitation: Invitation) {
   navigator.share({
     title: invitation.label,
     text: invitation.note,
-    url: invitation.capabilityUrl
+    url: invitation.capabilityUrl,
   })
 }
 
 function shareAvaliable() {
   return navigator.share
 }
-
 </script>
 
 <style>

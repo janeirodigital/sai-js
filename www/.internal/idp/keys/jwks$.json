@@ -1,1 +1,15 @@
-{"key":"idp/keys/jwks","payload":{"keys":[{"kty":"EC","x":"PmJb8coFsoW0uvwrs27OV3e-u3NLCLb-NJ4-8e4b9k0","y":"UJtXev1vKjcZQTmzmMUYTswKyRV4R6eUm2D_fBN3l3Q","crv":"P-256","d":"Akoq1zXHL1YnBDbpjffpJfae7Q4gw9yPoNa2S-5qbus","alg":"ES256"}]}}
+{
+  "key": "idp/keys/jwks",
+  "payload": {
+    "keys": [
+      {
+        "kty": "EC",
+        "x": "PmJb8coFsoW0uvwrs27OV3e-u3NLCLb-NJ4-8e4b9k0",
+        "y": "UJtXev1vKjcZQTmzmMUYTswKyRV4R6eUm2D_fBN3l3Q",
+        "crv": "P-256",
+        "d": "Akoq1zXHL1YnBDbpjffpJfae7Q4gw9yPoNa2S-5qbus",
+        "alg": "ES256"
+      }
+    ]
+  }
+}

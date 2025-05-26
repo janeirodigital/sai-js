@@ -30,8 +30,8 @@
   </v-main>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { useAppStore } from '@/store/app';
+import { useAppStore } from '@/store/app'
+import { ref } from 'vue'
 
 const appStore = useAppStore()
 const enableNotificationsLoading = ref(false)
@@ -45,7 +45,6 @@ await appStore.getPushSubscription()
 
 // TODO: act differently depending on message.data
 navigator.serviceWorker.onmessage = (message) => {
- console.log('message', message)
-};
-
+  console.log('message', message)
+}
 </script>

@@ -1,1 +1,1 @@
-export * from './fetch-mock';
+export * from './fetch-mock'

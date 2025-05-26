@@ -1,19 +1,19 @@
-import { Store } from 'n3';
-import { AuthorizationAgentFactory, Resource } from '..';
+import { Store } from 'n3'
+import { type AuthorizationAgentFactory, Resource } from '..'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Data = { [key: string]: any };
+type Data = { [key: string]: any }
 
 export class ImmutableResource extends Resource {
-  data: Data;
+  data: Data
 
-  stored = false;
+  stored = false
 
   // dataset gets populated in consturtor of each sub class
   constructor(iri: string, factory: AuthorizationAgentFactory, data: Data) {
-    super(iri, factory);
-    this.data = data;
-    this.dataset = new Store();
+    super(iri, factory)
+    this.data = data
+    this.dataset = new Store()
   }
 
   /*
@@ -23,19 +23,19 @@ export class ImmutableResource extends Resource {
    */
   public async put(): Promise<void> {
     if (this.stored) {
-      throw new Error('this resource has been already stored');
+      throw new Error('this resource has been already stored')
     }
     const { ok } = await this.fetch(this.iri, {
       method: 'PUT',
       dataset: this.dataset,
       headers: {
-        'If-None-Match': '*'
-      }
-    });
+        'If-None-Match': '*',
+      },
+    })
     if (ok) {
-      this.stored = true;
+      this.stored = true
     } else {
-      throw new Error('failed to store');
+      throw new Error('failed to store')
     }
   }
 }

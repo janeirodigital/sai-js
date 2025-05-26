@@ -1,7 +1,7 @@
-import { describe, test, expect, beforeAll } from 'vitest';
-import { DatasetCore } from '@rdfjs/types';
-import { DataFactory } from 'n3';
-import { getOneMatchingQuad, getAllMatchingQuads, parseTurtle } from '../src';
+import type { DatasetCore } from '@rdfjs/types'
+import { DataFactory } from 'n3'
+import { beforeAll, describe, expect, test } from 'vitest'
+import { getAllMatchingQuads, getOneMatchingQuad, parseTurtle } from '../src'
 
 const snippet = `
   @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -14,26 +14,32 @@ const snippet = `
     interop:registeredWith <https://solidmin.example/#app> ;
     interop:registeredAt "2020-08-23T21:12:27.000Z"^^xsd:dateTime ;
     interop:registeredShapeTree solidtrees:Project .
-`;
+`
 
-let dataset: DatasetCore;
+let dataset: DatasetCore
 
 describe('getOneMatchingQuad', () => {
   beforeAll(async () => {
-    dataset = await parseTurtle(snippet);
-  });
+    dataset = await parseTurtle(snippet)
+  })
 
   test('should return quad if matching exists', () => {
-    const quadPattern = [null, DataFactory.namedNode('http://www.w3.org/ns/solid/interop#registeredAt')];
-    const quad = getOneMatchingQuad(dataset, ...quadPattern);
-    expect(quad.object.value).toBe('2020-08-23T21:12:27.000Z');
-  });
-});
+    const quadPattern = [
+      null,
+      DataFactory.namedNode('http://www.w3.org/ns/solid/interop#registeredAt'),
+    ]
+    const quad = getOneMatchingQuad(dataset, ...quadPattern)
+    expect(quad.object.value).toBe('2020-08-23T21:12:27.000Z')
+  })
+})
 
 describe('getAllMatchingQuads', () => {
   test('should return array of quads if matches exists', () => {
-    const quadPattern = [null, DataFactory.namedNode('http://www.w3.org/ns/solid/interop#registeredBy')];
-    const quads = getAllMatchingQuads(dataset, ...quadPattern);
-    expect(quads.length).toBe(2);
-  });
-});
+    const quadPattern = [
+      null,
+      DataFactory.namedNode('http://www.w3.org/ns/solid/interop#registeredBy'),
+    ]
+    const quads = getAllMatchingQuads(dataset, ...quadPattern)
+    expect(quads.length).toBe(2)
+  })
+})

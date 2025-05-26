@@ -31,10 +31,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": [
-    "dist/",
-    "src/"
-  ],
+  "files": ["dist/", "src/"],
   "directories": {
     "lib": "src",
     "test": "test"

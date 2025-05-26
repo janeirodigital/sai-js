@@ -5,21 +5,21 @@
  */
 
 // Styles
-import '@mdi/font/css/materialdesignicons.css';
-import 'vuetify/styles';
+import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles'
 
 // Composables
-import { createVuetify } from 'vuetify';
+import { createVuetify } from 'vuetify'
 
 // Plugins
-import { VTimePicker } from 'vuetify/labs/VTimePicker';
+import { VTimePicker } from 'vuetify/labs/VTimePicker'
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
   theme: {
-    defaultTheme: 'dark'
+    defaultTheme: 'dark',
   },
   components: {
-    VTimePicker
-  }
-});
+    VTimePicker,
+  },
+})

@@ -1,19 +1,19 @@
-import { DatasetCore } from '@rdfjs/types';
-import { serializeTurtle, parseTurtle } from '.';
+import type { DatasetCore } from '@rdfjs/types'
+import { parseTurtle, serializeTurtle } from '.'
 
 export interface RdfRequestInit extends RequestInit {
-  dataset?: DatasetCore;
+  dataset?: DatasetCore
 }
 
 export interface RdfResponse extends Response {
-  dataset(): Promise<DatasetCore>;
-  text(): Promise<string>;
+  dataset(): Promise<DatasetCore>
+  text(): Promise<string>
 }
 
-export type WhatwgFetch = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
+export type WhatwgFetch = (input: RequestInfo, init?: RequestInit) => Promise<Response>
 export type RdfFetch = ((iri: string, options?: RdfRequestInit) => Promise<RdfResponse>) & {
-  raw: WhatwgFetch;
-};
+  raw: WhatwgFetch
+}
 
 // TODO accept either string | NamedNode
 // https://github.com/janeirodigital/sai-js/issues/17
@@ -22,34 +22,34 @@ async function unwrappedRdfFetch(
   iri: string,
   options?: RdfRequestInit
 ): Promise<RdfResponse> {
-  let requestInit: RequestInit;
+  let requestInit: RequestInit
   if (options?.dataset) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { dataset, ...request } = options;
-    request.body = await serializeTurtle(options.dataset);
-    request.headers = { 'Content-Type': 'text/turtle', ...request.headers };
-    requestInit = request;
+    const { dataset, ...request } = options
+    request.body = await serializeTurtle(options.dataset)
+    request.headers = { 'Content-Type': 'text/turtle', ...request.headers }
+    requestInit = request
   } else {
-    requestInit = { ...options } as RequestInit;
-    requestInit.headers = { Accept: 'text/turtle', ...requestInit.headers };
+    requestInit = { ...options } as RequestInit
+    requestInit.headers = { Accept: 'text/turtle', ...requestInit.headers }
   }
-  const response = await whatwgFetch(iri, requestInit);
-  const rdfResponse = response.clone() as RdfResponse;
+  const response = await whatwgFetch(iri, requestInit)
+  const rdfResponse = response.clone() as RdfResponse
   rdfResponse.dataset = async function dataset() {
-    const contentType = response.headers.get('Content-Type');
+    const contentType = response.headers.get('Content-Type')
     if (contentType === null || !contentType.match('text/turtle')) {
-      throw Error(`Content-Type was ${contentType}`);
+      throw Error(`Content-Type was ${contentType}`)
     }
-    return parseTurtle(await response.text(), response.url);
-  };
-  rdfResponse.text = response.text;
-  return rdfResponse;
+    return parseTurtle(await response.text(), response.url)
+  }
+  rdfResponse.text = response.text
+  return rdfResponse
 }
 
 export function fetchWrapper(whatwgFetch: WhatwgFetch): RdfFetch {
   const wrappedRdfFetch = function wrappedRdfFetch(iri: string, options?: RdfRequestInit) {
-    return unwrappedRdfFetch(whatwgFetch, iri, options);
-  };
-  wrappedRdfFetch.raw = whatwgFetch;
-  return wrappedRdfFetch;
+    return unwrappedRdfFetch(whatwgFetch, iri, options)
+  }
+  wrappedRdfFetch.raw = whatwgFetch
+  return wrappedRdfFetch
 }

@@ -20,10 +20,7 @@
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",
-  "files": [
-    "dist/",
-    "src/"
-  ],
+  "files": ["dist/", "src/"],
   "directories": {
     "lib": "src",
     "test": "test"
@@ -31,8 +28,7 @@
   "scripts": {
     "repl": "node --import=tsx ./repl.ts"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@janeirodigital/interop-authorization-agent": "workspace:^1.0.0-rc.24",
     "@janeirodigital/css-test-utils": "^1.0.0-rc.24",

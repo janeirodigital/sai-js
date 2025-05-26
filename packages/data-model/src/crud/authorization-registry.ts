@@ -1,16 +1,16 @@
-import { DataFactory } from 'n3';
-import { INTEROP, RDF } from '@janeirodigital/interop-utils';
-import { AuthorizationAgentFactory, ReadableAccessAuthorization } from '..';
-import { CRUDContainer } from '.';
-import { CRUDData } from './resource';
+import { INTEROP, RDF } from '@janeirodigital/interop-utils'
+import { DataFactory } from 'n3'
+import { CRUDContainer } from '.'
+import type { AuthorizationAgentFactory, ReadableAccessAuthorization } from '..'
+import type { CRUDData } from './resource'
 
 export class CRUDAuthorizationRegistry extends CRUDContainer {
-  factory: AuthorizationAgentFactory;
+  factory: AuthorizationAgentFactory
 
   async bootstrap(): Promise<void> {
-    await this.fetchData();
+    await this.fetchData()
     if (this.data) {
-      this.dataset.add(DataFactory.quad(this.node, RDF.type, INTEROP.AuthorizationRegistry));
+      this.dataset.add(DataFactory.quad(this.node, RDF.type, INTEROP.AuthorizationRegistry))
     }
   }
 
@@ -19,28 +19,33 @@ export class CRUDAuthorizationRegistry extends CRUDContainer {
     factory: AuthorizationAgentFactory,
     data?: CRUDData
   ): Promise<CRUDAuthorizationRegistry> {
-    const instance = new CRUDAuthorizationRegistry(iri, factory, data);
-    await instance.bootstrap();
-    return instance;
+    const instance = new CRUDAuthorizationRegistry(iri, factory, data)
+    await instance.bootstrap()
+    return instance
   }
 
   get accessAuthorizations(): AsyncIterable<ReadableAccessAuthorization> {
-    const accessAuthorizationPattern = [DataFactory.namedNode(this.iri), INTEROP.hasAccessAuthorization];
-    const accessAuthorizationIris = this.getQuadArray(...accessAuthorizationPattern).map((q) => q.object.value);
-    const { factory } = this;
+    const accessAuthorizationPattern = [
+      DataFactory.namedNode(this.iri),
+      INTEROP.hasAccessAuthorization,
+    ]
+    const accessAuthorizationIris = this.getQuadArray(...accessAuthorizationPattern).map(
+      (q) => q.object.value
+    )
+    const { factory } = this
     return {
       async *[Symbol.asyncIterator]() {
         for (const iri of accessAuthorizationIris) {
-          yield factory.readable.accessAuthorization(iri);
+          yield factory.readable.accessAuthorization(iri)
         }
-      }
-    };
+      },
+    }
   }
 
-  async findAuthorization(agentIri: string): Promise<ReadableAccessAuthorization | void> {
+  async findAuthorization(agentIri: string): Promise<ReadableAccessAuthorization | undefined> {
     for await (const authorization of this.accessAuthorizations) {
       if (authorization.grantee === agentIri) {
-        return authorization;
+        return authorization
       }
     }
   }
@@ -55,38 +60,40 @@ export class CRUDAuthorizationRegistry extends CRUDContainer {
       DataFactory.namedNode(this.iri),
       INTEROP.hasAccessAuthorization,
       DataFactory.namedNode(accessAuthorization.iri)
-    );
+    )
     // unlink prevoius access authorization for that grantee if exists
-    const priorAuthorization = await this.findAuthorization(accessAuthorization.grantee);
+    const priorAuthorization = await this.findAuthorization(accessAuthorization.grantee)
     if (priorAuthorization) {
       const priorQuad = this.getQuad(
         DataFactory.namedNode(this.iri),
         INTEROP.hasAccessAuthorization,
         DataFactory.namedNode(priorAuthorization.iri)
-      );
-      await this.replaceStatement(priorQuad, quad);
+      )
+      await this.replaceStatement(priorQuad, quad)
     } else {
-      await this.addStatement(quad);
+      await this.addStatement(quad)
     }
   }
 
   // match dataOwner on data authorizations - scope All will have no dataOwner but we want it to also match
-  async findAuthorizationsDelegatingFromOwner(dataOwner: string): Promise<ReadableAccessAuthorization[]> {
-    const matching: ReadableAccessAuthorization[] = [];
+  async findAuthorizationsDelegatingFromOwner(
+    dataOwner: string
+  ): Promise<ReadableAccessAuthorization[]> {
+    const matching: ReadableAccessAuthorization[] = []
     for await (const accessAuthorization of this.accessAuthorizations) {
-      let matches = false;
+      let matches = false
       // exclude authorizations where dataOwner is also the grantee (it would match when All scope)
       if (accessAuthorization.grantee !== dataOwner) {
         for await (const dataAuthorization of accessAuthorization.dataAuthorizations) {
           if (!dataAuthorization.dataOwner || dataAuthorization.dataOwner === dataOwner) {
-            matches = true;
+            matches = true
           }
         }
       }
       if (matches) {
-        matching.push(accessAuthorization);
+        matching.push(accessAuthorization)
       }
     }
-    return matching;
+    return matching
   }
 }

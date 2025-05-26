@@ -41,27 +41,27 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { useCoreStore } from '@/store/core';
-import { useAppStore } from '@/store/app';
+import { useAppStore } from '@/store/app'
+import { useCoreStore } from '@/store/core'
+import { ref } from 'vue'
 
-const coreStore = useCoreStore();
-const appStore = useAppStore();
+const coreStore = useCoreStore()
+const appStore = useAppStore()
 
-const enableNotificationsLoading = ref(false);
+const enableNotificationsLoading = ref(false)
 
-await coreStore.getPushSubscription();
+await coreStore.getPushSubscription()
 
 async function enableNotifications() {
-  enableNotificationsLoading.value = true;
-  await coreStore.enableNotifications();
-  enableNotificationsLoading.value = false;
+  enableNotificationsLoading.value = true
+  await coreStore.enableNotifications()
+  enableNotificationsLoading.value = false
 }
 
 // TODO: act differently depending on message.data
 navigator.serviceWorker.onmessage = (message) => {
-  appStore.listSocialAgents(true);
-  appStore.listSocialAgentInvitations(true);
-  appStore.listDataRegistries(message.data.data.webId);
-};
+  appStore.listSocialAgents(true)
+  appStore.listSocialAgentInvitations(true)
+  appStore.listDataRegistries(message.data.data.webId)
+}
 </script>

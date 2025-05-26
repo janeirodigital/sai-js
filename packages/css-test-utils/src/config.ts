@@ -1,2 +1,2 @@
-export const port = 3711;
-export const host = `http://localhost:${port}`;
+export const port = 3711
+export const host = `http://localhost:${port}`

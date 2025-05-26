@@ -4,7 +4,7 @@
  * Bootstraps Vuetify and other plugins then mounts the App`
  */
 
-import "@fontsource/preahvihear"
+import '@fontsource/preahvihear'
 
 // Plugins
 import { registerPlugins } from '@/plugins'

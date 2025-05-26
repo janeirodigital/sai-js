@@ -1,10 +1,14 @@
-import { from, Observable } from 'rxjs';
-import { HttpHandler, HttpHandlerResponse, HttpHandlerContext } from '@digita-ai/handlersjs-http';
-import { getLogger } from '@digita-ai/handlersjs-logging';
-import { IQueue } from '@janeirodigital/sai-server-interfaces';
-import { validateContentType } from '../utils/http-validators';
-import { decodeWebId } from '../url-templates';
-import { IDelegatedGrantsJobData, IPushNotificationsJobData } from '../models/jobs';
+import {
+  HttpHandler,
+  type HttpHandlerContext,
+  type HttpHandlerResponse,
+} from '@digita-ai/handlersjs-http'
+import { getLogger } from '@digita-ai/handlersjs-logging'
+import type { IQueue } from '@janeirodigital/sai-server-interfaces'
+import { type Observable, from } from 'rxjs'
+import type { IDelegatedGrantsJobData, IPushNotificationsJobData } from '../models/jobs'
+import { decodeWebId } from '../url-templates'
+import { validateContentType } from '../utils/http-validators'
 
 // interface Notification {
 //   object: {
@@ -13,18 +17,18 @@ import { IDelegatedGrantsJobData, IPushNotificationsJobData } from '../models/jo
 // }
 
 export class WebHooksHandler extends HttpHandler {
-  private logger = getLogger();
+  private logger = getLogger()
 
   constructor(
     private grantsQueue: IQueue,
     private pushQueue: IQueue
   ) {
-    super();
-    this.logger.info('WebHooksHandler::constructor');
+    super()
+    this.logger.info('WebHooksHandler::constructor')
   }
 
   async handleAsync(context: HttpHandlerContext): Promise<HttpHandlerResponse> {
-    validateContentType(context, 'application/ld+json');
+    validateContentType(context, 'application/ld+json')
 
     // verify if sender is Authorized
     // if (!this.senderAuthorized(context)) throw new UnauthorizedHttpError();
@@ -32,8 +36,8 @@ export class WebHooksHandler extends HttpHandler {
     // const notification = context.request.body as Notification;
     // this.validateNotification(notification);
 
-    const webId = decodeWebId(context.request.parameters!.encodedWebId);
-    const peerWebId = decodeWebId(context.request.parameters!.encodedPeerWebId);
+    const webId = decodeWebId(context.request.parameters!.encodedWebId)
+    const peerWebId = decodeWebId(context.request.parameters!.encodedPeerWebId)
 
     // notification from a reciprocal agent registration
 
@@ -41,17 +45,17 @@ export class WebHooksHandler extends HttpHandler {
     // TODO: body should be parsed in middleware
     if (JSON.parse(context.request.body).type === 'Update') {
       // create job to update delegated data grants
-      await this.grantsQueue.add({ webId, registeredAgent: peerWebId } as IDelegatedGrantsJobData);
+      await this.grantsQueue.add({ webId, registeredAgent: peerWebId } as IDelegatedGrantsJobData)
       // send push notification
-      await this.pushQueue.add({ webId, registeredAgent: peerWebId } as IPushNotificationsJobData);
+      await this.pushQueue.add({ webId, registeredAgent: peerWebId } as IPushNotificationsJobData)
     }
 
-    return { body: {}, status: 200, headers: {} };
+    return { body: {}, status: 200, headers: {} }
   }
 
   handle(context: HttpHandlerContext): Observable<HttpHandlerResponse> {
-    this.logger.info('WebHooksHandler::handle');
-    return from(this.handleAsync(context));
+    this.logger.info('WebHooksHandler::handle')
+    return from(this.handleAsync(context))
   }
 
   // validateNotification(notification: Notification): void {

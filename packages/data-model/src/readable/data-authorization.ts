@@ -1,76 +1,81 @@
-import { INTEROP, asyncIterableToArray } from '@janeirodigital/interop-utils';
-import { Memoize } from 'typescript-memoize';
-import {
+import { INTEROP, asyncIterableToArray } from '@janeirodigital/interop-utils'
+import { Memoize } from 'typescript-memoize'
+import { ReadableResource, type SelectedFromRegistryDataGrant } from '.'
+import type {
   AuthorizationAgentFactory,
+  CRUDAgentRegistration,
   CRUDAgentRegistry,
-  ImmutableDataGrant,
-  DataGrantData,
   CRUDDataRegistry,
-  ReadableDataRegistration,
+  DataGrantData,
+  ImmutableDataGrant,
   InheritableDataGrant,
-  CRUDAgentRegistration
-} from '..';
-import { ReadableResource, SelectedFromRegistryDataGrant } from '.';
+  ReadableDataRegistration,
+} from '..'
 
 export class ReadableDataAuthorization extends ReadableResource {
-  factory: AuthorizationAgentFactory;
+  factory: AuthorizationAgentFactory
 
-  hasInheritingAuthorization: ReadableDataAuthorization[];
+  hasInheritingAuthorization: ReadableDataAuthorization[]
 
   async inheritingAuthorizations(): Promise<ReadableDataAuthorization[]> {
-    const childIris = this.getSubjectsArray(INTEROP.inheritsFromAuthorization).map((subject) => subject.value);
-    return Promise.all(childIris.map((iri) => this.factory.readable.dataAuthorization(iri)));
+    const childIris = this.getSubjectsArray(INTEROP.inheritsFromAuthorization).map(
+      (subject) => subject.value
+    )
+    return Promise.all(childIris.map((iri) => this.factory.readable.dataAuthorization(iri)))
   }
 
   async bootstrap(): Promise<void> {
-    await this.fetchData();
-    this.hasInheritingAuthorization = await this.inheritingAuthorizations();
+    await this.fetchData()
+    this.hasInheritingAuthorization = await this.inheritingAuthorizations()
   }
 
   @Memoize()
   get grantee(): string {
-    return this.getObject('grantee').value;
+    return this.getObject('grantee').value
   }
 
   @Memoize()
   get registeredShapeTree(): string {
-    return this.getObject('registeredShapeTree').value;
+    return this.getObject('registeredShapeTree').value
   }
 
   @Memoize()
   get scopeOfAuthorization(): string {
-    return this.getObject('scopeOfAuthorization').value;
+    return this.getObject('scopeOfAuthorization').value
   }
 
   @Memoize()
   get grantedBy(): string {
-    return this.getObject('grantedBy').value;
+    return this.getObject('grantedBy').value
   }
 
   @Memoize()
   get dataOwner(): string | undefined {
-    return this.getObject('dataOwner')?.value;
+    return this.getObject('dataOwner')?.value
   }
 
   @Memoize()
   get accessMode(): string[] {
-    return this.getObjectsArray('accessMode').map((object) => object.value);
+    return this.getObjectsArray('accessMode').map((object) => object.value)
   }
 
   @Memoize()
   get hasDataRegistration(): string | undefined {
-    return this.getObject('hasDataRegistration')?.value;
+    return this.getObject('hasDataRegistration')?.value
   }
 
   @Memoize()
   get hasDataInstance(): string[] {
-    return this.getObjectsArray('hasDataInstance').map((obj) => obj.value);
+    return this.getObjectsArray('hasDataInstance').map((obj) => obj.value)
   }
 
-  public static async build(iri: string, factory: AuthorizationAgentFactory): Promise<ReadableDataAuthorization> {
-    const instance = new ReadableDataAuthorization(iri, factory);
-    await instance.bootstrap();
-    return instance;
+  public static async build(
+    iri: string,
+    factory: AuthorizationAgentFactory
+  ): Promise<ReadableDataAuthorization> {
+    const instance = new ReadableDataAuthorization(iri, factory)
+    await instance.bootstrap()
+    return instance
   }
 
   private generateChildDelegatedDataGrants(
@@ -80,25 +85,27 @@ export class ReadableDataAuthorization extends ReadableResource {
   ): ImmutableDataGrant[] {
     return this.hasInheritingAuthorization
       .map((childAuthorization) => {
-        const childGrantIri = granteeRegistration.iriForContained();
+        const childGrantIri = granteeRegistration.iriForContained()
         const childSourceGrant = [...sourceGrant.hasInheritingGrant].find(
           (grant) => grant.registeredShapeTree === childAuthorization.registeredShapeTree
-        );
+        )
         if (!childSourceGrant) {
-          return null;
+          return null
         }
         const childData: DataGrantData = {
           dataOwner: childSourceGrant.dataOwner,
           registeredShapeTree: childAuthorization.registeredShapeTree,
           hasDataRegistration: childSourceGrant.hasDataRegistration,
           scopeOfGrant: INTEROP.Inherited.value,
-          accessMode: childAuthorization.accessMode.filter((mode) => childSourceGrant.accessMode.includes(mode)),
+          accessMode: childAuthorization.accessMode.filter((mode) =>
+            childSourceGrant.accessMode.includes(mode)
+          ),
           inheritsFromGrant: parentGrantIri,
-          delegationOfGrant: childSourceGrant.iri
-        };
-        return this.factory.immutable.dataGrant(childGrantIri, childData);
+          delegationOfGrant: childSourceGrant.iri,
+        }
+        return this.factory.immutable.dataGrant(childGrantIri, childData)
       })
-      .filter(Boolean);
+      .filter(Boolean)
   }
 
   private async generateDelegatedDataGrants(
@@ -106,45 +113,47 @@ export class ReadableDataAuthorization extends ReadableResource {
     granteeRegistration: CRUDAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
     if (this.scopeOfAuthorization === INTEROP.Inherited.value) {
-      throw new Error('this method should not be callend on data authorizations with Inherited scope');
+      throw new Error(
+        'this method should not be callend on data authorizations with Inherited scope'
+      )
     }
-    let result: ImmutableDataGrant[] = [];
+    let result: ImmutableDataGrant[] = []
 
     for await (const agentRegistration of agentRegistry.socialAgentRegistrations) {
       // data onwer is specified but it is not their registration
       if (this.dataOwner && this.dataOwner !== agentRegistration.registeredAgent) {
-        continue;
+        continue
       }
       // don't create delegated data grants for data owned by the grantee (registeredAgent)
       if (this.grantee === agentRegistration.registeredAgent) {
-        continue;
+        continue
       }
-      const accessGrantIri = agentRegistration.reciprocalRegistration?.hasAccessGrant;
+      const accessGrantIri = agentRegistration.reciprocalRegistration?.hasAccessGrant
 
-      if (!accessGrantIri) continue;
+      if (!accessGrantIri) continue
 
-      const accessGrant = await this.factory.readable.accessGrant(accessGrantIri);
+      const accessGrant = await this.factory.readable.accessGrant(accessGrantIri)
 
       // match shape tree
       let matchingDataGrants = accessGrant.hasDataGrant.filter(
         (grant) => grant.registeredShapeTree === this.registeredShapeTree
-      );
+      )
       // match registration if restricted
       if (this.hasDataRegistration) {
         matchingDataGrants = matchingDataGrants.filter(
           (grant) => grant.hasDataRegistration === this.hasDataRegistration
-        );
+        )
       }
 
       result = [
         ...matchingDataGrants.flatMap((sourceGrant) => {
-          const regularGrantIri = granteeRegistration.iriForContained();
+          const regularGrantIri = granteeRegistration.iriForContained()
 
           const childDataGrants: ImmutableDataGrant[] = this.generateChildDelegatedDataGrants(
             regularGrantIri,
             sourceGrant as InheritableDataGrant,
             granteeRegistration
-          );
+          )
           // TODO (elf-pavlik) use hasDataInstance if present - add snippet
           const data: DataGrantData = {
             dataOwner: sourceGrant.dataOwner,
@@ -152,21 +161,23 @@ export class ReadableDataAuthorization extends ReadableResource {
             hasDataRegistration: sourceGrant.hasDataRegistration,
             scopeOfGrant: sourceGrant.scopeOfGrant.value,
             delegationOfGrant: sourceGrant.iri,
-            accessMode: this.accessMode.filter((mode) => sourceGrant.accessMode.includes(mode))
-          };
+            accessMode: this.accessMode.filter((mode) => sourceGrant.accessMode.includes(mode)),
+          }
           if (sourceGrant.scopeOfGrant.value === INTEROP.SelectedFromRegistry.value) {
-            data.hasDataInstance = [...(sourceGrant as SelectedFromRegistryDataGrant).hasDataInstance];
+            data.hasDataInstance = [
+              ...(sourceGrant as SelectedFromRegistryDataGrant).hasDataInstance,
+            ]
           }
           if (childDataGrants.length) {
-            data.hasInheritingGrant = childDataGrants;
+            data.hasInheritingGrant = childDataGrants
           }
-          const regularGrant = this.factory.immutable.dataGrant(regularGrantIri, data);
-          return [regularGrant, ...childDataGrants];
+          const regularGrant = this.factory.immutable.dataGrant(regularGrantIri, data)
+          return [regularGrant, ...childDataGrants]
         }),
-        ...result
-      ];
+        ...result,
+      ]
     }
-    return result;
+    return result
   }
 
   private generateChildSourceDataGrants(
@@ -176,13 +187,14 @@ export class ReadableDataAuthorization extends ReadableResource {
   ): ImmutableDataGrant[] {
     return this.hasInheritingAuthorization
       .map((childAuthorization) => {
-        const childGrantIri = granteeRegistration.iriForContained();
+        const childGrantIri = granteeRegistration.iriForContained()
         // each data registry has only one data registration for any given shape tree
         const dataRegistration = dataRegistrations.find(
-          (registration) => registration.registeredShapeTree === childAuthorization.registeredShapeTree
-        );
+          (registration) =>
+            registration.registeredShapeTree === childAuthorization.registeredShapeTree
+        )
         if (!dataRegistration) {
-          return null;
+          return null
         }
         const childData: DataGrantData = {
           dataOwner: childAuthorization.grantedBy,
@@ -190,11 +202,11 @@ export class ReadableDataAuthorization extends ReadableResource {
           hasDataRegistration: dataRegistration.iri,
           scopeOfGrant: INTEROP.Inherited.value,
           accessMode: childAuthorization.accessMode,
-          inheritsFromGrant: parentGrantIri
-        };
-        return this.factory.immutable.dataGrant(childGrantIri, childData);
+          inheritsFromGrant: parentGrantIri,
+        }
+        return this.factory.immutable.dataGrant(childGrantIri, childData)
       })
-      .filter(Boolean);
+      .filter(Boolean)
   }
 
   private async generateSourceDataGrants(
@@ -202,64 +214,68 @@ export class ReadableDataAuthorization extends ReadableResource {
     granteeRegistration: CRUDAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
     if (this.scopeOfAuthorization === INTEROP.Inherited.value) {
-      throw new Error('this method should not be callend on data authorizations with Inherited scope');
+      throw new Error(
+        'this method should not be callend on data authorizations with Inherited scope'
+      )
     }
 
-    const generatedDataGrants: ImmutableDataGrant[] = [];
+    const generatedDataGrants: ImmutableDataGrant[] = []
 
     // FIXME handle each data registry independently
     for (const dataRegistry of dataRegistries) {
       // const dataRegistrations = dataRegistriesArr.flat();
 
-      const dataRegistrations = await asyncIterableToArray(dataRegistry.registrations);
+      const dataRegistrations = await asyncIterableToArray(dataRegistry.registrations)
 
-      let matchingRegistration: ReadableDataRegistration;
+      let matchingRegistration: ReadableDataRegistration
 
       if (this.hasDataRegistration) {
         // match registration if specified
-        matchingRegistration = dataRegistrations.find((registration) => registration.iri === this.hasDataRegistration);
+        matchingRegistration = dataRegistrations.find(
+          (registration) => registration.iri === this.hasDataRegistration
+        )
       } else {
         // match shape tree
         matchingRegistration = dataRegistrations.find(
           (registration) => registration.registeredShapeTree === this.registeredShapeTree
-        );
+        )
       }
 
-      if (!matchingRegistration) continue;
+      if (!matchingRegistration) continue
 
       // create source grant
-      const regularGrantIri = granteeRegistration.iriForContained();
+      const regularGrantIri = granteeRegistration.iriForContained()
 
       // create children if needed
       const childDataGrants: ImmutableDataGrant[] = this.generateChildSourceDataGrants(
         regularGrantIri,
         dataRegistrations,
         granteeRegistration
-      );
+      )
 
-      let scopeOfGrant = INTEROP.AllFromRegistry.value;
+      let scopeOfGrant = INTEROP.AllFromRegistry.value
       if (this.scopeOfAuthorization === INTEROP.SelectedFromRegistry.value)
-        scopeOfGrant = INTEROP.SelectedFromRegistry.value;
+        scopeOfGrant = INTEROP.SelectedFromRegistry.value
       const data: DataGrantData = {
         dataOwner: this.grantedBy,
         registeredShapeTree: this.registeredShapeTree,
         hasDataRegistration: matchingRegistration.iri,
         scopeOfGrant,
-        accessMode: this.accessMode
-      };
+        accessMode: this.accessMode,
+      }
       if (this.hasDataInstance.length) {
-        data.hasDataInstance = this.hasDataInstance;
+        data.hasDataInstance = this.hasDataInstance
       }
       if (childDataGrants.length) {
-        data.hasInheritingGrant = childDataGrants;
+        data.hasInheritingGrant = childDataGrants
       }
-      const regularGrant = this.factory.immutable.dataGrant(regularGrantIri, data);
+      const regularGrant = this.factory.immutable.dataGrant(regularGrantIri, data)
 
-      generatedDataGrants.push(regularGrant, ...childDataGrants);
+      generatedDataGrants.push(regularGrant, ...childDataGrants)
     }
 
-    if (!generatedDataGrants.length) throw new Error('no data grants were generated!');
-    return generatedDataGrants;
+    if (!generatedDataGrants.length) throw new Error('no data grants were generated!')
+    return generatedDataGrants
   }
 
   public async generateDataGrants(
@@ -267,7 +283,7 @@ export class ReadableDataAuthorization extends ReadableResource {
     agentRegistry: CRUDAgentRegistry,
     granteeRegistration: CRUDAgentRegistration
   ): Promise<ImmutableDataGrant[]> {
-    const dataGrants: ImmutableDataGrant[] = [];
+    const dataGrants: ImmutableDataGrant[] = []
     /* Source grants are only created if Data Authorization is registred by the data owner.
      * This can only happen with scope:
      * - All - there will be no dataOwner set
@@ -276,7 +292,7 @@ export class ReadableDataAuthorization extends ReadableResource {
      * Otherwise only delegated data grants are created
      */
     if (!this.dataOwner || this.dataOwner === this.grantedBy) {
-      dataGrants.push(...(await this.generateSourceDataGrants(dataRegistries, granteeRegistration)));
+      dataGrants.push(...(await this.generateSourceDataGrants(dataRegistries, granteeRegistration)))
     }
 
     // do not create delegated data grants if granted by data owner, source grants will be created instead
@@ -288,9 +304,11 @@ export class ReadableDataAuthorization extends ReadableResource {
      * Otherwise only source data grants are created
      */
     if (!this.dataOwner || this.dataOwner !== this.grantedBy) {
-      dataGrants.push(...(await this.generateDelegatedDataGrants(agentRegistry, granteeRegistration)));
+      dataGrants.push(
+        ...(await this.generateDelegatedDataGrants(agentRegistry, granteeRegistration))
+      )
     }
 
-    return dataGrants;
+    return dataGrants
   }
 }

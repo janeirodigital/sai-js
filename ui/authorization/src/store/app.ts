@@ -1,99 +1,111 @@
-import * as effect from '@/effect';
-import * as S from 'effect/Schema';
-import { reactive, ref } from 'vue';
-import { defineStore } from 'pinia';
-import {
-  Resource,
-  AuthorizationData,
-  SocialAgentList,
-  ApplicationList,
-  ShareAuthorization,
-  ShareAuthorizationConfirmation,
+import * as effect from '@/effect'
+import type {
   AccessAuthorization,
+  AgentType,
+  ApplicationList,
+  Authorization,
+  AuthorizationData,
   DataInstanceList,
   DataRegistryList,
-  AgentType,
+  IRI,
+  Resource,
+  ShareAuthorization,
+  ShareAuthorizationConfirmation,
+  SocialAgent,
   SocialAgentInvitation,
   SocialAgentInvitationList,
+  SocialAgentList,
   UnregisteredApplication,
-  Authorization,
-  SocialAgent,
-  IRI
-} from '@janeirodigital/sai-api-messages';
+} from '@janeirodigital/sai-api-messages'
+import type * as S from 'effect/Schema'
+import { defineStore } from 'pinia'
+import { reactive, ref } from 'vue'
 
 export const useAppStore = defineStore('app', () => {
-  const lang = ref('en');
-  const resource = ref<S.Schema.Type<typeof Resource> | null>(null);
-  const shareAuthorizationConfirmation = ref<S.Schema.Type<typeof ShareAuthorizationConfirmation> | null>(null);
-  const authorizationData = ref<S.Schema.Type<typeof AuthorizationData> | null>(null);
-  const accessAuthorization = ref<S.Schema.Type<typeof AccessAuthorization> | null>(null);
-  const socialAgentList = ref<S.Schema.Type<typeof SocialAgentList>>([]);
-  const application = ref<S.Schema.Type<typeof UnregisteredApplication>>();
-  const loadedDataInstances = reactive<Record<string, S.Schema.Type<typeof DataInstanceList>>>({});
-  const applicationList = ref<S.Schema.Type<typeof ApplicationList>>([]);
-  const dataRegistryList = reactive<Record<string, S.Schema.Type<typeof DataRegistryList>>>({});
-  const invitationList = ref<S.Schema.Type<S.mutable<typeof SocialAgentInvitationList>>>([]);
+  const lang = ref('en')
+  const resource = ref<S.Schema.Type<typeof Resource> | null>(null)
+  const shareAuthorizationConfirmation = ref<S.Schema.Type<
+    typeof ShareAuthorizationConfirmation
+  > | null>(null)
+  const authorizationData = ref<S.Schema.Type<typeof AuthorizationData> | null>(null)
+  const accessAuthorization = ref<S.Schema.Type<typeof AccessAuthorization> | null>(null)
+  const socialAgentList = ref<S.Schema.Type<typeof SocialAgentList>>([])
+  const application = ref<S.Schema.Type<typeof UnregisteredApplication>>()
+  const loadedDataInstances = reactive<Record<string, S.Schema.Type<typeof DataInstanceList>>>({})
+  const applicationList = ref<S.Schema.Type<typeof ApplicationList>>([])
+  const dataRegistryList = reactive<Record<string, S.Schema.Type<typeof DataRegistryList>>>({})
+  const invitationList = ref<S.Schema.Type<S.mutable<typeof SocialAgentInvitationList>>>([])
 
   async function getResource(resourceId: string) {
-    resource.value = await effect.getResource(resourceId, lang.value);
+    resource.value = await effect.getResource(resourceId, lang.value)
   }
 
   async function shareResource(shareAuthorization: S.Schema.Type<typeof ShareAuthorization>) {
-    shareAuthorizationConfirmation.value = await effect.shareResource(shareAuthorization);
+    shareAuthorizationConfirmation.value = await effect.shareResource(shareAuthorization)
   }
 
-  async function getAuthoriaztion(agentId: string, agentType: AgentType, preferredLang = lang.value) {
-    authorizationData.value = await effect.getAuthoriaztionData(agentId, agentType, preferredLang);
+  async function getAuthoriaztion(
+    agentId: string,
+    agentType: AgentType,
+    preferredLang = lang.value
+  ) {
+    authorizationData.value = await effect.getAuthoriaztionData(agentId, agentType, preferredLang)
   }
 
   // TODO rename list with load
-  async function listDataInstances(agentId: S.Schema.Type<typeof IRI>, registrationId: S.Schema.Type<typeof IRI>) {
-    const dataInstances = await effect.listDataInstances(agentId, registrationId);
-    loadedDataInstances[registrationId] = [...dataInstances];
+  async function listDataInstances(
+    agentId: S.Schema.Type<typeof IRI>,
+    registrationId: S.Schema.Type<typeof IRI>
+  ) {
+    const dataInstances = await effect.listDataInstances(agentId, registrationId)
+    loadedDataInstances[registrationId] = [...dataInstances]
   }
 
   async function listApplications(force = false) {
     if (!applicationList.value.length || force) {
-      applicationList.value = await effect.listApplications();
+      applicationList.value = await effect.listApplications()
     }
   }
 
   async function listSocialAgents(force = false) {
     if (!socialAgentList.value.length || force) {
-      socialAgentList.value = await effect.listSocialAgents();
+      socialAgentList.value = await effect.listSocialAgents()
     }
   }
 
   async function listSocialAgentInvitations(force = false) {
     if (!invitationList.value.length || force) {
-      invitationList.value = [...(await effect.listSocialAgentInvitations())];
+      invitationList.value = [...(await effect.listSocialAgentInvitations())]
     }
   }
 
   async function authorizeApp(authorization: S.Schema.Type<typeof Authorization>) {
-    accessAuthorization.value = await effect.authorizeApp(authorization);
-    listApplications(true);
-    listSocialAgents(true);
+    accessAuthorization.value = await effect.authorizeApp(authorization)
+    listApplications(true)
+    listSocialAgents(true)
   }
 
   async function requestAccess(applicationId: string, agentId: string) {
-    await effect.requestAccessUsingApplicationNeeds(applicationId, agentId);
-    listSocialAgents(true);
+    await effect.requestAccessUsingApplicationNeeds(applicationId, agentId)
+    listSocialAgents(true)
   }
 
   async function getUnregisteredApplication(applicationId: string) {
-    application.value = await effect.getUnregisteredApplication(applicationId);
+    application.value = await effect.getUnregisteredApplication(applicationId)
   }
 
   async function listDataRegistries(agentId: string, preferedLang = 'en') {
-    const dataRegistries = await effect.listDataRegistries(agentId, preferedLang);
-    dataRegistryList[agentId] = [...dataRegistries];
+    const dataRegistries = await effect.listDataRegistries(agentId, preferedLang)
+    dataRegistryList[agentId] = [...dataRegistries]
   }
 
-  async function createInvitation(label: string, note?: string): Promise<S.Schema.Type<typeof SocialAgentInvitation>> {
-    const socialAgentInvitation = await effect.createInvitation(label, note);
-    invitationList.value.push(socialAgentInvitation);
-    return socialAgentInvitation;
+  async function createInvitation(
+    label: string,
+    note?: string
+  ): Promise<S.Schema.Type<typeof SocialAgentInvitation>> {
+    const socialAgentInvitation = await effect.createInvitation(label, note)
+    invitationList.value.push(socialAgentInvitation)
+    return socialAgentInvitation
   }
 
   async function acceptInvitation(
@@ -101,9 +113,9 @@ export const useAppStore = defineStore('app', () => {
     label: string,
     note?: string
   ): Promise<S.Schema.Type<typeof SocialAgent>> {
-    const socialAgent = await effect.acceptInvitation(capabilityUrl, label, note);
-    listSocialAgents(true);
-    return socialAgent;
+    const socialAgent = await effect.acceptInvitation(capabilityUrl, label, note)
+    listSocialAgents(true)
+    return socialAgent
   }
 
   return {
@@ -130,6 +142,6 @@ export const useAppStore = defineStore('app', () => {
     listDataRegistries,
     createInvitation,
     listSocialAgentInvitations,
-    acceptInvitation
-  };
-});
+    acceptInvitation,
+  }
+})

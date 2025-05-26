@@ -65,9 +65,9 @@
   </v-container>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAppStore } from '@/store/app';
+import { useAppStore } from '@/store/app'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
@@ -81,10 +81,12 @@ const addClientId = ref('')
 function addApplication() {
   addDialog.value = false
   if (addClientId.value) {
-    router.push({ name: 'authorization', query: { client_id: addClientId.value, redirect: 'false' }})
+    router.push({
+      name: 'authorization',
+      query: { client_id: addClientId.value, redirect: 'false' },
+    })
   }
 }
-
 </script>
 
 <style>

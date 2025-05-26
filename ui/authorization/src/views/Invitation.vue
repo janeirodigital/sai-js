@@ -33,10 +33,10 @@
   </v-sheet>
 </template>
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useAppStore } from '@/store/app'
 import { useFluent } from 'fluent-vue'
-import { useAppStore } from '@/store/app';
+import { computed, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 const router = useRouter()
 const route = useRoute()
@@ -48,23 +48,31 @@ const label = ref('')
 const note = ref('')
 const loading = ref(false)
 
-const valid = computed(() => label.value && (route.query.direction === 'accept' ? capabilityUrl.value : true))
+const valid = computed(
+  () => label.value && (route.query.direction === 'accept' ? capabilityUrl.value : true)
+)
 
-watch(() => route.query.text, (text) => { if (text) capabilityUrl.value = text as string }, { immediate: true })
+watch(
+  () => route.query.text,
+  (text) => {
+    if (text) capabilityUrl.value = text as string
+  },
+  { immediate: true }
+)
 
 const rules = {
-  required: (value: string) => !!value || $t('required')
+  required: (value: string) => !!value || $t('required'),
 }
 
-async function create () {
+async function create() {
   loading.value = true
-  if (route.query.direction as string === 'create') {
+  if ((route.query.direction as string) === 'create') {
     const invitation = await appStore.createInvitation(label.value, note.value)
-    router.push({ name: 'social-agent-list', query: { invitation: invitation.id } })  
+    router.push({ name: 'social-agent-list', query: { invitation: invitation.id } })
   } else {
     if (!capabilityUrl.value) return
     const agent = await appStore.acceptInvitation(capabilityUrl.value, label.value, note.value)
-    router.push({ name: 'social-agent-list', query: { agent: agent.id } })  
+    router.push({ name: 'social-agent-list', query: { agent: agent.id } })
   }
 }
 </script>

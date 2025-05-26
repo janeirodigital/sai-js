@@ -1,50 +1,50 @@
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import { RouteLocationNormalized } from 'vue-router';
 import {
-  ISessionInfo,
+  type ISessionInfo,
   getDefaultSession,
   handleIncomingRedirect,
-  login as oidcLogin
-} from '@inrupt/solid-client-authn-browser';
+  login as oidcLogin,
+} from '@inrupt/solid-client-authn-browser'
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
+import type { RouteLocationNormalized } from 'vue-router'
 
 class OidcError extends Error {
   constructor(private oidcInfo?: ISessionInfo) {
-    super('oidcInfo');
+    super('oidcInfo')
   }
 }
 
 export const useCoreStore = defineStore('core', () => {
-  const userId = ref<string | null>(null);
+  const userId = ref<string | null>(null)
 
   async function login(oidcIssuer: string) {
     const options = {
       clientId: import.meta.env.VITE_APPLICATION_ID,
       oidcIssuer,
-      redirectUrl: `${import.meta.env.VITE_BASE_URL}/redirect`
-    };
-    await oidcLogin(options);
+      redirectUrl: `${import.meta.env.VITE_BASE_URL}/redirect`,
+    }
+    await oidcLogin(options)
   }
 
   async function handleRedirect(url: string) {
-    const oidcInfo = await handleIncomingRedirect(url);
+    const oidcInfo = await handleIncomingRedirect(url)
     if (!oidcInfo?.webId) {
-      throw new OidcError(oidcInfo);
+      throw new OidcError(oidcInfo)
     }
-    userId.value = oidcInfo.webId;
+    userId.value = oidcInfo.webId
   }
 
   async function restoreOidcSession(to: RouteLocationNormalized): Promise<void> {
-    const oidcSession = getDefaultSession();
+    const oidcSession = getDefaultSession()
 
     if (!oidcSession.info.isLoggedIn) {
-      const restoreUrl = localStorage.getItem('restorePath');
+      const restoreUrl = localStorage.getItem('restorePath')
       if (to.name !== 'login' && !restoreUrl) {
-        localStorage.setItem('restorePath', to.fullPath);
+        localStorage.setItem('restorePath', to.fullPath)
       }
-      const oidcInfo = await oidcSession.handleIncomingRedirect({ restorePreviousSession: true });
+      const oidcInfo = await oidcSession.handleIncomingRedirect({ restorePreviousSession: true })
       if (oidcInfo?.webId) {
-        userId.value = oidcInfo.webId;
+        userId.value = oidcInfo.webId
       }
     }
   }
@@ -53,6 +53,6 @@ export const useCoreStore = defineStore('core', () => {
     userId,
     login,
     handleRedirect,
-    restoreOidcSession
-  };
-});
+    restoreOidcSession,
+  }
+})
