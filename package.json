@@ -2,25 +2,20 @@
   "name": "interop",
   "private": true,
   "devDependencies": {
-    "@eslint/js": "^9.19.0",
     "@inrupt/base-rollup-config": "^3.2.4",
-    "@types/eslint__js": "^8.42.3",
     "@types/node": "^22.10.10",
     "@vitest/coverage-v8": "^3.0.4",
+    "@biomejs/biome": "^1.9.4",
     "componentsjs-generator": "^4.3.0",
-    "eslint": "^9.19.0",
-    "eslint-plugin-vue": "^9.32.0",
     "husky": "^9.1.7",
     "jest-rdf": "^2.0.0",
     "lint-staged": "^15.4.3",
-    "prettier": "^3.4.2",
     "rimraf": "^6.0.1",
     "rollup": "^4.32.0",
     "tslib": "^2.8.1",
     "turbo": "^2.3.4",
     "turbowatch": "^2.29.4",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.22.0",
     "vitest": "^3.0.4"
   },
   "scripts": {
@@ -30,19 +25,11 @@
     "clean": "turbo run clean",
     "dev": "turbo run dev",
     "watch": "./node_modules/.bin/turbowatch turbowatch.ts",
-    "lint": "eslint"
+    "check": "biome check . --write"
   },
   "packageManager": "pnpm@9.10.0+sha256.355a8ab8dbb6ad41befbef39bc4fd6b5df85e12761d2724bd01f13e878de4b13",
   "lint-staged": {
-    "*.ts": [
-      "prettier --write",
-      "eslint",
-      "git add"
-    ],
-    "*.vue": [
-      "eslint",
-      "git add"
-    ]
+    "*.{ts,js,vue}": ["biome check --write", "git add"]
   },
   "pnpm": {
     "overrides": {
