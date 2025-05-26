@@ -10,7 +10,6 @@ const agentUrl = webId2agentUrl(aliceWebId)
 const opRedirectUrl = 'https:/op.example/auth/?something'
 
 const oidcSession = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   login: vi.fn(async (loginOptions: any) => {
     loginOptions.handleRedirect(opRedirectUrl)
   }),

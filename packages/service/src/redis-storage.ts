@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import type { IStorage } from '@inrupt/solid-client-authn-node'
 import { Redis } from 'ioredis'
 import type { RedisConnectionInfo } from './redis-connection-info'

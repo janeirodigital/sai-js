@@ -29,15 +29,26 @@
   },
   "packageManager": "pnpm@9.10.0+sha256.355a8ab8dbb6ad41befbef39bc4fd6b5df85e12761d2724bd01f13e878de4b13",
   "lint-staged": {
-    "*.{ts,js,vue}": ["biome check --write", "git add"]
+    "*.{ts,js,vue}": [
+      "biome check --write --no-errors-on-unmatched",
+      "git add"
+    ]
   },
   "pnpm": {
     "overrides": {
       "rollup": "npm:@rollup/wasm-node"
     },
     "supportedArchitectures": {
-      "os": ["win32", "darwin", "current", "linux"],
-      "cpu": ["x64", "arm64"]
+      "os": [
+        "win32",
+        "darwin",
+        "current",
+        "linux"
+      ],
+      "cpu": [
+        "x64",
+        "arm64"
+      ]
     }
   }
 }

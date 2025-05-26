@@ -17,7 +17,6 @@ export class AllFromRegistryDataGrant extends InheritableDataGrant {
 
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
     const { factory } = this
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const dataGrant = this
     return {
       async *[Symbol.asyncIterator]() {

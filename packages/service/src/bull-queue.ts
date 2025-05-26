@@ -12,7 +12,6 @@ export class BullQueue implements IQueue {
     this.bull = new Queue(name, { connection: info })
   }
 
-  /* eslint-disable @typescript-eslint/no-explicit-any */
   async add(data: any, opts?: JobsOptions): Promise<void> {
     this.bull.add(this.name, data, opts)
   }

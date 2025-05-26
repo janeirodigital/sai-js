@@ -24,7 +24,6 @@ async function unwrappedRdfFetch(
 ): Promise<RdfResponse> {
   let requestInit: RequestInit
   if (options?.dataset) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { dataset, ...request } = options
     request.body = await serializeTurtle(options.dataset)
     request.headers = { 'Content-Type': 'text/turtle', ...request.headers }

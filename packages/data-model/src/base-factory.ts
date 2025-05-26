@@ -55,7 +55,6 @@ export class BaseFactory {
   }
 
   protected readableFactory(): BaseReadableFactory {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this
     return {
       dataInstance: async function dataInstance(

@@ -90,7 +90,6 @@ export class AuthorizationAgentFactory extends BaseFactory {
   }
 
   private crudFactory(): CRUDFactory {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this
     return {
       applicationRegistration: async function applicationRegistration(
@@ -147,7 +146,6 @@ export class AuthorizationAgentFactory extends BaseFactory {
   }
 
   private immutableFactory(): ImmutableFactory {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this
     return {
       dataGrant: function dataGrant(iri: string, data: DataGrantData): ImmutableDataGrant {
@@ -172,7 +170,6 @@ export class AuthorizationAgentFactory extends BaseFactory {
   }
 
   protected readableFactory() {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const factory = this
     return {
       accessAuthorization: async function accessAuthorization(

@@ -6,7 +6,6 @@ vi.mock('bullmq', () => ({
   Queue: vi.fn(),
 }))
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const MockedQueue = Queue as MockedClass<any>
 
 const queueMock = { add: vi.fn() }

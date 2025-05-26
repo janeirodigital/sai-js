@@ -25,14 +25,12 @@ describe('HttpSequenceContextHandler', () => {
 
   test('executes context handlers in the same order as passed in the constructors', async () => {
     const firstHandler = {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       handle: vi
         .fn()
         .mockImplementation((ctx: any) => of({ ...ctx, pristine: false, first: true })),
     }
 
     const secondHandler = {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       handle: vi
         .fn()
         .mockImplementation((ctx: any) => of({ ...ctx, pristine: true, second: true })),
@@ -54,7 +52,6 @@ describe('HttpSequenceContextHandler', () => {
 
   test('aborts if any handler throws', async () => {
     const firstHandler = {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       handle: vi
         .fn()
         .mockImplementation((ctx: any) => of({ ...ctx, pristine: false, first: true })),
@@ -65,7 +62,6 @@ describe('HttpSequenceContextHandler', () => {
       }),
     }
     const thirdHandler = {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       handle: vi
         .fn()
         .mockImplementation((ctx: any) => of({ ...ctx, pristine: false, third: true })),

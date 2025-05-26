@@ -11,7 +11,6 @@ export class InheritedDataGrant extends AbstractDataGrant {
   inheritsFromGrant: AllFromRegistryDataGrant | SelectedFromRegistryDataGrant
 
   getDataInstanceIterator(): AsyncIterable<DataInstance> {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const grant = this
     const parentIterator = grant.inheritsFromGrant.getDataInstanceIterator()
     return {

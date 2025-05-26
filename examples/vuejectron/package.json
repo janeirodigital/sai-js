@@ -6,7 +6,6 @@
     "dev": "vite",
     "build.skip": "pnpm build:ldo && vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "lint": "eslint . --fix --ignore-path .gitignore",
     "build:ldo": "ldo build --input ./shapes --output ./ldo"
   },
   "dependencies": {
@@ -36,7 +35,6 @@
     "@types/shexj": "^2.1.7",
     "@types/webfontloader": "^1.6.35",
     "@vitejs/plugin-vue": "^5.0.4",
-    "@vue/eslint-config-typescript": "^12.0.0",
     "install": "^0.13.0",
     "sass": "^1.69.3",
     "vite": "^5.1.4",

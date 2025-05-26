@@ -6,7 +6,6 @@ import { BullWorker } from '../../src'
 vi.mock('bullmq', () => ({
   Worker: vi.fn(),
 }))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MockedWorker = Worker as MockedClass<any>
 
 const workerMock = { run: vi.fn() }

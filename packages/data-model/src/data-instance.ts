@@ -169,7 +169,6 @@ export class DataInstance extends ReadableResource {
 
   getChildInstancesIterator(shapeTree: string): AsyncIterable<DataInstance> {
     const childGrant = this.findChildGrant(shapeTree)
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const instance = this
     return {
       async *[Symbol.asyncIterator]() {

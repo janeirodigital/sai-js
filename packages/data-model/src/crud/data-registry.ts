@@ -21,7 +21,6 @@ export class CRUDDataRegistry extends CRUDContainer {
 
   get registrations(): AsyncIterable<ReadableDataRegistration> {
     const { factory } = this
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const dataRegistry = this
     return {
       async *[Symbol.asyncIterator]() {

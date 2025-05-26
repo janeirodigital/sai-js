@@ -8,7 +8,6 @@ const snippet = `<https://acme.example/4d594c61-7cff-484a-a1d2-1f353ee4e1e7> a <
     <http://www.w3.org/ns/solid/interop#registeredShapeTree> <https://solidshapes.example/trees/Project>.
 `
 
-/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 async function fetchMock(input: RequestInfo, init?: RequestInit): Promise<Response> {
   return {
     clone() {
@@ -24,7 +23,6 @@ describe('fetchWrapper', () => {
     await rdfFetch('https://some.iri')
 
     expect(mock.mock.calls[0][0]).toBe('https://some.iri')
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const headers = mock.mock.calls[0][1].headers as any
     expect(headers.Accept).toEqual('text/turtle')
   })
@@ -53,7 +51,6 @@ describe('fetchWrapper', () => {
 
     expect(mock.mock.calls[0][0]).toBe('https://some.iri')
     expect(mock.mock.calls[0][1].body).toMatch(snippet)
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const headers = mock.mock.calls[0][1].headers as any
     expect(headers['Content-Type']).toEqual('text/turtle')
     expect(headers['If-Match']).toEqual('12345')
@@ -116,7 +113,6 @@ describe('fetchWrapper', () => {
     }
     await rdfFetch('https://some.iri', { headers: initHeaders })
     expect(mock.mock.calls[0][0]).toBe('https://some.iri')
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const headers = mock.mock.calls[0][1].headers as any
     for (const headerName of Object.keys(initHeaders)) {
       expect(headers[headerName]).toStrictEqual(initHeaders[headerName])

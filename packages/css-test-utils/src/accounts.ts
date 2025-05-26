@@ -5,7 +5,6 @@ import { host } from './config'
 import type { Account } from './types'
 
 // TODO fix circular depencency with utils package
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export function buildNamespace(base: string): any {
   const handler = {
     get: (target: { base: string }, property: string): NamedNode =>

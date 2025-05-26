@@ -21,7 +21,6 @@ import { AuthorizationAgent } from '@janeirodigital/interop-authorization-agent'
 import { NOTIFY } from '@janeirodigital/interop-utils'
 
 vi.mock('@janeirodigital/interop-authorization-agent')
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MockedAuthorizationAgent = AuthorizationAgent as MockedClass<any>
 
 vi.mock('@inrupt/solid-client-authn-node', async (importOriginal) => {
@@ -31,7 +30,6 @@ vi.mock('@inrupt/solid-client-authn-node', async (importOriginal) => {
     getSessionFromStorage: vi.fn(),
   }
 })
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockedGetSessionFromStorage = getSessionFromStorage as MockedFunction<any>
 
 import { SessionManager } from '../../src/session-manager'
@@ -57,7 +55,6 @@ describe('getSaiSession', () => {
   test('creates sai session', async () => {
     const oidcSession = {
       info: { webId, sessionId: webId, isLoggedIn: true },
-      // eslint-disable-next-line no-empty-function
       fetch: () => {},
     } as unknown as Session
 
@@ -85,7 +82,6 @@ describe('getOidcSession', () => {
   test('should return existing oidc session', async () => {
     const oidcSession = {
       info: { webId },
-      // eslint-disable-next-line no-empty-function
       fetch: () => {},
     } as unknown as Session
 
@@ -94,7 +90,6 @@ describe('getOidcSession', () => {
   })
 
   test('should return a new oidc session if none exist', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockedGetSessionFromStorage.mockImplementationOnce((): any => undefined)
 
     const session = await manager.getOidcSession(webId)
