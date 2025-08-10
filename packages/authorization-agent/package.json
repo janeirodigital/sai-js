@@ -41,7 +41,7 @@
     "test": "NODE_ENV=vitest vitest run --coverage",
     "test:debug": "NODE_ENV=vitest vitest --run --inspect-brk --no-file-parallelism",
     "clean": "rimraf dist tsconfig.tsbuildinfo",
-    "publish": "pnpm run clean && pnpm run build"
+    "publish": "npm run clean && npm run build"
   },
   "dependencies": {
     "@janeirodigital/interop-data-model": "^1.0.0-rc.24",

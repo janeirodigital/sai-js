@@ -30,8 +30,8 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@inrupt/solid-client-authn-core": "^2.0.0",
-    "@solid/community-server": "^7.1.7",
+    "@inrupt/solid-client-authn-core": "^3.0.0",
+    "@solid/community-server": "8.0.0-alpha.1",
     "n3": "^1.23.1"
   },
   "devDependencies": {

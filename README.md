@@ -23,15 +23,10 @@ Also [mkcert](https://mkcert.dev/) is required.
 
 The setup is using modified `Makefile` and `docker-compose.yaml` from [docker-shared-services](https://github.com/wayofdev/docker-shared-services)
 
-### Node, corepack and pnpm
+### Node, corepack and npm
 
-Requires node.js 22 or higher with corepack
-Uses pnpm as package manager.
+Requires node.js 22 or higher
 
-```bash
-corepack prepare pnpm@latest --activate
-corepack enable pnpm
-```
 
 ### Github packages
 
@@ -64,9 +59,9 @@ $ sudo brew services start chipmk/tap/docker-mac-net-connect
 ### Bootstrapping
 
 ```bash
-pnpm install
-pnpm build
-pnpm test
+npm install
+npm run build
+npm test
 ```
 
 To create local certificates

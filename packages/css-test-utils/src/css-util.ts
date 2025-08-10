@@ -97,8 +97,8 @@ export async function refreshToken({ id, secret }: ISecretData): Promise<ITokenD
     },
     body: 'grant_type=client_credentials&scope=webid',
   })
-
-  const { access_token: accessToken } = await response.json()
-
+  const text = await response.text()
+  console.log(text)
+  const { access_token: accessToken } = JSON.parse(text)// await response.json()
   return { accessToken, dpopKey }
 }

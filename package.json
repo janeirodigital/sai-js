@@ -11,7 +11,7 @@
     "jest-rdf": "^2.0.0",
     "lint-staged": "^15.4.3",
     "rimraf": "^6.0.1",
-    "rollup": "^4.32.0",
+    "rollup": "npm:@rollup/wasm-node@4.32.0",
     "tslib": "^2.8.1",
     "turbo": "^2.3.4",
     "turbowatch": "^2.29.4",
@@ -27,20 +27,17 @@
     "watch": "./node_modules/.bin/turbowatch turbowatch.ts",
     "check": "BIOME_BINARY=@biomejs/cli-linux-x64-musl/biome biome check . --write"
   },
-  "packageManager": "pnpm@9.10.0+sha256.355a8ab8dbb6ad41befbef39bc4fd6b5df85e12761d2724bd01f13e878de4b13",
+  "packageManager": "npm@11.3.0",
+  "workspaces": [
+    "packages/*",
+    "examples/*",
+    "ui/*",
+    "submodules/*"
+  ],
   "lint-staged": {
     "*.{ts,js,vue}": [
       "BIOME_BINARY=@biomejs/cli-linux-x64-musl/biome biome check --write --no-errors-on-unmatched",
       "git add"
     ]
-  },
-  "pnpm": {
-    "overrides": {
-      "rollup": "npm:@rollup/wasm-node"
-    },
-    "supportedArchitectures": {
-      "os": ["win32", "darwin", "current", "linux"],
-      "cpu": ["x64", "arm64"]
-    }
   }
 }

@@ -1,10 +1,10 @@
 {
   "name": "vuejectron",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build.skip": "pnpm build:ldo && vue-tsc --noEmit && vite build",
+    "build.skip": "npm run build:ldo && vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "build:ldo": "ldo build --input ./shapes --output ./ldo"
   },

@@ -16,7 +16,7 @@ All accounts use `password` as the password
 ## Starting CSS
 
 ```bash
-pnpm start
+npm run dev
 ```
 
 ## Funding

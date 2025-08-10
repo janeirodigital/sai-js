@@ -40,7 +40,7 @@
     "build": "rollup --config rollup.config.mjs",
     "test": "NODE_ENV=vitest vitest run --coverage",
     "clean": "rimraf dist tsconfig.tsbuildinfo",
-    "publish": "pnpm run clean && pnpm run build"
+    "publish": "npm run clean && npm run build"
   },
   "dependencies": {
     "http-link-header": "^1.1.1",

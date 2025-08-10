@@ -1,3 +1,6 @@
 {
-  "packages": ["nodejs@latest", "pnpm@latest"]
+  "packages": [
+    "nodejs@latest",
+    "mkcert@latest"
+  ]
 }

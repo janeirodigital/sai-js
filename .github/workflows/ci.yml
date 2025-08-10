@@ -25,15 +25,13 @@ jobs:
         uses: actions/checkout@v4
       - name: Modify .npmrc
         run: echo '//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}' >> .npmrc
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
       - name: Install dependencies
-        run: pnpm install
+        run: npm install
       - name: Build packages
-        run: pnpx turbo run build
+        run: npx turbo run build
       - name: Run tests
         working-directory: ./packages/${{ matrix.package }}
-        run: pnpm run test
+        run: npm run test
       - name: Submit code coverage
         uses: codecov/codecov-action@v4
         with:

@@ -19,7 +19,7 @@ for (const pkgName of packages) {
         expression: ['allof', ['not', ['dirname', 'node_modules']], ['match', '*.ts', 'basename']],
         name: 'build',
         onChange: async ({ spawn }) => {
-          await spawn`pnpm turbo run build --filter=${npmName(pkgName)}`
+          await spawn`npm run turbo run build --filter=${npmName(pkgName)}`
         },
       },
     ],
@@ -45,7 +45,7 @@ void watch({
       interruptible: true,
       name: 'start-server',
       onChange: async ({ spawn }) => {
-        await spawn`pnpm --filter=@janeirodigital/sai-server debug`
+        await spawn`npm --filter=@janeirodigital/sai-server run debug`
       },
     },
   ],

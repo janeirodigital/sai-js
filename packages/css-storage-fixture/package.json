@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "community-solid-server -c config.json -l warn -f ./dev",
     "css:test": "community-solid-server -c ../css-test-utils/src/css-config.json -l warn -f ./test -p 3711",
-    "clean": "pnpm clean:empty-directories && pnpm clean:notification-channels && pnpm clean:client-credentials",
+    "clean": "npm run clean:empty-directories && npm run clean:notification-channels && npm run clean:client-credentials",
     "clean:empty-directories": "find . -type d -empty -delete",
     "clean:notification-channels": "rm -rf ./dev/.internal/notifications/*",
     "clean:client-credentials": "rm -rf ./test/.internal/accounts/index/clientCredentials/*"
@@ -15,6 +15,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@solid/community-server": "^7.1.2"
+    "@solid/community-server": "8.0.0-alpha.1"
   }
 }

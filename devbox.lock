@@ -5,6 +5,54 @@
       "last_modified": "2025-05-25T15:24:27Z",
       "resolved": "github:NixOS/nixpkgs/bdac72d387dca7f836f6ef1fe547755fb0e9df61?lastModified=1748186667&narHash=sha256-UQubDNIQ%2FZ42R8tPCIpY%2BBOhlxO8t8ZojwC9o2FW3c8%3D"
     },
+    "mkcert@latest": {
+      "last_modified": "2025-09-18T16:33:27Z",
+      "resolved": "github:NixOS/nixpkgs/f4b140d5b253f5e2a1ff4e5506edbf8267724bde#mkcert",
+      "source": "devbox-search",
+      "version": "1.4.4",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/a8v2rgpbcnxzp8ylq4fzns8qz8q4vz9q-mkcert-1.4.4",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/a8v2rgpbcnxzp8ylq4fzns8qz8q4vz9q-mkcert-1.4.4"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/88am02l2zs7n2b4p1xr6ia1r6h85vdpd-mkcert-1.4.4",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/88am02l2zs7n2b4p1xr6ia1r6h85vdpd-mkcert-1.4.4"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/9y4li69l9l29fbzd4nyfibxs65qw3zm4-mkcert-1.4.4",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/9y4li69l9l29fbzd4nyfibxs65qw3zm4-mkcert-1.4.4"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/dwa0iqyz6h9xxx00fhsqy6i2pjvy09bv-mkcert-1.4.4",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/dwa0iqyz6h9xxx00fhsqy6i2pjvy09bv-mkcert-1.4.4"
+        }
+      }
+    },
     "nodejs@latest": {
       "last_modified": "2025-05-22T03:53:02Z",
       "plugin_version": "0.0.2",
@@ -83,54 +131,6 @@
             }
           ],
           "store_path": "/nix/store/wnayblhh0555nwfccnzcqkzph52y4yby-nodejs-24.1.0"
-        }
-      }
-    },
-    "pnpm@latest": {
-      "last_modified": "2025-05-16T20:19:48Z",
-      "resolved": "github:NixOS/nixpkgs/12a55407652e04dcf2309436eb06fef0d3713ef3#pnpm",
-      "source": "devbox-search",
-      "version": "10.11.0",
-      "systems": {
-        "aarch64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/b39q8x9cxlqq45zgvn9bqcv2f2633vhx-pnpm-10.11.0",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/b39q8x9cxlqq45zgvn9bqcv2f2633vhx-pnpm-10.11.0"
-        },
-        "aarch64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/rvikpxf1ikq4dy7n64bw30hx2ig7zwjk-pnpm-10.11.0",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/rvikpxf1ikq4dy7n64bw30hx2ig7zwjk-pnpm-10.11.0"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/m4qnhm8ij69r70wf6qdbbhd9yw30pv00-pnpm-10.11.0",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/m4qnhm8ij69r70wf6qdbbhd9yw30pv00-pnpm-10.11.0"
-        },
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/29gsr1mhy2xgah3s86aqg7wspmvqjp4m-pnpm-10.11.0",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/29gsr1mhy2xgah3s86aqg7wspmvqjp4m-pnpm-10.11.0"
         }
       }
     }

@@ -34,15 +34,12 @@ jobs:
       - name: Modify .npmrc
         run: echo '//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}' >> .npmrc
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - run: pnpm install
-      - run: pnpx turbo run build
+      - run: npm install
+      - run: npx turbo run build
 
       - name: Create release
         working-directory: ./packages/${{ matrix.package }}
-        run: pnpm publish --access public --no-git-checks
+        run: npm publish --access public --no-git-checks
 
         env:
           NODE_AUTH_TOKEN: ${{ secrets.DEPLOYMENT_AUTH_TOKEN_NPM }}
