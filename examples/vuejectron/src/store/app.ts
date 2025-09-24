@@ -2,13 +2,9 @@ import type { Agent, ResourceServer } from '@/models'
 import { getDefaultSession } from '@inrupt/solid-client-authn-browser'
 import { Application, NotificationManager } from '@janeirodigital/interop-application'
 import { AS, RequestError } from '@janeirodigital/interop-utils'
+import { commitData, changeData as ldoChangeData } from '@ldo/connected'
+import { type SolidLdoDataset, createSolidLdoDataset } from '@ldo/connected-solid'
 import type { LdoBase } from '@ldo/ldo'
-import {
-  type SolidLdoDataset,
-  commitData,
-  createSolidLdoDataset,
-  changeData as ldoChangeData,
-} from '@ldo/solid'
 import { useStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { ref, shallowRef, triggerRef } from 'vue'
@@ -66,7 +62,8 @@ export const useAppStore = defineStore('app', () => {
       authnFetch,
       session.authorizationAgentIri
     )
-    solidLdoDataset = createSolidLdoDataset({ fetch: authnFetch })
+    solidLdoDataset = createSolidLdoDataset()
+    solidLdoDataset.setContext('solid', { fetch: authnFetch })
     if (session.registrationIri) {
       await notificationsManager.subscribeToResource(session.registrationIri)
     }
