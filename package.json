@@ -28,16 +28,8 @@
     "check": "BIOME_BINARY=@biomejs/cli-linux-x64-musl/biome biome check . --write"
   },
   "packageManager": "npm@11.3.0",
-  "workspaces": [
-    "packages/*",
-    "examples/*",
-    "ui/*",
-    "submodules/*"
-  ],
+  "workspaces": ["packages/*", "examples/*", "ui/*", "submodules/*"],
   "lint-staged": {
-    "*.{ts,js,vue}": [
-      "BIOME_BINARY=@biomejs/cli-linux-x64-musl/biome biome check --write --no-errors-on-unmatched",
-      "git add"
-    ]
+    "*.{ts,js,vue}": "npm run check"
   }
 }

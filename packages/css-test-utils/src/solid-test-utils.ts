@@ -9,7 +9,7 @@ export class SolidTestUtils {
   token: ITokenData
   authFetch: typeof fetch
 
-  constructor(public account: Account) { }
+  constructor(public account: Account) {}
 
   async auth(): Promise<void> {
     // Generate secret

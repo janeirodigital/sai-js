@@ -99,6 +99,6 @@ export async function refreshToken({ id, secret }: ISecretData): Promise<ITokenD
   })
   const text = await response.text()
   console.log(text)
-  const { access_token: accessToken } = JSON.parse(text)// await response.json()
+  const { access_token: accessToken } = JSON.parse(text) // await response.json()
   return { accessToken, dpopKey }
 }
